@@ -1,3 +1,4 @@
+#line 2 "togo/config.hpp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 

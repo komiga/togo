@@ -1,3 +1,7 @@
+#line 2 "togo/memory.cpp"
+/**
+@copyright MIT license; see @ref index or the accompanying LICENSE file.
+*/
 
 #include <togo/memory.hpp>
 #include <togo/assert.hpp>
