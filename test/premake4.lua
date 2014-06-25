@@ -49,5 +49,6 @@ precore.make_solution(
 include("general")
 include("collections")
 include("memory")
+include("hash")
 
 action_clean()

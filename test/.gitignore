@@ -6,3 +6,4 @@ out/
 general/headers
 collections/array
 memory/init
+hash/literal

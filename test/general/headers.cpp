@@ -6,6 +6,7 @@
 #include <togo/collection_types.hpp>
 #include <togo/memory_types.hpp>
 #include <togo/assert.hpp>
+#include <togo/hash.hpp>
 #include <togo/math.hpp>
 #include <togo/memory.hpp>
 #include <togo/array.hpp>
