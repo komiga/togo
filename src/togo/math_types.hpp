@@ -11,10 +11,8 @@
 
 #include <togo/config.hpp>
 
-#include <am/linear/vec2.hpp>
-#include <am/linear/vec3.hpp>
-#include <am/linear/vec4.hpp>
-#include <am/linear/matrix.hpp>
+#include <am/linear/vector_types.hpp>
+#include <am/linear/matrix_types.hpp>
 
 namespace togo {
 
