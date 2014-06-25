@@ -61,35 +61,6 @@ namespace {
 		(p)->~pointer_type<decltype(p)>(); (a).deallocate(p); \
 	} } while (false)
 
-namespace memory {
-
-static constexpr u32 const
-	/// Minimum scratch size (8K).
-	SCRATCH_SIZE_MINIMUM = 8 * 1024,
-	/// Default scratch size (4MB).
-	SCRATCH_SIZE_DEFAULT = 4 * 1024 * 1024
-;
-
-/// Initialize global allocators.
-/// scratch_size is size of the scratch space block to pre-allocate.
-/// If scratch_size < SCRATCH_SIZE_MINIMUM, an assertion will trigger.
-void init(u32 const scratch_size = SCRATCH_SIZE_MINIMUM);
-
-/// Shutdown allocators created by init().
-void shutdown();
-
-/// Get the default allocator.
-/// This is a growing heap allocator.
-Allocator& default_allocator();
-
-/// Get the scratch allocator.
-/// This should *only* be used for temporary memory. It uses a ring
-/// buffer for allocations, backed by a block of memory from the
-/// default allocator.
-Allocator& scratch_allocator();
-
-} // namespace memory
-
 /**
 	%Allocator base class.
 */
@@ -136,6 +107,35 @@ public:
 	virtual void deallocate(void* p) = 0;
 };
 inline Allocator::~Allocator() = default;
+
+namespace memory {
+
+static constexpr u32 const
+	/// Minimum scratch size (8K).
+	SCRATCH_SIZE_MINIMUM = 8 * 1024,
+	/// Default scratch size (4MB).
+	SCRATCH_SIZE_DEFAULT = 4 * 1024 * 1024
+;
+
+/// Initialize global allocators.
+/// scratch_size is size of the scratch space block to pre-allocate.
+/// If scratch_size < SCRATCH_SIZE_MINIMUM, an assertion will trigger.
+void init(u32 const scratch_size = SCRATCH_SIZE_MINIMUM);
+
+/// Shutdown allocators created by init().
+void shutdown();
+
+/// Get the default allocator.
+/// This is a growing heap allocator.
+Allocator& default_allocator();
+
+/// Get the scratch allocator.
+/// This should *only* be used for temporary memory. It uses a ring
+/// buffer for allocations, backed by a block of memory from the
+/// default allocator.
+Allocator& scratch_allocator();
+
+} // namespace memory
 
 /** @} */ // end of doc-group memory
 /** @} */ // end of doc-group types
