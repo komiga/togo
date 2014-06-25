@@ -1,0 +1,54 @@
+{
+	"folders":
+	[
+		{
+			"name": "Root",
+			"path": "./",
+			"folder_exclude_patterns": [
+				"doc",
+				"dep",
+				"src",
+				"test",
+				"out",
+				"lib"
+			],
+			"file_exclude_patterns": [
+				"Makefile",
+				"*.make"
+			]
+		},
+		{
+			"name": "- Documentation",
+			"path": "./doc/",
+			"folder_exclude_patterns": [
+				"html"
+			]
+		},
+		{
+			"name": "- Dependencies",
+			"path": "./dep/",
+			"folder_exclude_patterns": [
+				"*"
+			]
+		},
+		{
+			"name": "- Source",
+			"path": "./src/togo/"
+		},
+		{
+			"name": "- Test",
+			"path": "./test/",
+			"folder_exclude_patterns": [
+				"out"
+			],
+			"file_exclude_patterns": [
+				"Makefile",
+				"*.make"
+			]
+		}
+	],
+	"settings":
+	{
+		"tab_size": 4
+	}
+}
