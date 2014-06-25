@@ -2,7 +2,7 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
 @file assert.hpp
-@brief Assertion macros and error reporting.
+@brief Assertion macros and debugging.
 @ingroup debug
 */
 
@@ -20,6 +20,15 @@ namespace togo {
 /// Abort the program with contextual information.
 void
 error_abort(
+	unsigned line,
+	char const* file,
+	char const* msg,
+	...
+);
+
+/// Print debug message.
+void
+debug_print(
 	unsigned line,
 	char const* file,
 	char const* msg,
@@ -56,6 +65,18 @@ error_abort(
 	#define TOGO_DEBUG_ASSERTF(expr, msg, ...) ((void)0)
 	/// Debug assertion with no message.
 	#define TOGO_DEBUG_ASSERTE(expr) ((void)0)
+#endif
+
+#if defined(TOGO_DEBUG)
+	#define TOGO_DEBUG_MSG(msg) do { debug_print(__LINE__, __FILE__, \
+		msg); } while (false)
+	#define TOGO_DEBUG_MSGF(msg, ...) do { debug_print(__LINE__, __FILE__, \
+		msg, __VA_ARGS__); } while (false)
+#else
+	/// Debug assertion with an error message.
+	#define TOGO_DEBUG_MSG(msg) ((void)0)
+	/// Debug assertion with a formatted error message.
+	#define TOGO_DEBUG_MSGF(msg, ...) ((void)0)
 #endif
 
 /** @} */ // end of doc-group debug
