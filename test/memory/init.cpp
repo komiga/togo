@@ -1,8 +1,6 @@
 
 #include <togo/memory.hpp>
 
-#include <cstdio>
-
 using namespace togo;
 
 signed
