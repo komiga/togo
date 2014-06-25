@@ -74,9 +74,9 @@ debug_print(
 	#define TOGO_DEBUG_MSGF(msg, ...) do { debug_print(__LINE__, __FILE__, \
 		msg, __VA_ARGS__); } while (false)
 #else
-	/// Debug assertion with an error message.
+	/// Debug message.
 	#define TOGO_DEBUG_MSG(msg) ((void)0)
-	/// Debug assertion with a formatted error message.
+	/// Debug message with formatting.
 	#define TOGO_DEBUG_MSGF(msg, ...) ((void)0)
 #endif
 
