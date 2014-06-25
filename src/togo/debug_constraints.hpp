@@ -22,12 +22,28 @@
 			std::is_same<T, U>::value,								\
 			"T and U are not the same types"						\
 		);
+	#define TOGO_CONSTRAIN_INTEGRAL(T)								\
+		static_assert(												\
+			std::is_integral<T>::value,								\
+			"T is not arithmetic"									\
+		);
+	#define TOGO_CONSTRAIN_ARITHMETIC(T)							\
+		static_assert(												\
+			std::is_arithmetic<T>::value,							\
+			"T is not arithmetic"									\
+		);
 #else
-	/// Statically assert that T is of standard layout.
+	/// Statically assert that type T is of standard layout.
 	#define TOGO_CONSTRAIN_IS_POD(T)
 
 	/// Statically assert that type T is the same as type U.
 	#define TOGO_CONSTRAIN_SAME(T, U)
+
+	/// Statically assert that type T is an integral type.
+	#define TOGO_CONSTRAIN_INTEGRAL(T)
+
+	/// Statically assert that type T is an arithmetic type.
+	#define TOGO_CONSTRAIN_ARITHMETIC(T)
 #endif
 
 namespace togo {
