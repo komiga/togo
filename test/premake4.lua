@@ -8,10 +8,7 @@ function make_test(group, name, srcglob, configs)
 		"./", "out/",
 		nil, configs
 	)
-
-	if nil == configs then
-		precore.apply("togo-strict")
-	end
+	precore.apply("togo-strict")
 
 	if nil == srcglob then
 		srcglob = name .. ".cpp"
