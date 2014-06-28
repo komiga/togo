@@ -30,6 +30,16 @@ function make_tests(group, tests)
 	end
 end
 
+precore.make_config(
+"threading-support", {{
+project = function()
+	configuration {"linux"}
+		buildoptions {
+			"-pthread"
+		}
+		links {"pthread"}
+end}})
+
 -- Test solution
 
 precore.make_solution(
@@ -50,5 +60,6 @@ include("general")
 include("collections")
 include("memory")
 include("hash")
+include("threading")
 
 action_clean()

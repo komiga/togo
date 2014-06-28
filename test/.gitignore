@@ -8,3 +8,4 @@ collections/array
 memory/init
 memory/temp_allocator
 hash/literal
+threading/thread
