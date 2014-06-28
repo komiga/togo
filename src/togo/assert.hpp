@@ -19,7 +19,7 @@ namespace togo {
 */
 
 /// Abort the program with contextual information.
-void
+[[noreturn]] void
 error_abort(
 	unsigned line,
 	char const* file,
