@@ -60,7 +60,9 @@ inline void* thread_runner(ThreadData& data) {
 }
 
 char const* thread::name() {
-	if (!_tls_thread_ref.name) {
+	if (thread::is_main()) {
+		return "main";
+	} else if (!_tls_thread_ref.name) {
 		return "uninitialized-thread";
 	} else {
 		return _tls_thread_ref.name;

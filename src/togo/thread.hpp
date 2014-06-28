@@ -21,13 +21,24 @@ namespace thread {
 	@{
 */
 
+/// Get the name of the current thread.
+char const* name();
+
+/// Check if the current thread is the main thread.
+bool is_main();
+
+/// Yield to the processor on the current thread.
+void yield();
+
 /// Create a thread.
 ///
+/// Execution will begin as soon as the system allots time to the
+/// thread.
 /// An assertion will fail if a thread could not be created.
 /// name will be copied and truncated to 32 characters.
 /// func takes the specified call_data.
-/// allocator will be used to construct and destroy the thread object,
-/// so its lifetime must be longer than the thread's.
+/// allocator will be used to construct and destroy the thread
+/// object, so its lifetime must be longer than the thread's.
 Thread* create(
 	char const* name,
 	void* call_data,
@@ -44,12 +55,6 @@ char const* name(Thread* t);
 /// The return value is the return value of the function passed to
 /// thread::create().
 void* join(Thread* t);
-
-/// Get the name of the current thread.
-char const* name();
-
-/// Yield to the processor on the current thread.
-void yield();
 
 /** @} */ // end of doc-group threading
 

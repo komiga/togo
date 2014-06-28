@@ -10,9 +10,10 @@
 #include <togo/memory.hpp>
 #include <togo/thread.hpp>
 
-#include <pthread.h>
 #include <unistd.h>
+#include <sys/syscall.h>
 #include <sched.h>
+#include <pthread.h>
 
 namespace togo {
 
@@ -31,6 +32,14 @@ void* posix_thread_start(void* const t_void) {
 
 #define POSIX_CHECK(err, f) \
 	if (((err) = (f))) { goto posix_error; }
+
+bool thread::is_main() {
+	return static_cast<pid_t>(syscall(SYS_gettid)) == getpid();
+}
+
+void thread::yield() {
+	sched_yield();
+}
 
 Thread* thread::create(
 	char const* name,
@@ -68,10 +77,6 @@ void* thread::join(Thread* t) {
 
 posix_error:
 	TOGO_ASSERTF(false, "failed to join thread '%s': %d, %s", t->data.name, err, std::strerror(err));
-}
-
-void thread::yield() {
-	sched_yield();
 }
 
 } // namespace togo
