@@ -26,7 +26,7 @@ end
 
 function make_tests(group, tests)
 	for name, test in pairs(tests) do
-		make_test(group, name, test[0], test[1])
+		make_test(group, name, test[1], test[2])
 	end
 end
 
