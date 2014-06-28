@@ -5,6 +5,7 @@
 @file collection_types.hpp
 @brief Collection types.
 @ingroup types
+@ingroup collections
 */
 
 #pragma once
@@ -18,10 +19,9 @@
 namespace togo {
 
 /**
-	@addtogroup types
+	@addtogroup collections
 	@{
 */
-
 /**
 	@addtogroup array
 	@{
@@ -54,6 +54,6 @@ struct Array {
 };
 
 /** @} */ // end of doc-group array
-/** @} */ // end of doc-group types
+/** @} */ // end of doc-group collections
 
 } // namespace togo

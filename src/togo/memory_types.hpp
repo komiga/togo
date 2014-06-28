@@ -15,10 +15,6 @@
 namespace togo {
 
 /**
-	@addtogroup types
-	@{
-*/
-/**
 	@addtogroup memory
 	@{
 */
@@ -27,6 +23,5 @@ namespace togo {
 class Allocator;
 
 /** @} */ // end of doc-group memory
-/** @} */ // end of doc-group types
 
 } // namespace togo

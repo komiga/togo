@@ -4,7 +4,6 @@
 
 @file jump_block_allocator.hpp
 @brief JumpBlockAllocator class.
-@ingroup types
 @ingroup memory
 */
 
@@ -17,10 +16,6 @@
 
 namespace togo {
 
-/**
-	@addtogroup types
-	@{
-*/
 /**
 	@addtogroup memory
 	@{
@@ -99,6 +94,5 @@ public:
 };
 
 /** @} */ // end of doc-group memory
-/** @} */ // end of doc-group types
 
 } // namespace togo

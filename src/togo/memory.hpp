@@ -3,7 +3,7 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
 @file memory.hpp
-@brief Memory types.
+@brief Memory interface.
 @ingroup memory
 */
 
@@ -19,10 +19,6 @@
 
 namespace togo {
 
-/**
-	@addtogroup types
-	@{
-*/
 /**
 	@addtogroup memory
 	@{
@@ -109,7 +105,14 @@ public:
 };
 inline Allocator::~Allocator() = default;
 
+/** @} */ // end of doc-group memory
+
 namespace memory {
+
+/**
+	@addtogroup memory
+	@{
+*/
 
 static constexpr u32 const
 	/// Minimum scratch size (8K).
@@ -136,9 +139,8 @@ Allocator& default_allocator();
 /// default allocator.
 Allocator& scratch_allocator();
 
-} // namespace memory
-
 /** @} */ // end of doc-group memory
-/** @} */ // end of doc-group types
+
+} // namespace memory
 
 } // namespace togo

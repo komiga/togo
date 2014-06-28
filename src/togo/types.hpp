@@ -21,11 +21,6 @@ namespace togo {
 	@{
 */
 
-/*/// Get alignment for a type.
-#if !defined(alignof)
-	#define alignof(x) __alignof(x)
-#endif*/
-
 /** @name Signed integral types */ /// @{
 /// Fixed-width signed integral.
 using s8		= std::int8_t;

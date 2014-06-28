@@ -18,10 +18,6 @@
 namespace togo {
 
 /**
-	@addtogroup types
-	@{
-*/
-/**
 	@addtogroup math
 	@{
 */
@@ -61,6 +57,5 @@ using Mat4x4 = am::linear::mat4x4;
 /// @}
 
 /** @} */ // end of doc-group math
-/** @} */ // end of doc-group types
 
 } // namespace togo
