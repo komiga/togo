@@ -10,6 +10,8 @@
 #include <togo/memory.hpp>
 #include <togo/thread.hpp>
 
+#include <cstring>
+
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <sched.h>
@@ -30,7 +32,7 @@ void* posix_thread_start(void* const t_void) {
 
 // thread interface implementation
 
-#define POSIX_CHECK(err, f) \
+#define POSIX_CHECK(f) \
 	if (((err) = (f))) { goto posix_error; }
 
 bool thread::is_main() {
@@ -52,9 +54,9 @@ Thread* thread::create(
 
 	signed err = 0;
 	pthread_attr_t attr;
-	POSIX_CHECK(err, pthread_attr_init(&attr));
-	POSIX_CHECK(err, pthread_create(&t->handle, &attr, posix_thread_start, t));
-	POSIX_CHECK(err, pthread_attr_destroy(&attr));
+	POSIX_CHECK(pthread_attr_init(&attr));
+	POSIX_CHECK(pthread_create(&t->handle, &attr, posix_thread_start, t));
+	POSIX_CHECK(pthread_attr_destroy(&attr));
 	return t;
 
 posix_error:
@@ -68,7 +70,7 @@ char const* thread::name(Thread* t) {
 void* thread::join(Thread* t) {
 	signed err = 0;
 	void* exit_value = nullptr;
-	POSIX_CHECK(err, pthread_join(t->handle, &exit_value));
+	POSIX_CHECK(pthread_join(t->handle, &exit_value));
 	if (exit_value == PTHREAD_CANCELED) {
 		exit_value = nullptr;
 	}
