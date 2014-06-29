@@ -27,18 +27,4 @@ error_abort(
 	std::abort();
 }
 
-void
-debug_print(
-	unsigned line,
-	char const* file,
-	char const* msg,
-	...
-) {
-	std::printf("%s @ %4d: debug: ", file, line);
-	va_list va;
-	va_start(va, msg);
-	std::vprintf(msg, va);
-	va_end(va);
-}
-
 } // namespace togo

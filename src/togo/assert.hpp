@@ -27,15 +27,6 @@ error_abort(
 	...
 );
 
-/// Print debug message.
-void
-debug_print(
-	unsigned line,
-	char const* file,
-	char const* msg,
-	...
-);
-
 #if !defined(TOGO_DISABLE_ASSERTIONS) && !defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
 	#define TOGO_ASSERT(expr, msg) \
 		do { if (!(expr)) { error_abort(__LINE__, __FILE__, \
@@ -66,18 +57,6 @@ debug_print(
 	#define TOGO_DEBUG_ASSERTF(expr, msg, ...) ((void)0)
 	/// Debug assertion with no message.
 	#define TOGO_DEBUG_ASSERTE(expr) ((void)0)
-#endif
-
-#if defined(TOGO_DEBUG)
-	#define TOGO_DEBUG_MSG(msg) do { debug_print(__LINE__, __FILE__, \
-		msg); } while (false)
-	#define TOGO_DEBUG_MSGF(msg, ...) do { debug_print(__LINE__, __FILE__, \
-		msg, __VA_ARGS__); } while (false)
-#else
-	/// Debug message.
-	#define TOGO_DEBUG_MSG(msg) ((void)0)
-	/// Debug message with formatting.
-	#define TOGO_DEBUG_MSGF(msg, ...) ((void)0)
 #endif
 
 /** @} */ // end of doc-group debug
