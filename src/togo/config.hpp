@@ -119,6 +119,35 @@ namespace togo {
 
 /// @} // end of name-group System detection
 
+/** @name Compiler detection */ /// @{
+
+#if defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
+	/**
+		Defined if the compiler is Clang.
+	*/
+	#define TOGO_COMPILER_CLANG
+	/**
+		Defined if the compiler is GCC.
+	*/
+	#define TOGO_COMPILER_GCC
+	/**
+		Defined if the compiler is MSVC.
+	*/
+	#define TOGO_COMPILER_MSVC
+#else
+	#if defined(__clang__)
+		#define TOGO_COMPILER_CLANG
+	#elif defined(__GNUC__)
+		#define TOGO_COMPILER_GCC
+	#elif defined(_MSC_VER)
+		#define TOGO_COMPILER_MSVC
+	#else
+		#error "unrecognized compiler"
+	#endif
+#endif // defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
+
+/// @} // end of name-group Compiler detection
+
 /** @} */ // end of doc-group config
 
 } // namespace togo
