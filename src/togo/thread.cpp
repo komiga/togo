@@ -71,7 +71,6 @@ char const* thread::name() {
 
 } // namespace togo
 
-// TODO: Select header based on platform
 #if defined(TOGO_PLATFORM_IS_POSIX)
 	#include <togo/impl/thread/posix.ipp>
 #else

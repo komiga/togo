@@ -5,6 +5,7 @@
 @file thread.hpp
 @brief Thread interface.
 @ingroup threading
+@ingroup thread
 */
 
 #pragma once
@@ -18,6 +19,10 @@ namespace thread {
 
 /**
 	@addtogroup threading
+	@{
+*/
+/**
+	@addtogroup thread
 	@{
 */
 
@@ -56,6 +61,7 @@ char const* name(Thread* t);
 /// thread::create().
 void* join(Thread* t);
 
+/** @} */ // end of doc-group thread
 /** @} */ // end of doc-group threading
 
 } // namespace thread

@@ -19,9 +19,14 @@ namespace togo {
 	@{
 */
 
-// Forward declarations
+/**
+	@addtogroup thread
+	@{
+*/
+
 struct Thread;
 
+/** @} */ // end of doc-group thread
 /** @} */ // end of doc-group threading
 
 } // namespace togo
