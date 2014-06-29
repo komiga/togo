@@ -4,9 +4,14 @@ Makefile
 out/
 
 general/headers
+
 collections/array
+collections/queue
+
 memory/init
 memory/temp_allocator
+
 hash/literal
+
 threading/thread
 threading/mutex
