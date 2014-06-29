@@ -20,7 +20,7 @@
 namespace togo {
 
 template<class T>
-Array<T>::~Array() {
+inline Array<T>::~Array() {
 	_allocator->deallocate(_data);
 }
 
@@ -28,7 +28,7 @@ Array<T>::~Array() {
 /// Array is empty and has null storage until it grows (either
 /// explicitly through grow() or set_capacity() or by insertion).
 template<class T>
-Array<T>::Array(Allocator& allocator)
+inline Array<T>::Array(Allocator& allocator)
 	: _size(0)
 	, _capacity(0)
 	, _data(nullptr)
