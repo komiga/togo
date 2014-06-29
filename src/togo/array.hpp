@@ -25,6 +25,7 @@ inline Array<T>::~Array() {
 }
 
 /// Construct with allocator for storage.
+///
 /// Array is empty and has null storage until it grows (either
 /// explicitly through grow() or set_capacity() or by insertion).
 template<class T>
@@ -75,26 +76,22 @@ inline bool empty(Array<T> const& a) { return a._size == 0; }
 /// Beginning iterator: [begin, end).
 template<class T>
 inline T* begin(Array<T>& a) {
-	TOGO_DEBUG_ASSERTE(a._size > 0);
 	return a._data;
 }
 /// Beginning iterator: [begin, end).
 template<class T>
 inline T const* begin(Array<T> const& a) {
-	TOGO_DEBUG_ASSERTE(a._size > 0);
 	return a._data;
 }
 
 /// Ending iterator: [begin, end).
 template<class T>
 inline T* end(Array<T>& a) {
-	TOGO_DEBUG_ASSERTE(a._size > 0);
 	return a._data + a._size;
 }
 /// Ending iterator: [begin, end).
 template<class T>
 inline T const* end(Array<T> const& a) {
-	TOGO_DEBUG_ASSERTE(a._size > 0);
 	return a._data + a._size;
 }
 
@@ -125,6 +122,7 @@ inline T const& back(Array<T> const& a) {
 }
 
 /// Change buffer size.
+///
 /// If new_capacity is lower than the size, the array is resized
 /// to new_capacity.
 template<class T>
@@ -153,6 +151,7 @@ void set_capacity(Array<T>& a, u32 const new_capacity) {
 }
 
 /// Grow the array with a doubling factor.
+///
 /// Cost of insertion should be amortized O(1), assuming no aggressive
 /// shrinking. Grows to at least min_capacity if it is non-zero.
 template<class T>
@@ -166,16 +165,17 @@ void grow(Array<T>& a, u32 const min_capacity = 0) {
 
 /// Shrink capacity to fit current size.
 template<class T>
-void shrink_to_fit(Array<T>& a) {
+inline void shrink_to_fit(Array<T>& a) {
 	if (a._capacity != a._size) {
 		set_capacity(a._size);
 	}
 }
 
 /// Change size.
+///
 /// Upsize grows by using new_size as the minimum capacity.
 template<class T>
-void resize(Array<T>& a, u32 const new_size) {
+inline void resize(Array<T>& a, u32 const new_size) {
 	if (new_size > a._capacity) {
 		grow(a, new_size);
 	}
@@ -184,7 +184,7 @@ void resize(Array<T>& a, u32 const new_size) {
 
 /// Reserve at least new_capacity.
 template<class T>
-void reserve(Array<T>& a, u32 const new_capacity) {
+inline void reserve(Array<T>& a, u32 const new_capacity) {
 	if (new_capacity > a._capacity) {
 		set_capacity(a, new_capacity);
 	}
@@ -192,13 +192,13 @@ void reserve(Array<T>& a, u32 const new_capacity) {
 
 /// Remove all items.
 template<class T>
-void clear(Array<T>& a) {
+inline void clear(Array<T>& a) {
 	resize(a, 0);
 }
 
 /// Add an item to the end. The array will grow if needed.
 template<class T>
-void push_back(Array<T>& a, T const& item) {
+inline void push_back(Array<T>& a, T const& item) {
 	if (a._size + 1 > a._capacity) {
 		grow(a);
 	}
@@ -207,7 +207,7 @@ void push_back(Array<T>& a, T const& item) {
 
 /// Remove the last item.
 template<class T>
-void pop_back(Array<T>& a) {
+inline void pop_back(Array<T>& a) {
 	TOGO_DEBUG_ASSERTE(a._size != 0);
 	--a._size;
 }
