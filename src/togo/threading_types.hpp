@@ -12,6 +12,12 @@
 
 #include <togo/config.hpp>
 
+#if defined(TOGO_PLATFORM_IS_POSIX)
+	#include <togo/impl/mutex/posix.hpp>
+#else
+	#error "missing mutex implementation for target platform"
+#endif
+
 namespace togo {
 
 /**
@@ -27,6 +33,56 @@ namespace togo {
 struct Thread;
 
 /** @} */ // end of doc-group thread
+
+/**
+	@addtogroup mutex
+	@{
+*/
+
+/// Mutex type.
+enum class MutexType : unsigned {
+	/// Normal mutex.
+	normal = 1,
+	/// Recursive mutex.
+	recursive,
+};
+
+/**
+	Mutex.
+*/
+struct Mutex {
+	MutexType _type;
+	MutexImpl _impl;
+
+	~Mutex() = default;
+	Mutex(Mutex&&) = default;
+	Mutex& operator=(Mutex&&) = default;
+
+	Mutex(Mutex const&) = delete;
+	Mutex& operator=(Mutex const&) = delete;
+
+	Mutex(MutexType const type = MutexType::normal);
+};
+
+/**
+	Mutex scoped lock.
+*/
+struct MutexLock {
+	Mutex& _mutex;
+
+	MutexLock(MutexLock&&) = default;
+	MutexLock& operator=(MutexLock&&) = default;
+
+	MutexLock() = delete;
+	MutexLock(MutexLock const&) = delete;
+	MutexLock& operator=(MutexLock const&) = delete;
+
+	~MutexLock();
+	MutexLock(Mutex& mutex);
+};
+
+/** @} */ // end of doc-group mutex
+
 /** @} */ // end of doc-group threading
 
 } // namespace togo
