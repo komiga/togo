@@ -26,7 +26,7 @@ namespace togo {
 /// This allocator will fallback to another allocator if its block
 /// does not have enough storage left to make an allocation. It is
 /// intended for small, short-lifetime allocations that need to be
-/// very fast.
+/// very fast. This allocator is not thread-safe.
 ///
 /// Deallocation is a no-op; each fallback block in this allocator is
 /// only freed when the object dies. Active objects will be ignored in

@@ -3,6 +3,7 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
+#include <togo/mutex.hpp>
 #include <togo/memory.hpp>
 #include <togo/assert.hpp>
 #include <togo/external/dlmalloc_import.hpp>
@@ -10,7 +11,6 @@
 #include <new>
 #include <cstdio>
 
-// TODO: Locking
 // TODO: ScratchAllocator: circular buffer temp allocator backed
 // by default_allocator
 
@@ -30,6 +30,7 @@ class HeapAllocator
 private:
 	mspace _mspace;
 	u32 _num_allocations;
+	Mutex _op_mutex;
 
 public:
 	HeapAllocator(HeapAllocator&&) = default;
@@ -47,6 +48,7 @@ public:
 	HeapAllocator(u32 const capacity)
 		: _mspace(nullptr)
 		, _num_allocations(0)
+		, _op_mutex(MutexType::normal)
 	{
 		_mspace = create_mspace(capacity, 0);
 		TOGO_ASSERT(_mspace, "failed to create mspace");
@@ -57,16 +59,20 @@ public:
 	}
 
 	u32 total_size() const override {
+		MutexLock op_mutex_lock{const_cast<Mutex&>(_op_mutex)};
 		return mspace_mallinfo(const_cast<void*>(_mspace)).uordblks;
 	}
 
 	u32 allocation_size(void const* const p) const override {
+		MutexLock op_mutex_lock{const_cast<Mutex&>(_op_mutex)};
 		size_t const size = mspace_usable_size(p);
 		TOGO_DEBUG_ASSERT(size != 0, "attempted to access size for non-allocator pointer");
 		return static_cast<u32>(size);
 	}
 
 	void* allocate(u32 const size, u32 const align) override {
+		MutexLock op_mutex_lock{_op_mutex};
+
 		void* p = nullptr;
 		if (align != 0) {
 			p = mspace_memalign(_mspace, align, size);
@@ -104,6 +110,7 @@ public:
 
 	void deallocate(void* p) override {
 		if (p) {
+			MutexLock op_mutex_lock{_op_mutex};
 			mspace_free(_mspace, p);
 			--_num_allocations;
 		}

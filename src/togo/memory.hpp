@@ -130,10 +130,13 @@ void init(u32 const scratch_size = SCRATCH_SIZE_MINIMUM);
 void shutdown();
 
 /// Get the default allocator.
-/// This is a growing heap allocator.
+///
+/// This is a thread-safe growing heap allocator.
 Allocator& default_allocator();
 
 /// Get the scratch allocator.
+///
+/// This is a thread-safe allocator.
 /// This should *only* be used for temporary memory. It uses a ring
 /// buffer for allocations, backed by a block of memory from the
 /// default allocator.

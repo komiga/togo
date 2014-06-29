@@ -9,6 +9,7 @@ function make_test(group, name, srcglob, configs)
 		nil, configs
 	)
 	precore.apply("togo-strict")
+	precore.apply("threading-support")
 
 	if nil == srcglob then
 		srcglob = name .. ".cpp"

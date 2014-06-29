@@ -25,7 +25,9 @@ namespace togo {
 /// Temporary stack-buffered, allocator-backed allocator.
 ///
 /// This allocator is backed by a JumpBlockAllocator with an internal
-/// char[S] buffer as the base block.
+/// char[S] buffer as the base block. This allocator is not
+/// thread-safe.
+///
 /// S is the number of bytes to store in the allocator directly.
 /// S must be a power of 2 at least twice the size of a pointer.
 template<u32 S>
