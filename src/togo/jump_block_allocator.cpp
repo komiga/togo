@@ -4,7 +4,7 @@
 */
 
 #include <togo/utility.hpp>
-#include <togo/assert.hpp>
+#include <togo/log.hpp>
 #include <togo/jump_block_allocator.hpp>
 
 namespace togo {
@@ -20,7 +20,7 @@ namespace {
 JumpBlockAllocator::~JumpBlockAllocator() {
 	void* p = BLOCK_NEXT_PTR(_base_block);
 	while (p) {
-		TOGO_DEBUG_MSGF("JumpBlockAllocator: destroying block: %p\n", p);
+		TOGO_LOG_DEBUGF("JumpBlockAllocator: destroying block: %p\n", p);
 		void* const next = BLOCK_NEXT_PTR(p);
 		_fallback_allocator.deallocate(p);
 		p = next;
@@ -49,7 +49,7 @@ void* JumpBlockAllocator::allocate(u32 const size, u32 const align) {
 			BLOCK_SIZE_MIN
 		);
 		_put = static_cast<char*>(_fallback_allocator.allocate(block_size));
-		TOGO_DEBUG_MSGF("JumpBlockAllocator: new block: %u @ %p\n", block_size, _put);
+		TOGO_LOG_DEBUGF("JumpBlockAllocator: new block: %u @ %p\n", block_size, _put);
 		BLOCK_NEXT_PTR(_block_begin) = _put;
 		_block_begin = _put;
 		BLOCK_NEXT_PTR(_block_begin) = nullptr;
