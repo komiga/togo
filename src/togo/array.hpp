@@ -65,6 +65,10 @@ inline u32 size(Array<T> const& a) { return a._size; }
 template<class T>
 inline u32 capacity(Array<T> const& a) { return a._capacity; }
 
+/// Number of items that can be added before a resize occurs.
+template<class T>
+inline u32 space(Array<T> const& a) { return a._capacity - a._size; }
+
 /// Returns true if there are any items in the array.
 template<class T>
 inline bool any(Array<T> const& a) { return a._size != 0; }
@@ -98,26 +102,26 @@ inline T const* end(Array<T> const& a) {
 /// Access first item.
 template<class T>
 inline T& front(Array<T>& a) {
-	TOGO_DEBUG_ASSERTE(a._size > 0);
+	TOGO_DEBUG_ASSERTE(any(a));
 	return a._data[0];
 }
 /// Access first item.
 template<class T>
 inline T const& front(Array<T> const& a) {
-	TOGO_DEBUG_ASSERTE(a._size > 0);
+	TOGO_DEBUG_ASSERTE(any(a));
 	return a._data[0];
 }
 
 /// Access last item.
 template<class T>
 inline T& back(Array<T>& a) {
-	TOGO_DEBUG_ASSERTE(a._size > 0);
+	TOGO_DEBUG_ASSERTE(any(a));
 	return a._data[a._size - 1];
 }
 /// Access last item.
 template<class T>
 inline T const& back(Array<T> const& a) {
-	TOGO_DEBUG_ASSERTE(a._size > 0);
+	TOGO_DEBUG_ASSERTE(any(a));
 	return a._data[a._size - 1];
 }
 
@@ -199,7 +203,7 @@ inline void clear(Array<T>& a) {
 /// Add an item to the end. The array will grow if needed.
 template<class T>
 inline void push_back(Array<T>& a, T const& item) {
-	if (a._size + 1 > a._capacity) {
+	if (!space(a)) {
 		grow(a);
 	}
 	a._data[a._size++] = item;
