@@ -22,6 +22,30 @@ namespace togo {
 	@{
 */
 
+/** @name Misc utilities */ /// @{
+
+/// Swap the values of two references.
+template<class T>
+inline void swap(T& x, T& y) {
+	T temp = x;
+	x = y;
+	y = temp;
+}
+
+/// Less-than comparison operator wrapper.
+template<class T>
+inline bool less(T const& x, T const& y) {
+	return x < y;
+}
+
+/// Greater-than comparison operator wrapper.
+template<class T>
+inline bool greater(T const& x, T const& y) {
+	return x > y;
+}
+
+/// @}
+
 /** @name Type utilities */ /// @{
 
 /// Cast unsigned integral to signed integral.
