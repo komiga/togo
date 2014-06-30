@@ -1,0 +1,13 @@
+
+/**
+
+@addtogroup collections
+@defgroup priority_queue PriorityQueue
+@details
+
+This implementation is a max-priority queue taking a less-than
+comparison function. The order can be arbitrarily changed by the
+supplying an inverted comparison function so that the collection
+becomes a min-priority queue.
+
+*/

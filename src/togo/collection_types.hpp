@@ -88,6 +88,43 @@ struct Queue {
 
 /** @} */ // end of doc-group queue
 
+/**
+	@addtogroup priority_queue
+	@{
+*/
+
+/**
+	Priority queue of POD objects.
+*/
+template<class T>
+struct PriorityQueue {
+	TOGO_CONSTRAIN_IS_POD(T)
+
+	using less_func_type
+	= bool (&)(T const&, T const&);
+
+	Array<T> _data;
+	less_func_type _less_func;
+
+	~PriorityQueue() = default;
+	PriorityQueue(PriorityQueue<T>&&) = default;
+	PriorityQueue& operator=(PriorityQueue<T>&&) = default;
+
+	PriorityQueue() = delete;
+	PriorityQueue(PriorityQueue<T> const&) = delete;
+	PriorityQueue& operator=(PriorityQueue<T> const&) = delete;
+
+	PriorityQueue(
+		PriorityQueue<T>::less_func_type less_func,
+		Allocator& allocator
+	);
+
+	T& operator[](u32 const i);
+	T const& operator[](u32 const i) const;
+};
+
+/** @} */ // end of doc-group priority_queue
+
 /** @} */ // end of doc-group collections
 
 } // namespace togo
