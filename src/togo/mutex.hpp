@@ -72,8 +72,8 @@ inline MutexLock::~MutexLock() {
 /// Construct lock.
 ///
 /// This will immediately lock the mutex.
-inline MutexLock::MutexLock(Mutex& mutex)
-	: _mutex(mutex)
+inline MutexLock::MutexLock(Mutex& m)
+	: _mutex(m)
 {
 	mutex::lock(_mutex);
 }

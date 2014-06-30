@@ -65,7 +65,7 @@ struct Mutex {
 };
 
 /**
-	Mutex scoped lock.
+	Automatic mutex lock.
 */
 struct MutexLock {
 	Mutex& _mutex;
@@ -78,7 +78,7 @@ struct MutexLock {
 	MutexLock& operator=(MutexLock const&) = delete;
 
 	~MutexLock();
-	MutexLock(Mutex& mutex);
+	MutexLock(Mutex& m);
 };
 
 /** @} */ // end of doc-group mutex

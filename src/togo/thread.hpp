@@ -56,9 +56,10 @@ char const* name(Thread* t);
 
 /// Join a thread.
 ///
-/// The thread object will be invalid after this call.
-/// The return value is the return value of the function passed to
-/// thread::create().
+/// The thread object will be invalid after this call. The return
+/// value is the return value of the function passed to
+/// thread::create(). This blocks until the thread completes its
+/// execution.
 void* join(Thread* t);
 
 /** @} */ // end of doc-group thread
