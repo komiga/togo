@@ -73,7 +73,7 @@ void grow(Queue<T>& q, u32 const min_capacity = 0) {
 	if (new_capacity < min_capacity) {
 		new_capacity = min_capacity;
 	}
-	queue::set_capacity(q, new_capacity);
+	set_capacity(q, new_capacity);
 }
 
 } // anonymous namespace
@@ -117,11 +117,13 @@ inline T const& front(Queue<T> const& q) {
 /// Access last item.
 template<class T>
 inline T& back(Queue<T>& q) {
+	TOGO_DEBUG_ASSERTE(any(q));
 	return q[q._size - 1];
 }
 /// Access last item.
 template<class T>
 inline T const& back(Queue<T> const& q) {
+	TOGO_DEBUG_ASSERTE(any(q));
 	return q[q._size - 1];
 }
 
@@ -131,7 +133,7 @@ inline T const& back(Queue<T> const& q) {
 /// has no effect. Assume any references are invalid after call.
 template<class T>
 inline void reserve(Queue<T>& q, u32 const new_capacity) {
-	queue::set_capacity(q, new_capacity);
+	set_capacity(q, new_capacity);
 }
 
 /// Remove all items.
@@ -144,8 +146,8 @@ inline void clear(Queue<T>& q) {
 /// Push an item to the back of the queue.
 template<class T>
 inline void push_back(Queue<T>& q, T const& item) {
-	if (!queue::space(q)) {
-		queue::grow(q);
+	if (!space(q)) {
+		grow(q);
 	}
 	q[q._size++] = item;
 }
@@ -164,8 +166,8 @@ inline void pop_back(Queue<T>& q) {
 /// Push an item to the front of the queue.
 template<class T>
 inline void push_front(Queue<T>& q, T const& item) {
-	if (!queue::space(q)) {
-		queue::grow(q);
+	if (!space(q)) {
+		grow(q);
 	}
 	q._head = (q._head - 1 + array::size(q._data)) % array::size(q._data);
 	++q._size;
