@@ -3,6 +3,7 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
+#include <togo/config.hpp>
 #include <togo/utility.hpp>
 #include <togo/log.hpp>
 #include <togo/jump_block_allocator.hpp>

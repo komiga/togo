@@ -6,7 +6,6 @@
 #include <togo/config.hpp>
 #include <togo/types.hpp>
 #include <togo/threading_types.hpp>
-#include <togo/memory_types.hpp>
 #include <togo/assert.hpp>
 #include <togo/mutex.hpp>
 

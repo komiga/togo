@@ -28,7 +28,7 @@
 	#define TOGO_CONSTRAIN_INTEGRAL(T)								\
 		static_assert(												\
 			std::is_integral<T>::value,								\
-			"T is not arithmetic"									\
+			"T is not integral"										\
 		)
 
 	#define TOGO_CONSTRAIN_ARITHMETIC(T)							\

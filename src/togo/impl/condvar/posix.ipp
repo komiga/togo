@@ -6,9 +6,7 @@
 #include <togo/config.hpp>
 #include <togo/types.hpp>
 #include <togo/threading_types.hpp>
-#include <togo/memory_types.hpp>
 #include <togo/assert.hpp>
-#include <togo/mutex.hpp>
 #include <togo/condvar.hpp>
 
 #include <cerrno>
@@ -27,7 +25,7 @@ PosixCondVarImpl::~PosixCondVarImpl() {
 	}
 }
 
-// mutex interface implementation
+// condvar interface implementation
 
 void condvar::signal(CondVar& cv, MutexLock& /*l*/) {
 	signed err = 0;

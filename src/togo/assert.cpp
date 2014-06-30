@@ -3,6 +3,7 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
+#include <togo/config.hpp>
 #include <togo/assert.hpp>
 
 #include <cstdarg>

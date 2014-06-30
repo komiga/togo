@@ -3,6 +3,7 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
+#include <togo/config.hpp>
 #include <togo/mutex.hpp>
 #include <togo/memory.hpp>
 #include <togo/assert.hpp>
