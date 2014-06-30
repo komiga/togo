@@ -4,4 +4,6 @@
 @defgroup collections Collections
 @details
 
+@warning None of these types are thread-safe.
+
 */
