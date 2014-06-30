@@ -3,6 +3,8 @@ Makefile
 *.make
 out/
 
+data/
+
 general/headers
 
 collections/array
@@ -19,3 +21,5 @@ threading/mutex
 threading/condvar
 
 system/system
+
+stream/file_stream
