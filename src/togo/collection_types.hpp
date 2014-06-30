@@ -33,7 +33,7 @@ namespace togo {
 */
 template<class T>
 struct Array {
-	TOGO_CONSTRAIN_IS_POD(T)
+	TOGO_CONSTRAIN_IS_POD(T);
 
 	u32 _size;
 	u32 _capacity;
@@ -66,7 +66,7 @@ struct Array {
 */
 template<class T>
 struct Queue {
-	TOGO_CONSTRAIN_IS_POD(T)
+	TOGO_CONSTRAIN_IS_POD(T);
 
 	Array<T> _data;
 	u32 _head;
@@ -98,7 +98,7 @@ struct Queue {
 */
 template<class T>
 struct PriorityQueue {
-	TOGO_CONSTRAIN_IS_POD(T)
+	TOGO_CONSTRAIN_IS_POD(T);
 
 	using less_func_type
 	= bool (&)(T const&, T const&);

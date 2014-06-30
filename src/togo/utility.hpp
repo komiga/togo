@@ -70,8 +70,8 @@ unsigned_cast(T const value) noexcept {
 template<class T>
 inline T
 min(T const x, T const y) noexcept {
-	TOGO_CONSTRAIN_INTEGRAL(T)
-	TOGO_CONSTRAIN_ARITHMETIC(T)
+	TOGO_CONSTRAIN_INTEGRAL(T);
+	TOGO_CONSTRAIN_ARITHMETIC(T);
 	return x < y ? x : y;
 }
 
@@ -79,8 +79,8 @@ min(T const x, T const y) noexcept {
 template<class T>
 inline T
 max(T const x, T const y) noexcept {
-	TOGO_CONSTRAIN_INTEGRAL(T)
-	TOGO_CONSTRAIN_ARITHMETIC(T)
+	TOGO_CONSTRAIN_INTEGRAL(T);
+	TOGO_CONSTRAIN_ARITHMETIC(T);
 	return x > y ? x : y;
 }
 
