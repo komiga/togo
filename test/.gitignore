@@ -16,5 +16,6 @@ hash/literal
 
 threading/thread
 threading/mutex
+threading/condvar
 
 system/system

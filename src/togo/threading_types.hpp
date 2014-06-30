@@ -18,6 +18,12 @@
 	#error "missing mutex implementation for target platform"
 #endif
 
+#if defined(TOGO_PLATFORM_IS_POSIX)
+	#include <togo/impl/condvar/posix.hpp>
+#else
+	#error "missing condvar implementation for target platform"
+#endif
+
 namespace togo {
 
 /**
@@ -82,6 +88,29 @@ struct MutexLock {
 };
 
 /** @} */ // end of doc-group mutex
+
+/**
+	@addtogroup condvar
+	@{
+*/
+
+/**
+	Condition variable.
+*/
+struct CondVar {
+	CondVarImpl _impl;
+
+	~CondVar() = default;
+	CondVar(CondVar&&) = default;
+	CondVar& operator=(CondVar&&) = default;
+
+	CondVar(CondVar const&) = delete;
+	CondVar& operator=(CondVar const&) = delete;
+
+	CondVar();
+};
+
+/** @} */ // end of doc-group condvar
 
 /** @} */ // end of doc-group threading
 
