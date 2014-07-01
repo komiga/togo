@@ -62,6 +62,13 @@ unsigned_cast(T const value) noexcept {
 	return static_cast<typename std::make_unsigned<T>::type>(value);
 }
 
+/// Get number of elements in bounded array.
+template<class T, unsigned N>
+inline constexpr unsigned
+array_extent(T (&)[N]) noexcept {
+	return N;
+}
+
 /// @}
 
 /** @name Arithmetic utilities */ /// @{
