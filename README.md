@@ -29,6 +29,11 @@ intelligent and flexible manner than coupled systems could.
 
 togo is in infancy and is not expecting to be The One True Engine.
 
+## Platforms
+
+togo is developed under Linux and currently only supports Linux. Its primary
+implementations are POSIX and the C standard library.
+
 ## Dependencies
 
 togo uses:
@@ -41,8 +46,9 @@ See `dep/README.md` for dependency setup.
 
 togo is a compiled static library (by default).
 
-All features support Clang 3.5+ with libc++ (SVN head). GCC might possibly
-work, but is untested.
+All features support Clang 3.5+ with libc++ (roughly at SVN head) on
+Ubuntu 14.04 x86_64. GCC and libstdc++ might possibly work, but they
+are untested.
 
 Once dependencies are setup (see `dep/README.md`), the library and tests can be
 compiled using plash's standard project protocol: http://komiga.com/pp-cpp
