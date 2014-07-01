@@ -1,11 +1,11 @@
-#line 2 "togo/stream_types.hpp"
+#line 2 "togo/io_types.hpp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file stream_types.hpp
-@brief Stream types.
+@file io_types.hpp
+@brief IO types.
 @ingroup types
-@ingroup stream
+@ingroup io
 */
 
 #pragma once
@@ -15,7 +15,7 @@
 namespace togo {
 
 /**
-	@addtogroup stream
+	@addtogroup io
 	@{
 */
 
@@ -23,6 +23,6 @@ namespace togo {
 class IReader;
 class IWriter;
 
-/** @} */ // end of doc-group stream
+/** @} */ // end of doc-group io
 
 } // namespace togo

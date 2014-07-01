@@ -60,6 +60,6 @@ include("memory")
 include("hash")
 include("threading")
 include("system")
-include("stream")
+include("io")
 
 action_clean()

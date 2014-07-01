@@ -1,29 +1,29 @@
-#line 2 "togo/file_stream.hpp"
+#line 2 "togo/file_io.hpp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file file_stream.hpp
-@brief File stream classes.
-@ingroup stream
+@file file_io.hpp
+@brief File IO.
+@ingroup io
 */
 
 #pragma once
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/stream_types.hpp>
-#include <togo/stream_proto.hpp>
+#include <togo/io_types.hpp>
+#include <togo/io_proto.hpp>
 
 #if defined(TOGO_PLATFORM_IS_POSIX)
-	#include <togo/impl/file_stream/posix.hpp>
+	#include <togo/impl/file_io/posix.hpp>
 #else
-	#error "missing file_stream implementation for target platform"
+	#error "missing file_io implementation for target platform"
 #endif
 
 namespace togo {
 
 /**
-	@addtogroup stream
+	@addtogroup io
 	@{
 */
 
@@ -89,6 +89,6 @@ private:
 	void write(void const* data, u32 size) override;
 };
 
-/** @} */ // end of doc-group stream
+/** @} */ // end of doc-group io
 
 } // namespace togo

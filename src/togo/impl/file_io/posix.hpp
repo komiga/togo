@@ -1,4 +1,4 @@
-#line 2 "togo/impl/file_stream/posix.hpp"
+#line 2 "togo/impl/file_io/posix.hpp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */

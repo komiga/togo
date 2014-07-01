@@ -1,22 +1,22 @@
-#line 2 "togo/stream_proto.hpp"
+#line 2 "togo/io_proto.hpp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file stream_proto.hpp
-@brief Stream interface classes.
-@ingroup stream
+@file io_proto.hpp
+@brief IO interface classes.
+@ingroup io
 */
 
 #pragma once
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/stream_types.hpp>
+#include <togo/io_types.hpp>
 
 namespace togo {
 
 /**
-	@addtogroup stream
+	@addtogroup io
 	@{
 */
 
@@ -52,6 +52,6 @@ public:
 };
 inline IWriter::~IWriter() = default;
 
-/** @} */ // end of doc-group stream
+/** @} */ // end of doc-group io
 
 } // namespace togo

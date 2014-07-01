@@ -1,4 +1,4 @@
-#line 2 "togo/impl/file_stream/posix.ipp"
+#line 2 "togo/impl/file_io/posix.ipp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
@@ -7,7 +7,7 @@
 #include <togo/types.hpp>
 #include <togo/assert.hpp>
 #include <togo/log.hpp>
-#include <togo/file_stream.hpp>
+#include <togo/file_io.hpp>
 
 #include <cerrno>
 #include <cstdio>
