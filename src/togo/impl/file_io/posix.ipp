@@ -118,7 +118,7 @@ FileReader::~FileReader() {
 }
 
 bool FileReader::open(char const* const path) {
-	return file_open(_data, path, "r");
+	return file_open(_data, path, "rb");
 }
 
 void FileReader::close() {
@@ -162,7 +162,7 @@ FileWriter::~FileWriter() {
 }
 
 bool FileWriter::open(char const* const path, bool const append) {
-	return file_open(_data, path, append ? "a" : "w");
+	return file_open(_data, path, append ? "ab" : "wb");
 }
 
 void FileWriter::close() {
