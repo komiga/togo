@@ -12,6 +12,10 @@ Both read and write operations may set the fail flag on the stream's
 status, which indicates an internal failure. Every operation and query
 apart from io::status() may clear the status of the stream upon entry.
 
+If a read operation fails (through the EOF or fail flags), the state
+of the destination buffer may be indeterminate (specifically, with
+system-based streams).
+
 Streams that do not support seeking will set the fail flag and should
 return 0 for all position values.
 
