@@ -12,6 +12,7 @@
 #include <togo/config.hpp>
 #include <togo/types.hpp>
 #include <togo/io_types.hpp>
+#include <togo/utility.hpp>
 
 namespace togo {
 
@@ -32,7 +33,12 @@ public:
 	IReader& operator=(IReader&&) = default;
 
 	virtual ~IReader() = 0;
-	virtual void read(void* data, u32 size) = 0;
+
+	virtual IOStatus status() const = 0;
+	virtual u64 position() = 0;
+	virtual u64 seek_to(u64 position) = 0;
+	virtual u64 seek_relative(s64 offset) = 0;
+	virtual IOStatus read(void* data, unsigned size) = 0;
 };
 inline IReader::~IReader() = default;
 
@@ -48,7 +54,12 @@ public:
 	IWriter& operator=(IWriter&&) = default;
 
 	virtual ~IWriter() = 0;
-	virtual void write(void const* data, u32 size) = 0;
+
+	virtual IOStatus status() const = 0;
+	virtual u64 position() = 0;
+	virtual u64 seek_to(u64 position) = 0;
+	virtual u64 seek_relative(s64 offset) = 0;
+	virtual IOStatus write(void const* data, unsigned size) = 0;
 };
 inline IWriter::~IWriter() = default;
 

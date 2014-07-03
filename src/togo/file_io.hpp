@@ -54,7 +54,11 @@ public:
 
 // IReader implementation
 private:
-	void read(void* data, u32 size) override;
+	IOStatus status() const override;
+	u64 position() override;
+	u64 seek_to(u64 position) override;
+	u64 seek_relative(s64 offset) override;
+	IOStatus read(void* data, unsigned size) override;
 };
 
 /**
@@ -86,7 +90,11 @@ public:
 
 // IWriter implementation
 private:
-	void write(void const* data, u32 size) override;
+	IOStatus status() const override;
+	u64 position() override;
+	u64 seek_to(u64 position) override;
+	u64 seek_relative(s64 offset) override;
+	IOStatus write(void const* data, unsigned size) override;
 };
 
 /** @} */ // end of doc-group io

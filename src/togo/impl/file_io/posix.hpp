@@ -12,7 +12,8 @@
 namespace togo {
 
 struct PosixFileStreamData {
-	FILE* handle{nullptr};
+	std::FILE* handle{nullptr};
+	IOStatus status{IOStatus::flag_none};
 };
 
 using FileStreamData = PosixFileStreamData;

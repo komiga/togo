@@ -4,4 +4,18 @@
 @defgroup io IO
 @details
 
+If a read operation reaches the end of the stream without reading all
+of the requested size, the stream status will have the EOF flag,
+indicating only a failure to satisfy the request.
+
+Writers that grow may set the EOF flag if a write operation would
+extend past the size of the stream.
+
+Both read and write operations may set the fail flag on the stream's
+status, which indicates an internal failure. Every operation and query
+apart from io::status() may clear the status of the stream upon entry.
+
+Streams that do not support seeking will set the fail flag and should
+return 0 for all position values.
+
 */

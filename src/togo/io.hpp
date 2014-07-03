@@ -23,51 +23,82 @@ namespace io {
 	@{
 */
 
+/// Get stream IO status.
+inline IOStatus status(IReader const& stream) {
+	return stream.status();
+}
+
+/// Get stream IO status.
+inline IOStatus status(IWriter const& stream) {
+	return stream.status();
+}
+
+/// Get stream position.
+inline u64 position(IReader& stream) {
+	return stream.position();
+}
+
+/// Get stream position.
+inline u64 position(IWriter& stream) {
+	return stream.position();
+}
+
+/// Seek stream to absolute position.
+inline u64 seek_to(IReader& stream, u64 const pos) {
+	return stream.seek_to(pos);
+}
+
+/// Seek stream to absolute position.
+inline u64 seek_to(IWriter& stream, u64 const pos) {
+	return stream.seek_to(pos);
+}
+
+/// Seek stream by an offset relative to the current position.
+inline u64 seek_relative(IReader& stream, s64 const offset) {
+	return stream.seek_relative(offset);
+}
+
+/// Seek stream by an offset relative to the current position.
+inline u64 seek_relative(IWriter& stream, s64 const offset) {
+	return stream.seek_relative(offset);
+}
+
 /// Read bytes into a buffer.
-inline void read(IReader& stream, void* const buffer, u32 const size) {
-	stream.read(buffer, size);
+inline IOStatus read(IReader& stream, void* const buffer, unsigned const size) {
+	return stream.read(buffer, size);
 }
 
 /// Write bytes from a buffer.
-inline void write(IWriter& stream, void const* const buffer, u32 const size) {
-	stream.write(buffer, size);
+inline IOStatus write(IWriter& stream, void const* const buffer, unsigned const size) {
+	return stream.write(buffer, size);
 }
 
-/// Read an arithmetic value (by reference).
+/// Read an arithmetic value.
 template<class T>
-inline void read_value(IReader& stream, T& value) {
+inline IOStatus read_value(IReader& stream, T& value) {
 	TOGO_CONSTRAIN_ARITHMETIC(T);
-	io::read(stream, &value, sizeof(T));
-}
-
-/// Read an arithmetic value (by value).
-template<class T>
-inline T read_value(IReader& stream) {
-	TOGO_CONSTRAIN_ARITHMETIC(T);
-	T value{};
-	io::read(stream, &value, sizeof(T));
-	return value;
+	return io::read(stream, &value, sizeof(T));
 }
 
 /// Read an arithmetic array.
 template<class T>
-inline void read_array(IReader& stream, T* const data, u32 const count) {
+inline IOStatus read_array(IReader& stream, T* const data, unsigned const count) {
 	TOGO_CONSTRAIN_ARITHMETIC(T);
-	io::read(stream, data, count * sizeof(T));
+	return io::read(stream, data, count * sizeof(T));
 }
 
 /// Write an arithmetic value.
 template<class T>
-inline void write_value(IWriter& stream, T const& value) {
+inline IOStatus write_value(IWriter& stream, T const& value) {
 	TOGO_CONSTRAIN_ARITHMETIC(T);
-	io::write(stream, &value, sizeof(T));
+	return io::write(stream, &value, sizeof(T));
 }
 
 /// Write an arithmetic array.
 template<class T>
-inline void write_array(IWriter& stream, T const* const data, u32 const count) {
+inline IOStatus write_array(IWriter& stream, T const* const data, unsigned const count) {
 	TOGO_CONSTRAIN_ARITHMETIC(T);
-	io::write(stream, data, count * sizeof(T));
+	return io::write(stream, data, count * sizeof(T));
 }
 
 /** @} */ // end of doc-group io

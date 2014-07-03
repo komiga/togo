@@ -32,7 +32,8 @@ togo is in infancy and is not expecting to be The One True Engine.
 ## Platforms
 
 togo is developed under Linux and currently only supports Linux. Its primary
-implementations are POSIX and the C standard library.
+implementations utilize POSIX and the C standard library (by way of the C++
+standard library).
 
 ## Dependencies
 
