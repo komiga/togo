@@ -27,7 +27,7 @@ PosixCondVarImpl::~PosixCondVarImpl() {
 
 // condvar interface implementation
 
-void condvar::signal(CondVar& cv, MutexLock& /*l*/) {
+void condvar::signal(CondVar& cv, Mutex& /*m*/) {
 	signed err = 0;
 	POSIX_CHECK(pthread_cond_signal(&cv._impl.handle));
 	return;
@@ -36,9 +36,18 @@ posix_error:
 	TOGO_ASSERTF(false, "error signaling condvar: %d, %s", err, std::strerror(err));
 }
 
-void condvar::wait(CondVar& cv, MutexLock& l) {
+void condvar::signal_all(CondVar& cv, Mutex& /*m*/) {
 	signed err = 0;
-	POSIX_CHECK(pthread_cond_wait(&cv._impl.handle, &l._mutex._impl.handle));
+	POSIX_CHECK(pthread_cond_broadcast(&cv._impl.handle));
+	return;
+
+posix_error:
+	TOGO_ASSERTF(false, "error signaling condvar: %d, %s", err, std::strerror(err));
+}
+
+void condvar::wait(CondVar& cv, Mutex& m) {
+	signed err = 0;
+	POSIX_CHECK(pthread_cond_wait(&cv._impl.handle, &m._impl.handle));
 	return;
 
 posix_error:
