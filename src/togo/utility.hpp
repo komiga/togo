@@ -65,7 +65,14 @@ unsigned_cast(T const value) noexcept {
 /// Get number of elements in bounded array.
 template<class T, unsigned N>
 inline constexpr unsigned
-array_extent(T (&)[N]) noexcept {
+array_extent(T const (&)[N]) noexcept {
+	return N;
+}
+
+/// Get number of elements in bounded array.
+template<class T, class U, unsigned N>
+inline constexpr unsigned
+array_extent(T const (U::* const)[N]) noexcept {
 	return N;
 }
 
