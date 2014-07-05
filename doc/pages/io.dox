@@ -19,4 +19,6 @@ system-based streams).
 Streams that do not support seeking will set the fail flag and should
 return 0 for all position values.
 
+@warning Streams are not thread-safe.
+
 */
