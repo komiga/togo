@@ -1,0 +1,20 @@
+
+/**
+
+@addtogroup threading
+@defgroup task_manager TaskManager
+@details
+
+If TaskWork has a null func, its task is considered "empty" and no
+execution is done for it. Empty tasks can be used to collate sub-tasks
+and build task dependencies.
+
+If workers are available, they will execute either the next available
+task or the next task to be added. As a result, "priority" may not be
+fully honored if tasks aren't added in a descending priority order. To
+ensure the highest priority tasks are executed first, either setup a
+hierarchy with task_manager::add_hold() or add them in descending
+priority. Furthermore, lower-priority tasks may be executed before
+higher-priority tasks due to preemption.
+
+*/

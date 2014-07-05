@@ -11,6 +11,9 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/types.hpp>
+#include <togo/collection_types.hpp>
+#include <togo/memory_types.hpp>
 
 #if defined(TOGO_PLATFORM_IS_POSIX)
 	#include <togo/impl/mutex/posix.hpp>
@@ -112,6 +115,83 @@ struct CondVar {
 
 /** @} */ // end of doc-group condvar
 
+/**
+	@addtogroup task_manager
+	@{
+*/
+
+struct TaskID {
+	u32 _value;
+};
+
+struct TaskWork {
+	using func_type = void(*)(TaskID, void*);
+
+	void* data;
+	func_type func;
+};
+
+struct Task {
+	TaskID id;
+	TaskID parent;
+	TaskWork work;
+	u16 priority;
+	u16 num_incomplete;
+};
+
+union TaskSlot;
+
+struct TaskHole {
+	TaskID id;
+	TaskSlot* next;
+};
+
+union TaskSlot {
+	TaskID id;
+	Task task;
+	TaskHole hole;
+};
+
+/**
+	Task manager.
+*/
+struct TaskManager {
+	TaskSlot _tasks[128];
+	PriorityQueue<Task*> _queue;
+	Array<Thread*> _workers;
+	Mutex _mutex;
+	CondVar _work_signal;
+
+	TaskSlot* _first_hole;
+	unsigned _num_tasks;
+	unsigned _flags;
+	u32 _id_gen;
+
+	TaskManager(TaskManager&&) = default;
+	TaskManager& operator=(TaskManager&&) = default;
+
+	TaskManager(TaskManager const&) = delete;
+	TaskManager& operator=(TaskManager const&) = delete;
+
+	/// Destroy task manager.
+	///
+	/// All worker threads will be halted and any waiting threads will
+	/// return.
+	~TaskManager();
+
+	/// Construct task manager with worker threads and an allocator.
+	///
+	/// num_workers threads will be created to execute tasks. If
+	/// num_workers is 0, tasks can only be executed by a thread that
+	/// waits on them.
+	///
+	/// allocator will be used for all dynamic allocation within the
+	/// task manager, including worker threads. The task manager
+	/// incurs no extra allocations after the constructor.
+	TaskManager(unsigned worker_count, Allocator& allocator);
+};
+
+/** @} */ // end of doc-group task_manager
 /** @} */ // end of doc-group threading
 
 } // namespace togo

@@ -19,6 +19,7 @@ hash/literal
 threading/thread
 threading/mutex
 threading/condvar
+threading/task_manager
 
 system/system
 

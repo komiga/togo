@@ -95,6 +95,7 @@ function()
 	configuration {"togo-test"}
 		defines {
 			"TOGO_TEST_PRIORITY_QUEUE",
+			"TOGO_TEST_TASK_MANAGER",
 		}
 end})
 
