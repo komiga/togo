@@ -5,9 +5,13 @@
 @defgroup task_manager TaskManager
 @details
 
+TaskManager has a limit of 128 active tasks. An assertion will fail if
+any are added when there are no free slots.
+
 If TaskWork has a null func, its task is considered "empty" and no
 execution is done for it. Empty tasks can be used to collate sub-tasks
-and build task dependencies.
+and build task dependencies without incurring extra calls and
+synchronization tear down/setup.
 
 If workers are available, they will execute either the next available
 task or the next task to be added. As a result, "priority" may not be
