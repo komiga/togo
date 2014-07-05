@@ -72,7 +72,8 @@ main() {
 		// Reinsertion
 		count = 10;
 		while (count--) {
-			priority_queue::push(pq, static_cast<u32>(10 - count));
+			priority_queue::push(pq, count);
+			TOGO_ASSERTE(priority_queue::front(pq) == 9);
 		}
 		PQ_ASSERTIONS(pq, 10, 24, false);
 	}

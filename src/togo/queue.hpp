@@ -32,14 +32,14 @@ inline Queue<T>::Queue(Allocator& allocator)
 
 /// Access value by index.
 template<class T>
-inline T& Queue<T>::operator[](u32 const i) {
+inline T& Queue<T>::operator[](unsigned const i) {
 	TOGO_DEBUG_ASSERTE(i < _size);
 	return _data[(_head + i) % array::size(_data)];
 }
 
 /// Access value by index.
 template<class T>
-inline T const& Queue<T>::operator[](u32 const i) const {
+inline T const& Queue<T>::operator[](unsigned const i) const {
 	TOGO_DEBUG_ASSERTE(i < _size);
 	return _data[(_head + i) % array::size(_data)];
 }

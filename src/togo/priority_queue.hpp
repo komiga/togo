@@ -21,7 +21,7 @@ namespace togo {
 /// Construct with allocator for storage.
 ///
 /// PriorityQueue is empty and has null storage until it grows (either
-/// explicitly through grow() or set_capacity() or by insertion).
+/// explicitly through reserve() or by insertion).
 template<class T>
 inline PriorityQueue<T>::PriorityQueue(
 	PriorityQueue<T>::less_func_type less_func,
@@ -33,13 +33,13 @@ inline PriorityQueue<T>::PriorityQueue(
 
 /// Access value by index.
 template<class T>
-inline T& PriorityQueue<T>::operator[](u32 const i) {
+inline T& PriorityQueue<T>::operator[](unsigned const i) {
 	return _data[i];
 }
 
 /// Access value by index.
 template<class T>
-inline T const& PriorityQueue<T>::operator[](u32 const i) const {
+inline T const& PriorityQueue<T>::operator[](unsigned const i) const {
 	return _data[i];
 }
 
@@ -143,12 +143,12 @@ namespace {
 // niceness (notice the i - 1 in item access)
 
 template<class T>
-inline bool less(PriorityQueue<T> const& pq, u32 const ix, u32 const iy) {
+inline bool less(PriorityQueue<T> const& pq, unsigned const ix, unsigned const iy) {
 	return pq._less_func(pq[ix - 1], pq[iy - 1]);
 }
 
 template<class T>
-inline bool swap_if_less(PriorityQueue<T>& pq, u32 const ix, u32 const iy) {
+inline bool swap_if_less(PriorityQueue<T>& pq, unsigned const ix, unsigned const iy) {
 	T& x = pq[ix - 1];
 	T& y = pq[iy - 1];
 	if (pq._less_func(x, y)) {
@@ -159,9 +159,9 @@ inline bool swap_if_less(PriorityQueue<T>& pq, u32 const ix, u32 const iy) {
 }
 
 template<class T>
-inline void sink(PriorityQueue<T>& pq, u32 i) {
-	u32 child;
-	while ((child = i * 2) <= size(pq)) {
+inline void sink(PriorityQueue<T>& pq, unsigned i) {
+	unsigned child = i;
+	while ((child <<= 1) <= size(pq)) {
 		// Swap only with the largest child
 		if (child < size(pq) && less(pq, child, child + 1)) {
 			++child;
@@ -174,11 +174,11 @@ inline void sink(PriorityQueue<T>& pq, u32 i) {
 }
 
 template<class T>
-inline void swim(PriorityQueue<T>& pq, u32 i) {
-	u32 parent = i / 2;
+inline void swim(PriorityQueue<T>& pq, unsigned i) {
+	unsigned parent = i >> 1;
 	while (i > 1 && swap_if_less(pq, parent, i)) {
 		i = parent;
-		parent /= 2;
+		parent >>= 1;
 	}
 }
 

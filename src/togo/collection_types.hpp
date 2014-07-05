@@ -50,8 +50,8 @@ struct Array {
 	~Array();
 	Array(Allocator& allocator);
 
-	T& operator[](u32 const i);
-	T const& operator[](u32 const i) const;
+	T& operator[](unsigned const i);
+	T const& operator[](unsigned const i) const;
 };
 
 /** @} */ // end of doc-group array
@@ -82,8 +82,8 @@ struct Queue {
 
 	Queue(Allocator& allocator);
 
-	T& operator[](u32 const i);
-	T const& operator[](u32 const i) const;
+	T& operator[](unsigned const i);
+	T const& operator[](unsigned const i) const;
 };
 
 /** @} */ // end of doc-group queue
@@ -119,8 +119,8 @@ struct PriorityQueue {
 		Allocator& allocator
 	);
 
-	T& operator[](u32 const i);
-	T const& operator[](u32 const i) const;
+	T& operator[](unsigned const i);
+	T const& operator[](unsigned const i) const;
 };
 
 /** @} */ // end of doc-group priority_queue

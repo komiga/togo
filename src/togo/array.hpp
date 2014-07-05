@@ -38,14 +38,14 @@ inline Array<T>::Array(Allocator& allocator)
 
 /// Access value by index.
 template<class T>
-inline T& Array<T>::operator[](u32 const i) {
+inline T& Array<T>::operator[](unsigned const i) {
 	TOGO_DEBUG_ASSERTE(i < _size);
 	return _data[i];
 }
 
 /// Access value by index.
 template<class T>
-inline T const& Array<T>::operator[](u32 const i) const {
+inline T const& Array<T>::operator[](unsigned const i) const {
 	TOGO_DEBUG_ASSERTE(i < _size);
 	return _data[i];
 }
