@@ -1,10 +1,10 @@
 
+#include <togo/assert.hpp>
+#include <togo/log.hpp>
 #include <togo/memory.hpp>
 #include <togo/queue.hpp>
 
 #include "../common/helpers.hpp"
-
-#include <cstdio>
 
 using namespace togo;
 
@@ -20,8 +20,8 @@ signed
 main() {
 	core_init();
 
-	std::printf("sizeof(Queue<u32>) = %zu\n", sizeof(Queue<u32>));
-	std::printf("alignof(Queue<u32>) = %zu\n", alignof(Queue<u32>));
+	TOGO_LOGF("sizeof(Queue<u32>) = %zu\n", sizeof(Queue<u32>));
+	TOGO_LOGF("alignof(Queue<u32>) = %zu\n", alignof(Queue<u32>));
 
 	{
 		// Invariants
@@ -42,28 +42,28 @@ main() {
 		QUEUE_ASSERTIONS(q, 10, 24, false);
 
 		// Access
-		std::printf("direct iteration order: ");
+		TOGO_LOG("direct iteration order: ");
 		for (u32 i = 0; i < queue::size(q); ++i) {
 			TOGO_ASSERTE(q[i] == i + 1);
-			std::printf("%d ", q[i]);
+			TOGO_LOGF("%d ", q[i]);
 		}
-		std::puts("");
+		TOGO_LOG("\n");
 
 		// Unbroken FIFO removal
-		std::printf("FIFO order (pop): ");
+		TOGO_LOG("FIFO order (pop): ");
 		count = 5;
 		while (count--) {
-			std::printf("%d ", queue::front(q));
+			TOGO_LOGF("%d ", queue::front(q));
 			queue::pop_front(q);
 		}
 		QUEUE_ASSERTIONS(q, 5, 24, false);
 
 		count = 5;
 		while (count--) {
-			std::printf("%d ", queue::front(q));
+			TOGO_LOGF("%d ", queue::front(q));
 			queue::pop_front(q);
 		}
-		std::puts("");
+		TOGO_LOG("\n");
 		QUEUE_ASSERTIONS(q, 0, 24, true);
 
 		// Reinsertion
@@ -74,20 +74,20 @@ main() {
 		QUEUE_ASSERTIONS(q, 10, 24, false);
 
 		// Unbroken removal
-		std::printf("LIFO order (pop): ");
+		TOGO_LOG("LIFO order (pop): ");
 		count = 5;
 		while (count--) {
-			std::printf("%d ", queue::back(q));
+			TOGO_LOGF("%d ", queue::back(q));
 			queue::pop_back(q);
 		}
 		QUEUE_ASSERTIONS(q, 5, 24, false);
 
 		count = 5;
 		while (count--) {
-			std::printf("%d ", queue::back(q));
+			TOGO_LOGF("%d ", queue::back(q));
 			queue::pop_back(q);
 		}
-		std::puts("");
+		TOGO_LOG("\n");
 		QUEUE_ASSERTIONS(q, 0, 24, true);
 	}
 

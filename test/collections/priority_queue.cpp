@@ -1,11 +1,11 @@
 
 #include <togo/utility.hpp>
+#include <togo/assert.hpp>
+#include <togo/log.hpp>
 #include <togo/memory.hpp>
 #include <togo/priority_queue.hpp>
 
 #include "../common/helpers.hpp"
-
-#include <cstdio>
 
 using namespace togo;
 
@@ -21,8 +21,8 @@ signed
 main() {
 	core_init();
 
-	std::printf("sizeof(PriorityQueue<u32>) = %zu\n", sizeof(PriorityQueue<u32>));
-	std::printf("alignof(PriorityQueue<u32>) = %zu\n", alignof(PriorityQueue<u32>));
+	TOGO_LOGF("sizeof(PriorityQueue<u32>) = %zu\n", sizeof(PriorityQueue<u32>));
+	TOGO_LOGF("alignof(PriorityQueue<u32>) = %zu\n", alignof(PriorityQueue<u32>));
 
 	auto const& less_func = less<u32>;
 	{
@@ -45,28 +45,28 @@ main() {
 		PQ_ASSERTIONS(pq, 10, 24, false);
 
 		// Access
-		std::printf("unordered iteration: ");
+		TOGO_LOG("unordered iteration: ");
 		for (u32 i = 0; i < priority_queue::size(pq); ++i) {
-			std::printf("%d ", pq[i]);
+			TOGO_LOGF("%d ", pq[i]);
 		}
-		std::puts("");
+		TOGO_LOG("\n");
 
 		// Unbroken removal
-		std::printf("max order (pop): ");
+		TOGO_LOG("max order (pop): ");
 		count = 10;
 		while (count > 5) {
 			TOGO_ASSERTE(priority_queue::front(pq) == count);
-			std::printf("%d ", priority_queue::front(pq));
+			TOGO_LOGF("%d ", priority_queue::front(pq));
 			priority_queue::pop(pq);
 			--count;
 		}
 		PQ_ASSERTIONS(pq, 5, 24, false);
 
 		while (count--) {
-			std::printf("%d ", priority_queue::front(pq));
+			TOGO_LOGF("%d ", priority_queue::front(pq));
 			priority_queue::pop(pq);
 		}
-		std::puts("");
+		TOGO_LOG("\n");
 		PQ_ASSERTIONS(pq, 0, 24, true);
 
 		// Reinsertion

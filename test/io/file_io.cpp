@@ -1,11 +1,8 @@
 
-#include <togo/config.hpp>
 #include <togo/utility.hpp>
 #include <togo/assert.hpp>
 #include <togo/io.hpp>
 #include <togo/file_io.hpp>
-
-#include <cstdio>
 
 using namespace togo;
 

@@ -1,10 +1,9 @@
 
+#include <togo/log.hpp>
 #include <togo/memory.hpp>
 #include <togo/temp_allocator.hpp>
 
 #include "../common/helpers.hpp"
-
-#include <cstdio>
 
 using namespace togo;
 
@@ -13,14 +12,14 @@ void f() {
 		TempAllocator<16> a;
 	}
 
-	std::puts("");
+	TOGO_LOG("\n");
 	{
 		TempAllocator<32> a;
 		void* p = a.allocate(24);
 		p = a.allocate(1);
 	}
 
-	std::puts("");
+	TOGO_LOG("\n");
 	{
 		TempAllocator<16> a;
 		a.allocate(8);

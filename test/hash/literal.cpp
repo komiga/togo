@@ -1,9 +1,7 @@
 
-#include <togo/config.hpp>
 #include <togo/assert.hpp>
+#include <togo/log.hpp>
 #include <togo/hash.hpp>
-
-#include <cstdio>
 
 using namespace togo;
 
@@ -25,14 +23,14 @@ signed
 main() {
 	TOGO_ASSERTE(hash::IDENTITY32 == h32_identity);
 	TOGO_ASSERTE(hash::calc32("test", 4) == h32_test);
-	std::printf(
+	TOGO_LOGF(
 		"32: identity = 0x%08x, \"test\" = 0x%08x\n",
 		h32_identity, h32_test
 	);
 
 	TOGO_ASSERTE(hash::IDENTITY64 == h64_identity);
 	TOGO_ASSERTE(hash::calc64("test", 4) == h64_test);
-	std::printf(
+	TOGO_LOGF(
 		"64: identity = 0x%016lx, \"test\" = 0x%016lx\n",
 		h64_identity, h64_test
 	);

@@ -1,13 +1,14 @@
 
 #include <togo/assert.hpp>
+#include <togo/log.hpp>
 #include <togo/thread.hpp>
 #include <togo/mutex.hpp>
 #include <togo/condvar.hpp>
 
 #include "../common/helpers.hpp"
 
-#include <cstdio>
 #include <cstring>
+#include <cstdio>
 
 using namespace togo;
 
@@ -26,7 +27,7 @@ void* drone_func(void*) {
 		while (signal_value == 0) {
 			condvar::wait(drone_cv, lock);
 		}
-		std::printf("%s: signaled with %u\n", thread::name(), signal_value);
+		TOGO_LOGF("%s: signaled with %u\n", thread::name(), signal_value);
 		signal_value = 0;
 		condvar::signal(queen_cv, lock);
 	}
@@ -40,7 +41,7 @@ void* queen_func(void*) {
 	char name[10];
 	unsigned index = 1;
 	for (auto& drone : drones) {
-		snprintf(name, sizeof(name), "drone-%u", index);
+		std::snprintf(name, sizeof(name), "drone-%u", index);
 		drone.thread = thread::create(name, nullptr, drone_func);
 		++index;
 	}
@@ -53,11 +54,11 @@ void* queen_func(void*) {
 			while (signal_value != 0) {
 				condvar::wait(queen_cv, lock);
 			}
-			std::printf("%s: received return signal\n", thread::name());
+			TOGO_LOGF("%s: received return signal\n", thread::name());
 		}
 	}
 	for (auto const& drone : drones) {
-		std::printf("joining %s\n", thread::name(drone.thread));
+		TOGO_LOGF("joining %s\n", thread::name(drone.thread));
 		thread::join(drone.thread);
 	}
 	return nullptr;

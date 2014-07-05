@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include <togo/config.hpp>
 #include <togo/memory.hpp>
 
 #if !defined(TOGO_TEST_SCRATCH_SIZE)

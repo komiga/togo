@@ -1,10 +1,10 @@
 
+#include <togo/assert.hpp>
+#include <togo/log.hpp>
 #include <togo/memory.hpp>
 #include <togo/array.hpp>
 
 #include "../common/helpers.hpp"
-
-#include <cstdio>
 
 using namespace togo;
 
@@ -19,8 +19,8 @@ signed
 main() {
 	core_init();
 
-	std::printf("sizeof(Array<u32>) = %zu\n", sizeof(Array<u32>));
-	std::printf("alignof(Array<u32>) = %zu\n", alignof(Array<u32>));
+	TOGO_LOGF("sizeof(Array<u32>) = %zu\n", sizeof(Array<u32>));
+	TOGO_LOGF("alignof(Array<u32>) = %zu\n", alignof(Array<u32>));
 
 	// Invariants
 	Array<u32> a{memory::default_allocator()};
@@ -43,10 +43,10 @@ main() {
 	count = 1;
 	for (auto const v : a) {
 		TOGO_ASSERTE(v == count);
-		std::printf("%d ", v);
+		TOGO_LOGF("%d ", v);
 		++count;
 	}
-	std::puts("");
+	TOGO_LOG("\n");
 
 	for (u32 i = 0; i < array::size(a); ++i) {
 		TOGO_ASSERTE(a[i] == i + 1);
