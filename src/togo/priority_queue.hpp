@@ -183,8 +183,19 @@ inline void swim(PriorityQueue<T>& pq, unsigned i) {
 }
 
 template<class T>
-inline void grow(PriorityQueue<T>& pq) {
-	array::grow(pq._data);
+inline bool is_valid(PriorityQueue<T> const& pq, unsigned const i = 1) {
+	if (i > size(pq)) {
+		return true;
+	}
+	unsigned const left = i << 1;
+	unsigned const right = left + 1;
+	if (left <= size(pq) && less(pq, i, left)) {
+		return false;
+	}
+	if (right <= size(pq) && less(pq, i, right)) {
+		return false;
+	}
+	return is_valid(pq, left) && is_valid(pq, right);
 }
 
 } // anonymous namespace
@@ -196,6 +207,9 @@ template<class T>
 inline void push(PriorityQueue<T>& pq, T const& item) {
 	array::push_back(pq._data, item);
 	swim(pq, size(pq));
+	#if defined(TOGO_TEST_PRIORITY_QUEUE)
+		TOGO_DEBUG_ASSERTE(is_valid(pq));
+	#endif
 }
 
 /// Remove the largest item.
@@ -207,6 +221,9 @@ inline void pop(PriorityQueue<T>& pq) {
 	}
 	array::pop_back(pq._data);
 	sink(pq, 1);
+	#if defined(TOGO_TEST_PRIORITY_QUEUE)
+		TOGO_DEBUG_ASSERTE(is_valid(pq));
+	#endif
 }
 
 /** @} */ // end of doc-group priority_queue

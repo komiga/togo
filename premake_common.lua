@@ -93,6 +93,9 @@ option = {
 }},
 function()
 	configuration {"togo-test"}
+		defines {
+			"TOGO_TEST_PRIORITY_QUEUE",
+		}
 end})
 
 precore.make_config(
