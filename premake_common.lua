@@ -77,9 +77,23 @@ project = function()
 	configuration {"debug"}
 		defines {
 			"TOGO_DEBUG",
-			"TOGO_USE_CONSTRAINTS"
+			"TOGO_USE_CONSTRAINTS",
 		}
 end}})
+
+precore.make_config(
+"opt-togo-test", {{
+option = {
+	data = {
+		trigger = "togo-test",
+		description = "whether to use the test config"
+	},
+	init_handler = function()
+	end
+}},
+function()
+	configuration {"togo-test"}
+end})
 
 precore.make_config(
 "togo-import", {
@@ -108,6 +122,7 @@ precore.init(
 	{
 		"opt-clang",
 		"c++11-core",
-		"precore-env-root"
+		"precore-env-root",
+		"opt-togo-test",
 	}
 )
