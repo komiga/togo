@@ -66,7 +66,7 @@ file_position(
 	PosixFileStreamData& data
 ) {
 	TOGO_DEBUG_ASSERT(data.handle, "cannot perform operation on a closed stream");
-	long const lpos = std::ftell(data.handle);
+	off_t const lpos = ftello(data.handle);
 	if (lpos < 0) {
 		TOGO_LOG_DEBUGF(
 			"failed to obtain stream position: %d, %s\n",
@@ -85,7 +85,7 @@ file_seek_to(
 	u64 const position
 ) {
 	TOGO_DEBUG_ASSERT(data.handle, "cannot perform operation on a closed stream");
-	if (std::fseek(data.handle, static_cast<long>(position), SEEK_SET)) {
+	if (fseeko(data.handle, static_cast<off_t>(position), SEEK_SET)) {
 		TOGO_LOG_DEBUGF(
 			"failed to seek to %lu: %d, %s\n",
 			position, errno, std::strerror(errno)
@@ -101,7 +101,7 @@ file_seek_relative(
 	s64 const offset
 ) {
 	TOGO_DEBUG_ASSERT(data.handle, "cannot perform operation on a closed stream");
-	if (std::fseek(data.handle, static_cast<long>(offset), SEEK_CUR)) {
+	if (fseeko(data.handle, static_cast<off_t>(offset), SEEK_CUR)) {
 		TOGO_LOG_DEBUGF(
 			"failed to seek by offset %ld: %d, %s\n",
 			offset, errno, std::strerror(errno)

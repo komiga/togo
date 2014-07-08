@@ -79,6 +79,12 @@ project = function()
 			"TOGO_DEBUG",
 			"TOGO_USE_CONSTRAINTS",
 		}
+
+	configuration {"linux"}
+		defines {
+			-- Use 64-bit off_t on POSIX.1-2001-compliant systems
+			"_FILE_OFFSET_BITS=64"
+		}
 end}})
 
 precore.make_config(
