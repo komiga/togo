@@ -36,6 +36,16 @@
 			std::is_arithmetic<T>::value,							\
 			"T is not arithmetic"									\
 		)
+
+	#define TOGO_CONSTRAIN_COMPARABLE(T)							\
+		static_assert(												\
+			std::is_pointer<T>::value ||							\
+			(														\
+				std::is_integral<T>::value &&						\
+				std::is_arithmetic<T>::value						\
+			),														\
+			"T is not a permitted built-in comparable type"			\
+		)
 #else
 	/// Statically assert that type T is of standard layout.
 	#define TOGO_CONSTRAIN_IS_POD(T)
@@ -48,4 +58,9 @@
 
 	/// Statically assert that type T is an arithmetic type.
 	#define TOGO_CONSTRAIN_ARITHMETIC(T)
+
+	/// Statically assert that type T is a built-in comparable type.
+	///
+	/// Comparable types are arithmetic integrals and pointers.
+	#define TOGO_CONSTRAIN_COMPARABLE(T)
 #endif
