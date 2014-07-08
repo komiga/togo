@@ -36,6 +36,21 @@ struct IOStatus {
 
 	unsigned _value;
 
+	/// Assign status and return self.
+	IOStatus& assign(bool const fail, bool const eof) {
+		_value
+			= fail ? flag_fail : flag_none
+			| eof  ? flag_eof  : flag_none
+		;
+		return *this;
+	}
+
+	/// Clear status and return self.
+	IOStatus& clear() {
+		_value = flag_none;
+		return *this;
+	}
+
 	/// No errors.
 	constexpr bool ok() const noexcept {
 		return !_value;
