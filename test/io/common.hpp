@@ -7,6 +7,8 @@
 #include <togo/io_proto.hpp>
 #include <togo/io.hpp>
 
+#include <cstring>
+
 using namespace togo;
 
 namespace {
@@ -47,6 +49,7 @@ enum : signed {
 
 void test_reader(IReader& stream, bool const seekable) {
 	TestStreamState s{};
+	std::memset(&s, 0, sizeof(TestStreamState));
 	TOGO_ASSERTE(io::read_value(stream, s.v8 ) && s.v8  ==  8);
 	TOGO_ASSERTE(io::read_value(stream, s.v16) && s.v16 == 16);
 	TOGO_ASSERTE(io::read_value(stream, s.v32) && s.v32 == 32);
