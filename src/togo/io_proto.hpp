@@ -22,9 +22,49 @@ namespace togo {
 */
 
 /**
+	Base stream interface.
+*/
+class IStreamBase {
+public:
+	IStreamBase() = default;
+	IStreamBase(IStreamBase const&) = default;
+	IStreamBase(IStreamBase&&) = default;
+	IStreamBase& operator=(IStreamBase const&) = default;
+	IStreamBase& operator=(IStreamBase&&) = default;
+
+	virtual ~IStreamBase() = 0;
+
+	virtual IOStatus status() const = 0;
+};
+inline IStreamBase::~IStreamBase() = default;
+
+/**
+	Seekable stream interface.
+*/
+class IStreamSeekable
+	: public virtual IStreamBase
+{
+public:
+	IStreamSeekable() = default;
+	IStreamSeekable(IStreamSeekable const&) = default;
+	IStreamSeekable(IStreamSeekable&&) = default;
+	IStreamSeekable& operator=(IStreamSeekable const&) = default;
+	IStreamSeekable& operator=(IStreamSeekable&&) = default;
+
+	virtual ~IStreamSeekable() = 0;
+
+	virtual u64 position() = 0;
+	virtual u64 seek_to(u64 position) = 0;
+	virtual u64 seek_relative(s64 offset) = 0;
+};
+inline IStreamSeekable::~IStreamSeekable() = default;
+
+/**
 	Stream reader interface.
 */
-class IReader {
+class IReader
+	: public virtual IStreamBase
+{
 public:
 	IReader() = default;
 	IReader(IReader const&) = default;
@@ -34,10 +74,6 @@ public:
 
 	virtual ~IReader() = 0;
 
-	virtual IOStatus status() const = 0;
-	virtual u64 position() = 0;
-	virtual u64 seek_to(u64 position) = 0;
-	virtual u64 seek_relative(s64 offset) = 0;
 	virtual IOStatus read(void* data, unsigned size) = 0;
 };
 inline IReader::~IReader() = default;
@@ -45,7 +81,9 @@ inline IReader::~IReader() = default;
 /**
 	Stream writer interface.
 */
-class IWriter {
+class IWriter
+	: public virtual IStreamBase
+{
 public:
 	IWriter() = default;
 	IWriter(IWriter const&) = default;
@@ -55,10 +93,6 @@ public:
 
 	virtual ~IWriter() = 0;
 
-	virtual IOStatus status() const = 0;
-	virtual u64 position() = 0;
-	virtual u64 seek_to(u64 position) = 0;
-	virtual u64 seek_relative(s64 offset) = 0;
 	virtual IOStatus write(void const* data, unsigned size) = 0;
 };
 inline IWriter::~IWriter() = default;

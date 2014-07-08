@@ -55,10 +55,7 @@ file_set_status(
 	TOGO_DEBUG_ASSERT(data.handle, "cannot perform operation on a closed stream");
 	bool const err = !!std::ferror(data.handle);
 	bool const eof = !!std::feof(data.handle);
-	data.status._value
-		= (err ? IOStatus::flag_fail : IOStatus::flag_none)
-		| (eof ? IOStatus::flag_eof  : IOStatus::flag_none)
-	;
+	data.status.assign(err, eof);
 }
 
 inline u64

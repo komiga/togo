@@ -16,9 +16,6 @@ If a read operation fails (through the EOF or fail flags), the state
 of the destination buffer may be indeterminate (specifically, with
 system-based streams).
 
-Streams that do not support seeking will set the fail flag and should
-return 0 for all position values.
-
 @warning Streams are not thread-safe.
 
 */

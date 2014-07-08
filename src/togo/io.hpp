@@ -24,42 +24,22 @@ namespace io {
 */
 
 /// Get stream IO status.
-inline IOStatus status(IReader const& stream) {
-	return stream.status();
-}
-
-/// Get stream IO status.
-inline IOStatus status(IWriter const& stream) {
+inline IOStatus status(IStreamBase const& stream) {
 	return stream.status();
 }
 
 /// Get stream position.
-inline u64 position(IReader& stream) {
-	return stream.position();
-}
-
-/// Get stream position.
-inline u64 position(IWriter& stream) {
+inline u64 position(IStreamSeekable& stream) {
 	return stream.position();
 }
 
 /// Seek stream to absolute position.
-inline u64 seek_to(IReader& stream, u64 const pos) {
-	return stream.seek_to(pos);
-}
-
-/// Seek stream to absolute position.
-inline u64 seek_to(IWriter& stream, u64 const pos) {
+inline u64 seek_to(IStreamSeekable& stream, u64 const pos) {
 	return stream.seek_to(pos);
 }
 
 /// Seek stream by an offset relative to the current position.
-inline u64 seek_relative(IReader& stream, s64 const offset) {
-	return stream.seek_relative(offset);
-}
-
-/// Seek stream by an offset relative to the current position.
-inline u64 seek_relative(IWriter& stream, s64 const offset) {
+inline u64 seek_relative(IStreamSeekable& stream, s64 const offset) {
 	return stream.seek_relative(offset);
 }
 

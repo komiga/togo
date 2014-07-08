@@ -31,7 +31,9 @@ namespace togo {
 	File reader.
 */
 class FileReader
-	: public IReader
+	: public virtual IStreamBase
+	, public IStreamSeekable
+	, public IReader
 {
 public:
 	FileStreamData _data;
@@ -52,12 +54,16 @@ public:
 	/// Close the stream.
 	void close();
 
-// IReader implementation
 private:
+// IStreamBase implementation
 	IOStatus status() const override;
+
+// IStreamSeekable implementation
 	u64 position() override;
 	u64 seek_to(u64 position) override;
 	u64 seek_relative(s64 offset) override;
+
+// IReader implementation
 	IOStatus read(void* data, unsigned size) override;
 };
 
@@ -65,7 +71,9 @@ private:
 	File writer.
 */
 class FileWriter
-	: public IWriter
+	: public virtual IStreamBase
+	, public IStreamSeekable
+	, public IWriter
 {
 public:
 	FileStreamData _data;
@@ -88,12 +96,16 @@ public:
 	/// Close the stream.
 	void close();
 
-// IWriter implementation
 private:
+// IStreamBase implementation
 	IOStatus status() const override;
+
+// IStreamSeekable implementation
 	u64 position() override;
 	u64 seek_to(u64 position) override;
 	u64 seek_relative(s64 offset) override;
+
+// IWriter implementation
 	IOStatus write(void const* data, unsigned size) override;
 };
 
