@@ -76,6 +76,13 @@ array_extent(T const (U::* const)[N]) noexcept {
 	return N;
 }
 
+/// Get sizeof type or 0 if the type is empty.
+template<class T>
+inline constexpr unsigned
+sizeof_empty() noexcept {
+	return std::is_empty<T>::value ? 0 : sizeof(T);
+}
+
 /// @}
 
 /** @name Arithmetic utilities */ /// @{
