@@ -5,6 +5,7 @@
 @file file_io.hpp
 @brief File IO.
 @ingroup io
+@ingroup file_io
 */
 
 #pragma once
@@ -24,6 +25,10 @@ namespace togo {
 
 /**
 	@addtogroup io
+	@{
+*/
+/**
+	@addtogroup file_io
 	@{
 */
 
@@ -109,6 +114,7 @@ private:
 	IOStatus write(void const* data, unsigned size) override;
 };
 
+/** @} */ // end of doc-group file_io
 /** @} */ // end of doc-group io
 
 } // namespace togo
