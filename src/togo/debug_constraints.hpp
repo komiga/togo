@@ -16,7 +16,7 @@
 	#define TOGO_CONSTRAIN_IS_POD(T)								\
 		static_assert(												\
 			std::is_standard_layout<T>::value,						\
-			"T is not POD"											\
+			"T is not a POD type"									\
 		)
 
 	#define TOGO_CONSTRAIN_SAME(T, U)								\
@@ -28,13 +28,20 @@
 	#define TOGO_CONSTRAIN_INTEGRAL(T)								\
 		static_assert(												\
 			std::is_integral<T>::value,								\
-			"T is not integral"										\
+			"T is not an integral type"								\
 		)
 
 	#define TOGO_CONSTRAIN_ARITHMETIC(T)							\
 		static_assert(												\
 			std::is_arithmetic<T>::value,							\
-			"T is not arithmetic"									\
+			"T is not an arithmetic type"							\
+		)
+
+	#define TOGO_CONSTRAIN_INTEGRAL_ARITHMETIC(T)					\
+		static_assert(												\
+			std::is_integral<T>::value &&							\
+			std::is_arithmetic<T>::value,							\
+			"T is not an integral arithmetic type"					\
 		)
 
 	#define TOGO_CONSTRAIN_COMPARABLE(T)							\
@@ -58,6 +65,9 @@
 
 	/// Statically assert that type T is an arithmetic type.
 	#define TOGO_CONSTRAIN_ARITHMETIC(T)
+
+	/// Statically assert that type T is an integral arithmetic type.
+	#define TOGO_CONSTRAIN_INTEGRAL_ARITHMETIC(T)
 
 	/// Statically assert that type T is a built-in comparable type.
 	///
