@@ -20,6 +20,8 @@ namespace togo {
 */
 
 // Forward declarations
+class IStreamBase;
+class IStreamSeekable;
 class IReader;
 class IWriter;
 
