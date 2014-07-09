@@ -27,6 +27,11 @@ MemoryStream::MemoryStream(
 
 }
 
+void MemoryStream::clear() {
+	array::clear(_buffer);
+	_position = 0;
+}
+
 IOStatus MemoryStream::status() const {
 	return _status;
 }

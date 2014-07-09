@@ -38,6 +38,8 @@ public:
 	u64 _position;
 
 	~MemoryStream() override;
+
+	/// Construct with allocator and initial capacity (in bytes).
 	MemoryStream(Allocator& allocator, u32 const init_capacity);
 
 	MemoryStream(MemoryStream const&) = delete;
@@ -45,10 +47,12 @@ public:
 	MemoryStream& operator=(MemoryStream const&) = delete;
 	MemoryStream& operator=(MemoryStream&&) = delete;
 
-	Array<u8>&
-	get_buffer() {
+	Array<u8>& get_buffer() noexcept {
 		return _buffer;
 	}
+
+	/// Clear buffer and stream position.
+	void clear();
 
 private:
 // IStreamBase implementation
