@@ -4,6 +4,7 @@
 
 @file queue.hpp
 @brief Queue interface.
+@ingroup collections
 @ingroup queue
 */
 

@@ -4,6 +4,7 @@
 
 @file priority_queue.hpp
 @brief PriorityQueue interface.
+@ingroup collections
 @ingroup priority_queue
 */
 

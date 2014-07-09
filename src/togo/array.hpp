@@ -4,6 +4,7 @@
 
 @file array.hpp
 @brief Array interface.
+@ingroup collections
 @ingroup array
 */
 
