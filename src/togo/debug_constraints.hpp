@@ -13,7 +13,7 @@
 #if defined(TOGO_USE_CONSTRAINTS)
 	#include <type_traits>
 
-	#define TOGO_CONSTRAIN_IS_POD(T)								\
+	#define TOGO_CONSTRAIN_POD(T)									\
 		static_assert(												\
 			std::is_standard_layout<T>::value,						\
 			"T is not a POD type"									\
@@ -61,7 +61,7 @@
 		)
 #else
 	/// Statically assert that type T is of standard layout.
-	#define TOGO_CONSTRAIN_IS_POD(T)
+	#define TOGO_CONSTRAIN_POD(T)
 
 	/// Statically assert that type T is the same as type U.
 	#define TOGO_CONSTRAIN_SAME(T, U)
