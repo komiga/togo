@@ -34,7 +34,10 @@ project = function()
 	-- since its error checking is better.
 	configuration {"clang"}
 		flags {
-			"FatalWarnings"
+			"FatalWarnings",
+		}
+		buildoptions {
+			"-Wno-extra-semi",
 		}
 
 	configuration {"linux"}
