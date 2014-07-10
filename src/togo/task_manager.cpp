@@ -17,13 +17,13 @@
 #include <cstring>
 #include <cstdio>
 
-namespace togo {
-
 #undef TOGO_TEST_LOG_ENABLE
 #if defined(TOGO_TEST_TASK_MANAGER)
 	#define TOGO_TEST_LOG_ENABLE 
 #endif
 #include <togo/log_test.hpp>
+
+namespace togo {
 
 namespace {
 
