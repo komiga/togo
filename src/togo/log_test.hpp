@@ -18,12 +18,7 @@ namespace log {
 	@{
 */
 
-#undef TOGO_TEST_LOG
-#undef TOGO_TEST_LOGF
-#undef TOGO_TEST_LOG_ERROR
-#undef TOGO_TEST_LOG_ERRORF
-#undef TOGO_TEST_LOG_DEBUG
-#undef TOGO_TEST_LOG_DEBUGF
+#include <togo/log_test_unconfigure.hpp>
 
 #if defined(TOGO_TEST_LOG_ENABLE)
 	#define TOGO_TEST_LOG(msg)				TOGO_LOG(msg)
