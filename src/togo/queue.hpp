@@ -16,6 +16,8 @@
 #include <togo/assert.hpp>
 #include <togo/array.hpp>
 
+#include <utility>
+
 #include <cstring>
 
 namespace togo {
@@ -30,6 +32,25 @@ inline Queue<T>::Queue(Allocator& allocator)
 	, _head(0)
 	, _size(0)
 {}
+
+template<class T>
+inline Queue<T>::Queue(Queue<T>&& other)
+	: _data(std::move(other._data))
+	, _head(other._head)
+	, _size(other._size)
+{
+	other._head = 0;
+	other._size = 0;
+}
+
+template<class T>
+inline Queue<T>& Queue<T>::operator=(Queue<T>&& other) {
+	_data = std::move(other._data);
+	_head = other._head;
+	_size = other._size;
+	other._head = 0;
+	other._size = 0;
+}
 
 /// Access value by index.
 template<class T>

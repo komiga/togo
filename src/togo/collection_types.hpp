@@ -40,15 +40,15 @@ struct Array {
 	T* _data;
 	Allocator* _allocator;
 
-	Array(Array<T>&&) = default;
-	Array& operator=(Array<T>&&) = default;
-
 	Array() = delete;
 	Array(Array<T> const&) = delete;
 	Array& operator=(Array<T> const&) = delete;
 
 	~Array();
 	Array(Allocator& allocator);
+
+	Array(Array<T>&&);
+	Array& operator=(Array<T>&&);
 
 	T& operator[](unsigned const i);
 	T const& operator[](unsigned const i) const;
@@ -73,14 +73,15 @@ struct Queue {
 	u32 _size;
 
 	~Queue() = default;
-	Queue(Queue<T>&&) = default;
-	Queue& operator=(Queue<T>&&) = default;
 
 	Queue() = delete;
 	Queue(Queue<T> const&) = delete;
 	Queue& operator=(Queue<T> const&) = delete;
 
 	Queue(Allocator& allocator);
+
+	Queue(Queue<T>&&);
+	Queue& operator=(Queue<T>&&);
 
 	T& operator[](unsigned const i);
 	T const& operator[](unsigned const i) const;

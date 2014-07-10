@@ -16,6 +16,8 @@
 #include <togo/memory.hpp>
 #include <togo/assert.hpp>
 
+#include <utility>
+
 #include <cstring>
 
 namespace togo {
@@ -36,6 +38,29 @@ inline Array<T>::Array(Allocator& allocator)
 	, _data(nullptr)
 	, _allocator(&allocator)
 {}
+
+template<class T>
+inline Array<T>::Array(Array<T>&& other)
+	: _size(other._size)
+	, _capacity(other._capacity)
+	, _data(other._data)
+	, _allocator(other._allocator)
+{
+	other._size = 0;
+	other._capacity = 0;
+	other._data = nullptr;
+}
+
+template<class T>
+inline Array<T>& Array<T>::operator=(Array<T>&& other) {
+	_size = other._size;
+	_capacity = other._capacity;
+	_data = other._data;
+	_allocator = other._allocator;
+	other._size = 0;
+	other._capacity = 0;
+	other._data = nullptr;
+}
 
 /// Access value by index.
 template<class T>
