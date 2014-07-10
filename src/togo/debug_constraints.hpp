@@ -44,6 +44,12 @@
 			"T is not an integral arithmetic type"					\
 		)
 
+	#define TOGO_CONSTRAIN_UNSIGNED(T)								\
+		static_assert(												\
+			std::is_unsigned<T>::value,								\
+			"T is not an unsigned arithmetic type"					\
+		)
+
 	#define TOGO_CONSTRAIN_COMPARABLE(T)							\
 		static_assert(												\
 			std::is_pointer<T>::value ||							\
@@ -68,6 +74,9 @@
 
 	/// Statically assert that type T is an integral arithmetic type.
 	#define TOGO_CONSTRAIN_INTEGRAL_ARITHMETIC(T)
+
+	/// Statically assert that type T is an unsigned arithmetic type.
+	#define TOGO_CONSTRAIN_UNSIGNED(T)
 
 	/// Statically assert that type T is a built-in comparable type.
 	///
