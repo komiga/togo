@@ -61,5 +61,6 @@ include("hash")
 include("threading")
 include("system")
 include("io")
+include("algorithm")
 
 action_clean()

@@ -105,6 +105,7 @@ function()
 		defines {
 			"TOGO_TEST_PRIORITY_QUEUE",
 			"TOGO_TEST_TASK_MANAGER",
+			"TOGO_TEST_ALGORITHM",
 		}
 end})
 

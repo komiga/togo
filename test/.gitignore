@@ -26,3 +26,5 @@ system/system
 io/file_io
 io/memory_io
 io/object_buffer
+
+algorithm/sort
