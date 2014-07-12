@@ -15,8 +15,7 @@ main() {
 
 	MemoryStream stream{memory::default_allocator(), 0};
 	test_writer(stream, true);
-	stream.clear();
-	TOGO_ASSERTE(io::position(stream) == 0);
+	TOGO_ASSERTE(io::seek_to(stream, 0) == 0);
 	test_reader(stream, true);
 	return 0;
 }
