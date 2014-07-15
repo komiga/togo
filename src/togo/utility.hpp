@@ -147,6 +147,47 @@ inline T* pointer_align(T* p, u32 const align) noexcept {
 
 /// @}
 
+/** @name Enum-class operators */ /// @{
+
+/// Enum-class bitwise operator enabler.
+///
+/// Specialize this class deriving from true_type to enable bit-wise
+/// operators for an enum-class.
+template<class>
+struct enable_enum_bitwise_ops : false_type {};
+
+/** @cond INTERNAL */
+template<class FlagT, class = enable_if<enable_enum_bitwise_ops<FlagT>::value>>
+inline constexpr FlagT operator|(FlagT const& x, FlagT const& y) noexcept {
+	return static_cast<FlagT>(
+		static_cast<unsigned>(x) | static_cast<unsigned>(y)
+	);
+}
+
+template<class FlagT, class = enable_if<enable_enum_bitwise_ops<FlagT>::value>>
+inline constexpr FlagT operator&(FlagT const& x, FlagT const& y) noexcept {
+	return static_cast<FlagT>(
+		static_cast<unsigned>(x) & static_cast<unsigned>(y)
+	);
+}
+
+template<class FlagT, class = enable_if<enable_enum_bitwise_ops<FlagT>::value>>
+inline constexpr FlagT& operator|=(FlagT& x, FlagT const& y) noexcept {
+	return x = static_cast<FlagT>(
+		static_cast<unsigned>(x) | static_cast<unsigned>(y)
+	);
+}
+
+template<class FlagT, class = enable_if<enable_enum_bitwise_ops<FlagT>::value>>
+inline constexpr FlagT& operator&=(FlagT& x, FlagT const& y) noexcept {
+	return x = static_cast<FlagT>(
+		static_cast<unsigned>(x) & static_cast<unsigned>(y)
+	);
+}
+/** @endcond */ // INTERNAL
+
+/// @}
+
 /** @} */ // end of doc-group utility
 
 } // namespace togo
