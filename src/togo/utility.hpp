@@ -22,31 +22,17 @@ namespace togo {
 	@{
 */
 
-/** @name Misc utilities */ /// @{
-
-/// Swap the values of two references.
-template<class T>
-inline void swap(T& x, T& y) {
-	T temp = x;
-	x = y;
-	y = temp;
-}
-
-/// Less-than comparison operator wrapper.
-template<class T>
-inline bool less(T const& x, T const& y) {
-	return x < y;
-}
-
-/// Greater-than comparison operator wrapper.
-template<class T>
-inline bool greater(T const& x, T const& y) {
-	return x > y;
-}
-
-/// @}
-
 /** @name Type utilities */ /// @{
+
+/// Type with static constexpr value equal to false.
+using false_type = std::false_type;
+
+/// Type with static constexpr value equal to true.
+using true_type = std::true_type;
+
+/// SFINAE enabler type alias.
+template<bool C, class T = void>
+using enable_if = typename std::enable_if<C, T>::type;
 
 /// Cast unsigned integral to signed integral.
 template<class T>
@@ -85,28 +71,49 @@ sizeof_empty() noexcept {
 
 /// @}
 
+/** @name Misc utilities */ /// @{
+
+/// Swap the values of two references.
+template<class T>
+inline void swap(T& x, T& y) {
+	T temp = x;
+	x = y;
+	y = temp;
+}
+
+/// Less-than comparison operator wrapper.
+template<class T>
+inline bool less(T const& x, T const& y) {
+	return x < y;
+}
+
+/// Greater-than comparison operator wrapper.
+template<class T>
+inline bool greater(T const& x, T const& y) {
+	return x > y;
+}
+
+/// @}
+
 /** @name Arithmetic utilities */ /// @{
 
 /// Get the smallest of two values.
 template<class T>
-inline T
-min(T const x, T const y) noexcept {
+inline T min(T const x, T const y) noexcept {
 	TOGO_CONSTRAIN_COMPARABLE(T);
 	return x < y ? x : y;
 }
 
 /// Get the largest of two values.
 template<class T>
-inline T
-max(T const x, T const y) noexcept {
+inline T max(T const x, T const y) noexcept {
 	TOGO_CONSTRAIN_COMPARABLE(T);
 	return x > y ? x : y;
 }
 
 /// Clamp a value between a minimum and maximum.
 template<class T>
-inline T
-clamp(T const x, T const minimum, T const maximum) noexcept {
+inline T clamp(T const x, T const minimum, T const maximum) noexcept {
 	TOGO_CONSTRAIN_COMPARABLE(T);
 	return
 		  x < minimum
