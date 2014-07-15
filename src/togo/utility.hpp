@@ -11,6 +11,7 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/traits.hpp>
 #include <togo/debug_constraints.hpp>
 
 #include <type_traits>
@@ -23,16 +24,6 @@ namespace togo {
 */
 
 /** @name Type utilities */ /// @{
-
-/// Type with static constexpr value equal to false.
-using false_type = std::false_type;
-
-/// Type with static constexpr value equal to true.
-using true_type = std::true_type;
-
-/// SFINAE enabler type alias.
-template<bool C, class T = void>
-using enable_if = typename std::enable_if<C, T>::type;
 
 /// Cast unsigned integral to signed integral.
 template<class T>
