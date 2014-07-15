@@ -76,6 +76,10 @@ precore.make_config(
 "togo-config", {{
 project = function()
 	configuration {}
+		defines {
+			"TOGO_CONFIG_GRAPHICS_BACKEND=TOGO_GRAPHICS_BACKEND_SDL",
+			"TOGO_CONFIG_RENDERER=TOGO_RENDERER_OPENGL",
+		}
 
 	configuration {"debug"}
 		defines {
