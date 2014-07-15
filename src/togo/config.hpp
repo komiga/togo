@@ -41,7 +41,7 @@ namespace togo {
 		Whether to use assertions
 
 		This is enabled if it is defined. It is automatically enabled
-		if DEBUG is defined or !NDEBUG.
+		if DEBUG is defined or if NDEBUG is not defined.
 	*/
 	#define TOGO_DEBUG
 	/**
@@ -76,7 +76,7 @@ namespace togo {
 	/**
 		Defined if the target platform is POSIX-compliant.
 
-		This is defined if TOGO_PLATFORM_LINUX or TOGO_PLATFORM_MACOS
+		This is defined if #TOGO_PLATFORM_LINUX or #TOGO_PLATFORM_MACOS
 		are defined.
 	*/
 	#define TOGO_PLATFORM_IS_POSIX
