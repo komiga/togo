@@ -18,7 +18,7 @@ namespace togo {
 	@{
 */
 
-/** @name Type utilities */ /// @{
+/** @name Type traits */ /// @{
 
 /// Type with static constexpr value equal to false.
 struct false_type {
@@ -50,6 +50,13 @@ template<bool C, class T = void>
 using enable_if = typename enable_if_impl<C, T>::type;
 
 /// @}
+
+/// Enum-class bitwise operator enabler.
+///
+/// Specialize this class deriving from true_type to enable bit-wise
+/// operators for an enum-class.
+template<class>
+struct enable_enum_bitwise_ops : false_type {};
 
 /** @} */ // end of doc-group utility
 

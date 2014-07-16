@@ -138,14 +138,7 @@ inline T* pointer_align(T* p, u32 const align) noexcept {
 
 /// @}
 
-/** @name Enum-class operators */ /// @{
-
-/// Enum-class bitwise operator enabler.
-///
-/// Specialize this class deriving from true_type to enable bit-wise
-/// operators for an enum-class.
-template<class>
-struct enable_enum_bitwise_ops : false_type {};
+/** @name Enum utilities */ /// @{
 
 /** @cond INTERNAL */
 template<class FlagT, class = enable_if<enable_enum_bitwise_ops<FlagT>::value>>
