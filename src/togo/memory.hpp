@@ -44,12 +44,15 @@ namespace {
 #define TOGO_CONSTRUCT_DEFAULT(a, T) \
 	(new ((a).allocate(sizeof(T), alignof(T))) T())
 
-/// Construct an object with an allocator, no initialization parameters, and no alignment.
+/// Construct an object with an allocator, no initialization parameters,
+/// and no alignment.
+///
 /// This calls the default constructor.
 #define TOGO_CONSTRUCT_DEFAULT_NA(a, T) \
 	(new ((a).allocate(sizeof(T), 0)) T())
 
 /// Destroy an object with an allocator.
+///
 /// Does nothing if p is nullptr. Calls destructor p->~T(); and
 /// deallocates the object.
 // Oh C++.
@@ -84,6 +87,7 @@ public:
 	virtual u32 num_allocations() const = 0;
 
 	/// Get total number of bytes allocated by the allocator.
+	///
 	/// If an allocator does not support this operation, it shall
 	/// return SIZE_NOT_TRACKED.
 	virtual u32 total_size() const = 0;
@@ -96,10 +100,12 @@ public:
 	virtual u32 allocation_size(void const* p) const = 0;
 
 	/// Allocate a chunk of memory.
+	///
 	/// If align is 0, no alignment is used.
 	virtual void* allocate(u32 size, u32 align = DEFAULT_ALIGNMENT) = 0;
 
 	/// Deallocate a pointer.
+	///
 	/// Does nothing if p is nullptr.
 	virtual void deallocate(void* p) = 0;
 };
@@ -122,6 +128,7 @@ static constexpr u32 const
 ;
 
 /// Initialize global allocators.
+///
 /// scratch_size is size of the scratch space block to pre-allocate.
 /// If scratch_size < SCRATCH_SIZE_MINIMUM, an assertion will trigger.
 void init(u32 const scratch_size = SCRATCH_SIZE_MINIMUM);
