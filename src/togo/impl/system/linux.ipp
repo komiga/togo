@@ -12,9 +12,9 @@
 
 namespace togo {
 
-u32 system::num_cores() {
+unsigned system::num_cores() {
 	signed const num = sysconf(_SC_NPROCESSORS_ONLN);
-	return static_cast<u32>(max(0, num));
+	return static_cast<unsigned>(max(0, num));
 }
 
 } // namespace togo

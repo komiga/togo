@@ -10,7 +10,6 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/types.hpp>
 
 namespace togo {
 namespace system {
@@ -21,7 +20,7 @@ namespace system {
 */
 
 /// Get the number of cores for the system's processor.
-u32 num_cores();
+unsigned num_cores();
 
 /** @} */ // end of doc-group system
 
