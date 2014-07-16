@@ -140,6 +140,16 @@ inline T* pointer_align(T* p, u32 const align) noexcept {
 
 /** @name Enum utilities */ /// @{
 
+/// Return true whether an enum value is non-zero.
+template<class T>
+inline constexpr bool enum_bool(T const value) {
+	static_assert(
+		std::is_enum<T>::value,
+		"T must be an enum"
+	);
+	return static_cast<typename std::underlying_type<T>::type>(value);
+}
+
 /** @cond INTERNAL */
 template<class FlagT, class = enable_if<enable_enum_bitwise_ops<FlagT>::value>>
 inline constexpr FlagT operator|(FlagT const& x, FlagT const& y) noexcept {
