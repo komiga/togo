@@ -52,13 +52,23 @@ u64 MemoryStream::seek_relative(s64 const offset) {
 	return position();
 }
 
-IOStatus MemoryStream::read(void* const data, unsigned const size) {
+IOStatus MemoryStream::read(void* const data, unsigned size, unsigned* const read_size) {
 	if (_position + size > array::size(_buffer)) {
-		return _status.assign(true, true);
+		if (read_size) {
+			size = array::size(_buffer) - _position;
+			_status.assign(false, true);
+		} else {
+			return _status.assign(true, true);
+		}
+	} else {
+		_status.clear();
 	}
 	std::memcpy(data, array::begin(_buffer) + _position, size);
 	_position += size;
-	return _status.clear();
+	if (read_size) {
+		*read_size = size;
+	}
+	return _status;
 }
 
 IOStatus MemoryStream::write(void const* const data, unsigned const size) {

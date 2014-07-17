@@ -41,7 +41,7 @@ class FileReader
 	, public IReader
 {
 public:
-	FileStreamData _data;
+	FileStreamData _data{};
 
 	~FileReader() override;
 	FileReader() = default;
@@ -69,7 +69,7 @@ private:
 	u64 seek_relative(s64 offset) override;
 
 // IReader implementation
-	IOStatus read(void* data, unsigned size) override;
+	IOStatus read(void* data, unsigned size, unsigned* const read_size) override;
 };
 
 /**
@@ -81,7 +81,7 @@ class FileWriter
 	, public IWriter
 {
 public:
-	FileStreamData _data;
+	FileStreamData _data{};
 
 	~FileWriter() override;
 	FileWriter() = default;

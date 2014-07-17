@@ -74,7 +74,7 @@ public:
 
 	virtual ~IReader() = 0;
 
-	virtual IOStatus read(void* data, unsigned size) = 0;
+	virtual IOStatus read(void* data, unsigned size, unsigned* const read_size) = 0;
 };
 inline IReader::~IReader() = default;
 

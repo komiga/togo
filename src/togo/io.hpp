@@ -44,8 +44,17 @@ inline u64 seek_relative(IStreamSeekable& stream, s64 const offset) {
 }
 
 /// Read bytes into a buffer.
-inline IOStatus read(IReader& stream, void* const buffer, unsigned const size) {
-	return stream.read(buffer, size);
+///
+/// If read_size is non-null, its pointee will be assigned to the
+/// number of bytes that were read from the stream, which may be less
+/// than requested if the status is fail or EOF.
+inline IOStatus read(
+	IReader& stream,
+	void* const buffer,
+	unsigned const size,
+	unsigned* const read_size = nullptr
+) {
+	return stream.read(buffer, size, read_size);
 }
 
 /// Write bytes from a buffer.

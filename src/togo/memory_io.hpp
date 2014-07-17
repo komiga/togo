@@ -69,7 +69,7 @@ private:
 	u64 seek_relative(s64 offset) override;	
 
 // IReader implementation
-	IOStatus read(void* data, unsigned size) override;
+	IOStatus read(void* data, unsigned size, unsigned* read_size) override;
 
 // IWriter implementation
 	IOStatus write(void const* data, unsigned size) override;

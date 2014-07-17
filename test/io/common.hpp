@@ -24,6 +24,8 @@ bool float_exact(float const x, float const y) {
 	return xu.i == yu.i;
 }
 
+static u8 const partial_out[5]{0, 8, 16, 32, 64};
+
 struct TestStreamState {
 	u8  v8 {8};
 	u16 v16{16};
@@ -76,7 +78,17 @@ void test_reader(IReader& stream, bool const seekable) {
 		TOGO_ASSERTE(io::position(stream_seekable) == SIZE_VALUES);
 		TOGO_ASSERTE(io::seek_to(stream_seekable, 0) == 0);
 		TOGO_ASSERTE(io::position(stream_seekable) == 0);
+
+		TOGO_ASSERTE(io::seek_to(stream_seekable, SIZE_BOTH) == SIZE_BOTH);
+		TOGO_ASSERTE(io::position(stream_seekable) == SIZE_BOTH);
 	}
+
+	u8 partial_in[10]{};
+	unsigned read_size = 0;
+	io::read(stream, partial_in, array_extent(partial_in), &read_size);
+	TOGO_ASSERTE(!io::status(stream).fail() && io::status(stream).eof());
+	TOGO_ASSERTE(read_size == array_extent(partial_out));
+	TOGO_ASSERTE(std::memcmp(partial_in, partial_out, read_size) == 0);
 }
 
 void test_writer(IWriter& stream, bool const seekable) {
@@ -107,5 +119,10 @@ void test_writer(IWriter& stream, bool const seekable) {
 		TOGO_ASSERTE(io::position(stream_seekable) == SIZE_VALUES);
 		TOGO_ASSERTE(io::seek_to(stream_seekable, 0) == 0);
 		TOGO_ASSERTE(io::position(stream_seekable) == 0);
+
+		TOGO_ASSERTE(io::seek_to(stream_seekable, SIZE_BOTH) == SIZE_BOTH);
+		TOGO_ASSERTE(io::position(stream_seekable) == SIZE_BOTH);
 	}
+
+	TOGO_ASSERTE(io::write(stream, partial_out, array_extent(partial_out)));
 }

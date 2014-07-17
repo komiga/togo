@@ -138,15 +138,18 @@ u64 FileReader::seek_relative(s64 const offset) {
 	return file_seek_relative(_data, offset);
 }
 
-IOStatus FileReader::read(void* const data, unsigned const size) {
+IOStatus FileReader::read(void* const data, unsigned const size, unsigned* const read_size) {
 	TOGO_DEBUG_ASSERT(_data.handle, "cannot perform IO on a closed stream");
 	std::clearerr(_data.handle);
-	std::size_t const read_size = std::fread(data, 1, size, _data.handle);
-	if (read_size != size) {
+	std::size_t const op_read_size = std::fread(data, 1, size, _data.handle);
+	if (op_read_size != size && errno != 0) {
 		TOGO_LOG_DEBUGF(
 			"failed to read requested size (%zu != %u): %d, %s\n",
-			read_size, size, errno, std::strerror(errno)
+			op_read_size, size, errno, std::strerror(errno)
 		);
+	}
+	if (read_size) {
+		*read_size = static_cast<unsigned>(op_read_size);
 	}
 	file_set_status(_data);
 	return status();
