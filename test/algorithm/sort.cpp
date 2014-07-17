@@ -256,10 +256,10 @@ main() {
 	test_and_validate<u32, u64, std::mt19937>(4e6, rdev());
 	test_and_validate<u64, u64, std::mt19937_64>(4e6, rdev());
 
-	TOGO_LOG("\n");
+	TOGO_LOG("\noptimal (32-bit key):\n");
 	test_growth<u32, u32, std::mt19937, std::random_device>(10, 1e5, rdev);
 
-	TOGO_LOG("\n");
+	TOGO_LOG("\nsub-optimal (64-bit key):\n");
 	test_growth<u64, u64, std::mt19937, std::random_device>(10, 1e5, rdev);
 
 	return 0;
