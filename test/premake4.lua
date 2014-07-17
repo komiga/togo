@@ -51,20 +51,22 @@ precore.make_solution(
 	{
 		"precore-generic",
 		"togo-deps",
-		"togo-import"
+		"togo-import",
+		"togo-deps-link"
 	}
 )
 
 -- Groups
 
-include("general")
-include("collections")
-include("memory")
-include("hash")
-include("threading")
-include("system")
-include("io")
 include("algorithm")
+include("collections")
+include("general")
+include("gfx")
+include("hash")
+include("io")
+include("memory")
+include("system")
+include("threading")
 include("utility")
 
 action_clean()
