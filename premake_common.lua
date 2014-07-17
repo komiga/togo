@@ -69,6 +69,24 @@ project = function()
 		includedirs {
 			--precore.subst("${ROOT}/dep/duct/"),
 			precore.subst("${ROOT}/dep/am/"),
+			precore.subst("${ROOT}/dep/sdl/include/"),
+		}
+end}})
+
+precore.make_config(
+"togo-deps-link", {{
+project = function()
+	-- Only backend for now, so no magic fluff for actual configuration
+	configuration {}
+		libdirs {
+			precore.subst("${ROOT}/dep/sdl/lib/"),
+		}
+
+		links {
+			"m",
+			"dl",
+			"GL",
+			":libSDL2.a",
 		}
 end}})
 
