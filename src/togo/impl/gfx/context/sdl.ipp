@@ -7,6 +7,7 @@
 #include <togo/utility.hpp>
 #include <togo/assert.hpp>
 #include <togo/memory.hpp>
+#include <togo/impl/gfx/common.hpp>
 #include <togo/impl/gfx/sdl_common.hpp>
 #include <togo/impl/gfx/types.hpp>
 #include <togo/gfx/context.hpp>
@@ -31,6 +32,7 @@ gfx::Context* context::create(
 	sdl_config_setup(display->_config);
 	handle = SDL_GL_CreateContext(display->_impl.handle);
 	TOGO_SDL_CHECK(!handle);
+	gfx::glew_init();
 
 	return TOGO_CONSTRUCT(
 		allocator, gfx::Context, flags, allocator,

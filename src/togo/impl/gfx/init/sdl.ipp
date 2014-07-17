@@ -16,16 +16,16 @@
 namespace togo {
 
 namespace {
-enum {
-	INIT_SYSTEMS = SDL_INIT_EVENTS | SDL_INIT_VIDEO,
-};
+	enum {
+		INIT_SYSTEMS = SDL_INIT_EVENTS | SDL_INIT_VIDEO,
+	};
 } // anonymous namespace
 
 void gfx::init(
 	unsigned context_major,
 	unsigned context_minor
 ) {
-	TOGO_ASSERT(!SDL_WasInit(INIT_SYSTEMS), "graphics backend has already been initialized");
+	TOGO_ASSERT(!_gfx_globals.initialized, "graphics backend has already been initialized");
 
 	TOGO_ASSERT(
 		context_major >= 3 && context_minor >= 2,
@@ -37,6 +37,10 @@ void gfx::init(
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, context_minor));
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG));
+
+	_gfx_globals.context_major = context_major;
+	_gfx_globals.context_minor = context_minor;
+	_gfx_globals.initialized = true;
 	return;
 
 sdl_error:
@@ -44,10 +48,12 @@ sdl_error:
 }
 
 void gfx::shutdown() {
-	if (!SDL_WasInit(INIT_SYSTEMS)) {
-		TOGO_LOG_DEBUG("graphics backend has already been initialized");
-	}
+	TOGO_ASSERT(_gfx_globals.initialized, "graphics backend has not been initialized");
+
 	SDL_Quit();
+	_gfx_globals.context_major = 0;
+	_gfx_globals.context_minor = 0;
+	_gfx_globals.initialized = false;
 }
 
 } // namespace togo

@@ -7,6 +7,8 @@
 
 #include <togo/config.hpp>
 #include <togo/utility.hpp>
+#include <togo/assert.hpp>
+#include <togo/impl/gfx/common.hpp>
 
 #include <SDL2/SDL_error.h>
 #include <SDL2/SDL_video.h>
