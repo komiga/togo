@@ -26,7 +26,7 @@ namespace task_manager {
 	@{
 */
 
-/// Get an empty TaskWork.
+/// Construct an empty TaskWork.
 inline TaskWork task_work_empty() {
 	return {nullptr, nullptr};
 }
