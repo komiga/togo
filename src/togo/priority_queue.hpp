@@ -53,15 +53,15 @@ namespace priority_queue {
 
 /// Number of items.
 template<class T>
-inline u32 size(PriorityQueue<T> const& pq) { return array::size(pq._data); }
+inline u32_fast size(PriorityQueue<T> const& pq) { return array::size(pq._data); }
 
 /// Number of items reserved.
 template<class T>
-inline u32 capacity(PriorityQueue<T> const& pq) { return array::capacity(pq._data); }
+inline u32_fast capacity(PriorityQueue<T> const& pq) { return array::capacity(pq._data); }
 
 /// Number of items that can be added before a resize occurs.
 template<class T>
-inline u32 space(PriorityQueue<T> const& pq) { return array::space(pq._data); }
+inline u32_fast space(PriorityQueue<T> const& pq) { return array::space(pq._data); }
 
 /// Returns true if there are any items in the queue.
 template<class T>
@@ -127,7 +127,7 @@ inline void shrink_to_fit(PriorityQueue<T>& pq) {
 
 /// Reserve at least new_capacity.
 template<class T>
-inline void reserve(PriorityQueue<T>& pq, u32 const new_capacity) {
+inline void reserve(PriorityQueue<T>& pq, u32_fast const new_capacity) {
 	array::reserve(pq._data, new_capacity);
 }
 

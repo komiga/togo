@@ -85,15 +85,15 @@ namespace array {
 
 /// Number of items.
 template<class T>
-inline u32 size(Array<T> const& a) { return a._size; }
+inline u32_fast size(Array<T> const& a) { return a._size; }
 
 /// Number of items reserved.
 template<class T>
-inline u32 capacity(Array<T> const& a) { return a._capacity; }
+inline u32_fast capacity(Array<T> const& a) { return a._capacity; }
 
 /// Number of items that can be added before a resize occurs.
 template<class T>
-inline u32 space(Array<T> const& a) { return a._capacity - a._size; }
+inline u32_fast space(Array<T> const& a) { return a._capacity - a._size; }
 
 /// Returns true if there are any items in the array.
 template<class T>
@@ -156,7 +156,7 @@ inline T const& back(Array<T> const& a) {
 /// If new_capacity is lower than the size, the array is resized
 /// to new_capacity.
 template<class T>
-void set_capacity(Array<T>& a, u32 const new_capacity) {
+void set_capacity(Array<T>& a, u32_fast const new_capacity) {
 	if (new_capacity == a._capacity) {
 		return;
 	}
@@ -185,8 +185,8 @@ void set_capacity(Array<T>& a, u32 const new_capacity) {
 /// Cost of insertion should be amortized O(1), assuming no aggressive
 /// shrinking. Grows to at least min_capacity if it is non-zero.
 template<class T>
-void grow(Array<T>& a, u32 const min_capacity = 0) {
-	u32 new_capacity = a._capacity * 2 + 8;
+void grow(Array<T>& a, u32_fast const min_capacity = 0) {
+	u32_fast new_capacity = a._capacity * 2 + 8;
 	if (min_capacity > new_capacity) {
 		new_capacity = min_capacity;
 	}
@@ -205,7 +205,7 @@ inline void shrink_to_fit(Array<T>& a) {
 ///
 /// Upsize grows by using new_size as the minimum capacity.
 template<class T>
-inline void resize(Array<T>& a, u32 const new_size) {
+inline void resize(Array<T>& a, u32_fast const new_size) {
 	if (new_size > a._capacity) {
 		grow(a, new_size);
 	}
@@ -214,7 +214,7 @@ inline void resize(Array<T>& a, u32 const new_size) {
 
 /// Reserve at least new_capacity.
 template<class T>
-inline void reserve(Array<T>& a, u32 const new_capacity) {
+inline void reserve(Array<T>& a, u32_fast const new_capacity) {
 	if (new_capacity > a._capacity) {
 		set_capacity(a, new_capacity);
 	}

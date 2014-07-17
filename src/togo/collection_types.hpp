@@ -35,8 +35,8 @@ template<class T>
 struct Array {
 	TOGO_CONSTRAIN_POD(T);
 
-	u32 _size;
-	u32 _capacity;
+	u32_fast _size;
+	u32_fast _capacity;
 	T* _data;
 	Allocator* _allocator;
 
@@ -69,8 +69,8 @@ struct Queue {
 	TOGO_CONSTRAIN_POD(T);
 
 	Array<T> _data;
-	u32 _head;
-	u32 _size;
+	u32_fast _head;
+	u32_fast _size;
 
 	~Queue() = default;
 

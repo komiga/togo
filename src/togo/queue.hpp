@@ -71,15 +71,15 @@ namespace queue {
 namespace {
 
 template<class T>
-void set_capacity(Queue<T>& q, u32 const new_capacity) {
+void set_capacity(Queue<T>& q, u32_fast const new_capacity) {
 	if (new_capacity <= q._size) {
 		return;
 	}
-	u32 const old_capacity = array::size(q._data);
+	u32_fast const old_capacity = array::size(q._data);
 	array::resize(q._data, new_capacity);
 	if (q._head + q._size > old_capacity) {
 		// Push items from head to the end of the array
-		u32 const to_end_count = old_capacity - q._head;
+		u32_fast const to_end_count = old_capacity - q._head;
 		std::memmove(
 			array::begin(q._data) + new_capacity - to_end_count,
 			array::begin(q._data) + q._head,
@@ -90,8 +90,8 @@ void set_capacity(Queue<T>& q, u32 const new_capacity) {
 }
 
 template<class T>
-void grow(Queue<T>& q, u32 const min_capacity = 0) {
-	u32 new_capacity = array::size(q._data) * 2 + 8;
+void grow(Queue<T>& q, u32_fast const min_capacity = 0) {
+	u32_fast new_capacity = array::size(q._data) * 2 + 8;
 	if (new_capacity < min_capacity) {
 		new_capacity = min_capacity;
 	}
@@ -107,15 +107,15 @@ void grow(Queue<T>& q, u32 const min_capacity = 0) {
 
 /// Number of items.
 template<class T>
-inline u32 size(Queue<T> const& q) { return q._size; }
+inline u32_fast size(Queue<T> const& q) { return q._size; }
 
 /// Number of items reserved.
 template<class T>
-inline u32 capacity(Queue<T> const& q) { return array::size(q._data); }
+inline u32_fast capacity(Queue<T> const& q) { return array::size(q._data); }
 
 /// Number of items that can be pushed before the queue grows.
 template<class T>
-inline u32 space(Queue<T> const& q) { return array::size(q._data) - q._size; }
+inline u32_fast space(Queue<T> const& q) { return array::size(q._data) - q._size; }
 
 /// Returns true if there are any items in the queue.
 template<class T>
@@ -154,7 +154,7 @@ inline T const& back(Queue<T> const& q) {
 /// If new_capacity is less than the current size, this function
 /// has no effect. Assume any references are invalid after call.
 template<class T>
-inline void reserve(Queue<T>& q, u32 const new_capacity) {
+inline void reserve(Queue<T>& q, u32_fast const new_capacity) {
 	set_capacity(q, new_capacity);
 }
 
