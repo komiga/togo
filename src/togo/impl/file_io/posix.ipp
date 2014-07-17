@@ -25,7 +25,7 @@ file_open(
 	data.handle = std::fopen(path, mode);
 	if (!data.handle) {
 		TOGO_LOG_DEBUGF(
-			"failed to open file '%s' for reading: %d, %s",
+			"failed to open file '%s' for reading: %d, %s\n",
 			path, errno, std::strerror(errno)
 		);
 		return false;
@@ -191,7 +191,7 @@ IOStatus FileWriter::write(void const* const data, unsigned const size) {
 	std::size_t const write_size = std::fwrite(data, 1, size, _data.handle);
 	if (write_size != size) {
 		TOGO_LOG_DEBUGF(
-			"failed to write requested size (%zu != %u): %d, %s",
+			"failed to write requested size (%zu != %u): %d, %s\n",
 			write_size, size, errno, std::strerror(errno)
 		);
 	}
