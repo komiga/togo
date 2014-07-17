@@ -67,10 +67,12 @@ precore.make_config(
 project = function()
 	configuration {}
 		includedirs {
-			--precore.subst("${ROOT}/dep/duct/"),
 			precore.subst("${ROOT}/dep/am/"),
+			precore.subst("${ROOT}/dep/glew/include/"),
 			precore.subst("${ROOT}/dep/sdl/include/"),
 		}
+
+		defines {"GLEW_STATIC"}
 end}})
 
 precore.make_config(
@@ -79,6 +81,7 @@ project = function()
 	-- Only backend for now, so no magic fluff for actual configuration
 	configuration {}
 		libdirs {
+			precore.subst("${ROOT}/dep/glew/lib/"),
 			precore.subst("${ROOT}/dep/sdl/lib/"),
 		}
 
@@ -86,6 +89,7 @@ project = function()
 			"m",
 			"dl",
 			"GL",
+			":libGLEW.a",
 			":libSDL2.a",
 		}
 end}})
