@@ -30,9 +30,9 @@ namespace context {
 
 /// Create graphics context.
 ///
-/// An assertion will fail if the display could not be created.
-/// If gfx::DisplayFlags::fullscreen is enabled, width and height are
-/// ignored.
+/// An assertion will fail if the context could not be created.
+/// If gfx::ContextFlags::shared is enabled, the new context will be
+/// shared with the current context for the display.
 gfx::Context* create(
 	gfx::Display* display,
 	gfx::ContextFlags flags,
