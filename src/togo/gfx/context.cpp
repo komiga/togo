@@ -7,6 +7,5 @@
 #include <togo/impl/gfx/types.hpp>
 
 #if (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_SDL)
-	#include <togo/impl/gfx/context/sdl.hpp>
 	#include <togo/impl/gfx/context/sdl.ipp>
 #endif

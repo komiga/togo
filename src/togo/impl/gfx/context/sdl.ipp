@@ -9,6 +9,7 @@
 #include <togo/memory.hpp>
 #include <togo/impl/gfx/common.hpp>
 #include <togo/impl/gfx/sdl_common.hpp>
+#include <togo/impl/gfx/context/sdl.hpp>
 #include <togo/impl/gfx/types.hpp>
 #include <togo/gfx/context.hpp>
 
