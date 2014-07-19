@@ -8,4 +8,6 @@
 
 #if (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_SDL)
 	#include <togo/impl/gfx/context/sdl.ipp>
+#elif (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_GLFW)
+	#include <togo/impl/gfx/context/glfw.ipp>
 #endif

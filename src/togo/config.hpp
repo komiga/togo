@@ -160,6 +160,15 @@ namespace togo {
 #define TOGO_GRAPHICS_BACKEND_SDL 0x00000001
 
 /**
+	GLFW graphics backend.
+
+	This backend can be used with the following renderers:
+
+	- #TOGO_RENDERER_OPENGL
+*/
+#define TOGO_GRAPHICS_BACKEND_GLFW 0x00000002
+
+/**
 	OpenGL renderer.
 */
 #define TOGO_RENDERER_OPENGL 0x00000100
@@ -171,6 +180,7 @@ namespace togo {
 		Options:
 
 		- #TOGO_GRAPHICS_BACKEND_SDL
+		- #TOGO_GRAPHICS_BACKEND_GLFW
 	*/
 	#define TOGO_CONFIG_GRAPHICS_BACKEND
 
@@ -197,6 +207,10 @@ namespace togo {
 	#if (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_SDL)
 		#if (TOGO_CONFIG_RENDERER != TOGO_RENDERER_OPENGL)
 			#error "selected renderer not usable with SDL graphics backend"
+		#endif
+	#elif (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_GLFW)
+		#if (TOGO_CONFIG_RENDERER != TOGO_RENDERER_OPENGL)
+			#error "selected renderer not usable with GLFW graphics backend"
 		#endif
 	#else
 		#error "TOGO_CONFIG_GRAPHICS_BACKEND has an invalid value"
