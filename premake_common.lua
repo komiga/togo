@@ -68,29 +68,55 @@ project = function()
 	configuration {}
 		includedirs {
 			precore.subst("${ROOT}/dep/am/"),
+		}
+
+	-- premake4.4-beta5 doesn't have the "opt=value" syntax for configuration
+	-- selection. TODO: Fix these yucklings when there's a release that does.
+	configuration {"opengl"}
+		defines {"GLEW_STATIC"}
+		includedirs {
 			precore.subst("${ROOT}/dep/glew/include/"),
+		}
+
+	configuration {"sdl"}
+		includedirs {
 			precore.subst("${ROOT}/dep/sdl/include/"),
 		}
 
-		defines {"GLEW_STATIC"}
+	configuration {"glfw"}
+		includedirs {
+			precore.subst("${ROOT}/dep/glfw/include/"),
+		}
 end}})
 
 precore.make_config(
 "togo-deps-link", {{
 project = function()
-	-- Only backend for now, so no magic fluff for actual configuration
-	configuration {}
+	configuration {"opengl"}
 		libdirs {
 			precore.subst("${ROOT}/dep/glew/lib/"),
-			precore.subst("${ROOT}/dep/sdl/lib/"),
+		}
+		links {
+			"GL",
+			":libGLEW.a",
 		}
 
+	configuration {"sdl"}
+		libdirs {
+			precore.subst("${ROOT}/dep/sdl/lib/"),
+		}
 		links {
 			"m",
 			"dl",
-			"GL",
-			":libGLEW.a",
 			":libSDL2.a",
+		}
+
+	configuration {"glfw"}
+		libdirs {
+			precore.subst("${ROOT}/dep/glfw/lib/"),
+		}
+		links {
+			":libglfw3.a",
 		}
 end}})
 
@@ -121,7 +147,7 @@ precore.make_config(
 option = {
 	data = {
 		trigger = "togo-test",
-		description = "whether to use the test config"
+		description = "enable test mode",
 	},
 	init_handler = function()
 	end
@@ -134,6 +160,43 @@ function()
 			"TOGO_TEST_ALGORITHM",
 		}
 end})
+
+precore.make_config(
+"opt-togo-renderer", {{
+option = {
+	data = {
+		trigger = "togo-renderer",
+		value = "RENDERER",
+		description = "select the renderer",
+		allowed = {
+			{"opengl", "OpenGL renderer"},
+		}
+	},
+	init_handler = function()
+		if not _OPTIONS["togo-renderer"] then
+			_OPTIONS["togo-renderer"] = "opengl"
+		end
+	end
+}}})
+
+precore.make_config(
+"opt-togo-gfx-backend", {{
+option = {
+	data = {
+		trigger = "togo-gfx-backend",
+		value = "BACKEND",
+		description = "select the graphics system backend",
+		allowed = {
+			{"sdl", "SDL2 backend"},
+			{"glfw", "GLFW backend"},
+		}
+	},
+	init_handler = function()
+		if not _OPTIONS["togo-gfx-backend"] then
+			_OPTIONS["togo-gfx-backend"] = "glfw"
+		end
+	end
+}}})
 
 precore.make_config(
 "togo-import", {
@@ -164,5 +227,7 @@ precore.init(
 		"c++11-core",
 		"precore-env-root",
 		"opt-togo-test",
+		"opt-togo-renderer",
+		"opt-togo-gfx-backend",
 	}
 )
