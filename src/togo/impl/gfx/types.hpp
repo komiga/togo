@@ -11,6 +11,8 @@
 
 #if (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_SDL)
 	#include <togo/impl/gfx/display/sdl.hpp>
+#elif (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_GLFW)
+	#include <togo/impl/gfx/display/glfw.hpp>
 #endif
 
 namespace togo {

@@ -73,17 +73,26 @@ project = function()
 	-- premake4.4-beta5 doesn't have the "opt=value" syntax for configuration
 	-- selection. TODO: Fix these yucklings when there's a release that does.
 	configuration {"opengl"}
+		defines {
+			"TOGO_CONFIG_RENDERER=TOGO_RENDERER_OPENGL",
+		}
 		defines {"GLEW_STATIC"}
 		includedirs {
 			precore.subst("${ROOT}/dep/glew/include/"),
 		}
 
 	configuration {"sdl"}
+		defines {
+			"TOGO_CONFIG_GRAPHICS_BACKEND=TOGO_GRAPHICS_BACKEND_SDL",
+		}
 		includedirs {
 			precore.subst("${ROOT}/dep/sdl/include/"),
 		}
 
 	configuration {"glfw"}
+		defines {
+			"TOGO_CONFIG_GRAPHICS_BACKEND=TOGO_GRAPHICS_BACKEND_GLFW",
+		}
 		includedirs {
 			precore.subst("${ROOT}/dep/glfw/include/"),
 		}
@@ -111,7 +120,14 @@ project = function()
 			":libSDL2.a",
 		}
 
-	configuration {"glfw"}
+	configuration {"glfw", "linux"}
+		linkoptions {
+			"`pkg-config --static --libs " ..
+			precore.subst("${ROOT}/dep/glfw/lib/pkgconfig/glfw3.pc") ..
+			"`"
+		}
+
+	configuration {"glfw", "not linux"}
 		libdirs {
 			precore.subst("${ROOT}/dep/glfw/lib/"),
 		}
@@ -123,12 +139,6 @@ end}})
 precore.make_config(
 "togo-config", {{
 project = function()
-	configuration {}
-		defines {
-			"TOGO_CONFIG_GRAPHICS_BACKEND=TOGO_GRAPHICS_BACKEND_SDL",
-			"TOGO_CONFIG_RENDERER=TOGO_RENDERER_OPENGL",
-		}
-
 	configuration {"debug"}
 		defines {
 			"TOGO_DEBUG",
