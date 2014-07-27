@@ -24,8 +24,11 @@ gfx::Display* display::create(
 	unsigned height,
 	gfx::DisplayFlags flags,
 	gfx::Config const& config,
+	gfx::Display* share_with,
 	Allocator& allocator
 ) {
+	SDL_Window* handle = nullptr;
+	SDL_GLContext context = nullptr;
 	int x;
 	int y;
 	if (enum_bool(flags & gfx::DisplayFlags::centered)) {
@@ -49,15 +52,24 @@ gfx::Display* display::create(
 		sdl_flags |= SDL_WINDOW_RESIZABLE;
 	}
 
+	if (share_with) {
+		gfx::display::make_current(share_with);
+	}
+	TOGO_SDL_CHECK(SDL_GL_SetAttribute(
+		SDL_GL_SHARE_WITH_CURRENT_CONTEXT,
+		share_with ? 1 : 0
+	));
 	sdl_config_setup(config);
-	SDL_Window* const handle = SDL_CreateWindow(
-		title, x, y, width, height, sdl_flags
-	);
+	handle = SDL_CreateWindow(title, x, y, width, height, sdl_flags);
 	TOGO_SDL_CHECK(!handle);
+	context = SDL_GL_CreateContext(handle);
+	TOGO_SDL_CHECK(!context);
+	TOGO_SDL_CHECK(SDL_GL_MakeCurrent(handle, context));
+	gfx::glew_init();
 
 	return TOGO_CONSTRUCT(
 		allocator, gfx::Display, width, height, flags, config, allocator,
-		SDLDisplayImpl{handle}
+		SDLDisplayImpl{handle, context}
 	);
 
 sdl_error:
@@ -72,8 +84,8 @@ void display::set_mouse_lock(gfx::Display* display, bool enable) {
 	SDL_SetWindowGrab(display->_impl.handle, enable ? SDL_TRUE : SDL_FALSE);
 }
 
-void display::make_current(gfx::Display* display, gfx::Context* context) {
-	TOGO_SDL_CHECK(SDL_GL_MakeCurrent(display->_impl.handle, context->_impl.handle));
+void display::make_current(gfx::Display* display) {
+	TOGO_SDL_CHECK(SDL_GL_MakeCurrent(display->_impl.handle, display->_impl.context));
 	return;
 
 sdl_error:
@@ -88,6 +100,7 @@ void display::swap_buffers(gfx::Display* display) {
 
 void display::destroy(gfx::Display* display) {
 	Allocator& allocator = *display->_allocator;
+	SDL_GL_DeleteContext(display->_impl.context);
 	SDL_DestroyWindow(display->_impl.handle);
 	TOGO_DESTROY(allocator, display);
 }

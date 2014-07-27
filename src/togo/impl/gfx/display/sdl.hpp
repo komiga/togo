@@ -14,6 +14,7 @@ namespace gfx {
 
 struct SDLDisplayImpl {
 	SDL_Window* handle;
+	SDL_GLContext context;
 };
 
 using DisplayImpl = SDLDisplayImpl;

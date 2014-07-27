@@ -3,7 +3,6 @@
 #include <togo/system.hpp>
 #include <togo/gfx/init.hpp>
 #include <togo/gfx/display.hpp>
-#include <togo/gfx/context.hpp>
 
 #include "../common/helpers.hpp"
 
@@ -28,14 +27,7 @@ main() {
 		gfx::DisplayFlags::borderless,
 		config
 	);
-	gfx::Context* const context = gfx::context::create(
-		display,
-		gfx::ContextFlags::none
-	);
-
 	system::sleep_ms(1000);
-
-	gfx::context::destroy(context);
 	gfx::display::destroy(display);
 
 	gfx::shutdown();

@@ -11,7 +11,6 @@
 
 #if (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_SDL)
 	#include <togo/impl/gfx/display/sdl.hpp>
-	#include <togo/impl/gfx/context/sdl.hpp>
 #endif
 
 namespace togo {
@@ -45,29 +44,6 @@ struct Display {
 		, _height(height)
 		, _flags(flags)
 		, _config(config)
-		, _allocator(&allocator)
-		, _impl(impl)
-	{}
-};
-
-struct Context {
-	ContextFlags _flags;
-	Allocator* _allocator;
-	ContextImpl _impl;
-
-	~Context() = default;
-	Context(Context&&) = default;
-	Context& operator=(Context&&) = default;
-
-	Context(Context const&) = delete;
-	Context& operator=(Context const&) = delete;
-
-	Context(
-		ContextFlags const flags,
-		Allocator& allocator,
-		ContextImpl&& impl
-	)
-		: _flags(flags)
 		, _allocator(&allocator)
 		, _impl(impl)
 	{}

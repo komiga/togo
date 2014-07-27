@@ -31,14 +31,17 @@ namespace display {
 /// Create graphics display.
 ///
 /// An assertion will fail if the display could not be created.
-/// If gfx::DisplayFlags::fullscreen is enabled, width and height are
-/// ignored.
+/// The new display's context will be current.
+/// If share_with is non-null, the new display will share its context.
+/// If gfx::DisplayFlags::fullscreen is enabled, width and height
+/// are ignored.
 gfx::Display* create(
 	char const* title,
 	unsigned width,
 	unsigned height,
 	gfx::DisplayFlags flags,
 	gfx::Config const& config,
+	gfx::Display* share_with = nullptr,
 	Allocator& allocator = memory::default_allocator()
 );
 
@@ -51,8 +54,8 @@ void set_title(gfx::Display* display, char const* title);
 /// display window.
 void set_mouse_lock(gfx::Display* display, bool enable);
 
-/// Make display the current target for a graphics context.
-void make_current(gfx::Display* display, gfx::Context* context);
+/// Make display context the current context.
+void make_current(gfx::Display* display);
 
 /// Swap buffers in display.
 ///

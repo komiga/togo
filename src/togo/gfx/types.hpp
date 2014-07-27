@@ -87,26 +87,6 @@ struct Display;
 
 /** @} */ // end of doc-group gfx_display
 
-/**
-	@addtogroup gfx_context
-	@{
-*/
-
-/**
-	Context flags.
-*/
-enum class ContextFlags : unsigned {
-	/// Empty flag.
-	none = 0,
-	/// Shared context.
-	shared = 1 << 0,
-};
-
-/// Graphics context.
-struct Context;
-
-/** @} */ // end of doc-group gfx_context
-
 /** @} */ // end of doc-group gfx
 
 } // namespace gfx
@@ -117,9 +97,6 @@ struct enable_enum_bitwise_ops<gfx::ConfigFlags> : true_type {};
 
 template<>
 struct enable_enum_bitwise_ops<gfx::DisplayFlags> : true_type {};
-
-template<>
-struct enable_enum_bitwise_ops<gfx::ContextFlags> : true_type {};
 /** @endcond */ // INTERNAL
 
 } // namespace togo
