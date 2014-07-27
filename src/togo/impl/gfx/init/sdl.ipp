@@ -44,7 +44,7 @@ void gfx::init(
 	return;
 
 sdl_error:
-	TOGO_ASSERTF(false, "failed to initialize graphics backend: %s\n", SDL_GetError());
+	TOGO_ASSERTF(false, "failed to initialize graphics backend: %s", SDL_GetError());
 }
 
 void gfx::shutdown() {

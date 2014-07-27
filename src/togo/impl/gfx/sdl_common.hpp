@@ -42,7 +42,7 @@ inline void sdl_config_setup(gfx::Config const& config) {
 
 sdl_error:
 	// NB: Keep context memory around for debug
-	TOGO_ASSERTF(false, "failed to set OpenGL attribute: %s\n", SDL_GetError());
+	TOGO_ASSERTF(false, "failed to set OpenGL attribute: %s", SDL_GetError());
 }
 
 } // namespace gfx

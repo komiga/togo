@@ -73,7 +73,7 @@ gfx::Display* display::create(
 	);
 
 sdl_error:
-	TOGO_ASSERTF(false, "failed to create display: %s\n", SDL_GetError());
+	TOGO_ASSERTF(false, "failed to create display: %s", SDL_GetError());
 }
 
 void display::set_title(gfx::Display* display, char const* title) {
@@ -89,7 +89,7 @@ void display::make_current(gfx::Display* display) {
 	return;
 
 sdl_error:
-	TOGO_ASSERTF(false, "failed to make window current: %s\n", SDL_GetError());
+	TOGO_ASSERTF(false, "failed to make window current: %s", SDL_GetError());
 }
 
 void display::swap_buffers(gfx::Display* display) {
