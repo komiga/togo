@@ -127,7 +127,7 @@ project = function()
 			"`"
 		}
 
-	configuration {"glfw", "not linux"}
+	configuration {"glfw"}
 		libdirs {
 			precore.subst("${ROOT}/dep/glfw/lib/"),
 		}
