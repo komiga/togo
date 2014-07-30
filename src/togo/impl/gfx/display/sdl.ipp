@@ -38,8 +38,7 @@ gfx::Display* display::create(
 	}
 
 	unsigned sdl_flags
-		= SDL_WINDOW_INPUT_GRABBED
-		| SDL_WINDOW_ALLOW_HIGHDPI
+		= SDL_WINDOW_ALLOW_HIGHDPI
 		| SDL_WINDOW_OPENGL
 	;
 	if (enum_bool(flags & gfx::DisplayFlags::borderless)) {
