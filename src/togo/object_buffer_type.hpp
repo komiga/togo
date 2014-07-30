@@ -42,13 +42,14 @@ struct ObjectBuffer {
 	bool _consume_mode;
 
 	~ObjectBuffer() = default;
-	ObjectBuffer(Allocator& allocator, u32 const init_capacity);
 
 	ObjectBuffer() = delete;
 	ObjectBuffer(ObjectBuffer const&) = delete;
 	ObjectBuffer(ObjectBuffer&&) = delete;
 	ObjectBuffer& operator=(ObjectBuffer const&) = delete;
 	ObjectBuffer& operator=(ObjectBuffer&&) = delete;
+
+	ObjectBuffer(Allocator& allocator, u32 const init_capacity);
 };
 
 /** @} */ // end of doc-group object_buffer
