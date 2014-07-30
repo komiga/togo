@@ -3,6 +3,7 @@
 #include <togo/system.hpp>
 #include <togo/gfx/init.hpp>
 #include <togo/gfx/display.hpp>
+#include <togo/input_buffer.hpp>
 
 #include "../common/helpers.hpp"
 
@@ -27,9 +28,33 @@ main() {
 		gfx::DisplayFlags::borderless,
 		config
 	);
-	system::sleep_ms(1000);
-	gfx::display::destroy(display);
+	InputBuffer ib{memory::default_allocator()};
+	input_buffer::add_display(ib, display);
 
+	bool quit = false;
+	InputEventType event_type{};
+	void const* event_ptr = nullptr;
+	while (!quit) {
+		while (input_buffer::poll(ib, event_type, event_ptr)) {
+			TOGO_ASSERTE(static_cast<BaseInputEvent const*>(event_ptr)->display == display);
+			switch (event_type) {
+			case InputEventType::key: {
+				auto ev_key = static_cast<KeyEvent const*>(event_ptr);
+				if (ev_key->code == KeyCode::escape) {
+					quit = true;
+				}
+			}	break;
+
+			case InputEventType::display_close_request:
+				quit = true;
+				break;
+			default: break;
+			}
+		}
+		system::sleep_ms(50);
+	}
+	input_buffer::remove_display(ib, display);
+	gfx::display::destroy(display);
 	gfx::shutdown();
 	return 0;
 }
