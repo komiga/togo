@@ -49,6 +49,9 @@ void remove_display(InputBuffer& ib, gfx::Display* display);
 /// Poll events.
 ///
 /// Returns true if an event was fetched.
+///
+/// @warning This must be called on the thread that created the
+/// @displays.
 bool poll(InputBuffer& ib, InputEventType& type, InputEvent const*& event);
 
 /** @} */ // end of doc-group input

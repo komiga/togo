@@ -8,6 +8,7 @@
 #include <togo/config.hpp>
 #include <togo/memory_types.hpp>
 #include <togo/gfx/types.hpp>
+#include <togo/input_types.hpp>
 
 #if (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_SDL)
 	#include <togo/impl/gfx/display/sdl.hpp>
