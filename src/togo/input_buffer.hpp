@@ -49,7 +49,7 @@ void remove_display(InputBuffer& ib, gfx::Display* display);
 /// Poll events.
 ///
 /// Returns true if an event was fetched.
-bool poll(InputBuffer& ib, InputEventType& type, void const*& event_ptr);
+bool poll(InputBuffer& ib, InputEventType& type, InputEvent const*& event);
 
 /** @} */ // end of doc-group input
 

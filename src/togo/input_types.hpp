@@ -62,15 +62,6 @@ struct InputBuffer {
 };
 
 /**
-	Base input event.
-
-	Input events can be safely cast to this type.
-*/
-struct BaseInputEvent {
-	gfx::Display* display;
-};
-
-/**
 	Key codes.
 */
 enum class KeyCode : unsigned {
@@ -266,6 +257,22 @@ struct DisplayFocusEvent {
 */
 struct DisplayCloseRequestEvent {
 	gfx::Display* display;
+};
+
+/**
+	Input event union.
+
+	@warning Members should only be accessed by the reported event
+	type from input_buffer::poll().
+*/
+union InputEvent {
+	gfx::Display* const display;
+
+	KeyEvent const key;
+	MouseButtonEvent const mouse_button;
+	MouseMotionEvent const mouse_motion;
+	DisplayFocusEvent const display_focus;
+	DisplayCloseRequestEvent const display_close_request;
 };
 
 /** @cond INTERNAL */

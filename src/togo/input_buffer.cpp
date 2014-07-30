@@ -60,7 +60,7 @@ void input_buffer::remove_display(InputBuffer& ib, gfx::Display* display) {
 bool input_buffer::poll(
 	InputBuffer& ib,
 	InputEventType& type,
-	void const*& event_ptr
+	InputEvent const*& event
 ) {
 	if (!ib._buffer._consume_mode) {
 		gfx::display::process_events(ib);
@@ -75,10 +75,11 @@ bool input_buffer::poll(
 			return false;
 		}
 	}
-	object_buffer::read(ib._buffer, type, event_ptr);
+	void const* vptr = nullptr;
+	object_buffer::read(ib._buffer, type, vptr);
+	event = static_cast<InputEvent const*>(vptr);
 	#if defined(TOGO_TEST_INPUT_BUFFER)
-		auto const event_base = static_cast<BaseInputEvent const*>(event_ptr);
-		TOGO_TEST_LOGF("input event: %p => ", event_base->display);
+		TOGO_TEST_LOGF("input event: %p => ", event->display);
 		switch (type) {
 		case InputEventType::key:
 			TOGO_TEST_LOG("key\n");

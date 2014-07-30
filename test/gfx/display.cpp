@@ -33,22 +33,23 @@ main() {
 
 	bool quit = false;
 	InputEventType event_type{};
-	void const* event_ptr = nullptr;
+	InputEvent const* event = nullptr;
 	while (!quit) {
-		while (input_buffer::poll(ib, event_type, event_ptr)) {
-			TOGO_ASSERTE(static_cast<BaseInputEvent const*>(event_ptr)->display == display);
+		while (input_buffer::poll(ib, event_type, event)) {
+			TOGO_ASSERTE(event->display == display);
 			switch (event_type) {
-			case InputEventType::key: {
-				auto ev_key = static_cast<KeyEvent const*>(event_ptr);
-				if (ev_key->code == KeyCode::escape) {
+			case InputEventType::key:
+				if (event->key.code == KeyCode::escape) {
 					quit = true;
 				}
-			}	break;
+				break;
 
 			case InputEventType::display_close_request:
 				quit = true;
 				break;
-			default: break;
+
+			default:
+				break;
 			}
 		}
 		system::sleep_ms(50);
