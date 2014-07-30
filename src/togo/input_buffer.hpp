@@ -33,6 +33,11 @@ namespace input_buffer {
 	@{
 */
 
+/// Number of displays.
+inline unsigned num_displays(InputBuffer& ib) {
+	return ib._num_displays;
+}
+
 /// Add a display.
 ///
 /// If the display is already owned by an input buffer, an assertion
