@@ -32,6 +32,9 @@ main() {
 	input_buffer::add_display(ib, display);
 
 	bool quit = false;
+	bool mouse_lock = false;
+	gfx::display::set_mouse_lock(display, mouse_lock);
+
 	InputEventType event_type{};
 	InputEvent const* event = nullptr;
 	while (!quit) {
@@ -39,8 +42,19 @@ main() {
 			TOGO_ASSERTE(event->display == display);
 			switch (event_type) {
 			case InputEventType::key:
-				if (event->key.code == KeyCode::escape) {
+				switch (event->key.code) {
+				case KeyCode::escape:
 					quit = true;
+					break;
+
+				case KeyCode::f1:
+					if (event->key.action == KeyAction::release) {
+						mouse_lock = !mouse_lock;
+						gfx::display::set_mouse_lock(display, mouse_lock);
+					}
+					break;
+
+				default: break;
 				}
 				break;
 
