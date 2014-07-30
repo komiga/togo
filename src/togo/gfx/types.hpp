@@ -80,6 +80,8 @@ enum class DisplayFlags : unsigned {
 	fullscreen = 1 << 2,
 	/// Re-sizable window.
 	resizable = 1 << 3,
+
+	owned_by_input_buffer = 1 << 4,
 };
 
 /// Graphics display.

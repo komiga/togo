@@ -24,9 +24,9 @@ struct Display {
 	gfx::DisplayFlags _flags;
 	gfx::Config _config;
 	Allocator* _allocator;
+	InputBuffer* _input_buffer;
 	DisplayImpl _impl;
 
-	~Display() = default;
 	Display(Display&&) = default;
 	Display& operator=(Display&&) = default;
 
@@ -34,6 +34,7 @@ struct Display {
 	Display(Display const&) = delete;
 	Display& operator=(Display const&) = delete;
 
+	~Display();
 	Display(
 		unsigned const width,
 		unsigned const height,
@@ -47,6 +48,7 @@ struct Display {
 		, _flags(flags)
 		, _config(config)
 		, _allocator(&allocator)
+		, _input_buffer(nullptr)
 		, _impl(impl)
 	{}
 };

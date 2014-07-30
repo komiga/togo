@@ -6,6 +6,7 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/input_types.hpp>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>

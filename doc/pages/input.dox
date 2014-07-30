@@ -1,0 +1,11 @@
+
+/**
+
+@defgroup input Input
+@details
+
+Due to the behavior of some graphics backends, there should only be
+one InputBuffer in use. Events for displays that have not been added
+to the display system will be discarded.
+
+*/
