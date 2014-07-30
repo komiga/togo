@@ -69,6 +69,14 @@ void display::set_title(gfx::Display* display, char const* title) {
 
 void display::set_mouse_lock(gfx::Display* /*display*/, bool /*enable*/) {
 	TOGO_LOG_DEBUG("gfx::display::set_mouse_lock() not implemented for GLFW\n");
+	// GLFW TODO: Need a GLFW_CURSOR_CONSTRAINED (i.e., cursor
+	// locked to window as in GLFW_CURSOR_DISABLED, but still
+	// visible).
+	/*glfwSetInputMode(
+		display->_impl.handle,
+		GLFW_CURSOR,
+		enable ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL
+	);*/
 }
 
 void display::make_current(gfx::Display* display) {
