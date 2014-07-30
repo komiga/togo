@@ -166,6 +166,13 @@ inline constexpr FlagT operator&(FlagT const& x, FlagT const& y) noexcept {
 }
 
 template<class FlagT, class = enable_if<enable_enum_bitwise_ops<FlagT>::value>>
+inline constexpr FlagT operator~(FlagT const& x) noexcept {
+	return static_cast<FlagT>(
+		~static_cast<unsigned>(x)
+	);
+}
+
+template<class FlagT, class = enable_if<enable_enum_bitwise_ops<FlagT>::value>>
 inline constexpr FlagT& operator|=(FlagT& x, FlagT const& y) noexcept {
 	return x = static_cast<FlagT>(
 		static_cast<unsigned>(x) | static_cast<unsigned>(y)
