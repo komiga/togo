@@ -95,6 +95,24 @@ struct remove_cvr_impl<T const volatile> {
 template<class T>
 using remove_cvr = typename remove_cvr_impl<remove_ref<T>>::type;
 
+namespace {
+
+template<class T>
+struct is_signed_impl : false_type {};
+
+template<> struct is_signed_impl<signed char> : true_type {};
+template<> struct is_signed_impl<signed short> : true_type {};
+template<> struct is_signed_impl<signed int> : true_type {};
+template<> struct is_signed_impl<signed long> : true_type {};
+template<> struct is_signed_impl<signed long long> : true_type {};
+
+} // anonymous namespace
+
+/// Type with static constexpr value equal to the true if T is
+/// a signed integral.
+template<class T>
+using is_signed = is_signed_impl<remove_cvr<T>>;
+
 /// @}
 
 /// Enum-class bitwise operator enabler.
