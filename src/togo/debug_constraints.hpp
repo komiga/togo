@@ -44,6 +44,12 @@
 			"T is not an integral arithmetic type"					\
 		)
 
+	#define TOGO_CONSTRAIN_FLOATING_POINT(T)						\
+		static_assert(												\
+			std::is_floating_point<T>::value,						\
+			"T is not a floating-point type"						\
+		)
+
 	#define TOGO_CONSTRAIN_UNSIGNED(T)								\
 		static_assert(												\
 			std::is_unsigned<T>::value,								\
@@ -74,6 +80,9 @@
 
 	/// Statically assert that type T is an integral arithmetic type.
 	#define TOGO_CONSTRAIN_INTEGRAL_ARITHMETIC(T)
+
+	/// Statically assert that type T is a floating-point type.
+	#define TOGO_CONSTRAIN_FLOATING_POINT(T)
 
 	/// Statically assert that type T is an unsigned arithmetic type.
 	#define TOGO_CONSTRAIN_UNSIGNED(T)
