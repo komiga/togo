@@ -170,6 +170,7 @@ struct TaskManager {
 	TaskManager(TaskManager&&) = default;
 	TaskManager& operator=(TaskManager&&) = default;
 
+	TaskManager() = delete;
 	TaskManager(TaskManager const&) = delete;
 	TaskManager& operator=(TaskManager const&) = delete;
 
