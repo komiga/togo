@@ -49,6 +49,52 @@ namespace {
 template<bool C, class T = void>
 using enable_if = typename enable_if_impl<C, T>::type;
 
+namespace {
+
+template<class T>
+struct remove_ref_impl {
+	using type = T;
+};
+
+template<class T>
+struct remove_ref_impl<T&> {
+	using type = T;
+};
+
+} // anonymous namespace
+
+/// Remove reference qualification from type.
+template<class T>
+using remove_ref = typename remove_ref_impl<T>::type;
+
+namespace {
+
+template<class T>
+struct remove_cvr_impl {
+	using type = T;
+};
+
+template<class T>
+struct remove_cvr_impl<T const> {
+	using type = T;
+};
+
+template<class T>
+struct remove_cvr_impl<T volatile> {
+	using type = T;
+};
+
+template<class T>
+struct remove_cvr_impl<T const volatile> {
+	using type = T;
+};
+
+} // anonymous namespace
+
+/// Remove const, volatile, and reference qualifications from type.
+template<class T>
+using remove_cvr = typename remove_cvr_impl<remove_ref<T>>::type;
+
 /// @}
 
 /// Enum-class bitwise operator enabler.
