@@ -1,0 +1,20 @@
+
+/**
+
+@defgroup random Random number generators and utilities
+@details
+
+The RNGs have the following properties:
+
+- xorshift64*: 2^64 - 1 period, 64 bits of state
+- xorshift128+: 2^128 - 1 period, 128 bits of state
+- xorshift1024*: 2^1024 - 1 period, 1024 bits of state
+
+xorshift128+ is the fastest xorshift RNG with nearly as few BitCrush
+failures as xorshift1024*.
+
+xorshift64* has the smallest state, but is much lower in quality
+compared to the other two. It is used to seed xorshift128+ and
+xorshift1024* from a 64-bit seed.
+
+*/
