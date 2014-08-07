@@ -25,7 +25,8 @@ main() {
 	gfx::Display* const display = gfx::display::create(
 		"togo display",
 		1024, 768,
-		gfx::DisplayFlags::borderless,
+		gfx::DisplayFlags::borderless |
+		gfx::DisplayFlags::resizable,
 		config
 	);
 	InputBuffer ib{memory::default_allocator()};
