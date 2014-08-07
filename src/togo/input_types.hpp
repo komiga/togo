@@ -232,7 +232,7 @@ enum class MouseButtonAction : unsigned {
 */
 struct MouseButtonEvent {
 	gfx::Display* display;
-	MouseButtonAction mode;
+	MouseButtonAction action;
 	MouseButton button;
 };
 
