@@ -359,6 +359,26 @@ void display::process_events(InputBuffer& ib) {
 			break;
 		}
 		switch (event.window.event) {
+		case SDL_WINDOWEVENT_RESIZED:
+			if (
+				display->_width != static_cast<unsigned>(event.window.data1) ||
+				display->_height != static_cast<unsigned>(event.window.data2)
+			) {
+				unsigned const old_width = display->_width;
+				unsigned const old_height = display->_height;
+				display->_width = static_cast<unsigned>(event.window.data1);
+				display->_height = static_cast<unsigned>(event.window.data2);
+				object_buffer::write(
+					display->_input_buffer->_buffer,
+					InputEventType::display_resize,
+					DisplayResizeEvent{
+						display,
+						old_width, old_height,
+						display->_width, display->_height
+					}
+				);
+			}
+			break;
 		case SDL_WINDOWEVENT_CLOSE:
 			object_buffer::write(
 				display->_input_buffer->_buffer,

@@ -276,6 +276,34 @@ void glfw_window_focus_cb(
 	);
 }
 
+void glfw_window_size_cb(
+	GLFWwindow* const handle,
+	signed const width,
+	signed const height
+) {
+	auto const display = static_cast<gfx::Display*>(
+		glfwGetWindowUserPointer(handle)
+	);
+	if (
+		display->_width != static_cast<unsigned>(width) ||
+		display->_height != static_cast<unsigned>(height)
+	) {
+		unsigned const old_width = display->_width;
+		unsigned const old_height = display->_height;
+		display->_width = static_cast<unsigned>(width);
+		display->_height = static_cast<unsigned>(height);
+		object_buffer::write(
+			display->_input_buffer->_buffer,
+			InputEventType::display_resize,
+			DisplayResizeEvent{
+				display,
+				old_width, old_height,
+				display->_width, display->_height
+			}
+		);
+	}
+}
+
 void glfw_key_cb(
 	GLFWwindow* const handle,
 	signed const key,
@@ -346,6 +374,7 @@ void glfw_cursor_pos_cb(
 void display::attach_to_input_buffer_impl(gfx::Display* display) {
 	glfwSetWindowCloseCallback(display->_impl.handle, glfw_window_close_cb);
 	glfwSetWindowFocusCallback(display->_impl.handle, glfw_window_focus_cb);
+	glfwSetWindowSizeCallback(display->_impl.handle, glfw_window_size_cb);
 	glfwSetKeyCallback(display->_impl.handle, glfw_key_cb);
 	glfwSetMouseButtonCallback(display->_impl.handle, glfw_mouse_button_cb);
 	glfwSetCursorPosCallback(display->_impl.handle, glfw_cursor_pos_cb);
@@ -354,6 +383,7 @@ void display::attach_to_input_buffer_impl(gfx::Display* display) {
 void display::detach_from_input_buffer_impl(gfx::Display* display) {
 	glfwSetWindowCloseCallback(display->_impl.handle, nullptr);
 	glfwSetWindowFocusCallback(display->_impl.handle, nullptr);
+	glfwSetWindowSizeCallback(display->_impl.handle, nullptr);
 	glfwSetKeyCallback(display->_impl.handle, nullptr);
 	glfwSetMouseButtonCallback(display->_impl.handle, nullptr);
 	glfwSetCursorPosCallback(display->_impl.handle, nullptr);

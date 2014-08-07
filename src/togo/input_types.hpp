@@ -31,6 +31,7 @@ enum class InputEventType : unsigned {
 	mouse_motion,
 	display_focus,
 	display_close_request,
+	display_resize,
 };
 
 enum : unsigned {
@@ -260,6 +261,17 @@ struct DisplayCloseRequestEvent {
 };
 
 /**
+	Display close request event.
+*/
+struct DisplayResizeEvent {
+	gfx::Display* display;
+	unsigned old_width;
+	unsigned old_height;
+	unsigned new_width;
+	unsigned new_height;
+};
+
+/**
 	Input event union.
 
 	@warning Members should only be accessed by the reported event
@@ -273,6 +285,7 @@ union InputEvent {
 	MouseMotionEvent const mouse_motion;
 	DisplayFocusEvent const display_focus;
 	DisplayCloseRequestEvent const display_close_request;
+	DisplayResizeEvent const display_resize;
 };
 
 /** @cond INTERNAL */

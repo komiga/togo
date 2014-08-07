@@ -96,6 +96,9 @@ bool input_buffer::poll(
 		case InputEventType::display_close_request:
 			TOGO_TEST_LOG("display_close_request\n");
 			break;
+		case InputEventType::display_resize:
+			TOGO_TEST_LOG("display_resize\n");
+			break;
 		}
 	#endif
 	return true;
