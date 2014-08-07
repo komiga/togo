@@ -45,6 +45,12 @@ gfx::Display* create(
 	Allocator& allocator = memory::default_allocator()
 );
 
+/// Display width.
+unsigned width(gfx::Display const* display);
+
+/// Display height.
+unsigned height(gfx::Display const* display);
+
 /// Set title.
 void set_title(gfx::Display* display, char const* title);
 

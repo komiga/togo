@@ -23,5 +23,13 @@ Display::~Display() {
 	}
 }
 
+unsigned display::width(gfx::Display const* display) {
+	return display->_width;
+}
+
+unsigned display::height(gfx::Display const* display) {
+	return display->_height;
+}
+
 } // namespace gfx
 } // namespace togo
