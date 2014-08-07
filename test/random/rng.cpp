@@ -16,7 +16,7 @@ template<class T>
 using nlim = std::numeric_limits<T>;
 
 template<class T>
-void stats(Array<T> const& values, T const max) {
+void stats(Array<T> const& values, T const min, T const max) {
 	using D = long double;
 
 	D sum = 0.0L;
@@ -33,9 +33,9 @@ void stats(Array<T> const& values, T const max) {
 	D const stddev = std::sqrt(var / static_cast<D>(array::size(values)));
 	//TOGO_LOGF("sum = %Lf  mean = %Lf  var = %Lf\n", sum, mean, var);
 	TOGO_LOGF(
-		"stddev / max = %.6Lf  "
-		"stddev = %.6Lf\n",
-		stddev / static_cast<D>(max),
+		"stddev / range = %.6Lf  "
+		"stddev = %.6Lg\n",
+		stddev / (static_cast<D>(max) - static_cast<D>(min)),
 		stddev
 	);
 }
@@ -60,7 +60,7 @@ void test_udist(
 		TOGO_ASSERTE(min <= x && x <= max);
 		values[i++] = x;
 	}
-	stats(values, max);
+	stats(values, min, max);
 }
 
 template<unsigned N, class T, class S>
@@ -76,7 +76,7 @@ void test_sdist(S& s) {
 		TOGO_ASSERTE(0.0f <= x && x <= 1.0f);
 		values[i++] = x;
 	}
-	stats(values, T{1.0f});
+	stats(values, T{0.0f}, T{1.0f});
 }
 
 template<class S>
