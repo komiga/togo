@@ -82,22 +82,43 @@ bool input_buffer::poll(
 		TOGO_TEST_LOGF("input event: %p => ", event->display);
 		switch (type) {
 		case InputEventType::key:
-			TOGO_TEST_LOG("key\n");
+			TOGO_TEST_LOGF(
+				"key: action = %u  code = %u  mods = %u\n",
+				static_cast<unsigned>(event->key.action),
+				static_cast<unsigned>(event->key.code),
+				static_cast<unsigned>(event->key.mods)
+			);
 			break;
 		case InputEventType::mouse_button:
-			TOGO_TEST_LOG("mouse_button\n");
+			TOGO_TEST_LOGF(
+				"mouse_button: action = %u   button = %u\n",
+				static_cast<unsigned>(event->mouse_button.action),
+				static_cast<unsigned>(event->mouse_button.button)
+			);
 			break;
 		case InputEventType::mouse_motion:
-			TOGO_TEST_LOG("mouse_motion\n");
+			TOGO_TEST_LOGF(
+				"mouse_motion: (%d, %d)\n",
+				event->mouse_motion.x, event->mouse_motion.y
+			);
 			break;
 		case InputEventType::display_focus:
-			TOGO_TEST_LOG("display_focus\n");
+			TOGO_TEST_LOGF(
+				"display_focus: focused = %s\n",
+				event->display_focus.focused ? "true" : "false"
+			);
 			break;
 		case InputEventType::display_close_request:
 			TOGO_TEST_LOG("display_close_request\n");
 			break;
 		case InputEventType::display_resize:
-			TOGO_TEST_LOG("display_resize\n");
+			TOGO_TEST_LOGF(
+				"display_resize: (%-4u, %-4u) -> (%-4u, %-4u)\n",
+				event->display_resize.old_width,
+				event->display_resize.old_height,
+				event->display_resize.new_width,
+				event->display_resize.new_height
+			);
 			break;
 		}
 	#endif
