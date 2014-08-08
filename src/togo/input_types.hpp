@@ -45,8 +45,8 @@ enum : unsigned {
 	Input buffer.
 */
 struct InputBuffer {
-	gfx::Display* _displays[INPUT_SYSTEM_NUM_DISPLAYS];
 	unsigned _num_displays;
+	gfx::Display* _displays[INPUT_SYSTEM_NUM_DISPLAYS];
 	ObjectBuffer<unsigned, unsigned> _buffer;
 
 	InputBuffer() = delete;

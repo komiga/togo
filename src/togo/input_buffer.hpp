@@ -21,8 +21,8 @@ inline InputBuffer::InputBuffer(
 	Allocator& allocator,
 	u32 const init_capacity
 )
-	: _displays()
-	, _num_displays(0)
+	: _num_displays(0)
+	, _displays()
 	, _buffer(allocator, init_capacity)
 {}
 
