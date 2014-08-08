@@ -29,6 +29,9 @@ void sleep_ms(unsigned duration_ms);
 /// Get the system time in seconds since the the POSIX epoch.
 u64 secs_since_epoch();
 
+/// Get the directory of the current process's executable.
+char const* exec_dir();
+
 /** @} */ // end of doc-group system
 
 } // namespace system
