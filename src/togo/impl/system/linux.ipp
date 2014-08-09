@@ -21,7 +21,7 @@ namespace togo {
 
 unsigned system::num_cores() {
 	signed const num = sysconf(_SC_NPROCESSORS_ONLN);
-	return static_cast<unsigned>(max(0, num));
+	return static_cast<unsigned>(max(1, num));
 }
 
 void system::sleep_ms(unsigned duration_ms) {
