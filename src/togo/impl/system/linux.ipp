@@ -4,7 +4,7 @@
 */
 
 #include <togo/config.hpp>
-#include <togo/types.hpp>
+#include <togo/assert.hpp>
 #include <togo/utility.hpp>
 #include <togo/log.hpp>
 #include <togo/system.hpp>
@@ -36,6 +36,18 @@ void system::sleep_ms(unsigned duration_ms) {
 	if (err != 0 && errno != 0) {
 		TOGO_LOG_DEBUGF("sleep_ms: errno = %d, %s\n", errno, std::strerror(errno));
 	}
+}
+
+float system::time_monotonic() {
+	timespec ts;
+	signed const err = clock_gettime(CLOCK_MONOTONIC, &ts);
+	TOGO_ASSERTF(
+		err == 0,
+		"clock_gettime() with CLOCK_MONOTONIC failed; errno = %d, %s\n",
+		errno,
+		std::strerror(errno)
+	);
+	return static_cast<float>(ts.tv_sec) + static_cast<float>(ts.tv_nsec) / 1e9;
 }
 
 char const* system::exec_dir() {

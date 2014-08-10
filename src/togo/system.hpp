@@ -26,7 +26,13 @@ unsigned num_cores();
 /// Sleep the current thread for a duration in milliseconds.
 void sleep_ms(unsigned duration_ms);
 
-/// Get the system time in seconds since the the POSIX epoch.
+/// Get time in seconds from monotonic system clock.
+///
+/// The return value should have a precision of milliseconds or
+/// better (typically nanoseconds).
+float time_monotonic();
+
+/// Get the system time in seconds since the POSIX epoch.
 u64 secs_since_epoch();
 
 /// Get the directory of the current process's executable.
