@@ -1,9 +1,11 @@
 
 #include <togo/assert.hpp>
+#include <togo/log.hpp>
 #include <togo/system.hpp>
 #include <togo/gfx/init.hpp>
 #include <togo/gfx/display.hpp>
 #include <togo/input_buffer.hpp>
+#include <togo/input.hpp>
 
 #include "../common/helpers.hpp"
 
@@ -39,33 +41,20 @@ main() {
 	InputEventType event_type{};
 	InputEvent const* event = nullptr;
 	while (!quit) {
+		input_buffer::update(ib);
 		while (input_buffer::poll(ib, event_type, event)) {
 			TOGO_ASSERTE(event->display == display);
-			switch (event_type) {
-			case InputEventType::key:
-				switch (event->key.code) {
-				case KeyCode::escape:
-					quit = true;
-					break;
-
-				case KeyCode::f1:
-					if (event->key.action == KeyAction::release) {
-						mouse_lock = !mouse_lock;
-						gfx::display::set_mouse_lock(display, mouse_lock);
-					}
-					break;
-
-				default: break;
-				}
-				break;
-
-			case InputEventType::display_close_request:
+			if (event_type == InputEventType::display_close_request) {
 				quit = true;
-				break;
-
-			default:
-				break;
 			}
+		}
+		if (input::key_released(display, KeyCode::escape)) {
+			quit = true;
+		}
+		if (input::key_released(display, KeyCode::f1)) {
+			mouse_lock = !mouse_lock;
+			gfx::display::set_mouse_lock(display, mouse_lock);
+			TOGO_LOG("mouse lock toggled\n");
 		}
 		system::sleep_ms(50);
 	}
