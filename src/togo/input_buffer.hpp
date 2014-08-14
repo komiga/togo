@@ -51,6 +51,12 @@ void add_display(InputBuffer& ib, gfx::Display* display);
 /// will fail.
 void remove_display(InputBuffer& ib, gfx::Display* display);
 
+/// Update input states.
+///
+/// This should be executed once per frame before polling the input
+/// buffer.
+void update(InputBuffer& ib);
+
 /// Poll events.
 ///
 /// Returns true if an event was fetched.

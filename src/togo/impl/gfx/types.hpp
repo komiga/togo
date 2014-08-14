@@ -6,6 +6,7 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/types.hpp>
 #include <togo/memory_types.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/input_types.hpp>
@@ -26,6 +27,13 @@ struct Display {
 	gfx::Config _config;
 	Allocator* _allocator;
 	InputBuffer* _input_buffer;
+
+	unsigned _key_clear_queue_num;
+	KeyCode _key_clear_queue[32];
+	u8 _key_states[static_cast<unsigned>(KeyCode::COUNT)];
+	u8 _mouse_button_states[static_cast<unsigned>(MouseButton::COUNT)];
+	signed _mouse_x, _mouse_y;
+
 	DisplayImpl _impl;
 
 	Display(Display&&) = default;
@@ -50,6 +58,12 @@ struct Display {
 		, _config(config)
 		, _allocator(&allocator)
 		, _input_buffer(nullptr)
+		, _key_clear_queue_num(0)
+		, _key_clear_queue()
+		, _key_states()
+		, _mouse_button_states()
+		, _mouse_x(0)
+		, _mouse_y(0)
 		, _impl(impl)
 	{}
 };

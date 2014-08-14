@@ -57,6 +57,59 @@ void input_buffer::remove_display(InputBuffer& ib, gfx::Display* display) {
 	TOGO_ASSERT(false, "something has gone terribly wrong");
 }
 
+void update_input_states(gfx::Display* display) {
+	for (unsigned i = 0; i < display->_key_clear_queue_num; ++i) {
+		display->_key_states[
+			static_cast<unsigned>(display->_key_clear_queue[i])
+		] &= ~(1 << static_cast<unsigned>(KeyAction::release));
+	}
+	display->_key_clear_queue_num = 0;
+	for (auto& state : display->_mouse_button_states) {
+		state &= ~(1 << static_cast<unsigned>(MouseButtonAction::release));
+	}
+}
+
+void input_buffer::update(InputBuffer& ib) {
+	for (auto display : ib._displays) {
+		if (!display) {
+			continue;
+		}
+		update_input_states(display);
+	}
+}
+
+void set_key_state(KeyEvent const& event) {
+	gfx::Display* const display = event.display;
+	if (event.action == KeyAction::press) {
+		// If state already has KeyAction::release, retain it
+		// (it will be cleared by update())
+		display->_key_states[
+			static_cast<unsigned>(event.code)
+		] |= 1 << static_cast<u8>(event.action);
+	} else if (event.action == KeyAction::release) {
+		// Replace state and enqueue clear
+		display->_key_states[
+			static_cast<unsigned>(event.code)
+		] = 1 << static_cast<u8>(event.action);
+		unsigned i;
+		for (i = 0; i < display->_key_clear_queue_num; ++i) {
+			if (display->_key_clear_queue[i] == event.code) {
+				return;
+			}
+		}
+		if (i < array_extent(display->_key_clear_queue)) {
+			display->_key_clear_queue[i] = event.code;
+			++display->_key_clear_queue_num;
+		} else {
+			TOGO_LOGF(
+				"input_buffer: warning: discarded key-clear for key %u on display %p\n",
+				static_cast<unsigned>(event.code),
+				event.display
+			);
+		}
+	}
+}
+
 bool input_buffer::poll(
 	InputBuffer& ib,
 	InputEventType& type,
@@ -122,6 +175,31 @@ bool input_buffer::poll(
 			break;
 		}
 	#endif
+	switch (type) {
+	case InputEventType::key:
+		set_key_state(event->key);
+		break;
+
+	case InputEventType::mouse_button:
+		if (event->mouse_button.action == MouseButtonAction::press) {
+			event->display->_mouse_button_states[
+				static_cast<unsigned>(event->mouse_button.button)
+			] |= 1 << static_cast<u8>(event->mouse_button.action);
+		} else if (event->mouse_button.action == MouseButtonAction::release) {
+			event->display->_mouse_button_states[
+				static_cast<unsigned>(event->mouse_button.button)
+			]  = 1 << static_cast<u8>(event->mouse_button.action);
+		}
+		break;
+
+	case InputEventType::mouse_motion:
+		event->display->_mouse_x = event->mouse_motion.x;
+		event->display->_mouse_y = event->mouse_motion.y;
+		break;
+
+	default:
+		break;
+	};
 	return true;
 }
 

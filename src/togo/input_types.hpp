@@ -179,6 +179,8 @@ enum class KeyCode : unsigned {
 	right_control,
 	right_alt,
 	right_super,
+
+	COUNT
 };
 
 /**
@@ -217,6 +219,8 @@ enum class MouseButton : unsigned {
 	left,
 	right,
 	middle,
+
+	COUNT
 };
 
 /**
