@@ -59,6 +59,7 @@ precore.make_solution(
 -- Groups
 
 include("algorithm")
+include("app")
 include("collections")
 include("general")
 include("gfx")
