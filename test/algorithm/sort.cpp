@@ -229,7 +229,7 @@ void test_growth(
 
 signed
 main() {
-	core_init();
+	memory_init();
 
 	std::random_device rdev;
 

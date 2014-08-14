@@ -66,7 +66,7 @@ void* queen_func(void*) {
 
 signed
 main() {
-	core_init();
+	memory_init();
 
 	Thread* queen = thread::create("queen", nullptr, queen_func);
 	thread::join(queen);

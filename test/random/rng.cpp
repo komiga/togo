@@ -107,7 +107,7 @@ void test_rng(u64 const seed) {
 
 signed
 main() {
-	core_init();
+	memory_init();
 
 	TOGO_LOGF("unsigned range: [0x%lX, 0x%lX]  [%lu, %lu]\n", RNG_MIN  , RNG_MAX  , RNG_MIN  , RNG_MAX);
 	TOGO_LOGF("  signed range: [0x%lX, 0x%lX]  [%ld, %ld]\n", RNG_MIN_S, RNG_MAX_S, RNG_MIN_S, RNG_MAX_S);

@@ -7,21 +7,21 @@
 	#define TOGO_TEST_SCRATCH_SIZE togo::memory::SCRATCH_SIZE_DEFAULT
 #endif
 
-struct CoreInitializer {
-	CoreInitializer(CoreInitializer const&) = delete;
-	CoreInitializer& operator=(CoreInitializer const&) = delete;
-	CoreInitializer(CoreInitializer&&) = delete;
-	CoreInitializer& operator=(CoreInitializer&&) = delete;
+struct MemoryInitializer {
+	MemoryInitializer(MemoryInitializer const&) = delete;
+	MemoryInitializer& operator=(MemoryInitializer const&) = delete;
+	MemoryInitializer(MemoryInitializer&&) = delete;
+	MemoryInitializer& operator=(MemoryInitializer&&) = delete;
 
-	CoreInitializer() {
+	MemoryInitializer() {
 		togo::memory::init(TOGO_TEST_SCRATCH_SIZE);
 	}
 
-	~CoreInitializer() {
+	~MemoryInitializer() {
 		togo::memory::shutdown();
 	}
 };
 
-static void core_init() {
-	static CoreInitializer const _ci{};
+static void memory_init() {
+	static MemoryInitializer const _ci{};
 }

@@ -17,7 +17,7 @@ using namespace togo;
 
 signed
 main() {
-	core_init();
+	memory_init();
 
 	TOGO_LOGF("sizeof(Array<u32>) = %zu\n", sizeof(Array<u32>));
 	TOGO_LOGF("alignof(Array<u32>) = %zu\n", alignof(Array<u32>));

@@ -11,7 +11,7 @@ using namespace togo;
 
 signed
 main() {
-	core_init();
+	memory_init();
 
 	MemoryStream stream{memory::default_allocator(), 0};
 	test_writer(stream, true);

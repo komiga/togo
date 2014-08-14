@@ -13,7 +13,7 @@ using namespace togo;
 
 signed
 main() {
-	core_init();
+	memory_init();
 	gfx::init(3, 2);
 
 	gfx::Config config{};

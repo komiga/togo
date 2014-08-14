@@ -40,7 +40,7 @@ main() {
 		{10}, {9}, {8}, {7}, {6},
 		{ 5}, {4}, {3}, {2}, {1}
 	};
-	core_init();
+	memory_init();
 
 	{
 		TaskManager tm{5, memory::default_allocator()};

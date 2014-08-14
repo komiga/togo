@@ -78,7 +78,7 @@ void test_object_buffer(Allocator& allocator, u32 const init_capacity) {
 
 signed
 main() {
-	core_init();
+	memory_init();
 
 	test_object_buffer<u8, u8>(memory::default_allocator(), 0);
 	test_object_buffer<u32, u16>(memory::default_allocator(), 0);

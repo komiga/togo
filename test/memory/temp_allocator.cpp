@@ -33,7 +33,7 @@ void f() {
 
 signed
 main() {
-	core_init();
+	memory_init();
 	f();
 	return 0;
 }

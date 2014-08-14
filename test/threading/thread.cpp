@@ -18,7 +18,7 @@ void* thread_func(void* i_void) {
 
 signed
 main() {
-	core_init();
+	memory_init();
 
 	TOGO_LOGF("main thread: '%s'\n", thread::name());
 
