@@ -98,6 +98,9 @@ struct KVS {
 	KVS(Vec2 const& value);
 	KVS(Vec3 const& value);
 	KVS(Vec4 const& value);
+
+private:
+	KVS(KVSType const type);
 };
 
 /** @} */ // end of doc-group kvs

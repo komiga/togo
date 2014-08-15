@@ -20,10 +20,7 @@ namespace {
 } // anonymous namespace
 
 KVS::KVS(char const* const value, unsigned const size)
-	: _type(KVSType::null)
-	, _name(nullptr)
-	, _name_size(0)
-	, _value()
+	: KVS()
 {
 	kvs::string(*this, value, size);
 }

@@ -217,11 +217,11 @@ inline Vec4 const& vec4(KVS const& kvs) {
 	return kvs._value.vec4;
 }
 
-/// Clear value.
-void clear(KVS& kvs);
-
 /// Clear value (if dynamic) and change type iff type differs.
 bool set_type(KVS& kvs, KVSType const type);
+
+/// Clear value.
+void clear(KVS& kvs);
 
 /// Clear value (if dynamic) and change type to KVSType::null.
 inline void nullify(KVS& kvs) {
@@ -284,87 +284,40 @@ inline KVS::~KVS() {
 
 /// Construct null KVS.
 inline KVS::KVS()
-	: _type(KVSType::null)
-	, _name(nullptr)
-	, _name_size(0)
-	, _value()
+	: KVS(KVSType::null)
 {}
 
 /// Construct with integer value.
-inline KVS::KVS(s64 const value)
-	: _type(KVSType::integer)
-	, _name(nullptr)
-	, _name_size(0)
-	, _value()
-{
-	_value.integer = value;
-}
+inline KVS::KVS(s64 const value) : KVS(KVSType::integer) { _value.integer = value; }
 
 /// Construct with decimal value.
-inline KVS::KVS(f32 const value)
-	: _type(KVSType::decimal)
-	, _name(nullptr)
-	, _name_size(0)
-	, _value()
-{
-	_value.decimal = value;
-}
+inline KVS::KVS(f32 const value) : KVS(KVSType::decimal) { _value.decimal = value; }
 
 /// Construct with boolean value.
-inline KVS::KVS(bool const value)
-	: _type(KVSType::boolean)
-	, _name(nullptr)
-	, _name_size(0)
-	, _value()
-{
-	_value.boolean = value;
-}
+inline KVS::KVS(bool const value) : KVS(KVSType::boolean) { _value.boolean = value; }
 
 /// Construct with string value.
 template<unsigned N>
-inline KVS::KVS(char const (&value)[N])
-	: KVS(value, N)
-{}
+inline KVS::KVS(char const (&value)[N]) : KVS(value, N) {}
 
 /// Construct with 1-dimensional vector value.
-inline KVS::KVS(Vec1 const& value)
-	: _type(KVSType::vec1)
-	, _name(nullptr)
-	, _name_size(0)
-	, _value()
-{
-	_value.vec1 = value;
-}
+inline KVS::KVS(Vec1 const& value) : KVS(KVSType::vec1) { _value.vec1 = value; }
 
 /// Construct with 2-dimensional vector value.
-inline KVS::KVS(Vec2 const& value)
-	: _type(KVSType::vec2)
-	, _name(nullptr)
-	, _name_size(0)
-	, _value()
-{
-	_value.vec2 = value;
-}
+inline KVS::KVS(Vec2 const& value) : KVS(KVSType::vec2) { _value.vec2 = value; }
 
 /// Construct with 3-dimensional vector value.
-inline KVS::KVS(Vec3 const& value)
-	: _type(KVSType::vec3)
-	, _name(nullptr)
-	, _name_size(0)
-	, _value()
-{
-	_value.vec3 = value;
-}
+inline KVS::KVS(Vec3 const& value) : KVS(KVSType::vec3) { _value.vec3 = value; }
 
 /// Construct with 4-dimensional vector value.
-inline KVS::KVS(Vec4 const& value)
-	: _type(KVSType::vec4)
+inline KVS::KVS(Vec4 const& value) : KVS(KVSType::vec4) { _value.vec4 = value; }
+
+inline KVS::KVS(KVSType const type)
+	: _type(type)
 	, _name(nullptr)
 	, _name_size(0)
 	, _value()
-{
-	_value.vec4 = value;
-}
+{}
 
 /** @cond INTERNAL */
 
