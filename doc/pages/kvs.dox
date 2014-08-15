@@ -1,0 +1,9 @@
+
+/**
+
+@defgroup kvs KVS
+@details
+
+@warning An assertion will fail when requesting the value of a type when the KVS is of a different type.
+
+*/
