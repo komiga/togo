@@ -57,6 +57,7 @@ struct KVS {
 	KVSType _type;
 	char* _name;
 	unsigned _name_size;
+	hash64 _name_hash;
 
 	union Value {
 		s64 integer;

@@ -5,6 +5,7 @@
 
 #include <togo/config.hpp>
 #include <togo/assert.hpp>
+#include <togo/hash.hpp>
 #include <togo/memory.hpp>
 #include <togo/kvs.hpp>
 
@@ -42,6 +43,25 @@ bool kvs::set_type(KVS& kvs, KVSType const type) {
 		kvs._value.collection.size = 0;
 	}
 	return true;
+}
+
+void kvs::set_name(KVS& kvs, char const* const name, unsigned const size) {
+	if (size > kvs._name_size) {
+		TOGO_DESTROY(memory::default_allocator(), kvs._name);
+		kvs._name = static_cast<char*>(memory::default_allocator().allocate(size, alignof(char)));
+	}
+	std::memcpy(kvs._name, name, size);
+	kvs._name_size = size;
+	kvs._name_hash = hash::calc64(name, size);
+}
+
+void kvs::clear_name(KVS& kvs) {
+	if (kvs::is_named(kvs)) {
+		TOGO_DESTROY(memory::default_allocator(), kvs._name);
+		kvs._name = nullptr;
+		kvs._name_size = 0;
+		kvs._name_hash = hash::IDENTITY64;
+	}
 }
 
 void kvs::clear(KVS& kvs) {

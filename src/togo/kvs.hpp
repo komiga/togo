@@ -13,6 +13,7 @@
 #include <togo/utility.hpp>
 #include <togo/kvs_types.hpp>
 #include <togo/assert.hpp>
+#include <togo/hash.hpp>
 
 namespace togo {
 
@@ -50,18 +51,6 @@ namespace {
 /// Get type.
 inline KVSType type(KVS const& kvs) {
 	return kvs._type;
-}
-
-/// Get name.
-///
-/// This will return nullptr if the KVS has no name.
-inline char const* name(KVS const& kvs) {
-	return kvs._name;
-}
-
-/// Get name size.
-inline unsigned name_size(KVS const& kvs) {
-	return kvs._name_size;
 }
 
 /// Check type equivalence.
@@ -107,6 +96,23 @@ inline bool is_vector(KVS const& kvs) {
 /// Check if type is an array or node.
 inline bool is_collection(KVS const& kvs) {
 	return kvs::is_type_any(kvs, type_mask_collection);
+}
+
+/// Get name.
+///
+/// This will return nullptr if the KVS has no name.
+inline char const* name(KVS const& kvs) {
+	return kvs._name;
+}
+
+/// Get name size.
+inline unsigned name_size(KVS const& kvs) {
+	return kvs._name_size;
+}
+
+/// Get name hash.
+inline hash64 name_hash(KVS const& kvs) {
+	return kvs._name_hash;
 }
 
 /// Check if named.
@@ -220,6 +226,18 @@ inline Vec4 const& vec4(KVS const& kvs) {
 /// Clear value (if dynamic) and change type iff type differs.
 bool set_type(KVS& kvs, KVSType const type);
 
+/// Set name.
+void set_name(KVS& kvs, char const* const name, unsigned const size);
+
+/// Set name.
+template<unsigned N>
+inline void set_name(KVS& kvs, char const (&name)[N]) {
+	kvs::set_name(kvs, name, N);
+}
+
+/// Clear name.
+void clear_name(KVS& kvs);
+
 /// Clear value.
 void clear(KVS& kvs);
 
@@ -280,6 +298,7 @@ inline void vec4(KVS& kvs, Vec4 const& value) {
 /// This will nullify the KVS.
 inline KVS::~KVS() {
 	kvs::nullify(*this);
+	kvs::clear_name(*this);
 }
 
 /// Construct null KVS.
@@ -316,6 +335,7 @@ inline KVS::KVS(KVSType const type)
 	: _type(type)
 	, _name(nullptr)
 	, _name_size(0)
+	, _name_hash(hash::IDENTITY64)
 	, _value()
 {}
 
