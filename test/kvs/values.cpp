@@ -14,6 +14,11 @@ signed
 main() {
 	memory_init();
 
+	TOGO_LOGF("sizeof(KVS) = %u\n", static_cast<unsigned>(sizeof(KVS)));
+	TOGO_LOGF("sizeof(KVS::Value) = %u\n", static_cast<unsigned>(sizeof(KVS::Value)));
+	TOGO_LOGF("alignof(KVS) %u\n", static_cast<unsigned>(alignof(KVS)));
+	TOGO_LOGF("alignof(KVS::Value) %u\n", static_cast<unsigned>(alignof(KVS::Value)));
+
 	{
 		KVS const identity;
 		TOGO_ASSERTE(kvs::is_null(identity));
@@ -32,13 +37,20 @@ main() {
 	}
 
 	{
-		static constexpr char const STRING_VALUE[]{"fitz"};
-		KVS a{STRING_VALUE};
+		static constexpr char const NAME[]{"bzork"};
+		static constexpr char const VALUE[]{"fitz"};
+		KVS a{VALUE};
 		TOGO_ASSERTE(!kvs::is_named(a));
 		TOGO_ASSERTE(kvs::is_string(a));
-		TOGO_ASSERTE(kvs::string_size(a) == sizeof(STRING_VALUE));
-		TOGO_ASSERTE(0 == std::strncmp(STRING_VALUE, kvs::string(a), kvs::string_size(a)));
-		TOGO_LOGF("string value: \"%s\"\n", kvs::string(a));
+		TOGO_ASSERTE(kvs::string_size(a) == sizeof(VALUE));
+		TOGO_ASSERTE(0 == std::strncmp(VALUE, kvs::string(a), kvs::string_size(a)));
+
+		kvs::set_name(a, NAME);
+		TOGO_ASSERTE(kvs::is_named(a));
+		TOGO_ASSERTE(kvs::name_size(a) == sizeof(NAME));
+		TOGO_ASSERTE(0 == std::strncmp(NAME, kvs::name(a), kvs::name_size(a)));
+
+		TOGO_LOGF("\"%s\" = \"%s\"\n", kvs::name(a), kvs::string(a));
 
 		kvs::integer(a, static_cast<s64>(0xCECECECECECECECE));
 		TOGO_ASSERTE(kvs::is_integer(a));
