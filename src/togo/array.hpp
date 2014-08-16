@@ -185,7 +185,7 @@ void set_capacity(Array<T>& a, u32_fast const new_capacity) {
 /// Cost of insertion should be amortized O(1), assuming no aggressive
 /// shrinking. Grows to at least min_capacity if it is non-zero.
 template<class T>
-void grow(Array<T>& a, u32_fast const min_capacity = 0) {
+inline void grow(Array<T>& a, u32_fast const min_capacity = 0) {
 	u32_fast new_capacity = a._capacity * 2 + 8;
 	if (min_capacity > new_capacity) {
 		new_capacity = min_capacity;
