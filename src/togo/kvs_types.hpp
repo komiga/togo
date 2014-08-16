@@ -30,7 +30,7 @@ enum class KVSType : unsigned {
 	null		= 1 << 0,
 	/// 64-bit signed integer.
 	integer		= 1 << 1,
-	/// 32-bit floating-point number.
+	/// 64-bit floating-point number.
 	decimal		= 1 << 2,
 	/// Boolean.
 	boolean		= 1 << 3,
@@ -61,7 +61,7 @@ struct KVS {
 
 	union Value {
 		s64 integer;
-		f32 decimal;
+		f64 decimal;
 		bool boolean;
 		Vec1 vec1;
 		Vec2 vec2;
@@ -89,7 +89,7 @@ struct KVS {
 	~KVS();
 	KVS();
 	KVS(s64 const value);
-	KVS(f32 const value);
+	KVS(f64 const value);
 	KVS(bool const value);
 	KVS(char const* const value, unsigned const size);
 	template<unsigned N>

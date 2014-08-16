@@ -10,6 +10,7 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/types.hpp>
 #include <togo/utility.hpp>
 #include <togo/kvs_types.hpp>
 #include <togo/assert.hpp>
@@ -176,7 +177,7 @@ inline s64 integer(KVS const& kvs) {
 }
 
 /// Get decimal value.
-inline f32 decimal(KVS const& kvs) {
+inline f64 decimal(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::decimal));
 	return kvs._value.decimal;
 }
@@ -253,7 +254,7 @@ inline void integer(KVS& kvs, s64 const value) {
 }
 
 /// Set decimal value.
-inline void decimal(KVS& kvs, f32 const value) {
+inline void decimal(KVS& kvs, f64 const value) {
 	kvs::set_type(kvs, KVSType::decimal);
 	kvs._value.decimal = value;
 }
@@ -310,7 +311,7 @@ inline KVS::KVS()
 inline KVS::KVS(s64 const value) : KVS(KVSType::integer) { _value.integer = value; }
 
 /// Construct with decimal value.
-inline KVS::KVS(f32 const value) : KVS(KVSType::decimal) { _value.decimal = value; }
+inline KVS::KVS(f64 const value) : KVS(KVSType::decimal) { _value.decimal = value; }
 
 /// Construct with boolean value.
 inline KVS::KVS(bool const value) : KVS(KVSType::boolean) { _value.boolean = value; }
