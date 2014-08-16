@@ -126,6 +126,20 @@ inline unsigned size(KVS const& kvs) {
 	return kvs::is_collection(kvs) ? kvs._value.collection.size : 0;
 }
 
+/// Number of values reserved in the collection.
+inline unsigned capacity(KVS const& kvs) {
+	return kvs::is_collection(kvs) ? kvs._value.collection.capacity : 0;
+}
+
+/// Number of values that can be added before a resize occurs.
+inline unsigned space(KVS const& kvs) {
+	return
+		kvs::is_collection(kvs)
+		? kvs._value.collection.capacity - kvs._value.collection.size
+		: 0
+	;
+}
+
 /// Returns true if there are any values in the collection.
 inline bool any(KVS const& kvs) {
 	return kvs::is_collection(kvs) ? kvs._value.collection.size : false;
@@ -226,13 +240,15 @@ inline Vec4 const& vec4(KVS const& kvs) {
 	return kvs._value.vec4;
 }
 
-/// Clear value (if dynamic) and change type iff type differs.
+/// Free value if dynamic and change type iff type differs.
+///
+/// Returns true if the type changed.
 bool set_type(KVS& kvs, KVSType const type);
 
 /// Set name.
-void set_name(KVS& kvs, char const* const name, unsigned const size);
+void set_name(KVS& kvs, char const* const name, unsigned size);
 
-/// Set name.
+/// Set name to string literal.
 template<unsigned N>
 inline void set_name(KVS& kvs, char const (&name)[N]) {
 	kvs::set_name(kvs, name, N);
@@ -244,7 +260,10 @@ void clear_name(KVS& kvs);
 /// Clear value.
 void clear(KVS& kvs);
 
-/// Clear value (if dynamic) and change type to KVSType::null.
+/// Free dynamic value.
+void free_dynamic(KVS& kvs);
+
+/// Free value if dynamic and change type to KVSType::null.
 inline void nullify(KVS& kvs) {
 	kvs::set_type(kvs, KVSType::null);
 }
@@ -268,7 +287,13 @@ inline void boolean(KVS& kvs, bool const value) {
 }
 
 /// Set string value.
-void string(KVS& kvs, char const* const value, unsigned const size);
+void string(KVS& kvs, char const* const value, unsigned size);
+
+/// Set string value to string literal.
+template<unsigned N>
+inline void string(KVS& kvs, char const (&name)[N]) {
+	kvs::string(kvs, name, N);
+}
 
 /// Set 1-dimensional vector value.
 inline void vec1(KVS& kvs, Vec1 const& value) {
@@ -292,6 +317,40 @@ inline void vec3(KVS& kvs, Vec3 const& value) {
 inline void vec4(KVS& kvs, Vec4 const& value) {
 	kvs::set_type(kvs, KVSType::vec4);
 	kvs._value.vec4 = value;
+}
+
+/// Change collection size.
+///
+/// If new_capacity is lower than the size, the collection is resized
+/// to new_capacity.
+void set_capacity(KVS& kvs, unsigned const new_capacity);
+
+/// Grow collection with a doubling factor.
+///
+/// Cost of insertion should be amortized O(1), assuming no aggressive
+/// shrinking. Grows to at least min_capacity if it is non-zero.
+void grow(KVS& kvs, unsigned const min_capacity = 0);
+
+/// Shrink collection capacity to fit current size.
+inline void shrink_to_fit(KVS& kvs) {
+	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
+	if (kvs._value.collection.capacity != kvs._value.collection.size) {
+		kvs::set_capacity(kvs, kvs._value.collection.size);
+	}
+}
+
+/// Change collection size.
+///
+/// Upsize grows by using new_size as the minimum capacity.
+/// If the collection grows, the new values will be null.
+void resize(KVS& kvs, unsigned const new_size);
+
+/// Reserve at least new_capacity in collection.
+inline void reserve(KVS& kvs, unsigned const new_capacity) {
+	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
+	if (new_capacity > kvs._value.collection.capacity) {
+		kvs::set_capacity(kvs, new_capacity);
+	}
 }
 
 /** @} */ // end of doc-group kvs
@@ -318,7 +377,7 @@ inline KVS::KVS(f64 const value) : KVS(KVSType::decimal) { _value.decimal = valu
 /// Construct with boolean value.
 inline KVS::KVS(bool const value) : KVS(KVSType::boolean) { _value.boolean = value; }
 
-/// Construct with string value.
+/// Construct with string literal value.
 template<unsigned N>
 inline KVS::KVS(char const (&value)[N]) : KVS(value, N) {}
 

@@ -20,7 +20,24 @@ namespace {
 	;
 } // anonymous namespace
 
-KVS::KVS(char const* const value, unsigned const size)
+namespace kvs {
+	static void init_children(KVS& kvs, unsigned const from, unsigned const to);
+	static void reset_children(KVS& kvs, unsigned const from, unsigned const to);
+} // namespace kvs
+
+inline void kvs::init_children(KVS& kvs, unsigned const from, unsigned const to) {
+	for (unsigned i = from; i < to; ++i) {
+		new (&kvs._value.collection.data[i]) KVS();
+	}
+}
+
+inline void kvs::reset_children(KVS& kvs, unsigned const from, unsigned const to) {
+	for (unsigned i = from; i < to; ++i) {
+		kvs._value.collection.data[i].~KVS();
+	}
+}
+
+KVS::KVS(char const* const value, unsigned size)
 	: KVS()
 {
 	kvs::string(*this, value, size);
@@ -30,27 +47,38 @@ bool kvs::set_type(KVS& kvs, KVSType const type) {
 	if (kvs._type == type) {
 		return false;
 	}
-	/// Only clear value if dynamic
-	if (kvs::is_type_any(kvs, type_mask_collection | KVSType::string)) {
-		kvs::clear(kvs);
-	}
+	kvs::free_dynamic(kvs);
 	kvs._type = type;
+
+	// Ensure empty dynamic value when type changes
 	if (kvs::is_type(kvs, KVSType::string)) {
 		kvs._value.string.data = nullptr;
 		kvs._value.string.size = 0;
+		kvs._value.string.capacity = 0;
 	} else if (kvs::is_type_any(kvs, type_mask_collection)) {
 		kvs._value.collection.data = nullptr;
 		kvs._value.collection.size = 0;
+		kvs._value.collection.capacity = 0;
 	}
 	return true;
 }
 
-void kvs::set_name(KVS& kvs, char const* const name, unsigned const size) {
-	if (size > kvs._name_size) {
-		TOGO_DESTROY(memory::default_allocator(), kvs._name);
-		kvs._name = static_cast<char*>(memory::default_allocator().allocate(size, alignof(char)));
+void kvs::set_name(KVS& kvs, char const* const name, unsigned size) {
+	if (size > 0 && name[size - 1] == '\0') {
+		--size;
 	}
-	std::memcpy(kvs._name, name, size);
+	if (size == 0) {
+		kvs::clear_name(kvs);
+	} else if (size > kvs._name_size) {
+		kvs::clear_name(kvs);
+		kvs._name = static_cast<char*>(
+			memory::default_allocator().allocate(size + 1, alignof(char))
+		);
+	}
+	if (size > 0) {
+		std::memcpy(kvs._name, name, size);
+		kvs._name[size] = '\0';
+	}
 	kvs._name_size = size;
 	kvs._name_hash = hash::calc64(name, size);
 }
@@ -75,23 +103,12 @@ void kvs::clear(KVS& kvs) {
 	case KVSType::vec4: kvs._value.vec4 = Vec4{}; break;
 
 	case KVSType::string:
-		if (kvs._value.string.data) {
-			TOGO_DESTROY(memory::default_allocator(), kvs._value.string.data);
-			kvs._value.string.data = nullptr;
-			kvs._value.string.size = 0;
-		}
+		kvs._value.string.size = 0;
 		break;
 
 	case KVSType::array: // fall-through
 	case KVSType::node:
-		if (kvs._value.collection.data) {
-			for (auto& sub_kvs : kvs) {
-				kvs::clear(sub_kvs);
-			}
-			TOGO_DESTROY(memory::default_allocator(), kvs._value.collection.data);
-			kvs._value.collection.data = nullptr;
-			kvs._value.collection.size = 0;
-		}
+		kvs::resize(kvs, 0);
 		break;
 
 	case KVSType::null:
@@ -99,15 +116,84 @@ void kvs::clear(KVS& kvs) {
 	}
 }
 
-void kvs::string(KVS& kvs, char const* const value, unsigned const size) {
-	if (!kvs::is_type(kvs, KVSType::string) || size > kvs._value.string.size) {
-		if (!kvs::set_type(kvs, KVSType::string)) {
-			kvs::clear(kvs);
-		}
-		kvs._value.string.data = static_cast<char*>(memory::default_allocator().allocate(size, alignof(char)));
+void kvs::free_dynamic(KVS& kvs) {
+	if (kvs::is_type(kvs, KVSType::string)) {
+		TOGO_DESTROY(memory::default_allocator(), kvs._value.string.data);
+		kvs._value.string.data = nullptr;
+		kvs._value.string.size = 0;
+		kvs._value.string.capacity = 0;
+	} else if (kvs::is_type_any(kvs, type_mask_collection)) {
+		kvs::set_capacity(kvs, 0);
+	}
+}
+
+void kvs::string(KVS& kvs, char const* const value, unsigned size) {
+	TOGO_ASSERTE(size == 0 || value != nullptr);
+	kvs::set_type(kvs, KVSType::string);
+	if (size > 0 && value[size - 1] == '\0') {
+		--size;
+	}
+	if (size == 0) {
+		kvs::free_dynamic(kvs);
+	} else if (size >= kvs._value.string.capacity) {
+		kvs::free_dynamic(kvs);
+		kvs._value.string.data = static_cast<char*>(
+			memory::default_allocator().allocate(size + 1, alignof(char))
+		);
+		kvs._value.string.capacity = size + 1;
+	}
+	if (size > 0) {
+		std::memcpy(kvs._value.string.data, value, size);
+		kvs._value.string.data[size] = '\0';
 	}
 	kvs._value.string.size = size;
-	std::memcpy(kvs._value.string.data, value, size);
+}
+
+void kvs::set_capacity(KVS& kvs, unsigned const new_capacity) {
+	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
+	if (new_capacity == kvs._value.collection.capacity) {
+		return;
+	}
+
+	if (new_capacity < kvs._value.collection.size) {
+		kvs::reset_children(kvs, new_capacity, kvs._value.collection.size);
+		kvs._value.collection.size = new_capacity;
+	}
+
+	KVS* new_data = nullptr;
+	if (new_capacity != 0) {
+		new_data = static_cast<KVS*>(
+			memory::default_allocator().allocate(new_capacity * sizeof(KVS), alignof(KVS))
+		);
+		if (kvs._value.collection.data) {
+			std::memcpy(new_data, kvs._value.collection.data, kvs._value.collection.size * sizeof(KVS));
+		}
+	}
+	memory::default_allocator().deallocate(kvs._value.collection.data);
+	kvs._value.collection.data = new_data;
+	kvs._value.collection.capacity = new_capacity;
+	kvs::init_children(kvs, kvs._value.collection.size, new_capacity);
+}
+
+void kvs::grow(KVS& kvs, unsigned const min_capacity) {
+	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
+	unsigned new_capacity = kvs._value.collection.capacity * 2 + 8;
+	if (min_capacity > new_capacity) {
+		new_capacity = min_capacity;
+	}
+	kvs::set_capacity(kvs, new_capacity);
+}
+
+void kvs::resize(KVS& kvs, unsigned const new_size) {
+	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
+	if (new_size > kvs._value.collection.capacity) {
+		kvs::grow(kvs, new_size);
+	} else if (new_size < kvs._value.collection.size) {
+		kvs::reset_children(kvs, new_size, kvs._value.collection.size);
+	} else if (new_size > kvs._value.collection.size) {
+		kvs::reset_children(kvs, kvs._value.collection.size, new_size);
+	}
+	kvs._value.collection.size = new_size;
 }
 
 } // namespace togo

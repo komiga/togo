@@ -70,10 +70,12 @@ struct KVS {
 		struct {
 			char* data;
 			unsigned size;
+			unsigned capacity;
 		} string;
 		struct {
 			KVS* data;
 			unsigned size;
+			unsigned capacity;
 		} collection;
 
 		inline Value()
@@ -91,7 +93,9 @@ struct KVS {
 	KVS(s64 const value);
 	KVS(f64 const value);
 	KVS(bool const value);
-	KVS(char const* const value, unsigned const size);
+
+	/// Construct with string value.
+	KVS(char const* const value, unsigned size);
 	template<unsigned N>
 	KVS(char const (&value)[N]);
 
