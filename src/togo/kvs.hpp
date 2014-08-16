@@ -375,7 +375,15 @@ inline KVS::~KVS() {
 	kvs::clear_name(*this);
 }
 
-/// Construct null KVS.
+inline KVS::KVS(KVSType const type)
+	: _type(type)
+	, _name(nullptr)
+	, _name_size(0)
+	, _name_hash(hash::IDENTITY64)
+	, _value()
+{}
+
+/// Construct null.
 inline KVS::KVS()
 	: KVS(KVSType::null)
 {}
@@ -405,13 +413,36 @@ inline KVS::KVS(Vec3 const& value) : KVS(KVSType::vec3) { _value.vec3 = value; }
 /// Construct with 4-dimensional vector value.
 inline KVS::KVS(Vec4 const& value) : KVS(KVSType::vec4) { _value.vec4 = value; }
 
-inline KVS::KVS(KVSType const type)
-	: _type(type)
-	, _name(nullptr)
-	, _name_size(0)
-	, _name_hash(hash::IDENTITY64)
-	, _value()
-{}
+/// Construct with name and null value.
+inline KVS::KVS(StringRef const& name, null_tag const) : KVS() { kvs::set_name(*this, name); }
+
+/// Construct with name and integer value.
+inline KVS::KVS(StringRef const& name, s64 const value) : KVS(value) { kvs::set_name(*this, name); }
+
+/// Construct with name and decimal value.
+inline KVS::KVS(StringRef const& name, f64 const value) : KVS(value) { kvs::set_name(*this, name); }
+
+/// Construct with name and boolean value.
+inline KVS::KVS(StringRef const& name, bool const value) : KVS(value) { kvs::set_name(*this, name); }
+
+/// Construct with name and string value.
+inline KVS::KVS(StringRef const& name, StringRef const& value) : KVS(value) { kvs::set_name(*this, name); }
+
+/// Construct with name and string value from literal.
+template<unsigned N>
+inline KVS::KVS(StringRef const& name, char const (&value)[N]) : KVS(StringRef{value}) { kvs::set_name(*this, name); }
+
+/// Construct with name and 1-dimensional vector value.
+inline KVS::KVS(StringRef const& name, Vec1 const& value) : KVS(value) { kvs::set_name(*this, name); }
+
+/// Construct with name and 2-dimensional vector value.
+inline KVS::KVS(StringRef const& name, Vec2 const& value) : KVS(value) { kvs::set_name(*this, name); }
+
+/// Construct with name and 3-dimensional vector value.
+inline KVS::KVS(StringRef const& name, Vec3 const& value) : KVS(value) { kvs::set_name(*this, name); }
+
+/// Construct with name and 4-dimensional vector value.
+inline KVS::KVS(StringRef const& name, Vec4 const& value) : KVS(value) { kvs::set_name(*this, name); }
 
 /// Access value by index.
 inline KVS& KVS::operator[](unsigned const i) {

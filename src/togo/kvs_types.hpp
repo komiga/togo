@@ -11,6 +11,7 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/tags.hpp>
 #include <togo/traits.hpp>
 #include <togo/types.hpp>
 #include <togo/math_types.hpp>
@@ -95,10 +96,16 @@ struct KVS {
 	KVS& operator=(KVS&&) = delete;
 
 	~KVS();
+
+private:
+	KVS(KVSType const type);
+
+public:
 	KVS();
 	KVS(KVS const& other);
 	KVS(KVS&& other);
 
+// value ctors
 	KVS(s64 const value);
 	KVS(f64 const value);
 	KVS(bool const value);
@@ -113,10 +120,22 @@ struct KVS {
 	KVS(Vec3 const& value);
 	KVS(Vec4 const& value);
 
-private:
-	KVS(KVSType const type);
+// with-name ctors
+	KVS(StringRef const& name, null_tag const);
 
-public:
+	KVS(StringRef const& name, s64 const value);
+	KVS(StringRef const& name, f64 const value);
+	KVS(StringRef const& name, bool const value);
+
+	KVS(StringRef const& name, StringRef const& value);
+	template<unsigned N>
+	KVS(StringRef const& name, char const (&value)[N]);
+
+	KVS(StringRef const& name, Vec1 const& value);
+	KVS(StringRef const& name, Vec2 const& value);
+	KVS(StringRef const& name, Vec3 const& value);
+	KVS(StringRef const& name, Vec4 const& value);
+
 	KVS& operator[](unsigned const i);
 	KVS const& operator[](unsigned const i) const;
 };
