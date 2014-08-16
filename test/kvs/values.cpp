@@ -64,5 +64,26 @@ main() {
 		TOGO_ASSERTE(kvs::is_null(a));
 	}
 
+	{
+		KVS x{"x-name", "x-value"};
+
+		KVS y;
+		kvs::copy(y, x);
+		TOGO_ASSERTE(kvs::is_type(y, kvs::type(x)));
+		TOGO_ASSERTE(kvs::name_size(y) == kvs::name_size(x));
+		TOGO_ASSERTE(0 == std::strncmp(kvs::name(y), kvs::name(x), kvs::name_size(y)));
+		TOGO_ASSERTE(kvs::string_size(y) == kvs::string_size(x));
+		TOGO_ASSERTE(0 == std::strncmp(kvs::string(y), kvs::string(x), kvs::string_size(y)));
+
+		KVS z{"z-name", "z-value"};
+		kvs::move(z, x);
+		TOGO_ASSERTE(kvs::is_null(x));
+		TOGO_ASSERTE(!kvs::is_type(z, kvs::type(x)));
+		TOGO_ASSERTE(kvs::name_size(z) == std::strlen("x-name"));
+		TOGO_ASSERTE(0 == std::strncmp(kvs::name(z), "x-name", kvs::name_size(z)));
+		TOGO_ASSERTE(kvs::string_size(z) == std::strlen("x-value"));
+		TOGO_ASSERTE(0 == std::strncmp(kvs::string(z), "x-value", kvs::string_size(z)));
+	}
+
 	return 0;
 }
