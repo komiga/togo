@@ -32,10 +32,10 @@ inline void kvs::reset_children(KVS& kvs, unsigned const from, unsigned const to
 	}
 }
 
-KVS::KVS(char const* const value, unsigned size)
+KVS::KVS(StringRef const& value)
 	: KVS()
 {
-	kvs::string(*this, value, size);
+	kvs::string(*this, value);
 }
 
 KVS::KVS(KVS const& other)
@@ -77,24 +77,21 @@ bool kvs::set_type(KVS& kvs, KVSType const type) {
 	return true;
 }
 
-void kvs::set_name(KVS& kvs, char const* const name, unsigned size) {
-	if (size > 0 && name[size - 1] == '\0') {
-		--size;
-	}
-	if (size == 0) {
+void kvs::set_name(KVS& kvs, StringRef const& name) {
+	if (name.empty()) {
 		kvs::clear_name(kvs);
-	} else if (size > kvs._name_size) {
+	} else if (name.size > kvs._name_size) {
 		kvs::clear_name(kvs);
 		kvs._name = static_cast<char*>(
-			memory::default_allocator().allocate(size + 1, alignof(char))
+			memory::default_allocator().allocate(name.size + 1, alignof(char))
 		);
 	}
-	if (size > 0) {
-		std::memcpy(kvs._name, name, size);
-		kvs._name[size] = '\0';
+	if (name.any()) {
+		std::memcpy(kvs._name, name.data, name.size);
+		kvs._name[name.size] = '\0';
 	}
-	kvs._name_size = size;
-	kvs._name_hash = hash::calc64(name, size);
+	kvs._name_size = name.size;
+	kvs._name_hash = hash::calc64(name.data, name.size);
 }
 
 void kvs::clear_name(KVS& kvs) {
@@ -142,7 +139,7 @@ void kvs::free_dynamic(KVS& kvs) {
 }
 
 void kvs::copy(KVS& dst, KVS const& src) {
-	kvs::set_name(dst, kvs::name(src), kvs::name_size(src));
+	kvs::set_name(dst, kvs::name_ref(src));
 	switch (src._type) {
 	case KVSType::integer: kvs::integer(dst, kvs::integer(src)); break;
 	case KVSType::decimal: kvs::decimal(dst, kvs::decimal(src)); break;
@@ -153,7 +150,7 @@ void kvs::copy(KVS& dst, KVS const& src) {
 	case KVSType::vec4: kvs::vec4(dst, kvs::vec4(src)); break;
 
 	case KVSType::string:
-		kvs::string(dst, kvs::string(src), kvs::string_size(src));
+		kvs::string(dst, kvs::string_ref(src));
 		break;
 
 	case KVSType::array: // fall-through
@@ -186,26 +183,26 @@ void kvs::move(KVS& dst, KVS& src) {
 	src._name_hash = hash::IDENTITY64;
 }
 
-void kvs::string(KVS& kvs, char const* const value, unsigned size) {
-	TOGO_ASSERTE(size == 0 || value != nullptr);
+void kvs::string(KVS& kvs, StringRef const& value) {
+	TOGO_ASSERTE(value.size == 0 || value.valid());
 	kvs::set_type(kvs, KVSType::string);
-	if (size > 0 && value[size - 1] == '\0') {
-		--size;
-	}
-	if (size == 0) {
+	if (value.empty()) {
 		kvs::free_dynamic(kvs);
-	} else if (size >= kvs._value.string.capacity) {
+	} else if (value.size >= kvs._value.string.capacity) {
 		kvs::free_dynamic(kvs);
+		kvs._value.string.capacity = value.size + 1;
 		kvs._value.string.data = static_cast<char*>(
-			memory::default_allocator().allocate(size + 1, alignof(char))
+			memory::default_allocator().allocate(
+				kvs._value.string.capacity,
+				alignof(char)
+			)
 		);
-		kvs._value.string.capacity = size + 1;
 	}
-	if (size > 0) {
-		std::memcpy(kvs._value.string.data, value, size);
-		kvs._value.string.data[size] = '\0';
+	if (value.any()) {
+		std::memcpy(kvs._value.string.data, value.data, value.size);
+		kvs._value.string.data[value.size] = '\0';
 	}
-	kvs._value.string.size = size;
+	kvs._value.string.size = value.size;
 }
 
 void kvs::set_capacity(KVS& kvs, unsigned const new_capacity) {

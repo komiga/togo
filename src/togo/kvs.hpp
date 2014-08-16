@@ -12,8 +12,10 @@
 #include <togo/config.hpp>
 #include <togo/types.hpp>
 #include <togo/utility.hpp>
+#include <togo/string_types.hpp>
 #include <togo/kvs_types.hpp>
 #include <togo/assert.hpp>
+#include <togo/string.hpp>
 #include <togo/hash.hpp>
 
 namespace togo {
@@ -109,6 +111,11 @@ inline char const* name(KVS const& kvs) {
 /// This does not include the NUL terminator.
 inline unsigned name_size(KVS const& kvs) {
 	return kvs._name_size;
+}
+
+/// Get name reference.
+inline StringRef name_ref(KVS const& kvs) {
+	return StringRef{kvs._name, kvs._name_size};
 }
 
 /// Get name hash.
@@ -216,6 +223,15 @@ inline unsigned string_size(KVS const& kvs) {
 	return kvs._value.string.size;
 }
 
+/// Get string value reference.
+inline StringRef string_ref(KVS const& kvs) {
+	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::string));
+	return StringRef{
+		kvs._value.string.data ? kvs._value.string.data : "",
+		kvs._value.string.size
+	};
+}
+
 /// Get 1-dimensional vector value.
 inline Vec1 const& vec1(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::vec1));
@@ -246,13 +262,7 @@ inline Vec4 const& vec4(KVS const& kvs) {
 bool set_type(KVS& kvs, KVSType const type);
 
 /// Set name.
-void set_name(KVS& kvs, char const* const name, unsigned size);
-
-/// Set name to string literal.
-template<unsigned N>
-inline void set_name(KVS& kvs, char const (&name)[N]) {
-	kvs::set_name(kvs, name, N);
-}
+void set_name(KVS& kvs, StringRef const& name);
 
 /// Clear name.
 void clear_name(KVS& kvs);
@@ -295,13 +305,7 @@ inline void boolean(KVS& kvs, bool const value) {
 }
 
 /// Set string value.
-void string(KVS& kvs, char const* const value, unsigned size);
-
-/// Set string value to string literal.
-template<unsigned N>
-inline void string(KVS& kvs, char const (&name)[N]) {
-	kvs::string(kvs, name, N);
-}
+void string(KVS& kvs, StringRef const& value);
 
 /// Set 1-dimensional vector value.
 inline void vec1(KVS& kvs, Vec1 const& value) {
@@ -385,9 +389,9 @@ inline KVS::KVS(f64 const value) : KVS(KVSType::decimal) { _value.decimal = valu
 /// Construct with boolean value.
 inline KVS::KVS(bool const value) : KVS(KVSType::boolean) { _value.boolean = value; }
 
-/// Construct with string literal value.
+/// Construct with string value from literal.
 template<unsigned N>
-inline KVS::KVS(char const (&value)[N]) : KVS(value, N) {}
+inline KVS::KVS(char const (&value)[N]) : KVS(StringRef{value}) {}
 
 /// Construct with 1-dimensional vector value.
 inline KVS::KVS(Vec1 const& value) : KVS(KVSType::vec1) { _value.vec1 = value; }

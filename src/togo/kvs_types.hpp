@@ -14,6 +14,7 @@
 #include <togo/traits.hpp>
 #include <togo/types.hpp>
 #include <togo/math_types.hpp>
+#include <togo/string_types.hpp>
 
 namespace togo {
 
@@ -103,7 +104,7 @@ struct KVS {
 	KVS(bool const value);
 
 	/// Construct with string value.
-	KVS(char const* const value, unsigned size);
+	KVS(StringRef const& value);
 	template<unsigned N>
 	KVS(char const (&value)[N]);
 
