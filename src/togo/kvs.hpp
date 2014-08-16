@@ -99,14 +99,14 @@ inline bool is_collection(KVS const& kvs) {
 	return kvs::is_type_any(kvs, type_mask_collection);
 }
 
-/// Get name.
-///
-/// This will return nullptr if the KVS has no name.
+/// Get name (NUL-terminated).
 inline char const* name(KVS const& kvs) {
-	return kvs._name;
+	return kvs._name ? kvs._name : "";
 }
 
 /// Get name size.
+///
+/// This does not include the NUL terminator.
 inline unsigned name_size(KVS const& kvs) {
 	return kvs._name_size;
 }
@@ -188,13 +188,15 @@ inline bool boolean(KVS const& kvs) {
 	return kvs._value.boolean;
 }
 
-/// Get string value.
+/// Get string value (NUL-terminated).
 inline char const* string(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::string));
-	return kvs._value.string.data;
+	return kvs._value.string.data ? kvs._value.string.data : "";
 }
 
 /// Get string value size.
+///
+/// This does not include the NUL terminator.
 inline unsigned string_size(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::string));
 	return kvs._value.string.size;
