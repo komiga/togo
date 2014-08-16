@@ -106,6 +106,10 @@ struct KVS {
 
 private:
 	KVS(KVSType const type);
+
+public:
+	KVS& operator[](unsigned const i);
+	KVS const& operator[](unsigned const i) const;
 };
 
 /** @} */ // end of doc-group kvs

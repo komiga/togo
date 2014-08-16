@@ -18,13 +18,6 @@
 
 namespace togo {
 
-namespace kvs {
-
-/**
-	@addtogroup kvs
-	@{
-*/
-
 namespace {
 	static constexpr KVSType const type_mask_vector
 		= KVSType::vec1
@@ -48,6 +41,13 @@ namespace {
 		| KVSType::node
 	;
 } // anonymous namespace
+
+namespace kvs {
+
+/**
+	@addtogroup kvs
+	@{
+*/
 
 /// Get type.
 inline KVSType type(KVS const& kvs) {
@@ -400,6 +400,20 @@ inline KVS::KVS(KVSType const type)
 	, _name_hash(hash::IDENTITY64)
 	, _value()
 {}
+
+/// Access value by index.
+inline KVS& KVS::operator[](unsigned const i) {
+	TOGO_ASSERTE(kvs::is_type_any(*this, type_mask_collection));
+	TOGO_DEBUG_ASSERTE(i < _value.collection.size);
+	return _value.collection.data[i];
+}
+
+/// Access value by index.
+inline KVS const& KVS::operator[](unsigned const i) const {
+	TOGO_ASSERTE(kvs::is_type_any(*this, type_mask_collection));
+	TOGO_DEBUG_ASSERTE(i < _value.collection.size);
+	return _value.collection.data[i];
+}
 
 /** @cond INTERNAL */
 

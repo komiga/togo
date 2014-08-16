@@ -13,13 +13,6 @@
 
 namespace togo {
 
-namespace {
-	static constexpr KVSType const type_mask_collection
-		= KVSType::array
-		| KVSType::node
-	;
-} // anonymous namespace
-
 namespace kvs {
 	static void init_children(KVS& kvs, unsigned const from, unsigned const to);
 	static void reset_children(KVS& kvs, unsigned const from, unsigned const to);
