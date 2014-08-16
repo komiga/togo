@@ -263,6 +263,14 @@ void clear(KVS& kvs);
 /// Free dynamic value.
 void free_dynamic(KVS& kvs);
 
+/// Copy value.
+void copy(KVS& dst, KVS const& src);
+
+/// Move state.
+///
+/// src will be null and unnamed after this call.
+void move(KVS& dst, KVS& src);
+
 /// Free value if dynamic and change type to KVSType::null.
 inline void nullify(KVS& kvs) {
 	kvs::set_type(kvs, KVSType::null);

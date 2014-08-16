@@ -9,6 +9,8 @@
 #include <togo/memory.hpp>
 #include <togo/kvs.hpp>
 
+#include <utility>
+
 #include <cstring>
 
 namespace togo {
@@ -34,6 +36,25 @@ KVS::KVS(char const* const value, unsigned size)
 	: KVS()
 {
 	kvs::string(*this, value, size);
+}
+
+KVS::KVS(KVS const& other)
+	: KVS()
+{
+	kvs::copy(*this, other);
+}
+
+KVS::KVS(KVS&& other)
+	: _type(other._type)
+	, _name(other._name)
+	, _name_size(other._name_size)
+	, _name_hash(other._name_hash)
+	, _value(std::move(other._value))
+{
+	other._type = KVSType::null;
+	other._name = nullptr;
+	other._name_size = 0;
+	other._name_hash = hash::IDENTITY64;
 }
 
 bool kvs::set_type(KVS& kvs, KVSType const type) {
@@ -118,6 +139,51 @@ void kvs::free_dynamic(KVS& kvs) {
 	} else if (kvs::is_type_any(kvs, type_mask_collection)) {
 		kvs::set_capacity(kvs, 0);
 	}
+}
+
+void kvs::copy(KVS& dst, KVS const& src) {
+	kvs::set_name(dst, kvs::name(src), kvs::name_size(src));
+	switch (src._type) {
+	case KVSType::integer: kvs::integer(dst, kvs::integer(src)); break;
+	case KVSType::decimal: kvs::decimal(dst, kvs::decimal(src)); break;
+	case KVSType::boolean: kvs::boolean(dst, kvs::boolean(src)); break;
+	case KVSType::vec1: kvs::vec1(dst, kvs::vec1(src)); break;
+	case KVSType::vec2: kvs::vec2(dst, kvs::vec2(src)); break;
+	case KVSType::vec3: kvs::vec3(dst, kvs::vec3(src)); break;
+	case KVSType::vec4: kvs::vec4(dst, kvs::vec4(src)); break;
+
+	case KVSType::string:
+		kvs::string(dst, kvs::string(src), kvs::string_size(src));
+		break;
+
+	case KVSType::array: // fall-through
+	case KVSType::node:
+		kvs::set_type(dst, kvs::type(src));
+		kvs::resize(dst, kvs::size(src));
+		for (unsigned i = 0; i < kvs::size(dst); ++i) {
+			kvs::copy(dst[i], src[i]);
+		}
+		break;
+
+	case KVSType::null:
+		kvs::nullify(dst);
+		break;
+	}
+}
+
+void kvs::move(KVS& dst, KVS& src) {
+	kvs::clear_name(dst);
+	kvs::free_dynamic(dst);
+	dst._type = src._type;
+	dst._name = src._name;
+	dst._name_size = src._name_size;
+	dst._name_hash = src._name_hash;
+	dst._value = std::move(src._value);
+
+	src._type = KVSType::null;
+	src._name = nullptr;
+	src._name_size = 0;
+	src._name_hash = hash::IDENTITY64;
 }
 
 void kvs::string(KVS& kvs, char const* const value, unsigned size) {

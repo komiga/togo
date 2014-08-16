@@ -78,18 +78,26 @@ struct KVS {
 			unsigned capacity;
 		} collection;
 
+		Value(Value const&) = delete;
+		Value& operator=(Value const&) = delete;
+
+		~Value() = default;
+		Value(Value&&) = default;
+		Value& operator=(Value&&) = default;
+
 		inline Value()
 			: integer(0)
 		{}
 	} _value;
 
-	KVS(KVS const&) = delete;
-	KVS(KVS&&) = delete;
 	KVS& operator=(KVS const&) = delete;
 	KVS& operator=(KVS&&) = delete;
 
 	~KVS();
 	KVS();
+	KVS(KVS const& other);
+	KVS(KVS&& other);
+
 	KVS(s64 const value);
 	KVS(f64 const value);
 	KVS(bool const value);
