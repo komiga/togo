@@ -42,12 +42,12 @@ main() {
 		KVS a{VALUE};
 		TOGO_ASSERTE(!kvs::is_named(a));
 		TOGO_ASSERTE(kvs::is_string(a));
-		TOGO_ASSERTE(kvs::string_size(a) == sizeof(VALUE));
+		TOGO_ASSERTE(kvs::string_size(a) == std::strlen(VALUE));
 		TOGO_ASSERTE(0 == std::strncmp(VALUE, kvs::string(a), kvs::string_size(a)));
 
 		kvs::set_name(a, NAME);
 		TOGO_ASSERTE(kvs::is_named(a));
-		TOGO_ASSERTE(kvs::name_size(a) == sizeof(NAME));
+		TOGO_ASSERTE(kvs::name_size(a) == std::strlen(NAME));
 		TOGO_ASSERTE(0 == std::strncmp(NAME, kvs::name(a), kvs::name_size(a)));
 
 		TOGO_LOGF("\"%s\" = \"%s\"\n", kvs::name(a), kvs::string(a));
