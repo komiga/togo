@@ -43,7 +43,7 @@ TOGO_CONSTRAIN_SAME(hash64, am::detail::hash::fnv_hash_type<hash64_length>);
 inline hash32
 calc32(
 	char const* const data,
-	u32 const size
+	unsigned const size
 ) {
 	return
 		size != 0
@@ -58,7 +58,7 @@ calc32(
 inline hash64
 calc64(
 	char const* const data,
-	u32 const size
+	unsigned const size
 ) {
 	return
 		size != 0
