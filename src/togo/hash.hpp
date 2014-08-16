@@ -12,6 +12,7 @@
 #include <togo/config.hpp>
 #include <togo/debug_constraints.hpp>
 #include <togo/types.hpp>
+#include <togo/string.hpp>
 
 #include <am/hash/fnv.hpp>
 
@@ -53,6 +54,13 @@ calc32(
 }
 
 /**
+	Calculate 32-bit hash from string reference.
+*/
+inline hash32 calc32(StringRef const& ref) {
+	return hash::calc32(ref.data, ref.size);
+}
+
+/**
 	Calculate 64-bit hash.
 */
 inline hash64
@@ -65,6 +73,13 @@ calc64(
 		? am::hash::fnv1a<hash64_length>(data, size)
 		: hash64{0}
 	;
+}
+
+/**
+	Calculate 64-bit hash from string reference.
+*/
+inline hash64 calc64(StringRef const& ref) {
+	return hash::calc64(ref.data, ref.size);
 }
 
 /**
