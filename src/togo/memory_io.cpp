@@ -77,4 +77,65 @@ IOStatus MemoryStream::write(void const* const data, unsigned const size) {
 	return _status.clear();
 }
 
+// class MemoryReader implementation
+
+MemoryReader::~MemoryReader() = default;
+
+MemoryReader::MemoryReader(u8 const* const buffer, u32_fast const size)
+	: _status()
+	, _size(size)
+	, _buffer(buffer)
+	, _position(0)
+{
+	TOGO_ASSERTE(_buffer);
+}
+
+MemoryReader::MemoryReader(StringRef const& ref)
+	: _status()
+	, _size(ref.size)
+	, _buffer(reinterpret_cast<u8 const*>(ref.data))
+	, _position(0)
+{
+	TOGO_ASSERTE(_buffer);
+}
+
+IOStatus MemoryReader::status() const {
+	return _status;
+}
+
+u64 MemoryReader::position() {
+	return _position;
+}
+
+u64 MemoryReader::seek_to(u64 const position) {
+	_position = min(position, static_cast<u64>(_size));
+	return _position;
+}
+
+u64 MemoryReader::seek_relative(s64 const offset) {
+	_position = static_cast<u64>(
+		clamp<s64>(static_cast<s64>(_position) + offset, 0, _size)
+	);
+	return _position;
+}
+
+IOStatus MemoryReader::read(void* const data, unsigned size, unsigned* const read_size) {
+	if (_position + size > _size) {
+		if (read_size) {
+			size = _size - _position;
+			_status.assign(false, true);
+		} else {
+			return _status.assign(true, true);
+		}
+	} else {
+		_status.clear();
+	}
+	std::memcpy(data, _buffer + _position, size);
+	_position += size;
+	if (read_size) {
+		*read_size = size;
+	}
+	return _status;
+}
+
 } // namespace togo
