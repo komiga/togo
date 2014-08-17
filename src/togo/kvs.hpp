@@ -17,6 +17,7 @@
 #include <togo/assert.hpp>
 #include <togo/string.hpp>
 #include <togo/hash.hpp>
+#include <togo/io_types.hpp>
 
 namespace togo {
 
@@ -382,6 +383,18 @@ inline KVS& back(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::any(kvs));
 	return kvs._value.collection.data[kvs._value.collection.size - 1];
 }
+
+/// Read from stream.
+///
+/// Returns false if a parser error occurred. pinfo will have the
+/// position and error message of the parser.
+bool read(KVS& root, IReader& stream, ParserInfo& pinfo);
+
+/// Write to stream.
+///
+/// Returns IO status of the stream (output is likely incomplete
+/// if !status).
+IOStatus write(KVS const& kvs, IWriter& stream);
 
 /** @} */ // end of doc-group kvs
 

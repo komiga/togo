@@ -140,6 +140,18 @@ public:
 	KVS const& operator[](unsigned const i) const;
 };
 
+/**
+	KVS parser information.
+*/
+struct ParserInfo {
+	/// Line in stream.
+	unsigned line{0};
+	/// Column on line.
+	unsigned column{0};
+	/// Error message.
+	char message[512]{'\0'};
+};
+
 /** @} */ // end of doc-group kvs
 
 /** @cond INTERNAL */
