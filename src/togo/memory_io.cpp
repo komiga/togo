@@ -57,7 +57,7 @@ IOStatus MemoryStream::read(void* const data, unsigned size, unsigned* const rea
 			size = array::size(_buffer) - _position;
 			_status.assign(false, true);
 		} else {
-			return _status.assign(true, true);
+			return _status.assign(false, true);
 		}
 	} else {
 		_status.clear();
@@ -125,7 +125,7 @@ IOStatus MemoryReader::read(void* const data, unsigned size, unsigned* const rea
 			size = _size - _position;
 			_status.assign(false, true);
 		} else {
-			return _status.assign(true, true);
+			return _status.assign(false, true);
 		}
 	} else {
 		_status.clear();
