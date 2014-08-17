@@ -822,7 +822,7 @@ static bool kvs_write(
 			kvs._value.vec4.x,
 			kvs._value.vec4.y,
 			kvs._value.vec4.z,
-			kvs._value.vec4.y
+			kvs._value.vec4.w
 		));
 		break;
 
