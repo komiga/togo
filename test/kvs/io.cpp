@@ -16,29 +16,35 @@ using namespace togo;
 
 static constexpr char const
 	S_EMPTY[] = "",
-	S_X_NULL[] = "x = null",
-	S_X_INTEGER[] = "x = 42",
-	S_X_DECIMAL[] = "x = 3.1415926",
-	S_X_BOOLEAN_FALSE[] = "x = false",
-	S_X_BOOLEAN_TRUE[] = "x = true",
-	S_X_STRING[] = "x = unquoted",
-	S_X_STRING_QDOUBLE[] = "x = \"double-quoted\"",
-	S_X_STRING_QBLOCK[] = "x = ```block-quoted```",
-	S_X_VEC1[] = "x = (0)",
-	S_X_VEC2[] = "x = (0 1)",
-	S_X_VEC3[] = "x = (0 1 2)",
-	S_X_VEC4[] = "x = (0 1 2 3)",
+	S_NULL[] = "x = null",
+	S_INTEGER[] = "x = 42",
+	S_DECIMAL[] = "x = 3.1415926",
+	S_BOOLEAN_FALSE[] = "x = false",
+	S_BOOLEAN_TRUE[] = "x = true",
+	S_STRING[] = "x = unquoted",
+	S_STRING_QDOUBLE[] = "x = \"double-quoted\"",
+	S_STRING_QBLOCK[] = "x = ```block-quoted```",
+	S_VEC1[] = "x = (0)",
+	S_VEC2[] = "x = (0 1)",
+	S_VEC3[] = "x = (0 1 2)",
+	S_VEC4[] = "x = (0 1 2 3)",
 
-	S_C_NODE_EMPTY[] = "c = {}",
-	S_C_NODE_X_INTEGER[] = "c = {x = 42}",
-	S_C_NODE_X_ARRAY_EMPTY[] = "c = {x = []}",
-	S_C_NODE_X_ARRAY_COMP[] = "c = {x = [0 1, 2; 3\n4]}",
+	S_NODE_EMPTY[] = "c = {}",
+	S_NODE_X_INTEGER[] = "c = {x = 42}",
+	S_NODE_X_ARRAY_EMPTY[] = "c = {x = []}",
+	S_NODE_X_ARRAY_COMP[] = "c = {x = [0 1, 2; 3\n4]}",
 
-	S_C_ARRAY_EMPTY[] = "c = []",
-	S_C_ARRAY_INTEGER[] = "c = [42]",
-	S_C_ARRAY_COMP[] = "c = [0 1, 2; 3\n4]",
-	S_C_ARRAY_COMP_NODE[] = "c = [{}{} {}, {}; {}\n{}]",
-	S_C_ARRAY_COMP_ARRAY[] = "c = [[][] [], []; []\n[]]",
+	S_ARRAY_EMPTY[] = "c = []",
+	S_ARRAY_INTEGER[] = "c = [42]",
+	S_ARRAY_COMP[] = "c = [0 1, 2; 3\n4]",
+	S_ARRAY_COMP_NODE[] = "c = [{}{} {}, {}; {}\n{}]",
+	S_ARRAY_COMP_ARRAY[] = "c = [[][] [], []; []\n[]]",
+
+	S_COMMENT1[] = "//",
+	S_COMMENT2[] = "/**/",
+	S_COMMENT3[] = "a = [0/**/1]",
+	S_COMMENT4[] = "a = [0//\n1]",
+	S_COMMENT5[] = "a = [0/*\n*/1]",
 
 	S_V_INTEGER[] = "v=[0 -1 +1]",
 	S_V_DECIMAL[] = "v=[0.0 -1.0 +1.0  0e0 1e-1 1e+1 .0 -.1 +.1 .0e0 -.1e-1 +.1e+1]",
@@ -72,7 +78,12 @@ static constexpr char const
 	S_E_NODE2[] = "}",
 
 	S_E_ARRAY1[] = "x = [",
-	S_E_ARRAY2[] = "]"
+	S_E_ARRAY2[] = "]",
+
+	S_E_COMMENT1[] = "/",
+	S_E_COMMENT2[] = "/*",
+	S_E_COMMENT3[] = "x = //",
+	S_E_COMMENT4[] = "x = /**/"
 ;
 
 void test_str(KVS& root, StringRef const& data, bool const expected = true) {
@@ -122,64 +133,64 @@ main() {
 	// Values
 	{
 		KVS root;
-		test_str(root, S_X_NULL);
+		test_str(root, S_NULL);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_null(kvs::back(root)));
 
-		test_str(root, S_X_INTEGER);
+		test_str(root, S_INTEGER);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_integer(kvs::back(root)));
 		TOGO_ASSERTE(kvs::integer(kvs::back(root)) == 42);
 
-		test_str(root, S_X_DECIMAL);
+		test_str(root, S_DECIMAL);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_decimal(kvs::back(root)));
 		TOGO_ASSERTE(std::fabs(kvs::decimal(kvs::back(root)) - 3.1415926) <= 0.01f);
 
-		test_str(root, S_X_BOOLEAN_FALSE);
+		test_str(root, S_BOOLEAN_FALSE);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_boolean(kvs::back(root)));
 		TOGO_ASSERTE(kvs::boolean(kvs::back(root)) == false);
 
-		test_str(root, S_X_BOOLEAN_TRUE);
+		test_str(root, S_BOOLEAN_TRUE);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_boolean(kvs::back(root)));
 		TOGO_ASSERTE(kvs::boolean(kvs::back(root)) == true);
 
-		test_str(root, S_X_STRING);
+		test_str(root, S_STRING);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
 		StringRef ref = kvs::string_ref(kvs::back(root));
 		TOGO_ASSERTE(std::strncmp("unquoted", ref.data, ref.size) == 0);
 
-		test_str(root, S_X_STRING_QDOUBLE);
+		test_str(root, S_STRING_QDOUBLE);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
 		ref = kvs::string_ref(kvs::back(root));
 		TOGO_ASSERTE(std::strncmp("double-quoted", ref.data, ref.size) == 0);
 
-		test_str(root, S_X_STRING_QBLOCK);
+		test_str(root, S_STRING_QBLOCK);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
 		ref = kvs::string_ref(kvs::back(root));
 		TOGO_ASSERTE(std::strncmp("block-quoted", ref.data, ref.size) == 0);
 
-		test_str(root, S_X_VEC1);
+		test_str(root, S_VEC1);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_vec1(kvs::back(root)));
 		TOGO_ASSERTE(kvs::vec1(kvs::back(root)) == Vec1(0));
 
-		test_str(root, S_X_VEC2);
+		test_str(root, S_VEC2);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_vec2(kvs::back(root)));
 		TOGO_ASSERTE(kvs::vec2(kvs::back(root)) == Vec2(0, 1));
 
-		test_str(root, S_X_VEC3);
+		test_str(root, S_VEC3);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_vec3(kvs::back(root)));
 		TOGO_ASSERTE(kvs::vec3(kvs::back(root)) == Vec3(0, 1, 2));
 
-		test_str(root, S_X_VEC4);
+		test_str(root, S_VEC4);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_vec4(kvs::back(root)));
 		TOGO_ASSERTE(kvs::vec4(kvs::back(root)) == Vec4(0, 1, 2, 3));
@@ -188,26 +199,26 @@ main() {
 	// Node
 	{
 		KVS root;
-		test_str(root, S_C_NODE_EMPTY);
+		test_str(root, S_NODE_EMPTY);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_node(kvs::back(root)));
 		TOGO_ASSERTE(kvs::empty(kvs::back(root)));
 
-		test_str(root, S_C_NODE_X_INTEGER);
+		test_str(root, S_NODE_X_INTEGER);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_node(kvs::back(root)));
 		TOGO_ASSERTE(kvs::size(kvs::back(root)) == 1);
 		TOGO_ASSERTE(kvs::is_integer(kvs::back(kvs::back(root))) == 1);
 		TOGO_ASSERTE(kvs::integer(kvs::back(kvs::back(root))) == 42);
 
-		test_str(root, S_C_NODE_X_ARRAY_EMPTY);
+		test_str(root, S_NODE_X_ARRAY_EMPTY);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_node(kvs::back(root)));
 		TOGO_ASSERTE(kvs::size(kvs::back(root)) == 1);
 		TOGO_ASSERTE(kvs::is_array(kvs::back(kvs::back(root))) == 1);
 		TOGO_ASSERTE(kvs::empty(kvs::back(kvs::back(root))));
 
-		test_str(root, S_C_NODE_X_ARRAY_COMP);
+		test_str(root, S_NODE_X_ARRAY_COMP);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_node(kvs::back(root)));
 		TOGO_ASSERTE(kvs::size(kvs::back(root)) == 1);
@@ -224,19 +235,19 @@ main() {
 	// Array
 	{
 		KVS root;
-		test_str(root, S_C_ARRAY_EMPTY);
+		test_str(root, S_ARRAY_EMPTY);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_array(kvs::back(root)));
 		TOGO_ASSERTE(kvs::empty(kvs::back(root)));
 
-		test_str(root, S_C_ARRAY_INTEGER);
+		test_str(root, S_ARRAY_INTEGER);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_array(kvs::back(root)));
 		TOGO_ASSERTE(kvs::size(kvs::back(root)) == 1);
 		TOGO_ASSERTE(kvs::is_integer(kvs::back(kvs::back(root))));
 		TOGO_ASSERTE(kvs::integer(kvs::back(kvs::back(root))) == 42);
 
-		test_str(root, S_C_ARRAY_COMP);
+		test_str(root, S_ARRAY_COMP);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_array(kvs::back(root)));
 		TOGO_ASSERTE(kvs::size(kvs::back(root)) == 5);
@@ -247,7 +258,7 @@ main() {
 			++index;
 		}
 
-		test_str(root, S_C_ARRAY_COMP_NODE);
+		test_str(root, S_ARRAY_COMP_NODE);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_array(kvs::back(root)));
 		TOGO_ASSERTE(kvs::size(kvs::back(root)) == 6);
@@ -256,13 +267,57 @@ main() {
 			TOGO_ASSERTE(kvs::empty(child));
 		}
 
-		test_str(root, S_C_ARRAY_COMP_ARRAY);
+		test_str(root, S_ARRAY_COMP_ARRAY);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_array(kvs::back(root)));
 		TOGO_ASSERTE(kvs::size(kvs::back(root)) == 6);
 		for (auto const& child : kvs::back(root)) {
 			TOGO_ASSERTE(kvs::is_array(child));
 			TOGO_ASSERTE(kvs::empty(child));
+		}
+	}
+
+	// Comments
+	{
+		KVS root;
+
+		test_str(root, S_COMMENT1);
+		TOGO_ASSERTE(kvs::empty(root));
+
+		test_str(root, S_COMMENT2);
+		TOGO_ASSERTE(kvs::empty(root));
+
+		test_str(root, S_COMMENT3);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(kvs::is_array(kvs::back(root)));
+		TOGO_ASSERTE(kvs::size(kvs::back(root)) == 2);
+		unsigned index = 0;
+		for (auto const& child : kvs::back(root)) {
+			TOGO_ASSERTE(kvs::is_integer(child));
+			TOGO_ASSERTE(kvs::integer(child) == index);
+			++index;
+		}
+
+		test_str(root, S_COMMENT4);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(kvs::is_array(kvs::back(root)));
+		TOGO_ASSERTE(kvs::size(kvs::back(root)) == 2);
+		index = 0;
+		for (auto const& child : kvs::back(root)) {
+			TOGO_ASSERTE(kvs::is_integer(child));
+			TOGO_ASSERTE(kvs::integer(child) == index);
+			++index;
+		}
+
+		test_str(root, S_COMMENT5);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(kvs::is_array(kvs::back(root)));
+		TOGO_ASSERTE(kvs::size(kvs::back(root)) == 2);
+		index = 0;
+		for (auto const& child : kvs::back(root)) {
+			TOGO_ASSERTE(kvs::is_integer(child));
+			TOGO_ASSERTE(kvs::integer(child) == index);
+			++index;
 		}
 	}
 
@@ -308,6 +363,11 @@ main() {
 
 		test_str(root, S_E_ARRAY1, false);
 		test_str(root, S_E_ARRAY2, false);
+
+		test_str(root, S_E_COMMENT1, false);
+		test_str(root, S_E_COMMENT2, false);
+		test_str(root, S_E_COMMENT3, false);
+		test_str(root, S_E_COMMENT4, false);
 	}
 
 	return 0;
