@@ -133,22 +133,20 @@ static bool parser_error(
 	return false;
 }
 
-inline static bool parser_error_expected(Parser& p, char const* const what) {
-	parser_error(p, "expected %s, got '%c'", what, p.c);
-	return false;
-}
+#define PARSER_ERROR(p, format) \
+	parser_error(p, "(@ %4d) " format, __LINE__)
 
-inline static bool parser_error_unexpected(Parser& p, char const* const what) {
-	parser_error(p, "unexpected %s: '%c'", what, p.c);
-	return false;
-}
+#define PARSER_ERRORF(p, format, ...) \
+	parser_error(p, "(@ %4d) " format, __LINE__, __VA_ARGS__)
 
-inline static bool parser_error_stream(Parser& p, char const* const what) {
-	if (io::status(p.stream).fail()) {
-		parser_error(p, "%s: stream read failure", what);
-	}
-	return false;
-}
+#define PARSER_ERROR_EXPECTED(p, what) \
+	PARSER_ERRORF(p, "expected %s, got '%c'", what, p.c)
+
+#define PARSER_ERROR_UNEXPECTED(p, what) \
+	PARSER_ERRORF(p, "unexpected %s: '%c'", what, p.c)
+
+#define PARSER_ERROR_STREAM(p, what) \
+	PARSER_ERRORF(p, "%s: stream read failure", what)
 
 inline static bool parser_is_identifier_lead(Parser const& p) {
 	return
@@ -335,29 +333,16 @@ static bool parser_read_number(Parser& p) {
 		case ' ':
 		case ',': case ';':
 		case '}': case ']': case ')':
-			p.flags |= PF_CARRY;
-			if (~parts & PART_NUMERAL) {
-				return parser_error(p, "missing numeral part in number");
-			} else if (parts & PART_DECIMAL && ~parts & PART_DECIMAL_NUMERAL) {
-				return parser_error(p, "missing numeral part after decimal in number");
-			} else if (parts & PART_EXPONENT && ~parts & PART_EXPONENT_NUMERAL) {
-				return parser_error(p, "missing numeral part after number exponent");
-			}
-			if (parts & PART_DECIMAL || parts & PART_EXPONENT) {
-				p.value_type = PV_DECIMAL;
-			} else {
-				p.value_type = PV_INTEGER;
-			}
-			return true;
+			goto l_assign_value;
 
 		case '-': case '+':
 			if (
 				parts & PART_EXPONENT_SIGN ||
 				(~parts & PART_EXPONENT && parts & PART_SIGN)
 			) {
-				return parser_error(p, "sign already specified for number part");
+				return PARSER_ERROR(p, "sign already specified for number part");
 			} else if (parts & PART_EXPONENT_NUMERAL) {
-				return parser_error(p, "unexpected non-leading sign in number exponent");
+				return PARSER_ERROR(p, "unexpected non-leading sign in number exponent");
 			}
 			if (parts & PART_EXPONENT) {
 				parts |= PART_EXPONENT_SIGN;
@@ -368,16 +353,16 @@ static bool parser_read_number(Parser& p) {
 
 		case '.':
 			if (parts & PART_EXPONENT) {
-				return parser_error(p, "unexpected decimal point in number exponent");
+				return PARSER_ERROR(p, "unexpected decimal point in number exponent");
 			} else if (parts & PART_DECIMAL) {
-				return parser_error(p, "decimal point in number specified twice");
+				return PARSER_ERROR(p, "decimal point in number specified twice");
 			}
 			parts |= PART_DECIMAL;
 			break;
 
 		case 'e': case 'E':
 			if (parts & PART_EXPONENT) {
-				return parser_error(p, "exponent in number specified twice");
+				return PARSER_ERROR(p, "exponent in number specified twice");
 			}
 			parts |= PART_EXPONENT;
 			break;
@@ -392,13 +377,29 @@ static bool parser_read_number(Parser& p) {
 					parts |= PART_NUMERAL;
 				}
 			} else {
-				return parser_error_unexpected(p, "symbol in number");
+				return PARSER_ERROR_UNEXPECTED(p, "symbol in number");
 			}
 			break;
 		}
 		parser_buffer_add(p);
 	} while (parser_next(p));
-	return parser_error_stream(p, "in number");
+	return PARSER_ERROR_STREAM(p, "in number");
+
+l_assign_value:
+	p.flags |= PF_CARRY;
+	if (~parts & PART_NUMERAL) {
+		return PARSER_ERROR(p, "missing numeral part in number");
+	} else if (parts & PART_DECIMAL && ~parts & PART_DECIMAL_NUMERAL) {
+		return PARSER_ERROR(p, "missing numeral part after decimal in number");
+	} else if (parts & PART_EXPONENT && ~parts & PART_EXPONENT_NUMERAL) {
+		return PARSER_ERROR(p, "missing numeral part after number exponent");
+	}
+	if (parts & PART_DECIMAL || parts & PART_EXPONENT) {
+		p.value_type = PV_DECIMAL;
+	} else {
+		p.value_type = PV_INTEGER;
+	}
+	return true;
 }
 
 static bool parser_read_string(Parser& p) {
@@ -412,20 +413,7 @@ static bool parser_read_string(Parser& p) {
 		case ',': case ';':
 		case '=':
 		case '}': case ']':
-			p.flags |= PF_CARRY;
-			p.value_type = PV_STRING;
-			if (array::size(p.buffer) == 4) {
-				if (std::memcmp(array::begin(p.buffer), "null", 4) == 0) {
-					p.value_type = PV_NULL;
-				} else if (std::memcmp(array::begin(p.buffer), "true", 4) == 0) {
-					p.value_type = PV_TRUE;
-				}
-			} else if (array::size(p.buffer) == 5) {
-				if (std::memcmp(array::begin(p.buffer), "false", 5) == 0) {
-					p.value_type = PV_FALSE;
-				}
-			}
-			return true;
+			goto l_assign_value;
 
 		case '\\':
 		case '{': case '[':
@@ -433,18 +421,34 @@ static bool parser_read_string(Parser& p) {
 		case '\'':
 		case '"':
 		case '`':
-			return parser_error_unexpected(p, "symbol in string");
+			return PARSER_ERROR_UNEXPECTED(p, "symbol in string");
 		}
 		parser_buffer_add(p);
 	} while (parser_next(p));
-	return parser_error_stream(p, "in unquoted string");
+	return PARSER_ERROR_STREAM(p, "in unquoted string");
+
+l_assign_value:
+	p.flags |= PF_CARRY;
+	p.value_type = PV_STRING;
+	if (array::size(p.buffer) == 4) {
+		if (std::memcmp(array::begin(p.buffer), "null", 4) == 0) {
+			p.value_type = PV_NULL;
+		} else if (std::memcmp(array::begin(p.buffer), "true", 4) == 0) {
+			p.value_type = PV_TRUE;
+		}
+	} else if (array::size(p.buffer) == 5) {
+		if (std::memcmp(array::begin(p.buffer), "false", 5) == 0) {
+			p.value_type = PV_FALSE;
+		}
+	}
+	return true;
 }
 
 static bool parser_read_string_quote(Parser& p) {
 	while (parser_next(p)) {
 		switch (p.c) {
 		case PC_EOF:
-			return parser_error(p, "expected completer for double-quote bounded string, got EOF");
+			return PARSER_ERROR(p, "expected completer for double-quote bounded string, got EOF");
 
 		case '"':
 			if (~p.flags & PF_ESCAPED) {
@@ -461,18 +465,18 @@ static bool parser_read_string_quote(Parser& p) {
 			break;
 
 		case '\n':
-			return parser_error(p, "unexpected newline in double-quote bounded string");
+			return PARSER_ERROR(p, "unexpected newline in double-quote bounded string");
 		}
 		parser_buffer_add(p);
 	}
-	return parser_error_stream(p, "in double-quote bounded string");
+	return PARSER_ERROR_STREAM(p, "in double-quote bounded string");
 }
 
 static bool parser_read_string_block(Parser& p) {
 	unsigned count = 1;
 	while (count < 3 && parser_next(p)) {
 		if (p.c != '`') {
-			return parser_error(p, "incomplete lead block-quote for expected block-quote bounded string");
+			return PARSER_ERROR(p, "incomplete lead block-quote for expected block-quote bounded string");
 		}
 		++count;
 	}
@@ -482,7 +486,7 @@ static bool parser_read_string_block(Parser& p) {
 	count = 0;
 	while (parser_next(p)) {
 		if (p.c == PC_EOF) {
-			return parser_error(p, "expected completer for block-quote bounded string, got EOF");
+			return PARSER_ERROR(p, "expected completer for block-quote bounded string, got EOF");
 		} else if (p.c == '`') {
 			if (++count == 3) {
 				p.value_type = PV_STRING;
@@ -492,14 +496,14 @@ static bool parser_read_string_block(Parser& p) {
 		}
 		parser_buffer_add(p);
 	}
-	return parser_error_stream(p, "in block-quote bounded string");
+	return PARSER_ERROR_STREAM(p, "in block-quote bounded string");
 }
 
 static bool parser_read_vector_whole(Parser& p) {
 	while (parser_next(p)) {
 		switch (p.c) {
 		case PC_EOF:
-			return parser_error(p, "expected completer for vector, got EOF");
+			return PARSER_ERROR(p, "expected completer for vector, got EOF");
 
 		case '\t':
 		case '\n':
@@ -509,7 +513,7 @@ static bool parser_read_vector_whole(Parser& p) {
 
 		case ')':
 			if (p.vec_size == 0) {
-				return parser_error(p, "invalid value: empty vector");
+				return PARSER_ERROR(p, "invalid value: empty vector");
 			}
 			p.value_type = PV_VECTOR;
 			return true;
@@ -517,7 +521,7 @@ static bool parser_read_vector_whole(Parser& p) {
 		default:
 			if (parser_is_number_lead(p)) {
 				if (p.vec_size == 4) {
-					return parser_error(p, "too many values in vector");
+					return PARSER_ERROR(p, "too many values in vector");
 				} else {
 					if (!parser_read_number(p)) {
 						return false;
@@ -528,12 +532,12 @@ static bool parser_read_vector_whole(Parser& p) {
 					parser_buffer_clear(p);
 				}
 			} else {
-				return parser_error_expected(p, "number value in vector");
+				return PARSER_ERROR_EXPECTED(p, "number value in vector");
 			}
 			break;
 		}
 	}
-	return parser_error_stream(p, "in vector");
+	return PARSER_ERROR_STREAM(p, "in vector");
 }
 
 static void parser_stage_name(Parser& p) {
@@ -546,20 +550,20 @@ static void parser_stage_name(Parser& p) {
 
 	case '}':
 		if (array::size(p.stack) == 1) {
-			parser_error(p, "unbalanced '}' at root level");
+			PARSER_ERROR(p, "unbalanced '}' at root level");
 		} else if (kvs::is_type(parser_top(p), KVSType::node)) {
 			parser_pop(p);
 		} else {
-			parser_error_expected(p, "identifier");
+			PARSER_ERROR_EXPECTED(p, "identifier");
 		}
 		break;
 
 	case ']':
-		parser_error(p, "unbalanced ']'");
+		PARSER_ERROR(p, "unbalanced ']'");
 		break;
 
 	case ')':
-		parser_error(p, "unbalanced ')'");
+		PARSER_ERROR(p, "unbalanced ')'");
 		break;
 
 	case '"':
@@ -572,13 +576,13 @@ static void parser_stage_name(Parser& p) {
 		if (parser_is_identifier_lead(p)) {
 			if (parser_read_string(p)) {
 				if (parser_is_completer(p)) {
-					parser_error_unexpected(p, "completer after name");
+					PARSER_ERROR_UNEXPECTED(p, "completer after name");
 				} else {
 					goto l_push_new;
 				}
 			}
 		} else {
-			parser_error_expected(p, "identifier");
+			PARSER_ERROR_EXPECTED(p, "identifier");
 		}
 		break;
 	}
@@ -595,12 +599,12 @@ static void parser_stage_assign(Parser& p) {
 		return;
 	}
 	if (p.c == PC_EOF) {
-		parser_error(p, "expected equality sign, got EOF");
+		PARSER_ERROR(p, "expected equality sign, got EOF");
 	} else if (p.c == '=') {
 		p.stage = PS_VALUE;
 		p.flags |= PF_ASSIGN;
 	} else {
-		parser_error_expected(p, "equality sign");
+		PARSER_ERROR_EXPECTED(p, "equality sign");
 	}
 }
 
@@ -610,7 +614,7 @@ static void parser_stage_value(Parser& p) {
 	}
 	switch (p.c) {
 	case PC_EOF:
-		parser_error(p, "expected value, got EOF");
+		PARSER_ERROR(p, "expected value, got EOF");
 		break;
 
 	case '\t':
@@ -619,7 +623,7 @@ static void parser_stage_value(Parser& p) {
 
 	case '\n':
 		if (p.flags & PF_ASSIGN) {
-			parser_error_expected(p, "value");
+			PARSER_ERROR_EXPECTED(p, "value (assignment)");
 		}
 		break;
 
@@ -643,11 +647,11 @@ static void parser_stage_value(Parser& p) {
 
 	case ']':
 		if (array::size(p.stack) == 1) {
-			parser_error(p, "unbalanced ']' at root level");
+			PARSER_ERROR(p, "unbalanced ']' at root level");
 		} else if (kvs::is_type(parser_top(p), KVSType::array)) {
 			parser_pop(p);
 		} else {
-			parser_error_expected(p, "value");
+			PARSER_ERROR_EXPECTED(p, "value");
 		}
 		break;
 
@@ -680,7 +684,7 @@ static void parser_stage_value(Parser& p) {
 				~p.flags & PF_VALUE_NAMELESS &&
 				p.flags & PF_ASSIGN
 			) {
-				parser_error_expected(p, "value");
+				PARSER_ERROR_EXPECTED(p, "value (assignment)");
 			}
 		} else if (parser_is_identifier_lead(p)) {
 			if (parser_read_string(p)) {
@@ -691,7 +695,7 @@ static void parser_stage_value(Parser& p) {
 				goto l_set_value;
 			}
 		} else {
-			parser_error_expected(p, "value");
+			PARSER_ERROR_EXPECTED(p, "value");
 		}
 		break;
 	}
@@ -742,12 +746,12 @@ bool kvs::read(KVS& root, IReader& stream, ParserInfo& pinfo) {
 	if (p.flags & PF_ERROR) {
 		// do nothing
 	} else if (io::status(p.stream).fail()) {
-		parser_error(p, "stream read failure");
+		PARSER_ERROR(p, "stream read failure");
 	} else if (p.c == PC_EOF) {
 		if (p.flags & (PF_NAME | PF_ASSIGN)) {
-			parser_error(p, "expected value, got EOF");
+			PARSER_ERROR(p, "expected value, got EOF");
 		} else if (array::size(p.stack) > 1) {
-			parser_error(p, "%u unclosed collection(s) at EOF", array::size(p.stack) - 1);
+			PARSER_ERRORF(p, "%u unclosed collection(s) at EOF", array::size(p.stack) - 1);
 		}
 	}
 	return ~p.flags & PF_ERROR;
