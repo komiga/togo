@@ -1,5 +1,6 @@
 
 #include <togo/utility.hpp>
+#include <togo/math.hpp>
 #include <togo/assert.hpp>
 #include <togo/log.hpp>
 #include <togo/array.hpp>
@@ -23,10 +24,10 @@ static constexpr char const
 	S_X_STRING[] = "x = unquoted",
 	S_X_STRING_QDOUBLE[] = "x = \"double-quoted\"",
 	S_X_STRING_QBLOCK[] = "x = ```block-quoted```",
-	/*S_X_VEC1[] = "x = (0)",
+	S_X_VEC1[] = "x = (0)",
 	S_X_VEC2[] = "x = (0 1)",
 	S_X_VEC3[] = "x = (0 1 2)",
-	S_X_VEC4[] = "x = (0 1 2 3)",*/
+	S_X_VEC4[] = "x = (0 1 2 3)",
 
 	S_C_NODE_EMPTY[] = "c = {}",
 	S_C_NODE_X_INTEGER[] = "c = {x = 42}",
@@ -61,6 +62,10 @@ static constexpr char const
 	S_E_STRING2[] = "x = ```",
 	S_E_STRING3[] = "x = ``",
 	S_E_STRING4[] = "x = `",
+
+	S_E_VECTOR1[] = "x = ()",
+	S_E_VECTOR2[] = "x = (",
+	S_E_VECTOR3[] = ")",
 
 	S_E_NODE1[] = "x = {",
 	S_E_NODE2[] = "}",
@@ -157,6 +162,26 @@ main() {
 		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
 		ref = kvs::string_ref(kvs::back(root));
 		TOGO_ASSERTE(std::strncmp("block-quoted", ref.data, ref.size) == 0);
+
+		test_str(root, S_X_VEC1);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(kvs::is_vec1(kvs::back(root)));
+		TOGO_ASSERTE(kvs::vec1(kvs::back(root)) == Vec1(0));
+
+		test_str(root, S_X_VEC2);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(kvs::is_vec2(kvs::back(root)));
+		TOGO_ASSERTE(kvs::vec2(kvs::back(root)) == Vec2(0, 1));
+
+		test_str(root, S_X_VEC3);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(kvs::is_vec3(kvs::back(root)));
+		TOGO_ASSERTE(kvs::vec3(kvs::back(root)) == Vec3(0, 1, 2));
+
+		test_str(root, S_X_VEC4);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(kvs::is_vec4(kvs::back(root)));
+		TOGO_ASSERTE(kvs::vec4(kvs::back(root)) == Vec4(0, 1, 2, 3));
 	}
 
 	// Node
@@ -271,6 +296,10 @@ main() {
 		test_str(root, S_E_STRING2, false);
 		test_str(root, S_E_STRING3, false);
 		test_str(root, S_E_STRING4, false);
+
+		test_str(root, S_E_VECTOR1, false);
+		test_str(root, S_E_VECTOR2, false);
+		test_str(root, S_E_VECTOR3, false);
 
 		test_str(root, S_E_NODE1, false);
 		test_str(root, S_E_NODE2, false);
