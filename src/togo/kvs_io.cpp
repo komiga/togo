@@ -699,6 +699,10 @@ static bool write_tabs(IWriter& stream, unsigned tabs) {
 	return true;
 }
 
+#if defined(TOGO_COMPILER_CLANG) || \
+	defined(TOGO_COMPILER_GCC)
+	__attribute__((__format__ (__printf__, 2, 3)))
+#endif
 static bool writef(IWriter& stream, char const* const format, ...) {
 	char buffer[256];
 	va_list va;
@@ -765,7 +769,7 @@ static bool kvs_write(
 		break;
 
 	case KVSType::integer:
-		RETURN_ERROR(writef(stream, "%lld", kvs._value.integer));
+		RETURN_ERROR(writef(stream, "%ld", kvs._value.integer));
 		break;
 
 	case KVSType::decimal:
@@ -790,7 +794,7 @@ static bool kvs_write(
 
 	case KVSType::vec1:
 		RETURN_ERROR(writef(
-			stream, "(%lf)",
+			stream, "(%f)",
 			kvs._value.vec1.x
 		));
 		break;
