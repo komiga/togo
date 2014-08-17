@@ -313,6 +313,41 @@ static bool parser_skip_whitespace(Parser& p, bool const newline) {
 	return true;
 }
 
+static bool parser_skip_comment(Parser& p) {
+	if (!parser_next(p)) {
+		return false;
+	}
+	if (p.c == '/') {
+		while (parser_next(p)) {
+			if (p.c == '\n' || p.c == PC_EOF) {
+				return true;
+			}
+		}
+		return PARSER_ERROR_STREAM(p, "in comment");
+	} else if (p.c == '*') {
+		bool tail = false;
+		while (parser_next(p)) {
+			switch (p.c) {
+			case PC_EOF:
+				return PARSER_ERROR(p, "expected end of block comment, got EOF");
+
+			case '*': tail = true; break;
+			case '/':
+				if (tail) {
+					return true;
+				}
+
+			default: tail = false; break;
+			}
+		}
+		return PARSER_ERROR_STREAM(p, "in comment block");
+	} else if (p.c == PC_EOF) {
+		return PARSER_ERROR(p, "expected '/' or '*' to continue comment lead, got EOF");
+	} else {
+		return PARSER_ERROR_EXPECTED(p, "'/' or '*' to continue comment lead");
+	}
+}
+
 static bool parser_read_number(Parser& p) {
 	enum : unsigned {
 		PART_SIGN				= 1 << 0,
@@ -333,6 +368,7 @@ static bool parser_read_number(Parser& p) {
 		case ' ':
 		case ',': case ';':
 		case '}': case ']': case ')':
+		case '/':
 			goto l_assign_value;
 
 		case '-': case '+':
@@ -413,6 +449,7 @@ static bool parser_read_string(Parser& p) {
 		case ',': case ';':
 		case '=':
 		case '}': case ']':
+		case '/':
 			goto l_assign_value;
 
 		case '\\':
@@ -511,6 +548,12 @@ static bool parser_read_vector_whole(Parser& p) {
 		case ',': case ';':
 			break;
 
+		case '/':
+			if (!parser_skip_comment(p)) {
+				return false;
+			}
+			break;
+
 		case ')':
 			if (p.vec_size == 0) {
 				return PARSER_ERROR(p, "invalid value: empty vector");
@@ -543,6 +586,10 @@ static bool parser_read_vector_whole(Parser& p) {
 static void parser_stage_name(Parser& p) {
 	switch (p.c) {
 	case PC_EOF:
+		break;
+
+	case '/':
+		parser_skip_comment(p);
 		break;
 
 	case '}':
@@ -616,6 +663,14 @@ static void parser_stage_value(Parser& p) {
 	case '\n':
 		if (p.flags & PF_ASSIGN) {
 			PARSER_ERROR_EXPECTED(p, "value (assignment)");
+		}
+		break;
+
+	case '/':
+		if (p.flags & PF_ASSIGN) {
+			PARSER_ERROR_EXPECTED(p, "value (assignment)");
+		} else {
+			parser_skip_comment(p);
 		}
 		break;
 
