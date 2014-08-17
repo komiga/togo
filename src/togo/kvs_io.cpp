@@ -273,6 +273,7 @@ inline static bool parser_set_value(Parser& p) {
 		case 3: kvs::vec3(top, Vec3{p.vec}); break;
 		case 4: kvs::vec4(top, p.vec); break;
 		}
+		p.vec_size = 0;
 		break;
 	}
 	parser_buffer_clear(p);
