@@ -85,5 +85,22 @@ main() {
 		TOGO_ASSERTE(0 == std::strncmp(kvs::string(z), "x-value", kvs::string_size(z)));
 	}
 
+	{
+		KVS c;
+		kvs::set_type(c, KVSType::node);
+		TOGO_ASSERTE(kvs::size(c) == 0);
+		TOGO_ASSERTE(kvs::capacity(c) == 0);
+		TOGO_ASSERTE(kvs::space(c) == 0);
+		TOGO_ASSERTE(!kvs::any(c));
+		TOGO_ASSERTE(kvs::empty(c));
+		kvs::resize(c, 1);
+		TOGO_ASSERTE(kvs::size(c) == 1);
+		TOGO_ASSERTE(kvs::capacity(c) == 8);
+		TOGO_ASSERTE(kvs::space(c) == 7);
+		TOGO_ASSERTE(kvs::any(c));
+		TOGO_ASSERTE(!kvs::empty(c));
+		TOGO_ASSERTE(kvs::is_null(kvs::back(c)));
+	}
+
 	return 0;
 }
