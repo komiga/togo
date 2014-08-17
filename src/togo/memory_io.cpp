@@ -24,7 +24,6 @@ MemoryStream::MemoryStream(
 	, _position(0)
 {
 	array::set_capacity(_buffer, init_capacity);
-
 }
 
 void MemoryStream::clear() {
@@ -42,14 +41,14 @@ u64 MemoryStream::position() {
 
 u64 MemoryStream::seek_to(u64 const position) {
 	_position = min(position, static_cast<u64>(array::size(_buffer)));
-	return this->position();
+	return _position;
 }
 
 u64 MemoryStream::seek_relative(s64 const offset) {
 	_position = static_cast<u64>(
 		clamp<s64>(static_cast<s64>(_position) + offset, 0, array::size(_buffer))
 	);
-	return position();
+	return _position;
 }
 
 IOStatus MemoryStream::read(void* const data, unsigned size, unsigned* const read_size) {

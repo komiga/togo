@@ -52,7 +52,7 @@ public:
 	MemoryStream& operator=(MemoryStream const&) = delete;
 	MemoryStream& operator=(MemoryStream&&) = delete;
 
-	Array<u8>& get_buffer() noexcept {
+	Array<u8>& buffer() noexcept {
 		return _buffer;
 	}
 
@@ -66,7 +66,7 @@ private:
 // IStreamSeekable implementation
 	u64 position() override;
 	u64 seek_to(u64 position) override;
-	u64 seek_relative(s64 offset) override;	
+	u64 seek_relative(s64 offset) override;
 
 // IReader implementation
 	IOStatus read(void* data, unsigned size, unsigned* read_size) override;

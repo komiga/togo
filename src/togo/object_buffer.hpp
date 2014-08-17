@@ -105,7 +105,7 @@ inline unsigned read(ObjectBuffer<T, S>& ob, E& type, void const*& object) {
 	);
 	type = static_cast<E>(type_serial);
 	if (size_serial > 0) {
-		object = array::begin(ob._stream.get_buffer()) + ob._stream._position;
+		object = array::begin(ob._stream.buffer()) + ob._stream._position;
 		io::seek_relative(ob._stream, size_serial);
 	} else {
 		object = nullptr;
