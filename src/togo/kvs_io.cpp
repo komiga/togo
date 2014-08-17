@@ -48,6 +48,7 @@ enum ParserValueType : unsigned {
 	PV_TRUE,
 	PV_FALSE,
 	PV_STRING,
+	PV_VECTOR,
 };
 
 struct Parser {
@@ -59,6 +60,8 @@ struct Parser {
 	unsigned line;
 	unsigned column;
 	signed c;
+	Vec4 vec;
+	unsigned vec_size;
 	unsigned flags;
 	ParserStage stage;
 	ParserValueType value_type;
@@ -183,6 +186,7 @@ inline static bool parser_is_number_lead(Parser const& p) {
 }
 
 static void parser_buffer_add(Parser& p) {
+	TOGO_DEBUG_ASSERTE(p.c != PC_EOF);
 	if (p.flags & PF_ESCAPED) {
 		p.flags &= ~PF_ESCAPED;
 		array::push_back(p.buffer, escape_char(static_cast<char>(p.c)));
@@ -236,29 +240,39 @@ inline static void parser_push_new(Parser& p, bool const named) {
 
 inline static bool parser_set_value(Parser& p) {
 	TOGO_DEBUG_ASSERTE(p.value_type != PV_NONE);
+	KVS& top = parser_top(p);
 	switch (p.value_type) {
 	case PV_NONE: break;
 	case PV_NULL:
-		kvs::nullify(parser_top(p));
+		kvs::nullify(top);
 		break;
 
 	case PV_INTEGER:
 		array::push_back(p.buffer, '\0');
-		kvs::integer(parser_top(p), parse_s64(array::begin(p.buffer), 10));
+		kvs::integer(top, parse_s64(array::begin(p.buffer), 10));
 		break;
 
 	case PV_DECIMAL:
 		array::push_back(p.buffer, '\0');
-		kvs::decimal(parser_top(p), parse_f64(array::begin(p.buffer)));
+		kvs::decimal(top, parse_f64(array::begin(p.buffer)));
 		break;
 
 	case PV_TRUE: // fall-through
 	case PV_FALSE:
-		kvs::boolean(parser_top(p), p.value_type == PV_TRUE);
+		kvs::boolean(top, p.value_type == PV_TRUE);
 		break;
 
 	case PV_STRING:
-		kvs::string(parser_top(p), parser_buffer_ref(p));
+		kvs::string(top, parser_buffer_ref(p));
+		break;
+
+	case PV_VECTOR:
+		switch (p.vec_size) {
+		case 1: kvs::vec1(top, Vec1{p.vec}); break;
+		case 2: kvs::vec2(top, Vec2{p.vec}); break;
+		case 3: kvs::vec3(top, Vec3{p.vec}); break;
+		case 4: kvs::vec4(top, p.vec); break;
+		}
 		break;
 	}
 	parser_buffer_clear(p);
@@ -319,7 +333,8 @@ static bool parser_read_number(Parser& p) {
 		case '\n':
 		case ' ':
 		case ',': case ';':
-		case '}': case ']':
+		case '}': case ']': case ')':
+			p.flags |= PF_CARRY;
 			if (~parts & PART_NUMERAL) {
 				return parser_error(p, "missing numeral part in number");
 			} else if (parts & PART_DECIMAL && ~parts & PART_DECIMAL_NUMERAL) {
@@ -332,7 +347,6 @@ static bool parser_read_number(Parser& p) {
 			} else {
 				p.value_type = PV_INTEGER;
 			}
-			p.flags |= PF_CARRY;
 			return true;
 
 		case '-': case '+':
@@ -480,6 +494,47 @@ static bool parser_read_string_block(Parser& p) {
 	return parser_error_stream(p, "in block-quote bounded string");
 }
 
+static bool parser_read_vector_whole(Parser& p) {
+	while (parser_next(p)) {
+		switch (p.c) {
+		case PC_EOF:
+			return parser_error(p, "expected completer for vector, got EOF");
+
+		case '\t':
+		case '\n':
+		case ' ':
+		case ',': case ';':
+			break;
+
+		case ')':
+			if (p.vec_size == 0) {
+				return parser_error(p, "invalid value: empty vector");
+			}
+			p.value_type = PV_VECTOR;
+			return true;
+
+		default:
+			if (parser_is_number_lead(p)) {
+				if (p.vec_size == 4) {
+					return parser_error(p, "too many values in vector");
+				} else {
+					if (!parser_read_number(p)) {
+						return false;
+					}
+					array::push_back(p.buffer, '\0');
+					p.vec[p.vec_size++] = parse_f64(array::begin(p.buffer));
+					p.value_type = PV_NONE;
+					parser_buffer_clear(p);
+				}
+			} else {
+				return parser_error_expected(p, "number value in vector");
+			}
+			break;
+		}
+	}
+	return parser_error_stream(p, "in vector");
+}
+
 static void parser_stage_name(Parser& p) {
 	if (!parser_skip_whitespace(p, true)) {
 		return;
@@ -500,6 +555,10 @@ static void parser_stage_name(Parser& p) {
 
 	case ']':
 		parser_error(p, "unbalanced ']'");
+		break;
+
+	case ')':
+		parser_error(p, "unbalanced ')'");
 		break;
 
 	case '"':
@@ -591,6 +650,17 @@ static void parser_stage_value(Parser& p) {
 		}
 		break;
 
+	case '(':
+		if (~p.flags & PF_ASSIGN) {
+			parser_push_new(p, false);
+		}
+		if (parser_read_vector_whole(p)) {
+			if (parser_set_value(p)) {
+				parser_pop(p);
+			}
+		}
+		break;
+
 	case '"':
 		if (parser_read_string_quote(p)) {
 			goto l_set_value;
@@ -646,6 +716,7 @@ bool kvs::read(KVS& root, IReader& stream, ParserInfo& pinfo) {
 		{allocator},
 		{allocator},
 		1, 0, PC_EOF,
+		Vec4{Vec4::ctor_no_init{}}, 0,
 		PF_NONE,
 		PS_NAME,
 		PV_NONE
