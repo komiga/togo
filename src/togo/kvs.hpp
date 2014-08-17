@@ -365,6 +365,20 @@ inline void reserve(KVS& kvs, unsigned const new_capacity) {
 	}
 }
 
+/// Get last item in collection.
+inline KVS& back(KVS& kvs) {
+	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
+	TOGO_ASSERTE(kvs::any(kvs));
+	return kvs._value.collection.data[kvs._value.collection.size - 1];
+}
+
+/// Get last item in collection.
+inline KVS& back(KVS const& kvs) {
+	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
+	TOGO_ASSERTE(kvs::any(kvs));
+	return kvs._value.collection.data[kvs._value.collection.size - 1];
+}
+
 /** @} */ // end of doc-group kvs
 
 } // namespace kvs
