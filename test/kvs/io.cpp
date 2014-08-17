@@ -43,6 +43,7 @@ static constexpr char const
 	S_V_INTEGER[] = "v=[0 -1 +1]",
 	S_V_DECIMAL[] = "v=[0.0 -1.0 +1.0  0e0 1e-1 1e+1 .0 -.1 +.1 .0e0 -.1e-1 +.1e+1]",
 	S_V_STRING[] = "v=[_ A Z a z t0,t1;t2\nt3 \"\" `````` \"\\t\"]",
+	S_V_VECTOR[] = "v=[(0)(0.0 -1.0 +1.0) (0e0 1e-1 1e+1),(.0 -.1 +.1);(.0e0)\n(-.1e-1 +.1e+1)]",
 
 	S_E_X_EOF[] = "x",
 	S_E_X_ASSIGN_EOF[] = "x = ",
@@ -272,6 +273,7 @@ main() {
 		test_str(root, S_V_INTEGER);
 		test_str(root, S_V_DECIMAL);
 		test_str(root, S_V_STRING);
+		test_str(root, S_V_VECTOR);
 	}
 
 	// Errors
