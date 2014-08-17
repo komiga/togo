@@ -67,39 +67,43 @@ inline bool is_type_any(KVS const& kvs, KVSType const type) {
 }
 
 /// Check if type is KVSType::null.
-inline bool is_null(KVS const& kvs) {
-	return kvs::is_type(kvs, KVSType::null);
-}
+inline bool is_null(KVS const& kvs) { return kvs::is_type(kvs, KVSType::null); }
 
 /// Check if type is KVSType::integer.
-inline bool is_integer(KVS const& kvs) {
-	return kvs::is_type(kvs, KVSType::integer);
-}
+inline bool is_integer(KVS const& kvs) { return kvs::is_type(kvs, KVSType::integer); }
 
 /// Check if type is KVSType::decimal.
-inline bool is_decimal(KVS const& kvs) {
-	return kvs::is_type(kvs, KVSType::decimal);
-}
+inline bool is_decimal(KVS const& kvs) { return kvs::is_type(kvs, KVSType::decimal); }
 
 /// Check if type is KVSType::boolean.
-inline bool is_boolean(KVS const& kvs) {
-	return kvs::is_type(kvs, KVSType::boolean);
-}
+inline bool is_boolean(KVS const& kvs) { return kvs::is_type(kvs, KVSType::boolean); }
 
 /// Check if type is KVSType::string.
-inline bool is_string(KVS const& kvs) {
-	return kvs::is_type(kvs, KVSType::string);
-}
+inline bool is_string(KVS const& kvs) { return kvs::is_type(kvs, KVSType::string); }
+
+/// Check if type is KVSType::vec1.
+inline bool is_vec1(KVS const& kvs) { return kvs::is_type(kvs, KVSType::vec1); }
+
+/// Check if type is KVSType::vec2.
+inline bool is_vec2(KVS const& kvs) { return kvs::is_type(kvs, KVSType::vec2); }
+
+/// Check if type is KVSType::vec3.
+inline bool is_vec3(KVS const& kvs) { return kvs::is_type(kvs, KVSType::vec3); }
+
+/// Check if type is KVSType::vec4.
+inline bool is_vec4(KVS const& kvs) { return kvs::is_type(kvs, KVSType::vec4); }
+
+/// Check if type is KVSType::node.
+inline bool is_node(KVS const& kvs) { return kvs::is_type(kvs, KVSType::node); }
+
+/// Check if type is KVSType::array.
+inline bool is_array(KVS const& kvs) { return kvs::is_type(kvs, KVSType::array); }
 
 /// Check if type is a vector type.
-inline bool is_vector(KVS const& kvs) {
-	return kvs::is_type_any(kvs, type_mask_vector);
-}
+inline bool is_vector(KVS const& kvs) { return kvs::is_type_any(kvs, type_mask_vector); }
 
 /// Check if type is an array or node.
-inline bool is_collection(KVS const& kvs) {
-	return kvs::is_type_any(kvs, type_mask_collection);
-}
+inline bool is_collection(KVS const& kvs) { return kvs::is_type_any(kvs, type_mask_collection); }
 
 /// Get name (NUL-terminated).
 inline char const* name(KVS const& kvs) {
@@ -331,7 +335,7 @@ inline void vec4(KVS& kvs, Vec4 const& value) {
 	kvs._value.vec4 = value;
 }
 
-/// Change collection size.
+/// Change collection capacity.
 ///
 /// If new_capacity is lower than the size, the collection is resized
 /// to new_capacity.
