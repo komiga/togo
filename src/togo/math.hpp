@@ -12,10 +12,13 @@
 #include <togo/config.hpp>
 #include <togo/math_types.hpp>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wfloat-equal"
 #include <am/linear/vector_interface.hpp>
 #include <am/linear/vector_operations.hpp>
 #include <am/linear/matrix_interface.hpp>
 #include <am/linear/matrix_operations.hpp>
+#pragma GCC diagnostic pop
 
 namespace togo {
 
