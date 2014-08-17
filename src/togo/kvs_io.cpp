@@ -541,9 +541,6 @@ static bool parser_read_vector_whole(Parser& p) {
 }
 
 static void parser_stage_name(Parser& p) {
-	if (!parser_skip_whitespace(p, true)) {
-		return;
-	}
 	switch (p.c) {
 	case PC_EOF:
 		break;
@@ -595,9 +592,7 @@ l_push_new:
 }
 
 static void parser_stage_assign(Parser& p) {
-	if (!parser_skip_whitespace(p, false)) {
-		return;
-	}
+	TOGO_DEBUG_ASSERTE(~p.flags & PF_VALUE_NAMELESS);
 	if (p.c == PC_EOF) {
 		PARSER_ERROR(p, "expected equality sign, got EOF");
 	} else if (p.c == '=') {
@@ -609,9 +604,6 @@ static void parser_stage_assign(Parser& p) {
 }
 
 static void parser_stage_value(Parser& p) {
-	if (!parser_skip_whitespace(p, p.flags & PF_VALUE_NAMELESS)) {
-		return;
-	}
 	switch (p.c) {
 	case PC_EOF:
 		PARSER_ERROR(p, "expected value, got EOF");
@@ -680,10 +672,7 @@ static void parser_stage_value(Parser& p) {
 
 	default:
 		if (parser_is_completer(p)) {
-			if (
-				~p.flags & PF_VALUE_NAMELESS &&
-				p.flags & PF_ASSIGN
-			) {
+			if (p.flags & PF_ASSIGN) {
 				PARSER_ERROR_EXPECTED(p, "value (assignment)");
 			}
 		} else if (parser_is_identifier_lead(p)) {
@@ -732,14 +721,18 @@ bool kvs::read(KVS& root, IReader& stream, ParserInfo& pinfo) {
 	kvs::clear(p.root);
 	parser_push(p, p.root);
 	while (parser_next(p)) {
+		if (!parser_skip_whitespace(p,
+			p.stage == PS_NAME ||
+			p.flags & PF_VALUE_NAMELESS
+		)) {
+			break;
+		}
 		switch (p.stage) {
 		case PS_NAME: parser_stage_name(p); break;
 		case PS_ASSIGN: parser_stage_assign(p); break;
 		case PS_VALUE: parser_stage_value(p); break;
 		}
-		if (p.flags & PF_ERROR) {
-			return false;
-		} else if (p.c == PC_EOF) {
+		if (p.flags & PF_ERROR || p.c == PC_EOF) {
 			break;
 		}
 	}
