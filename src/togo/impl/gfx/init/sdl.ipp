@@ -28,15 +28,17 @@ void gfx::init(
 	TOGO_ASSERT(!_gfx_globals.initialized, "graphics backend has already been initialized");
 
 	TOGO_ASSERT(
-		context_major >= 3 && context_minor >= 2,
-		"OpenGL context version below 3.2 is not supported"
+		context_major >= 2 && context_minor >= 1,
+		"OpenGL context version below 2.1 is not supported"
 	);
 	TOGO_SDL_CHECK(SDL_Init(INIT_SYSTEMS) != 0);
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1));
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, context_major));
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, context_minor));
-	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
-	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG));
+	if (context_major >= 3) {
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG));
+	}
 
 	_gfx_globals.context_major = context_major;
 	_gfx_globals.context_minor = context_minor;

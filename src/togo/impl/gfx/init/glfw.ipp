@@ -21,14 +21,16 @@ void gfx::init(
 	TOGO_ASSERT(!_gfx_globals.initialized, "graphics backend has already been initialized");
 
 	TOGO_ASSERT(
-		context_major >= 3 && context_minor >= 2,
-		"OpenGL context version below 3.2 is not supported"
+		context_major >= 2 && context_minor >= 1,
+		"OpenGL context version below 2.1 is not supported"
 	);
 	TOGO_GLFW_CHECK(glfwInit());
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, context_major);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, context_minor);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	if (context_major >= 3) {
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	}
 
 	_gfx_globals.context_major = context_major;
 	_gfx_globals.context_minor = context_minor;
