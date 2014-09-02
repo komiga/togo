@@ -107,17 +107,21 @@ void core_run(AppBase& app_base) {
 	float time_prev = system::time_monotonic();
 	float time_next;
 	float time_delta;
-	float time_accum = 0.0f;
+	float time_accum = update_freq;
+	bool do_render = false;
 	while (!app_base._quit) {
 		time_next = system::time_monotonic();
 		time_delta = time_next - time_prev;
 		time_prev = time_next;
 		time_accum += time_delta;
+		do_render = time_accum >= update_freq;
 		while (time_accum >= update_freq) {
 			time_accum -= update_freq;
 			app::core_update(app_base, update_freq);
 		}
-		app::core_render(app_base);
+		if (do_render) {
+			app::core_render(app_base);
+		}
 		system::sleep_ms(1);
 	}
 	app::core_shutdown(app_base);
