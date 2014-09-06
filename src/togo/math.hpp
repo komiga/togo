@@ -40,6 +40,11 @@ using am::linear::transpose;
 using am::linear::determinant;
 using am::linear::inverse;
 
+/** Mathematical constant π (pi). */
+static constexpr float const MC_PI  = 3.1415926535897932384626f;
+/** Mathematical constant τ (tau, 2 * MC_PI). */
+static constexpr float const MC_TAU = 6.2831853071795864769252f;
+
 /** @} */ // end of doc-group math
 
 } // namespace togo
