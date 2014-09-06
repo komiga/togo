@@ -86,6 +86,16 @@ void display::set_mouse_lock(gfx::Display* display, bool enable) {
 	SDL_SetWindowGrab(display->_impl.handle, enable ? SDL_TRUE : SDL_FALSE);
 }
 
+void display::set_swap_mode(gfx::Display* display, gfx::DisplaySwapMode mode) {
+	signed interval;
+	switch (mode) {
+	case gfx::DisplaySwapMode::immediate:		interval = 0; break;
+	case gfx::DisplaySwapMode::wait_refresh:	interval = 1; break;
+	}
+	display::make_current(display);
+	TOGO_SDL_CHECK(SDL_GL_SetSwapInterval(interval));
+}
+
 void display::make_current(gfx::Display* display) {
 	TOGO_SDL_CHECK(SDL_GL_MakeCurrent(display->_impl.handle, display->_impl.context));
 	return;

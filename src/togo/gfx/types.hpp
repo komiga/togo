@@ -66,9 +66,7 @@ struct Config {
 	@{
 */
 
-/**
-	Display flags.
-*/
+/// Display flags.
 enum class DisplayFlags : unsigned {
 	/// Empty flag.
 	none = 0,
@@ -82,6 +80,15 @@ enum class DisplayFlags : unsigned {
 	resizable = 1 << 3,
 
 	owned_by_input_buffer = 1 << 4,
+};
+
+/// Display swap modes.
+enum class DisplaySwapMode : unsigned {
+	/// No screen synchronization.
+	immediate = 0,
+
+	/// Wait for at least one refresh cycle before swapping.
+	wait_refresh,
 };
 
 /// Graphics display.

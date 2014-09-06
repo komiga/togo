@@ -60,6 +60,12 @@ void set_title(gfx::Display* display, char const* title);
 /// display window.
 void set_mouse_lock(gfx::Display* display, bool enable);
 
+/// Set swap mode.
+///
+/// @warning This applies to the display's context, not individual
+/// displays. The display's context will be current after this call.
+void set_swap_mode(gfx::Display* display, gfx::DisplaySwapMode mode);
+
 /// Make display context the current context.
 void make_current(gfx::Display* display);
 

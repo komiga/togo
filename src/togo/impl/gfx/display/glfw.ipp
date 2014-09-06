@@ -79,6 +79,16 @@ void display::set_mouse_lock(gfx::Display* /*display*/, bool /*enable*/) {
 	);*/
 }
 
+void display::set_swap_mode(gfx::Display* display, gfx::DisplaySwapMode mode) {
+	signed interval;
+	switch (mode) {
+	case gfx::DisplaySwapMode::immediate:		interval = 0; break;
+	case gfx::DisplaySwapMode::wait_refresh:	interval = 1; break;
+	}
+	display::make_current(display);
+	glfwSwapInterval(interval);
+}
+
 void display::make_current(gfx::Display* display) {
 	glfwMakeContextCurrent(display->_impl.handle);
 	return;
