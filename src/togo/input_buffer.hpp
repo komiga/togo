@@ -62,7 +62,7 @@ void update(InputBuffer& ib);
 /// Returns true if an event was fetched.
 ///
 /// @warning This must be called on the thread that created the
-/// @displays.
+/// displays.
 bool poll(InputBuffer& ib, InputEventType& type, InputEvent const*& event);
 
 /** @} */ // end of doc-group input
