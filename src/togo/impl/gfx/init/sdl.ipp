@@ -7,9 +7,9 @@
 #include <togo/utility.hpp>
 #include <togo/assert.hpp>
 #include <togo/log.hpp>
+#include <togo/gfx/init.hpp>
 #include <togo/impl/gfx/sdl_common.hpp>
 #include <togo/impl/gfx/init/private.hpp>
-#include <togo/gfx/init.hpp>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_error.h>

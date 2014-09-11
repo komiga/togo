@@ -7,9 +7,9 @@
 #include <togo/utility.hpp>
 #include <togo/assert.hpp>
 #include <togo/log.hpp>
+#include <togo/gfx/init.hpp>
 #include <togo/impl/gfx/glfw_common.hpp>
 #include <togo/impl/gfx/init/private.hpp>
-#include <togo/gfx/init.hpp>
 
 #include <GLFW/glfw3.h>
 
