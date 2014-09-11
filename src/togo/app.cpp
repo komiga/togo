@@ -53,7 +53,7 @@ static void core_render(AppBase& app_base);
 
 static void core_init(AppBase& app_base) {
 	TOGO_LOG("App: initializing\n");
-	gfx::init(3, 2);
+	gfx::init(3, 3);
 	gfx::Config config{};
 	config.color_bits = {8, 8, 8, 0};
 	config.depth_bits = 16;

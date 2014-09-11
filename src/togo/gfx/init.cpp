@@ -30,8 +30,8 @@ void gfx::init(
 	TOGO_ASSERT(!_gfx_globals.initialized, "graphics backend has already been initialized");
 
 	TOGO_ASSERT(
-		context_major >= 2 && context_minor >= 1,
-		"OpenGL context version below 2.1 is not supported"
+		context_major >= 3 && context_minor >= 3,
+		"OpenGL context version below 3.3 is not supported"
 	);
 	gfx::init_impl(context_major, context_minor);
 
