@@ -8,22 +8,17 @@
 #include <togo/assert.hpp>
 #include <togo/log.hpp>
 #include <togo/impl/gfx/glfw_common.hpp>
+#include <togo/impl/gfx/init/private.hpp>
 #include <togo/gfx/init.hpp>
 
 #include <GLFW/glfw3.h>
 
 namespace togo {
 
-void gfx::init(
+void gfx::init_impl(
 	unsigned context_major,
 	unsigned context_minor
 ) {
-	TOGO_ASSERT(!_gfx_globals.initialized, "graphics backend has already been initialized");
-
-	TOGO_ASSERT(
-		context_major >= 2 && context_minor >= 1,
-		"OpenGL context version below 2.1 is not supported"
-	);
 	TOGO_GLFW_CHECK(glfwInit());
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, context_major);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, context_minor);
@@ -31,23 +26,14 @@ void gfx::init(
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	}
-
-	_gfx_globals.context_major = context_major;
-	_gfx_globals.context_minor = context_minor;
-	_gfx_globals.initialized = true;
 	return;
 
 glfw_error:
 	TOGO_ASSERT(false, "failed to initialize graphics backend\n");
 }
 
-void gfx::shutdown() {
-	TOGO_ASSERT(_gfx_globals.initialized, "graphics backend has not been initialized");
-
+void gfx::shutdown_impl() {
 	glfwTerminate();
-	_gfx_globals.context_major = 0;
-	_gfx_globals.context_minor = 0;
-	_gfx_globals.initialized = false;
 }
 
 } // namespace togo

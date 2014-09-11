@@ -8,6 +8,7 @@
 #include <togo/assert.hpp>
 #include <togo/log.hpp>
 #include <togo/impl/gfx/sdl_common.hpp>
+#include <togo/impl/gfx/init/private.hpp>
 #include <togo/gfx/init.hpp>
 
 #include <SDL2/SDL.h>
@@ -25,12 +26,6 @@ void gfx::init(
 	unsigned context_major,
 	unsigned context_minor
 ) {
-	TOGO_ASSERT(!_gfx_globals.initialized, "graphics backend has already been initialized");
-
-	TOGO_ASSERT(
-		context_major >= 2 && context_minor >= 1,
-		"OpenGL context version below 2.1 is not supported"
-	);
 	TOGO_SDL_CHECK(SDL_Init(INIT_SYSTEMS) != 0);
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1));
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, context_major));
@@ -39,10 +34,6 @@ void gfx::init(
 		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
 		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG));
 	}
-
-	_gfx_globals.context_major = context_major;
-	_gfx_globals.context_minor = context_minor;
-	_gfx_globals.initialized = true;
 	return;
 
 sdl_error:
@@ -50,12 +41,7 @@ sdl_error:
 }
 
 void gfx::shutdown() {
-	TOGO_ASSERT(_gfx_globals.initialized, "graphics backend has not been initialized");
-
 	SDL_Quit();
-	_gfx_globals.context_major = 0;
-	_gfx_globals.context_minor = 0;
-	_gfx_globals.initialized = false;
 }
 
 } // namespace togo
