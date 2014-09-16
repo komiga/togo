@@ -19,9 +19,9 @@
 namespace togo {
 namespace gfx {
 
-inline void glfw_config_setup(gfx::Config const& config) {
+inline void glfw_config_setup(gfx::DisplayConfig const& config) {
 	TOGO_ASSERT(
-		enum_bool(config.flags & gfx::ConfigFlags::double_buffered),
+		enum_bool(config.flags & gfx::DisplayConfigFlags::double_buffered),
 		"GLFW display is always double-buffered"
 	);
 

@@ -24,7 +24,7 @@ struct Display {
 	unsigned _width;
 	unsigned _height;
 	gfx::DisplayFlags _flags;
-	gfx::Config _config;
+	gfx::DisplayConfig _config;
 	Allocator* _allocator;
 	InputBuffer* _input_buffer;
 
@@ -48,7 +48,7 @@ struct Display {
 		unsigned const width,
 		unsigned const height,
 		gfx::DisplayFlags const flags,
-		Config const& config,
+		DisplayConfig const& config,
 		Allocator& allocator,
 		DisplayImpl&& impl
 	)

@@ -16,13 +16,13 @@ main() {
 	memory_init();
 	gfx::init(3, 2);
 
-	gfx::Config config{};
+	gfx::DisplayConfig config{};
 	config.color_bits = {8, 8, 8, 0};
 	config.depth_bits = 16;
 	config.stencil_bits = 0;
 	config.msaa_num_buffers = 0;
 	config.msaa_num_samples = 0;
-	config.flags = gfx::ConfigFlags::double_buffered;
+	config.flags = gfx::DisplayConfigFlags::double_buffered;
 
 	gfx::Display* const display = gfx::display::create(
 		"togo display",

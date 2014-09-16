@@ -29,7 +29,7 @@ gfx::Display* display::create(
 	unsigned width,
 	unsigned height,
 	gfx::DisplayFlags flags,
-	gfx::Config const& config,
+	gfx::DisplayConfig const& config,
 	gfx::Display* share_with,
 	Allocator& allocator
 ) {

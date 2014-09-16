@@ -31,12 +31,12 @@ AppBase::AppBase(
 	, _func_render(func_render)
 	, _num_args(num_args)
 	, _args(args)
-	, _display(nullptr)
-	, _input_buffer(memory::default_allocator())
 	, _task_manager(
 		system::num_cores() - 1u,
 		memory::default_allocator()
 	)
+	, _display(nullptr)
+	, _input_buffer(memory::default_allocator())
 	, _update_freq(update_freq)
 	, _quit(false)
 {}
@@ -54,19 +54,21 @@ static void core_render(AppBase& app_base);
 static void core_init(AppBase& app_base) {
 	TOGO_LOG("App: initializing\n");
 	gfx::init(3, 3);
-	gfx::Config config{};
+	gfx::DisplayConfig config{};
 	config.color_bits = {8, 8, 8, 0};
 	config.depth_bits = 16;
 	config.stencil_bits = 0;
 	config.msaa_num_buffers = 0;
 	config.msaa_num_samples = 0;
-	config.flags = gfx::ConfigFlags::double_buffered;
+	config.flags = gfx::DisplayConfigFlags::double_buffered;
 	app_base._display = gfx::display::create(
 		"togo display",
 		1024, 768,
 		gfx::DisplayFlags::borderless |
 		gfx::DisplayFlags::resizable,
-		config
+		config,
+		nullptr,
+		memory::default_allocator()
 	);
 	input_buffer::add_display(app_base._input_buffer, app_base._display);
 	gfx::display::set_mouse_lock(app_base._display, false);

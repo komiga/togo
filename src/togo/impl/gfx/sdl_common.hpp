@@ -19,10 +19,10 @@
 namespace togo {
 namespace gfx {
 
-inline void sdl_config_setup(gfx::Config const& config) {
+inline void sdl_config_setup(gfx::DisplayConfig const& config) {
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(
 		SDL_GL_DOUBLEBUFFER,
-		enum_bool(config.flags & gfx::ConfigFlags::double_buffered) ? 1 : 0
+		enum_bool(config.flags & gfx::DisplayConfigFlags::double_buffered) ? 1 : 0
 	));
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_RED_SIZE, config.color_bits.red));
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, config.color_bits.green));

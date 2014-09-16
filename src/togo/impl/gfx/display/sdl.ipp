@@ -26,7 +26,7 @@ gfx::Display* display::create(
 	unsigned width,
 	unsigned height,
 	gfx::DisplayFlags flags,
-	gfx::Config const& config,
+	gfx::DisplayConfig const& config,
 	gfx::Display* share_with,
 	Allocator& allocator
 ) {
@@ -105,7 +105,7 @@ sdl_error:
 }
 
 void display::swap_buffers(gfx::Display* display) {
-	if (enum_bool(display->_config.flags & gfx::ConfigFlags::double_buffered)) {
+	if (enum_bool(display->_config.flags & gfx::DisplayConfigFlags::double_buffered)) {
 		SDL_GL_SwapWindow(display->_impl.handle);
 	}
 }

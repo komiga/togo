@@ -21,8 +21,13 @@ namespace gfx {
 	@{
 */
 
+/**
+	@addtogroup gfx_display
+	@{
+*/
+
 /// Graphics configuration flags.
-enum class ConfigFlags : unsigned {
+enum class DisplayConfigFlags : unsigned {
 	/// Empty flag.
 	none = 0,
 	/// Double-buffered display.
@@ -33,7 +38,7 @@ enum class ConfigFlags : unsigned {
 ///
 /// If either msaa_num_buffers or msaa_num_samples are 0, MSAA is
 /// disabled.
-struct Config {
+struct DisplayConfig {
 	struct ColorBits {
 		unsigned red;
 		unsigned green;
@@ -42,7 +47,7 @@ struct Config {
 	};
 
 	/// Color buffer bits.
-	gfx::Config::ColorBits color_bits;
+	gfx::DisplayConfig::ColorBits color_bits;
 
 	/// Depth buffer bits.
 	/// If this is 0, the depth buffer should be assumed unavailable.
@@ -58,13 +63,8 @@ struct Config {
 	unsigned msaa_num_samples;
 
 	/// Miscellaneous flags.
-	gfx::ConfigFlags flags;
+	gfx::DisplayConfigFlags flags;
 };
-
-/**
-	@addtogroup gfx_display
-	@{
-*/
 
 /// Display flags.
 enum class DisplayFlags : unsigned {
@@ -102,7 +102,7 @@ struct Display;
 
 /** @cond INTERNAL */
 template<>
-struct enable_enum_bitwise_ops<gfx::ConfigFlags> : true_type {};
+struct enable_enum_bitwise_ops<gfx::DisplayConfigFlags> : true_type {};
 
 template<>
 struct enable_enum_bitwise_ops<gfx::DisplayFlags> : true_type {};

@@ -48,9 +48,9 @@ struct AppBase {
 	unsigned _num_args;
 	char const** _args;
 
+	TaskManager _task_manager;
 	gfx::Display* _display;
 	InputBuffer _input_buffer;
-	TaskManager _task_manager;
 
 	float _update_freq;
 	bool _quit;
