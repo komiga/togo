@@ -16,8 +16,6 @@
 #include <togo/memory.hpp>
 #include <togo/assert.hpp>
 
-#include <utility>
-
 #include <cstring>
 
 namespace togo {
@@ -238,7 +236,7 @@ inline void push_back(Array<T>& a, T const& item) {
 /// Remove the last item.
 template<class T>
 inline void pop_back(Array<T>& a) {
-	TOGO_DEBUG_ASSERTE(a._size != 0);
+	TOGO_DEBUG_ASSERTE(any(a));
 	--a._size;
 }
 
