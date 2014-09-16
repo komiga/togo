@@ -58,14 +58,14 @@ void input_buffer::remove_display(InputBuffer& ib, gfx::Display* display) {
 }
 
 void update_input_states(gfx::Display* display) {
-	for (unsigned i = 0; i < display->_key_clear_queue_num; ++i) {
+	for (auto const code : display->_key_clear_queue) {
 		display->_key_states[
-			static_cast<unsigned>(display->_key_clear_queue[i])
-		] &= ~(1 << static_cast<unsigned>(KeyAction::release));
+			unsigned_cast(code)
+		] &= ~(1 << unsigned_cast(KeyAction::release));
 	}
-	display->_key_clear_queue_num = 0;
+	fixed_array::clear(display->_key_clear_queue);
 	for (auto& state : display->_mouse_button_states) {
-		state &= ~(1 << static_cast<unsigned>(MouseButtonAction::release));
+		state &= ~(1 << unsigned_cast(MouseButtonAction::release));
 	}
 }
 
@@ -84,26 +84,24 @@ void set_key_state(KeyEvent const& event) {
 		// If state already has KeyAction::release, retain it
 		// (it will be cleared by update())
 		display->_key_states[
-			static_cast<unsigned>(event.code)
-		] |= 1 << static_cast<u8>(event.action);
+			unsigned_cast(event.code)
+		] |= 1 << unsigned_cast(event.action);
 	} else if (event.action == KeyAction::release) {
 		// Replace state and enqueue clear
 		display->_key_states[
-			static_cast<unsigned>(event.code)
-		] = 1 << static_cast<u8>(event.action);
-		unsigned i;
-		for (i = 0; i < display->_key_clear_queue_num; ++i) {
-			if (display->_key_clear_queue[i] == event.code) {
+			unsigned_cast(event.code)
+		] = 1 << unsigned_cast(event.action);
+		for (auto const code : display->_key_clear_queue) {
+			if (code == event.code) {
 				return;
 			}
 		}
-		if (i < array_extent(display->_key_clear_queue)) {
-			display->_key_clear_queue[i] = event.code;
-			++display->_key_clear_queue_num;
+		if (fixed_array::space(display->_key_clear_queue)) {
+			fixed_array::push_back(display->_key_clear_queue, event.code);
 		} else {
 			TOGO_LOGF(
 				"input_buffer: warning: discarded key-clear for key %u on display %p\n",
-				static_cast<unsigned>(event.code),
+				unsigned_cast(event.code),
 				event.display
 			);
 		}
@@ -137,16 +135,16 @@ bool input_buffer::poll(
 		case InputEventType::key:
 			TOGO_TEST_LOGF(
 				"key: action = %u  code = %u  mods = %u\n",
-				static_cast<unsigned>(event->key.action),
-				static_cast<unsigned>(event->key.code),
-				static_cast<unsigned>(event->key.mods)
+				unsigned_cast(event->key.action),
+				unsigned_cast(event->key.code),
+				unsigned_cast(event->key.mods)
 			);
 			break;
 		case InputEventType::mouse_button:
 			TOGO_TEST_LOGF(
 				"mouse_button: action = %u   button = %u\n",
-				static_cast<unsigned>(event->mouse_button.action),
-				static_cast<unsigned>(event->mouse_button.button)
+				unsigned_cast(event->mouse_button.action),
+				unsigned_cast(event->mouse_button.button)
 			);
 			break;
 		case InputEventType::mouse_motion:
@@ -183,12 +181,12 @@ bool input_buffer::poll(
 	case InputEventType::mouse_button:
 		if (event->mouse_button.action == MouseButtonAction::press) {
 			event->display->_mouse_button_states[
-				static_cast<unsigned>(event->mouse_button.button)
-			] |= 1 << static_cast<u8>(event->mouse_button.action);
+				unsigned_cast(event->mouse_button.button)
+			] |= 1 << unsigned_cast(event->mouse_button.action);
 		} else if (event->mouse_button.action == MouseButtonAction::release) {
 			event->display->_mouse_button_states[
-				static_cast<unsigned>(event->mouse_button.button)
-			]  = 1 << static_cast<u8>(event->mouse_button.action);
+				unsigned_cast(event->mouse_button.button)
+			]  = 1 << unsigned_cast(event->mouse_button.action);
 		}
 		break;
 
