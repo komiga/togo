@@ -57,6 +57,36 @@ struct Array {
 /** @} */ // end of doc-group array
 
 /**
+	@addtogroup fixed_array
+	@{
+*/
+
+/**
+	Fixed-size array of POD objects.
+*/
+template<class T, unsigned N>
+struct FixedArray {
+	TOGO_CONSTRAIN_POD(T);
+
+	u32_fast _size;
+	T _data[N];
+
+	~FixedArray() = default;
+
+	FixedArray(FixedArray<T, N> const&) = delete;
+	FixedArray& operator=(FixedArray<T, N> const&) = delete;
+	FixedArray(FixedArray<T, N>&&) = delete;
+	FixedArray& operator=(FixedArray<T, N>&&) = delete;
+
+	FixedArray();
+
+	T& operator[](unsigned const i);
+	T const& operator[](unsigned const i) const;
+};
+
+/** @} */ // end of doc-group fixed_array
+
+/**
 	@addtogroup queue
 	@{
 */
