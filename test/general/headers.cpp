@@ -6,6 +6,7 @@
 #include <togo/config.hpp>
 #include <togo/debug_constraints.hpp>
 #include <togo/file_io.hpp>
+#include <togo/fixed_array.hpp>
 #include <togo/hash.hpp>
 #include <togo/io.hpp>
 #include <togo/io_proto.hpp>
