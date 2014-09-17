@@ -7,7 +7,6 @@
 
 #include <togo/config.hpp>
 #include <togo/gfx/types.hpp>
-#include <togo/impl/gfx/types.hpp>
 #include <togo/input_types.hpp>
 
 namespace togo {

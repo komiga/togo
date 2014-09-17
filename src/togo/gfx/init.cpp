@@ -5,7 +5,6 @@
 
 #include <togo/config.hpp>
 #include <togo/gfx/init.hpp>
-#include <togo/impl/gfx/types.hpp>
 #include <togo/impl/gfx/common.hpp>
 #include <togo/impl/gfx/init/private.hpp>
 

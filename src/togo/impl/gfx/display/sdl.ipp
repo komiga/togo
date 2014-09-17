@@ -9,8 +9,9 @@
 #include <togo/memory.hpp>
 #include <togo/object_buffer.hpp>
 #include <togo/gfx/display.hpp>
-#include <togo/impl/gfx/types.hpp>
 #include <togo/impl/gfx/sdl_common.hpp>
+#include <togo/impl/gfx/display/types.hpp>
+#include <togo/impl/gfx/display/private.hpp>
 #include <togo/impl/gfx/display/sdl.hpp>
 #include <togo/input_types.hpp>
 

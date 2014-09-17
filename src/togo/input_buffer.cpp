@@ -5,8 +5,10 @@
 
 #include <togo/config.hpp>
 #include <togo/assert.hpp>
-#include <togo/impl/gfx/display/private.hpp>
+#include <togo/fixed_array.hpp>
 #include <togo/object_buffer.hpp>
+#include <togo/impl/gfx/display/types.hpp>
+#include <togo/impl/gfx/display/private.hpp>
 #include <togo/input_buffer.hpp>
 
 #undef TOGO_TEST_LOG_ENABLE

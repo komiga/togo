@@ -1,4 +1,4 @@
-#line 2 "togo/impl/gfx/types.hpp"
+#line 2 "togo/impl/gfx/display/types.hpp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */

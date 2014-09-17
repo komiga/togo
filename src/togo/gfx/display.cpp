@@ -4,10 +4,10 @@
 */
 
 #include <togo/config.hpp>
-#include <togo/gfx/display.hpp>
-#include <togo/impl/gfx/types.hpp>
-#include <togo/impl/gfx/display/private.hpp>
 #include <togo/assert.hpp>
+#include <togo/gfx/display.hpp>
+#include <togo/impl/gfx/display/types.hpp>
+#include <togo/impl/gfx/display/private.hpp>
 #include <togo/input_buffer.hpp>
 
 #if (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_SDL)

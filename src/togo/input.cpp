@@ -5,7 +5,7 @@
 
 #include <togo/config.hpp>
 #include <togo/assert.hpp>
-#include <togo/impl/gfx/types.hpp>
+#include <togo/impl/gfx/display/types.hpp>
 #include <togo/input.hpp>
 
 namespace togo {
