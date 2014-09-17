@@ -17,6 +17,22 @@
 
 namespace togo {
 
+namespace string {
+
+/**
+	@addtogroup string
+	@{
+*/
+
+/// Compare two strings for equality.
+///
+/// This will short-circuit if lhs and rhs are not the same size.
+bool compare_equal(StringRef const& lhs, StringRef const& rhs);
+
+/** @} */ // end of doc-group string
+
+} // namespace string
+
 /// Construct to null/empty.
 inline StringRef::StringRef(null_tag)
 	: data(nullptr)
@@ -59,15 +75,5 @@ inline bool StringRef::any() const {
 inline bool StringRef::empty() const {
 	return size == 0;
 }
-
-namespace string {
-
-/**
-	@addtogroup string
-	@{
-*/
-/** @} */ // end of doc-group string
-
-} // namespace string
 
 } // namespace togo
