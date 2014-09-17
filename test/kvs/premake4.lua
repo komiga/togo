@@ -1,7 +1,7 @@
 
 make_tests(
 	"kvs", {
-	["values"] = {nil, nil},
+	["general"] = {nil, nil},
 	["io"] = {nil, nil},
 	["echo"] = {nil, nil},
 })

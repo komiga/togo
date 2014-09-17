@@ -1,5 +1,5 @@
 
 make_tests(
 	"app", {
-	["app"] = {nil, nil},
+	["general"] = {nil, nil},
 })
