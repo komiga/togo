@@ -31,12 +31,50 @@ namespace {
 	static constexpr am::hash::HashLength const
 	hash32_length = am::hash::HashLength::HL32,
 	hash64_length = am::hash::HashLength::HL64;
-}
+} // anonymous namespace
 
 /** @cond INTERNAL */
 TOGO_CONSTRAIN_SAME(hash32, am::detail::hash::fnv_hash_type<hash32_length>);
 TOGO_CONSTRAIN_SAME(hash64, am::detail::hash::fnv_hash_type<hash64_length>);
 /** @endcond */
+
+/// 32-bit hash identity (hash of nothing).
+static constexpr hash32 const
+IDENTITY32{0};
+
+/// 64-bit hash identity (hash of nothing).
+static constexpr hash64 const
+IDENTITY64{0};
+
+/**
+	32-bit hash literal.
+*/
+inline constexpr hash32
+operator"" _hash32(
+	char const* const data,
+	std::size_t const size
+) {
+	return
+		size != 0
+		? am::hash::fnv1a_c<hash32_length>(data, size)
+		: hash::IDENTITY32
+	;
+}
+
+/**
+	64-bit hash literal.
+*/
+inline constexpr hash64
+operator"" _hash64(
+	char const* const data,
+	std::size_t const size
+) {
+	return
+		size != 0
+		? am::hash::fnv1a_c<hash64_length>(data, size)
+		: hash::IDENTITY64
+	;
+}
 
 /**
 	Calculate 32-bit hash.
@@ -49,7 +87,7 @@ calc32(
 	return
 		size != 0
 		? am::hash::fnv1a<hash32_length>(data, size)
-		: hash32{0}
+		: hash::IDENTITY32
 	;
 }
 
@@ -71,7 +109,7 @@ calc64(
 	return
 		size != 0
 		? am::hash::fnv1a<hash64_length>(data, size)
-		: hash64{0}
+		: hash::IDENTITY64
 	;
 }
 
@@ -81,44 +119,6 @@ calc64(
 inline hash64 calc64(StringRef const& ref) {
 	return hash::calc64(ref.data, ref.size);
 }
-
-/**
-	32-bit hash literal.
-*/
-inline constexpr hash32
-operator"" _hash32(
-	char const* const data,
-	std::size_t const size
-) {
-	return
-		size != 0
-		? am::hash::fnv1a_c<hash32_length>(data, size)
-		: hash32{0}
-	;
-}
-
-/**
-	64-bit hash literal.
-*/
-inline constexpr hash64
-operator"" _hash64(
-	char const* const data,
-	std::size_t const size
-) {
-	return
-		size != 0
-		? am::hash::fnv1a_c<hash64_length>(data, size)
-		: hash64{0}
-	;
-}
-
-/// 32-bit hash identity (hash of nothing).
-static constexpr hash32 const
-IDENTITY32{0}; // = ""_hash32;
-
-/// 64-bit hash identity (hash of nothing).
-static constexpr hash64 const
-IDENTITY64{0}; // = ""_hash64;
 
 /** @} */ // end of doc-group hash
 
