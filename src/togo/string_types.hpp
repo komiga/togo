@@ -36,6 +36,7 @@ struct StringRef {
 	StringRef(StringRef&&) = default;
 	StringRef& operator=(StringRef&&) = default;
 
+	StringRef(null_tag);
 	StringRef(char const* const cstr, cstr_tag);
 	StringRef(char const* const data, unsigned const size);
 	template<unsigned N>

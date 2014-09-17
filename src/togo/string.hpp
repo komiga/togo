@@ -17,6 +17,12 @@
 
 namespace togo {
 
+/// Construct to null/empty.
+inline StringRef::StringRef(null_tag)
+	: data(nullptr)
+	, size(0)
+{}
+
 /// Construct to NUL-terminated string.
 inline StringRef::StringRef(char const* const cstr, cstr_tag)
 	: data(cstr)
