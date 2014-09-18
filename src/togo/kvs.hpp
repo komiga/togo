@@ -406,6 +406,7 @@ inline KVS::~KVS() {
 	kvs::clear_name(*this);
 }
 
+/// Construct to type.
 inline KVS::KVS(KVSType const type)
 	: _type(type)
 	, _name(nullptr)
@@ -446,6 +447,9 @@ inline KVS::KVS(Vec4 const& value) : KVS(KVSType::vec4) { _value.vec4 = value; }
 
 /// Construct with name and null value.
 inline KVS::KVS(StringRef const& name, null_tag const) : KVS() { kvs::set_name(*this, name); }
+
+/// Construct with name and type.
+inline KVS::KVS(StringRef const& name, KVSType const type) : KVS(type) { kvs::set_name(*this, name); }
 
 /// Construct with name and integer value.
 inline KVS::KVS(StringRef const& name, s64 const value) : KVS(value) { kvs::set_name(*this, name); }

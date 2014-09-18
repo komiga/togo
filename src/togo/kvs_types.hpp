@@ -61,7 +61,20 @@ struct KVS {
 	unsigned _name_size;
 	hash64 _name_hash;
 
+	struct StringValue {
+		char* data;
+		unsigned size;
+		unsigned capacity;
+	};
+
+	struct CollectionValue {
+		KVS* data;
+		unsigned size;
+		unsigned capacity;
+	};
+
 	union Value {
+		u8 _init[max(sizeof(Vec4), sizeof(StringValue))];
 		s64 integer;
 		f64 decimal;
 		bool boolean;
@@ -69,16 +82,8 @@ struct KVS {
 		Vec2 vec2;
 		Vec3 vec3;
 		Vec4 vec4;
-		struct {
-			char* data;
-			unsigned size;
-			unsigned capacity;
-		} string;
-		struct {
-			KVS* data;
-			unsigned size;
-			unsigned capacity;
-		} collection;
+		StringValue string;
+		CollectionValue collection;
 
 		Value(Value const&) = delete;
 		Value& operator=(Value const&) = delete;
@@ -88,7 +93,7 @@ struct KVS {
 		Value& operator=(Value&&) = default;
 
 		inline Value()
-			: integer(0)
+			: _init()
 		{}
 	} _value;
 
@@ -97,13 +102,12 @@ struct KVS {
 
 	~KVS();
 
-private:
-	KVS(KVSType const type);
-
 public:
 	KVS();
 	KVS(KVS const& other);
 	KVS(KVS&& other);
+
+	KVS(KVSType const type);
 
 // value ctors
 	KVS(s64 const value);
@@ -122,6 +126,7 @@ public:
 
 // with-name ctors
 	KVS(StringRef const& name, null_tag const);
+	KVS(StringRef const& name, KVSType const type);
 
 	KVS(StringRef const& name, s64 const value);
 	KVS(StringRef const& name, f64 const value);
