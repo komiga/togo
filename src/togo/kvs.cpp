@@ -82,6 +82,8 @@ KVS const* kvs::find_impl(
 					kvs::name_size(item), kvs::name(item)
 				);
 			}
+			#else
+				(void)name;
 			#endif
 			return &item;
 		}
