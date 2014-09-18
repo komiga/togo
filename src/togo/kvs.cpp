@@ -5,8 +5,10 @@
 
 #include <togo/config.hpp>
 #include <togo/assert.hpp>
+#include <togo/string.hpp>
 #include <togo/hash.hpp>
 #include <togo/memory.hpp>
+#include <togo/log.hpp>
 #include <togo/kvs.hpp>
 
 #include <utility>
@@ -18,6 +20,11 @@ namespace togo {
 namespace kvs {
 	static void init_children(KVS& kvs, unsigned const from, unsigned const to);
 	static void reset_children(KVS& kvs, unsigned const from, unsigned const to);
+	static KVS const* find_impl(
+		KVS const& kvs,
+		StringRef const& name,
+		hash64 const name_hash
+	);
 } // namespace kvs
 
 inline void kvs::init_children(KVS& kvs, unsigned const from, unsigned const to) {
@@ -55,6 +62,49 @@ KVS::KVS(KVS&& other)
 	other._name = nullptr;
 	other._name_size = 0;
 	other._name_hash = hash::IDENTITY64;
+}
+
+KVS const* kvs::find_impl(
+	KVS const& kvs,
+	StringRef const& name,
+	hash64 const name_hash
+) {
+	if (name_hash == hash::IDENTITY64 || kvs::empty(kvs)) {
+		return nullptr;
+	}
+	for (KVS const& item : kvs) {
+		if (name_hash == kvs::name_hash(item)) {
+			#if defined(TOGO_DEBUG)
+			if (name.valid() && !string::compare_equal(name, kvs::name_ref(kvs))) {
+				TOGO_LOG_DEBUGF(
+					"hashes matched, but names mismatched: '%.*s' != '%.*s' (lookup_name != name)\n",
+					name.size, name.data,
+					kvs::name_size(kvs), kvs::name(kvs)
+				);
+			}
+			#endif
+			return &item;
+		}
+	}
+	return nullptr;
+}
+
+KVS* kvs::find(KVS& kvs, StringRef const& name) {
+	hash64 const name_hash = hash::calc64(name.data, name.size);
+	return const_cast<KVS*>(kvs::find_impl(kvs, name, name_hash));
+}
+
+KVS const* kvs::find(KVS const& kvs, StringRef const& name) {
+	hash64 const name_hash = hash::calc64(name.data, name.size);
+	return kvs::find_impl(kvs, name, name_hash);
+}
+
+KVS* kvs::find(KVS& kvs, hash64 const name_hash) {
+	return const_cast<KVS*>(kvs::find_impl(kvs, StringRef{null_tag{}}, name_hash));
+}
+
+KVS const* kvs::find(KVS const& kvs, hash64 const name_hash) {
+	return kvs::find_impl(kvs, StringRef{null_tag{}}, name_hash);
 }
 
 bool kvs::set_type(KVS& kvs, KVSType const type) {

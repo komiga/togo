@@ -261,6 +261,18 @@ inline Vec4 const& vec4(KVS const& kvs) {
 	return kvs._value.vec4;
 }
 
+/// Find item in collection by name.
+KVS* find(KVS& kvs, StringRef const& name);
+
+/// Find item in collection by name.
+KVS const* find(KVS const& kvs, StringRef const& name);
+
+/// Find item in collection by name hash.
+KVS* find(KVS& kvs, hash64 name_hash);
+
+/// Find item in collection by name hash.
+KVS const* find(KVS const& kvs, hash64 name_hash);
+
 /// Free value if dynamic and change type iff type differs.
 ///
 /// Returns true if the type changed.
