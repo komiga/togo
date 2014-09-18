@@ -75,11 +75,11 @@ KVS const* kvs::find_impl(
 	for (KVS const& item : kvs) {
 		if (name_hash == kvs::name_hash(item)) {
 			#if defined(TOGO_DEBUG)
-			if (name.valid() && !string::compare_equal(name, kvs::name_ref(kvs))) {
+			if (name.valid() && !string::compare_equal(name, kvs::name_ref(item))) {
 				TOGO_LOG_DEBUGF(
 					"hashes matched, but names mismatched: '%.*s' != '%.*s' (lookup_name != name)\n",
 					name.size, name.data,
-					kvs::name_size(kvs), kvs::name(kvs)
+					kvs::name_size(item), kvs::name(item)
 				);
 			}
 			#endif
