@@ -421,9 +421,9 @@ inline KVS::~KVS() {
 /// Construct to type.
 inline KVS::KVS(KVSType const type)
 	: _type(type)
-	, _name(nullptr)
 	, _name_size(0)
 	, _name_hash(hash::IDENTITY64)
+	, _name(nullptr)
 	, _value()
 {}
 

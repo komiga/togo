@@ -57,9 +57,9 @@ enum class KVSType : unsigned {
 */
 struct KVS {
 	KVSType _type;
-	char* _name;
 	unsigned _name_size;
 	hash64 _name_hash;
+	char* _name;
 
 	struct StringValue {
 		char* data;

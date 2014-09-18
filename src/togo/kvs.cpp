@@ -53,9 +53,9 @@ KVS::KVS(KVS const& other)
 
 KVS::KVS(KVS&& other)
 	: _type(other._type)
-	, _name(other._name)
 	, _name_size(other._name_size)
 	, _name_hash(other._name_hash)
+	, _name(other._name)
 	, _value(std::move(other._value))
 {
 	other._type = KVSType::null;
