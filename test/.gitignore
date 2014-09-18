@@ -5,4 +5,4 @@ out/
 *.exe
 *.elf
 
-data/
+data/file_stream.bin
