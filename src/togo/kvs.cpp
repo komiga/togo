@@ -255,7 +255,7 @@ void kvs::string(KVS& kvs, StringRef const& value) {
 	kvs._value.string.size = value.size;
 }
 
-void kvs::set_capacity(KVS& kvs, unsigned const new_capacity) {
+void kvs::set_capacity(KVS& kvs, u32 const new_capacity) {
 	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
 	if (new_capacity == kvs._value.collection.capacity) {
 		return;
@@ -281,16 +281,16 @@ void kvs::set_capacity(KVS& kvs, unsigned const new_capacity) {
 	kvs::init_children(kvs, kvs._value.collection.size, new_capacity);
 }
 
-void kvs::grow(KVS& kvs, unsigned const min_capacity) {
+void kvs::grow(KVS& kvs, u32 const min_capacity) {
 	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
-	unsigned new_capacity = kvs._value.collection.capacity * 2 + 8;
+	u32 new_capacity = kvs._value.collection.capacity * 2 + 8;
 	if (min_capacity > new_capacity) {
 		new_capacity = min_capacity;
 	}
 	kvs::set_capacity(kvs, new_capacity);
 }
 
-void kvs::resize(KVS& kvs, unsigned const new_size) {
+void kvs::resize(KVS& kvs, u32 const new_size) {
 	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
 	if (new_size > kvs._value.collection.capacity) {
 		kvs::grow(kvs, new_size);

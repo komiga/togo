@@ -114,7 +114,7 @@ inline char const* name(KVS const& kvs) {
 /// Get name size.
 ///
 /// This does not include the NUL terminator.
-inline unsigned name_size(KVS const& kvs) {
+inline u32 name_size(KVS const& kvs) {
 	return kvs._name_size;
 }
 
@@ -134,17 +134,17 @@ inline bool is_named(KVS const& kvs) {
 }
 
 /// Number of values in the collection.
-inline unsigned size(KVS const& kvs) {
+inline u32 size(KVS const& kvs) {
 	return kvs::is_collection(kvs) ? kvs._value.collection.size : 0;
 }
 
 /// Number of values reserved in the collection.
-inline unsigned capacity(KVS const& kvs) {
+inline u32 capacity(KVS const& kvs) {
 	return kvs::is_collection(kvs) ? kvs._value.collection.capacity : 0;
 }
 
 /// Number of values that can be added before a resize occurs.
-inline unsigned space(KVS const& kvs) {
+inline u32 space(KVS const& kvs) {
 	return
 		kvs::is_collection(kvs)
 		? kvs._value.collection.capacity - kvs._value.collection.size
@@ -223,7 +223,7 @@ inline char const* string(KVS const& kvs) {
 /// Get string value size.
 ///
 /// This does not include the NUL terminator.
-inline unsigned string_size(KVS const& kvs) {
+inline u32 string_size(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::string));
 	return kvs._value.string.size;
 }
@@ -352,13 +352,13 @@ inline void vec4(KVS& kvs, Vec4 const& value) {
 ///
 /// If new_capacity is lower than the size, the collection is resized
 /// to new_capacity.
-void set_capacity(KVS& kvs, unsigned const new_capacity);
+void set_capacity(KVS& kvs, u32 const new_capacity);
 
 /// Grow collection with a doubling factor.
 ///
 /// Cost of insertion should be amortized O(1), assuming no aggressive
 /// shrinking. Grows to at least min_capacity if it is non-zero.
-void grow(KVS& kvs, unsigned const min_capacity = 0);
+void grow(KVS& kvs, u32 const min_capacity = 0);
 
 /// Shrink collection capacity to fit current size.
 inline void shrink_to_fit(KVS& kvs) {
@@ -372,10 +372,10 @@ inline void shrink_to_fit(KVS& kvs) {
 ///
 /// Upsize grows by using new_size as the minimum capacity.
 /// If the collection grows, the new values will be null.
-void resize(KVS& kvs, unsigned const new_size);
+void resize(KVS& kvs, u32 const new_size);
 
 /// Reserve at least new_capacity in collection.
-inline void reserve(KVS& kvs, unsigned const new_capacity) {
+inline void reserve(KVS& kvs, u32 const new_capacity) {
 	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
 	if (new_capacity > kvs._value.collection.capacity) {
 		kvs::set_capacity(kvs, new_capacity);

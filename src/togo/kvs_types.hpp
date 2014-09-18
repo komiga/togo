@@ -27,7 +27,7 @@ namespace togo {
 /**
 	Key-value store type.
 */
-enum class KVSType : unsigned {
+enum class KVSType : u32 {
 	/// Empty value.
 	null		= 1 << 0,
 	/// 64-bit signed integer.
@@ -57,20 +57,20 @@ enum class KVSType : unsigned {
 */
 struct KVS {
 	KVSType _type;
-	unsigned _name_size;
+	u32 _name_size;
 	hash64 _name_hash;
 	char* _name;
 
 	struct StringValue {
+		u32 size;
+		u32 capacity;
 		char* data;
-		unsigned size;
-		unsigned capacity;
 	};
 
 	struct CollectionValue {
+		u32 size;
+		u32 capacity;
 		KVS* data;
-		unsigned size;
-		unsigned capacity;
 	};
 
 	union Value {
