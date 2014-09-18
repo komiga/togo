@@ -24,6 +24,22 @@ namespace string {
 	@{
 */
 
+/// Get size of a NUL-terminated string.
+///
+/// This does not include the NUL terminator.
+inline unsigned size(char const* cstr) {
+	return cstr ? std::strlen(cstr) : 0;
+}
+
+/// Get size of a string literal or string array.
+///
+/// This does not include the NUL terminator if there is one.
+/// If there are NULs before N, they are counted.
+template<unsigned N>
+inline constexpr unsigned size(char const (&data)[N]) {
+	return N > 0 && data[N - 1] == '\0' ? N - 1 : N;
+}
+
 /// Compare two strings for equality.
 ///
 /// This will short-circuit if lhs and rhs are not the same size.
@@ -42,7 +58,7 @@ inline StringRef::StringRef(null_tag)
 /// Construct to NUL-terminated string.
 inline StringRef::StringRef(char const* const cstr, cstr_tag)
 	: data(cstr)
-	, size(cstr ? std::strlen(cstr) : 0)
+	, size(string::size(cstr))
 {}
 
 /// Construct to explicitly-sized data.
