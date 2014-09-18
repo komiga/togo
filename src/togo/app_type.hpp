@@ -51,6 +51,7 @@ struct AppBase {
 	TaskManager _task_manager;
 	gfx::Display* _display;
 	InputBuffer _input_buffer;
+	gfx::Renderer* _renderer;
 
 	float _update_freq;
 	bool _quit;

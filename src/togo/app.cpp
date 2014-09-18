@@ -10,6 +10,7 @@
 #include <togo/memory.hpp>
 #include <togo/gfx/init.hpp>
 #include <togo/gfx/display.hpp>
+#include <togo/gfx/renderer.hpp>
 #include <togo/input_buffer.hpp>
 
 namespace togo {
@@ -37,6 +38,7 @@ AppBase::AppBase(
 	)
 	, _display(nullptr)
 	, _input_buffer(memory::default_allocator())
+	, _renderer(nullptr)
 	, _update_freq(update_freq)
 	, _quit(false)
 {}
@@ -72,6 +74,9 @@ static void core_init(AppBase& app_base) {
 	);
 	input_buffer::add_display(app_base._input_buffer, app_base._display);
 	gfx::display::set_mouse_lock(app_base._display, false);
+	app_base._renderer = gfx::renderer::create(
+		memory::default_allocator()
+	);
 	app_base._quit = false;
 	app_base._func_init(app_base);
 }
@@ -79,6 +84,7 @@ static void core_init(AppBase& app_base) {
 static void core_shutdown(AppBase& app_base) {
 	TOGO_LOG("App: shutting down\n");
 	app_base._func_shutdown(app_base);
+	gfx::renderer::destroy(app_base._renderer);
 	input_buffer::remove_display(app_base._input_buffer, app_base._display);
 	gfx::display::destroy(app_base._display);
 	gfx::shutdown();
