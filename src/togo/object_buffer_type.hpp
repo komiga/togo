@@ -4,6 +4,7 @@
 
 @file object_buffer_type.hpp
 @brief Object buffer type.
+@ingroup types
 @ingroup io
 @ingroup object_buffer
 */

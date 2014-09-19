@@ -4,6 +4,7 @@
 
 @file app_type.hpp
 @brief Application type.
+@ingroup types
 @ingroup app
 */
 
