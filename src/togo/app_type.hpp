@@ -36,10 +36,10 @@ struct AppModel {
 
 /// Base application class.
 struct AppBase {
-	using init_func_type = void(&)(AppBase&);
-	using shutdown_func_type = void(&)(AppBase&);
-	using update_func_type = void(&)(AppBase&, float);
-	using render_func_type = void(&)(AppBase&);
+	using init_func_type = void (&)(AppBase&);
+	using shutdown_func_type = void (&)(AppBase&);
+	using update_func_type = void (&)(AppBase&, float);
+	using render_func_type = void (&)(AppBase&);
 
 	init_func_type _func_init;
 	shutdown_func_type _func_shutdown;
