@@ -5,10 +5,6 @@
 
 using namespace togo;
 
-namespace {
-
-using namespace togo::hash;
-
 static constexpr hash32 const
 h32_identity = ""_hash32,
 h32_test = "test"_hash32;
@@ -16,8 +12,6 @@ h32_test = "test"_hash32;
 static constexpr hash64 const
 h64_identity = ""_hash64,
 h64_test = "test"_hash64;
-
-} // anonymous namespace
 
 signed
 main() {
