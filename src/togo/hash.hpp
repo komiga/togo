@@ -47,36 +47,6 @@ static constexpr hash64 const
 IDENTITY64{0};
 
 /**
-	32-bit hash literal.
-*/
-inline constexpr hash32
-operator"" _hash32(
-	char const* const data,
-	std::size_t const size
-) {
-	return
-		size != 0
-		? am::hash::fnv1a_c<hash32_length>(data, size)
-		: hash::IDENTITY32
-	;
-}
-
-/**
-	64-bit hash literal.
-*/
-inline constexpr hash64
-operator"" _hash64(
-	char const* const data,
-	std::size_t const size
-) {
-	return
-		size != 0
-		? am::hash::fnv1a_c<hash64_length>(data, size)
-		: hash::IDENTITY64
-	;
-}
-
-/**
 	Calculate 32-bit hash.
 */
 inline hash32
@@ -123,4 +93,35 @@ inline hash64 calc64(StringRef const& ref) {
 /** @} */ // end of doc-group hash
 
 } // namespace hash
+
+/**
+	32-bit hash literal.
+*/
+inline constexpr hash32
+operator"" _hash32(
+	char const* const data,
+	std::size_t const size
+) {
+	return
+		size != 0
+		? am::hash::fnv1a_c<hash::hash32_length>(data, size)
+		: hash::IDENTITY32
+	;
+}
+
+/**
+	64-bit hash literal.
+*/
+inline constexpr hash64
+operator"" _hash64(
+	char const* const data,
+	std::size_t const size
+) {
+	return
+		size != 0
+		? am::hash::fnv1a_c<hash::hash64_length>(data, size)
+		: hash::IDENTITY64
+	;
+}
+
 } // namespace togo
