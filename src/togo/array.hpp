@@ -37,6 +37,7 @@ inline Array<T>::Array(Allocator& allocator)
 	, _allocator(&allocator)
 {}
 
+// Move constructor.
 template<class T>
 inline Array<T>::Array(Array<T>&& other)
 	: _size(other._size)
@@ -49,6 +50,7 @@ inline Array<T>::Array(Array<T>&& other)
 	other._data = nullptr;
 }
 
+// Move assignment operator.
 template<class T>
 inline Array<T>& Array<T>::operator=(Array<T>&& other) {
 	_size = other._size;
