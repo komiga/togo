@@ -53,6 +53,7 @@ inline Array<T>::Array(Array<T>&& other)
 // Move assignment operator.
 template<class T>
 inline Array<T>& Array<T>::operator=(Array<T>&& other) {
+	_allocator->deallocate(_data);
 	_size = other._size;
 	_capacity = other._capacity;
 	_data = other._data;
@@ -60,6 +61,7 @@ inline Array<T>& Array<T>::operator=(Array<T>&& other) {
 	other._size = 0;
 	other._capacity = 0;
 	other._data = nullptr;
+	return *this;
 }
 
 /// Access value by index.
