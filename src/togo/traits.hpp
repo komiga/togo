@@ -108,10 +108,28 @@ template<> struct is_signed_impl<signed long long> : true_type {};
 
 } // anonymous namespace
 
-/// Type with static constexpr value equal to the true if T is
+/// Type with static constexpr value equal to true if T is
 /// a signed integral.
 template<class T>
 using is_signed = is_signed_impl<remove_cvr<T>>;
+
+namespace {
+
+template<class T>
+struct is_unsigned_impl : false_type {};
+
+template<> struct is_unsigned_impl<unsigned char> : true_type {};
+template<> struct is_unsigned_impl<unsigned short> : true_type {};
+template<> struct is_unsigned_impl<unsigned int> : true_type {};
+template<> struct is_unsigned_impl<unsigned long> : true_type {};
+template<> struct is_unsigned_impl<unsigned long long> : true_type {};
+
+} // anonymous namespace
+
+/// Type with static constexpr value equal to true if T is
+/// an unsigned integral.
+template<class T>
+using is_unsigned = is_unsigned_impl<remove_cvr<T>>;
 
 /// @}
 
