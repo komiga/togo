@@ -22,6 +22,9 @@
 #include <togo/mutex.hpp>
 #include <togo/priority_queue.hpp>
 #include <togo/queue.hpp>
+#include <togo/resource.hpp>
+#include <togo/resource_manager.hpp>
+#include <togo/resource_types.hpp>
 #include <togo/system.hpp>
 #include <togo/task_manager.hpp>
 #include <togo/temp_allocator.hpp>
