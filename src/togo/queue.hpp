@@ -52,6 +52,7 @@ inline Queue<T>& Queue<T>::operator=(Queue<T>&& other) {
 	_size = other._size;
 	other._head = 0;
 	other._size = 0;
+	return *this;
 }
 
 /// Access value by index.
