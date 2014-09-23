@@ -9,9 +9,9 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/traits.hpp>
 
 #if defined(TOGO_USE_CONSTRAINTS)
+	#include <togo/traits.hpp>
 	#include <type_traits>
 
 	#define TOGO_CONSTRAIN_POD(T)									\
