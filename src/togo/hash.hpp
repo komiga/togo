@@ -35,6 +35,18 @@ IDENTITY32{0};
 static constexpr hash64 const
 IDENTITY64{0};
 
+// TODO: Replace with variable template
+template<class H>
+struct identity_generic;
+
+template<> struct identity_generic<hash32> {
+	static constexpr auto const value = hash::IDENTITY32;
+};
+
+template<> struct identity_generic<hash64> {
+	static constexpr auto const value = hash::IDENTITY64;
+};
+
 namespace {
 	static constexpr am::hash::HashLength const
 	hash32_length = am::hash::HashLength::HL32,
@@ -49,17 +61,6 @@ namespace {
 
 	template<> struct hash_type_length<hash64> {
 		static constexpr auto const value = hash64_length;
-	};
-
-	template<class H>
-	struct hash_identity;
-
-	template<> struct hash_identity<hash32> {
-		static constexpr auto const value = hash::IDENTITY32;
-	};
-
-	template<> struct hash_identity<hash64> {
-		static constexpr auto const value = hash::IDENTITY64;
 	};
 } // anonymous namespace
 
@@ -79,7 +80,7 @@ inline H calc_generic(
 	return
 		size != 0
 		? am::hash::fnv1a<hash_type_length<H>::value>(data, size)
-		: hash_identity<H>::value
+		: identity_generic<H>::value
 	;
 }
 
