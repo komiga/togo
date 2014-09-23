@@ -13,8 +13,8 @@
 #include <togo/config.hpp>
 #include <togo/types.hpp>
 #include <togo/collection_types.hpp>
-#include <togo/memory.hpp>
 #include <togo/assert.hpp>
+#include <togo/memory.hpp>
 
 #include <cstring>
 
