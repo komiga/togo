@@ -131,6 +131,21 @@ template<> struct is_unsigned_impl<unsigned long long> : true_type {};
 template<class T>
 using is_unsigned = is_unsigned_impl<remove_cvr<T>>;
 
+namespace {
+
+template<class T, class U>
+struct is_same_impl : false_type {};
+
+template<class T>
+struct is_same_impl<T, T> : true_type {};
+
+} // anonymous namespace
+
+/// Type with static constexpr value equal to true if T is
+/// the same as U.
+template<class T, class U>
+using is_same = is_same_impl<T, U>;
+
 /// @}
 
 /// Enum-class bitwise operator enabler.
