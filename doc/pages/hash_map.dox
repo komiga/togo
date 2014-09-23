@@ -1,0 +1,13 @@
+
+/**
+
+@addtogroup collections
+@defgroup hash_map HashMap
+@details
+
+@note Iterator access is unordered.
+
+@par
+@note Capacity represents only 0.7 (the load factor) of partition storage. When reserving, <code>new_capacity / 0.7</code> space is stored to preserve the partition invariant.
+
+*/

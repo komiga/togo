@@ -12,6 +12,7 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/hash.hpp>
 #include <togo/memory_types.hpp>
 
 #include <togo/debug_constraints.hpp>
@@ -154,6 +155,47 @@ struct PriorityQueue {
 };
 
 /** @} */ // end of doc-group priority_queue
+
+/**
+	@addtogroup hash_map
+	@{
+*/
+
+/**
+	Hash map of POD objects.
+*/
+template<class K, class T>
+struct HashMap {
+	TOGO_CONSTRAIN_POD(T);
+	#if defined(TOGO_USE_CONSTRAINTS)
+		static_assert(
+			is_same<K, hash32>::value ||
+			is_same<K, hash64>::value,
+			"key type must be hash32 or hash64"
+		);
+	#endif
+
+	struct Node {
+		K key;
+		u32 next;
+		T value;
+	};
+
+	Array<u32> _head;
+	Array<Node> _data;
+
+	~HashMap() = default;
+	HashMap(HashMap<K, T>&&) = default;
+	HashMap& operator=(HashMap<K, T>&&) = default;
+
+	HashMap() = delete;
+	HashMap(HashMap<K, T> const&) = delete;
+	HashMap& operator=(HashMap<K, T> const&) = delete;
+
+	HashMap(Allocator& allocator);
+};
+
+/** @} */ // end of doc-group hash_map
 
 /** @} */ // end of doc-group collections
 
