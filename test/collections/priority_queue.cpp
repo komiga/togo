@@ -9,12 +9,12 @@
 
 using namespace togo;
 
-#define PQ_ASSERTIONS(a, _size, _capacity, _empty) \
+#define PQ_ASSERTIONS(a, _size, _capacity) \
 	TOGO_ASSERTE(priority_queue::size(a) == _size); \
 	TOGO_ASSERTE(priority_queue::capacity(a) == _capacity); \
 	TOGO_ASSERTE(priority_queue::space(a) == (_capacity - _size)); \
-	TOGO_ASSERTE(priority_queue::empty(a) == _empty); \
-	TOGO_ASSERTE(priority_queue::any(a) != _empty)
+	TOGO_ASSERTE(priority_queue::empty(a) == (_size == 0)); \
+	TOGO_ASSERTE(priority_queue::any(a) == (_size > 0))
 //
 
 signed
@@ -28,13 +28,13 @@ main() {
 	{
 		// Invariants
 		PriorityQueue<u32> pq{less_func, memory::default_allocator()};
-		PQ_ASSERTIONS(pq, 0, 0, true);
+		PQ_ASSERTIONS(pq, 0, 0);
 
 		priority_queue::push(pq, 42u);
-		PQ_ASSERTIONS(pq, 1, 8, false);
+		PQ_ASSERTIONS(pq, 1, 8);
 
 		priority_queue::clear(pq);
-		PQ_ASSERTIONS(pq, 0, 8, true);
+		PQ_ASSERTIONS(pq, 0, 8);
 
 		// Insertion
 		u32 count = 10;
@@ -42,7 +42,7 @@ main() {
 			priority_queue::push(pq, static_cast<u32>(10 - count));
 			TOGO_ASSERTE(priority_queue::front(pq) == priority_queue::size(pq));
 		}
-		PQ_ASSERTIONS(pq, 10, 24, false);
+		PQ_ASSERTIONS(pq, 10, 24);
 
 		// Access
 		TOGO_LOG("unordered iteration: ");
@@ -60,14 +60,14 @@ main() {
 			priority_queue::pop(pq);
 			--count;
 		}
-		PQ_ASSERTIONS(pq, 5, 24, false);
+		PQ_ASSERTIONS(pq, 5, 24);
 
 		while (count--) {
 			TOGO_LOGF("%d ", priority_queue::front(pq));
 			priority_queue::pop(pq);
 		}
 		TOGO_LOG("\n");
-		PQ_ASSERTIONS(pq, 0, 24, true);
+		PQ_ASSERTIONS(pq, 0, 24);
 
 		// Reinsertion
 		count = 10;
@@ -75,7 +75,7 @@ main() {
 			priority_queue::push(pq, count);
 			TOGO_ASSERTE(priority_queue::front(pq) == 9);
 		}
-		PQ_ASSERTIONS(pq, 10, 24, false);
+		PQ_ASSERTIONS(pq, 10, 24);
 	}
 
 	{

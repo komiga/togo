@@ -8,12 +8,12 @@
 
 using namespace togo;
 
-#define QUEUE_ASSERTIONS(a, _size, _capacity, _empty) \
+#define QUEUE_ASSERTIONS(a, _size, _capacity) \
 	TOGO_ASSERTE(queue::size(a) == _size); \
 	TOGO_ASSERTE(queue::capacity(a) == _capacity); \
 	TOGO_ASSERTE(queue::space(a) == (_capacity - _size)); \
-	TOGO_ASSERTE(queue::empty(a) == _empty); \
-	TOGO_ASSERTE(queue::any(a) != _empty)
+	TOGO_ASSERTE(queue::empty(a) == (_size == 0)); \
+	TOGO_ASSERTE(queue::any(a) == (_size > 0))
 //
 
 signed
@@ -26,20 +26,20 @@ main() {
 	{
 		// Invariants
 		Queue<u32> q{memory::default_allocator()};
-		QUEUE_ASSERTIONS(q, 0, 0, true);
+		QUEUE_ASSERTIONS(q, 0, 0);
 
 		queue::push_back(q, 42u);
-		QUEUE_ASSERTIONS(q, 1, 8, false);
+		QUEUE_ASSERTIONS(q, 1, 8);
 
 		queue::clear(q);
-		QUEUE_ASSERTIONS(q, 0, 8, true);
+		QUEUE_ASSERTIONS(q, 0, 8);
 
 		// Insertion
 		u32 count = 10;
 		while (count--) {
 			queue::push_back(q, static_cast<u32>(10 - count));
 		}
-		QUEUE_ASSERTIONS(q, 10, 24, false);
+		QUEUE_ASSERTIONS(q, 10, 24);
 
 		// Access
 		TOGO_LOG("direct iteration order: ");
@@ -56,7 +56,7 @@ main() {
 			TOGO_LOGF("%d ", queue::front(q));
 			queue::pop_front(q);
 		}
-		QUEUE_ASSERTIONS(q, 5, 24, false);
+		QUEUE_ASSERTIONS(q, 5, 24);
 
 		count = 5;
 		while (count--) {
@@ -64,14 +64,14 @@ main() {
 			queue::pop_front(q);
 		}
 		TOGO_LOG("\n");
-		QUEUE_ASSERTIONS(q, 0, 24, true);
+		QUEUE_ASSERTIONS(q, 0, 24);
 
 		// Reinsertion
 		count = 10;
 		while (count--) {
 			queue::push_back(q, static_cast<u32>(10 - count));
 		}
-		QUEUE_ASSERTIONS(q, 10, 24, false);
+		QUEUE_ASSERTIONS(q, 10, 24);
 
 		// Unbroken removal
 		TOGO_LOG("LIFO order (pop): ");
@@ -80,7 +80,7 @@ main() {
 			TOGO_LOGF("%d ", queue::back(q));
 			queue::pop_back(q);
 		}
-		QUEUE_ASSERTIONS(q, 5, 24, false);
+		QUEUE_ASSERTIONS(q, 5, 24);
 
 		count = 5;
 		while (count--) {
@@ -88,7 +88,7 @@ main() {
 			queue::pop_back(q);
 		}
 		TOGO_LOG("\n");
-		QUEUE_ASSERTIONS(q, 0, 24, true);
+		QUEUE_ASSERTIONS(q, 0, 24);
 	}
 
 	{

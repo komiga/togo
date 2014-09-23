@@ -5,10 +5,10 @@
 
 using namespace togo;
 
-#define ARRAY_ASSERTIONS(a, _size, _empty) \
+#define ARRAY_ASSERTIONS(a, _size) \
 	TOGO_ASSERTE(fixed_array::size(a) == _size); \
-	TOGO_ASSERTE(fixed_array::empty(a) == _empty); \
-	TOGO_ASSERTE(fixed_array::any(a) != _empty)
+	TOGO_ASSERTE(fixed_array::empty(a) == (_size == 0)); \
+	TOGO_ASSERTE(fixed_array::any(a) == (_size > 0))
 //
 
 signed
@@ -19,20 +19,20 @@ main() {
 	// Invariants
 	FixedArray<u32, 10> a{};
 	TOGO_ASSERTE(fixed_array::capacity(a) == 10);
-	ARRAY_ASSERTIONS(a, 0, true);
+	ARRAY_ASSERTIONS(a, 0);
 
 	fixed_array::push_back(a, 42u);
-	ARRAY_ASSERTIONS(a, 1, false);
+	ARRAY_ASSERTIONS(a, 1);
 
 	fixed_array::clear(a);
-	ARRAY_ASSERTIONS(a, 0, true);
+	ARRAY_ASSERTIONS(a, 0);
 
 	// Insertion
 	u32 count = 10;
 	while (count--) {
 		fixed_array::push_back(a, static_cast<u32>(10 - count));
 	}
-	ARRAY_ASSERTIONS(a, 10, false);
+	ARRAY_ASSERTIONS(a, 10);
 
 	// Access
 	count = 1;
@@ -58,12 +58,12 @@ main() {
 	while (count--) {
 		fixed_array::pop_back(a);
 	}
-	ARRAY_ASSERTIONS(a, 5, false);
+	ARRAY_ASSERTIONS(a, 5);
 
 	count = 5;
 	while (count--) {
 		fixed_array::pop_back(a);
 	}
-	ARRAY_ASSERTIONS(a, 0, true);
+	ARRAY_ASSERTIONS(a, 0);
 	return 0;
 }
