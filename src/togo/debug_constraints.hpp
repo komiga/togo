@@ -9,6 +9,7 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/traits.hpp>
 
 #if defined(TOGO_USE_CONSTRAINTS)
 	#include <type_traits>
@@ -21,7 +22,7 @@
 
 	#define TOGO_CONSTRAIN_SAME(T, U)								\
 		static_assert(												\
-			std::is_same<T, U>::value,								\
+			is_same<T, U>::value,									\
 			"T and U are not the same types"						\
 		)
 
@@ -52,7 +53,7 @@
 
 	#define TOGO_CONSTRAIN_UNSIGNED(T)								\
 		static_assert(												\
-			std::is_unsigned<T>::value,								\
+			is_unsigned<T>::value,									\
 			"T is not an unsigned arithmetic type"					\
 		)
 
