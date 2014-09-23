@@ -8,6 +8,7 @@
 #include <togo/file_io.hpp>
 #include <togo/fixed_array.hpp>
 #include <togo/hash.hpp>
+#include <togo/hash_map.hpp>
 #include <togo/io.hpp>
 #include <togo/io_proto.hpp>
 #include <togo/io_types.hpp>
