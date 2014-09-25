@@ -82,6 +82,8 @@ main() {
 	test_path(pp, "b.c#", false, "", "", {});
 	test_path(pp, "b.c#1#", false, "", "", {});
 	test_path(pp, "b.c##", false, "", "", {});
+	test_path(pp, "b.c##1", false, "", "", {});
+	test_path(pp, "b.c#1#2#3#4#5#6#7#8#9", false, "", "", {});
 
 	TOGO_LOG("\n");
 	test_path(pp, "b.c", true, "b", "c", {});
