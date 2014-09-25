@@ -12,6 +12,7 @@
 #include <togo/config.hpp>
 #include <togo/tags.hpp>
 #include <togo/string_types.hpp>
+#include <togo/fixed_array.hpp>
 
 #include <cstring>
 
@@ -75,6 +76,12 @@ inline StringRef::StringRef(char const* const data, unsigned const size)
 template<unsigned N>
 inline StringRef::StringRef(char const (&data)[N])
 	: StringRef(data, N)
+{}
+
+/// Construct to fixed-size character array.
+template<unsigned N>
+inline StringRef::StringRef(FixedArray<char, N> const& array)
+	: StringRef(fixed_array::begin(array), fixed_array::size(array))
 {}
 
 /// Check if the reference has non-null data.

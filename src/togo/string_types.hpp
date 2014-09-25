@@ -15,6 +15,10 @@
 
 namespace togo {
 
+// Forward declarations
+template<class T, unsigned N>
+struct FixedArray;
+
 /**
 	@addtogroup string
 	@{
@@ -41,6 +45,8 @@ struct StringRef {
 	StringRef(char const* const data, unsigned const size);
 	template<unsigned N>
 	StringRef(char const (&data)[N]);
+	template<unsigned N>
+	StringRef(FixedArray<char, N> const& array);
 
 	bool valid() const;
 	bool any() const;
