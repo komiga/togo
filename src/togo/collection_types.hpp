@@ -12,7 +12,6 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/hash.hpp>
 #include <togo/memory_types.hpp>
 
 #include <togo/debug_constraints.hpp>
