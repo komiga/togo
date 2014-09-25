@@ -39,7 +39,9 @@ bool resource::parse_path(
 		} else if (path.data[i] == '#') {
 			if (tag_i == NOT_FOUND) {
 				tag_first = i;
-			} else if (tag_i != i) {
+			} else if (tag_i == i || fixed_array::space(pp.tags) == 0) {
+				return false;
+			} else {
 				tag.name = {
 					path.data + tag_i,
 					i - tag_i
@@ -68,6 +70,9 @@ bool resource::parse_path(
 	pp.type_hash = hash::calc_generic<ResourceType>(pp.type);
 	pp.name_hash = hash::calc_generic<ResourceNameHash>(pp.name);
 	if (tag_i < path.size) {
+		if (fixed_array::space(pp.tags) == 0) {
+			return false;
+		}
 		tag.name = {
 			path.data + tag_i,
 			path.size - tag_i
