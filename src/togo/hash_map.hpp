@@ -70,23 +70,23 @@ inline bool empty(HashMap<K, T> const& hm) { return size(hm) == 0; }
 
 /// Beginning iterator: [begin, end).
 template<class K, class T>
-inline typename HashMap<K, T>::Node* begin(HashMap<K, T>& hm) {
+inline HashMapNode<K, T>* begin(HashMap<K, T>& hm) {
 	return array::begin(hm._data);
 }
 /// Beginning iterator: [begin, end).
 template<class K, class T>
-inline typename HashMap<K, T>::Node const* begin(HashMap<K, T> const& hm) {
+inline HashMapNode<K, T> const* begin(HashMap<K, T> const& hm) {
 	return array::begin(hm._data);
 }
 
 /// Ending iterator: [begin, end).
 template<class K, class T>
-inline typename HashMap<K, T>::Node* end(HashMap<K, T>& hm) {
+inline HashMapNode<K, T>* end(HashMap<K, T>& hm) {
 	return array::end(hm._data);
 }
 /// Ending iterator: [begin, end).
 template<class K, class T>
-inline typename HashMap<K, T>::Node const* end(HashMap<K, T> const& hm) {
+inline HashMapNode<K, T> const* end(HashMap<K, T> const& hm) {
 	return array::end(hm._data);
 }
 
@@ -100,7 +100,7 @@ struct FindData {
 	u32 head;
 	// Index into _data
 	u32 data;
-	// Previous entry with same key
+	// Previous node with same key
 	u32 data_prev;
 };
 
@@ -116,12 +116,12 @@ FindData find(HashMap<K, T> const& hm, K const key) {
 	fd.head = key % num_partitions(hm);
 	fd.data = hm._head[fd.head];
 	while (fd.data != END) {
-		auto const& e = hm._data[fd.data];
-		if (e.key == key) {
+		auto const& node = hm._data[fd.data];
+		if (node.key == key) {
 			break;
 		}
 		fd.data_prev = fd.data;
-		fd.data = e.next;
+		fd.data = node.next;
 	}
 	return fd;
 }
@@ -129,22 +129,22 @@ FindData find(HashMap<K, T> const& hm, K const key) {
 template<class K, class T>
 FindData find(
 	HashMap<K, T> const& hm,
-	typename HashMap<K, T>::Node const* entry
+	HashMapNode<K, T> const* node
 ) {
 	FindData fd{END, END, END};
 	if (array::empty(hm._head)) {
 		return fd;
 	}
 
-	fd.head = entry->key % num_partitions(hm);
+	fd.head = node->key % num_partitions(hm);
 	fd.data = hm._head[fd.head];
 	while (fd.data != END) {
-		auto const& e = hm._data[fd.data];
-		if (&e == entry) {
+		auto const& it_node = hm._data[fd.data];
+		if (&it_node == node) {
 			break;
 		}
 		fd.data_prev = fd.data;
-		fd.data = e.next;
+		fd.data = it_node.next;
 	}
 	return fd;
 }
@@ -157,10 +157,10 @@ u32 make(HashMap<K, T>& hm, K const key, bool const keep) {
 		return fd.data;
 	}
 	u32 const index = array::size(hm._data);
-	typename HashMap<K, T>::Node e;
-	e.key = key;
-	e.next = fd.data;
-	array::push_back(hm._data, e);
+	HashMapNode<K, T> node;
+	node.key = key;
+	node.next = fd.data;
+	array::push_back(hm._data, node);
 	if (fd.data_prev == END) {
 		hm._head[fd.head] = index;
 	} else {
@@ -179,16 +179,16 @@ void remove(HashMap<K, T>& hm, FindData const& fd) {
 		hm._data[fd.data_prev].next = hm._data[fd.data].next;
 	}
 
-	// Move last entry to the removed position
+	// Move last node to the removed position
 	if (fd.data != array::size(hm._data) - 1) {
-		auto const& last_entry = array::back(hm._data);
-		FindData const last = find(hm, &last_entry);
+		auto const& last_node = array::back(hm._data);
+		FindData const last = find(hm, &last_node);
 		if (last.data_prev == END) {
 			hm._head[last.head] = fd.data;
 		} else {
 			hm._data[last.data_prev].next = fd.data;
 		}
-		hm._data[fd.data] = last_entry;
+		hm._data[fd.data] = last_node;
 	}
 	array::pop_back(hm._data);
 }
@@ -210,9 +210,9 @@ void resize(HashMap<K, T>& hm, u32_fast const new_size) {
 		new_hm._head[i] = END;
 	}
 	u32 index;
-	for (auto const& entry : hm._data) {
-		index = make(hm, entry.key, false);
-		hm._data[index].value = entry.value;
+	for (auto const& node : hm._data) {
+		index = make(hm, node.key, false);
+		hm._data[index].value = node.value;
 	}
 	hm = std::move(new_hm);
 }
@@ -298,20 +298,20 @@ inline void remove(HashMap<K, T>& hm, K const key) {
 // ADL support
 
 template<class K, class T>
-inline typename HashMap<K, T>::Node* begin(HashMap<K, T>& hm) {
+inline HashMapNode<K, T>* begin(HashMap<K, T>& hm) {
 	return hash_map::begin(hm);
 }
 template<class K, class T>
-inline typename HashMap<K, T>::Node const* begin(HashMap<K, T> const& hm) {
+inline HashMapNode<K, T> const* begin(HashMap<K, T> const& hm) {
 	return hash_map::begin(hm);
 }
 
 template<class K, class T>
-inline typename HashMap<K, T>::Node* end(HashMap<K, T>& hm) {
+inline HashMapNode<K, T>* end(HashMap<K, T>& hm) {
 	return hash_map::end(hm);
 }
 template<class K, class T>
-inline typename HashMap<K, T>::Node const* end(HashMap<K, T> const& hm) {
+inline HashMapNode<K, T> const* end(HashMap<K, T> const& hm) {
 	return hash_map::end(hm);
 }
 

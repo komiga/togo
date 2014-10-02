@@ -161,6 +161,16 @@ struct PriorityQueue {
 */
 
 /**
+	HashMap node.
+*/
+template<class K, class T>
+struct HashMapNode {
+	K key;
+	u32 next;
+	T value;
+};
+
+/**
 	Hash map of POD objects.
 */
 template<class K, class T>
@@ -174,14 +184,8 @@ struct HashMap {
 		);
 	#endif
 
-	struct Node {
-		K key;
-		u32 next;
-		T value;
-	};
-
 	Array<u32> _head;
-	Array<Node> _data;
+	Array<HashMapNode<K, T>> _data;
 
 	~HashMap() = default;
 	HashMap(HashMap<K, T>&&) = default;
