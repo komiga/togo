@@ -44,27 +44,27 @@ namespace hash_map {
 template<class K, class T>
 inline u32_fast num_partitions(HashMap<K, T> const& hm) { return array::size(hm._head); }
 
-/// Number of items.
+/// Number of values.
 template<class K, class T>
 inline u32_fast size(HashMap<K, T> const& hm) { return array::size(hm._data); }
 
-/// Number of items reserved.
+/// Number of values reserved.
 template<class K, class T>
 inline u32_fast capacity(HashMap<K, T> const& hm) {
 	return static_cast<u32_fast>(num_partitions(hm) * TOGO_HASH_MAP_MAX_LOAD);
 }
 
-/// Number of items that can be added before a resize occurs.
+/// Number of values that can be added before a resize occurs.
 template<class K, class T>
 inline u32_fast space(HashMap<K, T> const& hm) {
 	return capacity(hm) - size(hm);
 }
 
-/// Returns true if there are any items in the array.
+/// Returns true if there are any values.
 template<class K, class T>
 inline bool any(HashMap<K, T> const& hm) { return size(hm) != 0; }
 
-/// Returns true if there are no items in the array.
+/// Returns true if there are no values.
 template<class K, class T>
 inline bool empty(HashMap<K, T> const& hm) { return size(hm) == 0; }
 
@@ -245,7 +245,7 @@ inline void clear(HashMap<K, T>& hm) {
 
 /// Set item.
 ///
-/// If item does not exist, it will be inserted.
+/// If key does not exist, it will be inserted.
 template<class K, class T>
 inline void set(HashMap<K, T>& hm, K const key, T const& value) {
 	if (!space(hm)) {
@@ -257,7 +257,7 @@ inline void set(HashMap<K, T>& hm, K const key, T const& value) {
 
 /// Get item.
 ///
-/// If item does not exist, nullptr will be returned.
+/// If key does not exist, nullptr will be returned.
 template<class K, class T>
 inline T* get(HashMap<K, T>& hm, K const key) {
 	auto const index = internal::find(hm, key).data;
@@ -266,20 +266,20 @@ inline T* get(HashMap<K, T>& hm, K const key) {
 
 /// Get item.
 ///
-/// If item does not exist, nullptr will be returned.
+/// If key does not exist, nullptr will be returned.
 template<class K, class T>
 inline T const* get(HashMap<K, T> const& hm, K const key) {
 	auto const index = internal::find(hm, key).data;
 	return (index != END) ? &hm._data[index].value : nullptr;
 }
 
-/// Check if item exists.
+/// Check if there is a value with key.
 template<class K, class T>
 inline bool has(HashMap<K, T> const& hm, K const key) {
 	return internal::find(hm, key).data != END;
 }
 
-/// Remove item.
+/// Remove value.
 template<class K, class T>
 inline void remove(HashMap<K, T>& hm, K const key) {
 	internal::remove_key(hm, key);
