@@ -194,14 +194,6 @@ void remove(HashMap<K, T>& hm, FindData const& fd) {
 }
 
 template<class K, class T>
-inline void remove_key(HashMap<K, T>& hm, K const key) {
-	FindData const fd = find(hm, key);
-	if (fd.data != END) {
-		remove(hm, fd);
-	}
-}
-
-template<class K, class T>
 void resize(HashMap<K, T>& hm, u32_fast const new_size) {
 	HashMap<K, T> new_hm{*hm._head._allocator};
 	array::resize(new_hm._head, new_size);
@@ -282,7 +274,10 @@ inline bool has(HashMap<K, T> const& hm, K const key) {
 /// Remove value.
 template<class K, class T>
 inline void remove(HashMap<K, T>& hm, K const key) {
-	internal::remove_key(hm, key);
+	FindData const fd = internal::find(hm, key);
+	if (fd.data != END) {
+		internal::remove(hm, fd);
+	}
 }
 
 /** @cond INTERNAL */
