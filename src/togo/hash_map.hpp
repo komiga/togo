@@ -247,9 +247,23 @@ inline void set(HashMap<K, T>& hm, K const key, T const& value) {
 	hm._data[index].value = value;
 }
 
+/// Push item.
+///
+/// If there are existing values with key, they are retained.
+template<class K, class T>
+inline void push(HashMap<K, T>& hm, K const key, T const& value) {
+	if (!space(hm)) {
+		internal::grow(hm);
+	}
+	auto const index = internal::make(hm, key, false);
+	hm._data[index].value = value;
+}
+
 /// Get item.
 ///
 /// If key does not exist, nullptr will be returned.
+/// If multiple values are assigned to key, this will get the most
+/// recently pushed one.
 template<class K, class T>
 inline T* get(HashMap<K, T>& hm, K const key) {
 	auto const index = internal::find(hm, key).data;
@@ -259,10 +273,76 @@ inline T* get(HashMap<K, T>& hm, K const key) {
 /// Get item.
 ///
 /// If key does not exist, nullptr will be returned.
+/// If multiple values are assigned to key, this will get the most
+/// recently pushed one.
 template<class K, class T>
 inline T const* get(HashMap<K, T> const& hm, K const key) {
 	auto const index = internal::find(hm, key).data;
 	return (index != END) ? &hm._data[index].value : nullptr;
+}
+
+/// Get first node with key.
+///
+/// If there are no items with key, nullptr will be returned.
+template<class K, class T>
+inline HashMapNode<K, T>* get_node(
+	HashMap<K, T>& hm,
+	K const key
+) {
+	auto const index = internal::find(hm, key).data;
+	return (index != END) ? &hm._data[index] : nullptr;
+}
+
+/// Get first node with key.
+///
+/// If there are no items with key, nullptr will be returned.
+template<class K, class T>
+inline HashMapNode<K, T> const* get_node(
+	HashMap<K, T> const& hm,
+	K const key
+) {
+	auto const index = internal::find(hm, key).data;
+	return (index != END) ? &hm._data[index] : nullptr;
+}
+
+/// Get next node in keyset.
+///
+/// An assertion will fail if node is nullptr. Returns nullptr when
+/// there are no more nodes for the key.
+template<class K, class T>
+inline HashMapNode<K, T>* get_next(
+	HashMap<K, T>& hm,
+	HashMapNode<K, T>* node
+) {
+	TOGO_ASSERTE(node != nullptr);
+	K const key = node->key;
+	while (node->next != END) {
+		node = &hm._data[node->next];
+		if (node->key == key) {
+			return node;
+		}
+	}
+	return nullptr;
+}
+
+/// Get next node in keyset.
+///
+/// An assertion will fail if node is nullptr. Returns nullptr when
+/// there are no more nodes for the key.
+template<class K, class T>
+inline HashMapNode<K, T> const* get_next(
+	HashMap<K, T> const& hm,
+	HashMapNode<K, T> const* node
+) {
+	TOGO_ASSERTE(node != nullptr);
+	K const key = node->key;
+	while (node->next != END) {
+		node = &hm._data[node->next];
+		if (node->key == key) {
+			return node;
+		}
+	}
+	return nullptr;
 }
 
 /// Check if there is a value with key.
@@ -271,10 +351,37 @@ inline bool has(HashMap<K, T> const& hm, K const key) {
 	return internal::find(hm, key).data != END;
 }
 
+/// Count the number of values with key.
+template<class K, class T>
+inline unsigned count(HashMap<K, T> const& hm, K const key) {
+	auto const* node = get_node(hm, key);
+	unsigned count = 0;
+	while (node != nullptr) {
+		node = get_next(hm, node);
+		++count;
+	}
+	return count;
+}
+
 /// Remove value.
+///
+/// If there are multiple values with key, the most recently added
+/// one is removed.
 template<class K, class T>
 inline void remove(HashMap<K, T>& hm, K const key) {
 	FindData const fd = internal::find(hm, key);
+	if (fd.data != END) {
+		internal::remove(hm, fd);
+	}
+}
+
+/// Remove node.
+///
+/// An assertion will fail if node is nullptr.
+template<class K, class T>
+inline void remove(HashMap<K, T>& hm, HashMapNode<K, T> const* node) {
+	TOGO_ASSERTE(node != nullptr);
+	FindData const fd = internal::find(hm, node);
 	if (fd.data != END) {
 		internal::remove(hm, fd);
 	}
