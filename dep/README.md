@@ -8,6 +8,9 @@ into the proper directories):
 
   `git clone git://github.com/komiga/am.git am/`
 
-* [SDL](http://libsdl.org/download-2.0.php) **2.0.3** into `sdl/` (SDL graphics backend)
+* [GLEW](http://glew.sourceforge.net/index.html) **1.11.0** into `glew/`
 
-* [GLFW](http://www.glfw.org/download.html) **3.0.4** into `glfw/` (GLFW graphics backend)
+* Graphics backend (one of):
+
+  1. [SDL](http://libsdl.org/download-2.0.php) **2.0.3** into `sdl/`
+  2. [GLFW](http://www.glfw.org/download.html) **3.0.4** into `glfw/`

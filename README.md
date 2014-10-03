@@ -40,6 +40,10 @@ standard library).
 togo uses:
 
 1. [All the Maths‽](https://github.com/komiga/am) (HEAD)
+2. [GLEW](http://glew.sourceforge.net/index.html) **1.11.0**
+3. Graphics backend (one of):
+  1. [SDL](http://libsdl.org/download-2.0.php) **2.0.3**
+  2. [GLFW](http://www.glfw.org/download.html) **3.0.4**
 
 See `dep/README.md` for dependency setup.
 
