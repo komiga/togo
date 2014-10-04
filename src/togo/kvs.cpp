@@ -90,7 +90,9 @@ KVS const* kvs::find(KVS const& kvs, StringRef const& name) {
 }
 
 KVS* kvs::find(KVS& kvs, hash64 const name_hash) {
-	return const_cast<KVS*>(kvs::find_impl(kvs, StringRef{null_tag{}}, name_hash));
+	return const_cast<KVS*>(
+		kvs::find_impl(kvs, StringRef{null_tag{}}, name_hash)
+	);
 }
 
 KVS const* kvs::find(KVS const& kvs, hash64 const name_hash) {
@@ -127,8 +129,7 @@ void kvs::set_name(KVS& kvs, StringRef const& name) {
 		);
 	}
 	if (name.any()) {
-		std::memcpy(kvs._name, name.data, name.size);
-		kvs._name[name.size] = '\0';
+		string::copy(kvs._name, name);
 	}
 	kvs._name_size = name.size;
 	kvs._name_hash = hash::calc64(name);
@@ -239,8 +240,7 @@ void kvs::string(KVS& kvs, StringRef const& value) {
 		);
 	}
 	if (value.any()) {
-		std::memcpy(kvs._value.string.data, value.data, value.size);
-		kvs._value.string.data[value.size] = '\0';
+		string::copy(kvs._value.string.data, value);
 	}
 	kvs._value.string.size = value.size;
 }
@@ -259,10 +259,16 @@ void kvs::set_capacity(KVS& kvs, u32 const new_capacity) {
 	KVS* new_data = nullptr;
 	if (new_capacity != 0) {
 		new_data = static_cast<KVS*>(
-			memory::default_allocator().allocate(new_capacity * sizeof(KVS), alignof(KVS))
+			memory::default_allocator().allocate(
+				new_capacity * sizeof(KVS), alignof(KVS)
+			)
 		);
 		if (kvs._value.collection.data) {
-			std::memcpy(new_data, kvs._value.collection.data, kvs._value.collection.size * sizeof(KVS));
+			std::memcpy(
+				new_data,
+				kvs._value.collection.data,
+				kvs._value.collection.size * sizeof(KVS)
+			);
 		}
 	}
 	memory::default_allocator().deallocate(kvs._value.collection.data);
