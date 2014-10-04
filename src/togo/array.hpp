@@ -244,6 +244,31 @@ inline void pop_back(Array<T>& a) {
 	--a._size;
 }
 
+/// Remove an item by index.
+template<class T>
+inline void remove(Array<T>& a, unsigned const i) {
+	TOGO_DEBUG_ASSERTE(any(a));
+	TOGO_DEBUG_ASSERTE(i < a._size);
+	--a._size;
+	if (i < a._size) {
+		std::memmove(
+			a._data + i, a._data + i + 1,
+			(a._size - i) * sizeof(T)
+		);
+	}
+}
+
+/// Remove an item by address.
+///
+/// If ptr is nullptr, an assertion will fail.
+template<class T>
+inline void remove(Array<T>& a, T const* const ptr) {
+	TOGO_ASSERTE(ptr != nullptr);
+	TOGO_DEBUG_ASSERTE(any(a));
+	TOGO_DEBUG_ASSERTE(array::begin(a) <= ptr && ptr < array::end(a));
+	remove((ptr - a._data) / sizeof(T));
+}
+
 /** @} */ // end of doc-group array
 
 } // namespace array
