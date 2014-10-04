@@ -70,5 +70,26 @@ main() {
 		array::pop_back(a);
 	}
 	ARRAY_ASSERTIONS(a, 0, 24);
+
+	/// Removal by index
+	array::push_back(a, 0u);
+	array::push_back(a, 1u);
+	array::push_back(a, 2u);
+	array::push_back(a, 3u);
+	array::remove(a, 3);
+	TOGO_ASSERTE(a[0] == 0);
+	TOGO_ASSERTE(a[1] == 1);
+	TOGO_ASSERTE(a[2] == 2);
+
+	array::remove(a, 1);
+	TOGO_ASSERTE(a[0] == 0);
+	TOGO_ASSERTE(a[1] == 2);
+
+	array::remove(a, 0);
+	TOGO_ASSERTE(a[0] == 2);
+
+	array::remove(a, 0);
+	TOGO_ASSERTE(array::empty(a));
+
 	return 0;
 }
