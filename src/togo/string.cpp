@@ -4,7 +4,7 @@
 */
 
 #include <togo/config.hpp>
-#include <togo/string_types.hpp>
+#include <togo/assert.hpp>
 #include <togo/string.hpp>
 
 #include <cstring>
@@ -32,6 +32,20 @@ void string::copy(char* dst, StringRef const& src) {
 		std::memcpy(dst, src.data, src.size);
 	}
 	dst[src.size] = '\0';
+}
+
+unsigned string::trim_trailing_slashes(char* const string, unsigned const size) {
+	TOGO_ASSERTE(string != nullptr);
+	char* it = (string + size) - 1;
+	while (it >= string && (*it == '/' || *it == '\\')) {
+		--it;
+	}
+	++it;
+	unsigned const new_size = it - string;
+	if (new_size != size) {
+		*it = '\0';
+	}
+	return new_size;
 }
 
 } // namespace togo

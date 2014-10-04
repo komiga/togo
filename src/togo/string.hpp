@@ -41,6 +41,18 @@ inline constexpr unsigned size(char const (&data)[N]) {
 	return N > 0 && data[N - 1] == '\0' ? N - 1 : N;
 }
 
+/// Get size of a fixed-capacity string.
+///
+/// This does not include the NUL terminator if there is one.
+template<unsigned N>
+inline unsigned size(FixedArray<char, N> const& string) {
+	return
+		!fixed_array::empty(string) && fixed_array::back(string) == '\0'
+		? fixed_array::size(string) - 1
+		: fixed_array::size(string)
+	;
+}
+
 /// Compare two strings for equality.
 ///
 /// This will short-circuit if lhs and rhs are not the same size.
@@ -63,6 +75,28 @@ inline void copy(
 ) {
 	fixed_array::resize(dst, src.size + 1);
 	copy(fixed_array::begin(dst), src);
+}
+
+/// Trim trailing slashes from string.
+///
+/// The first trailing slash is replaced by a NUL.
+/// Returns new size of string (not including NUL terminator).
+unsigned trim_trailing_slashes(char* string, unsigned size);
+
+/// Trim trailing slashes from string.
+///
+/// Returns new size of string (not including NUL terminator).
+template<unsigned N>
+inline unsigned trim_trailing_slashes(FixedArray<char, N>& string) {
+	unsigned const size = string::size(string);
+	unsigned const new_size = trim_trailing_slashes(
+		fixed_array::begin(string),
+		size
+	);
+	if (new_size < size) {
+		fixed_array::resize(string, new_size + 1);
+	}
+	return new_size;
 }
 
 /** @} */ // end of doc-group string
