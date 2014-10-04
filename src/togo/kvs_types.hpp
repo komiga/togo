@@ -112,11 +112,9 @@ public:
 // value ctors
 	KVS(s64 const value);
 	KVS(f64 const value);
-	KVS(bool const value);
+	KVS(bool const value, bool_tag const);
 
 	KVS(StringRef const& value);
-	template<unsigned N>
-	KVS(char const (&value)[N]);
 
 	KVS(Vec1 const& value);
 	KVS(Vec2 const& value);
@@ -129,11 +127,9 @@ public:
 
 	KVS(StringRef const& name, s64 const value);
 	KVS(StringRef const& name, f64 const value);
-	KVS(StringRef const& name, bool const value);
+	KVS(StringRef const& name, bool const value, bool_tag const);
 
 	KVS(StringRef const& name, StringRef const& value);
-	template<unsigned N>
-	KVS(StringRef const& name, char const (&value)[N]);
 
 	KVS(StringRef const& name, Vec1 const& value);
 	KVS(StringRef const& name, Vec2 const& value);

@@ -441,14 +441,10 @@ inline KVS::KVS(s64 const value) : KVS(KVSType::integer) { _value.integer = valu
 inline KVS::KVS(f64 const value) : KVS(KVSType::decimal) { _value.decimal = value; }
 
 /// Construct with boolean value.
-inline KVS::KVS(bool const value) : KVS(KVSType::boolean) { _value.boolean = value; }
+inline KVS::KVS(bool const value, bool_tag const) : KVS(KVSType::boolean) { _value.boolean = value; }
 
 /// Construct with string value.
 inline KVS::KVS(StringRef const& value) : KVS() { kvs::string(*this, value); }
-
-/// Construct with string value from literal.
-template<unsigned N>
-inline KVS::KVS(char const (&value)[N]) : KVS(StringRef{value}) {}
 
 /// Construct with 1-dimensional vector value.
 inline KVS::KVS(Vec1 const& value) : KVS(KVSType::vec1) { _value.vec1 = value; }
@@ -475,14 +471,10 @@ inline KVS::KVS(StringRef const& name, s64 const value) : KVS(value) { kvs::set_
 inline KVS::KVS(StringRef const& name, f64 const value) : KVS(value) { kvs::set_name(*this, name); }
 
 /// Construct with name and boolean value.
-inline KVS::KVS(StringRef const& name, bool const value) : KVS(value) { kvs::set_name(*this, name); }
+inline KVS::KVS(StringRef const& name, bool const value, bool_tag const) : KVS(value, bool_tag{}) { kvs::set_name(*this, name); }
 
 /// Construct with name and string value.
 inline KVS::KVS(StringRef const& name, StringRef const& value) : KVS(value) { kvs::set_name(*this, name); }
-
-/// Construct with name and string value from literal.
-template<unsigned N>
-inline KVS::KVS(StringRef const& name, char const (&value)[N]) : KVS(StringRef{value}) { kvs::set_name(*this, name); }
 
 /// Construct with name and 1-dimensional vector value.
 inline KVS::KVS(StringRef const& name, Vec1 const& value) : KVS(value) { kvs::set_name(*this, name); }
