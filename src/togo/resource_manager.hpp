@@ -21,15 +21,14 @@ namespace resource_manager {
 	@{
 */
 
-/// Register resource loader.
+/// Register resource handler.
 ///
-/// An assertion will fail if type has already been registered.
-void register_loader(
+/// An assertion will fail if a handler for the type has already
+/// been registered.
+void register_handler(
 	ResourceManager& rm,
-	ResourceType type,
-	void* type_data,
-	ResourceLoader::load_func_type& load_func,
-	ResourceLoader::unload_func_type& unload_func
+	ResourceHandler const& handler,
+	void* type_data
 );
 
 /// Get resource.

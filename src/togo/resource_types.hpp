@@ -55,7 +55,7 @@ struct ResourcePathParts {
 
 // Forward declarations
 struct ResourcePackage;
-struct ResourceLoader;
+struct ResourceHandler;
 struct ResourceManager;
 
 /**
@@ -69,12 +69,12 @@ struct ResourcePackage;
 /** @} */ // end of doc-group resource_package
 
 /**
-	@addtogroup resource_loader
+	@addtogroup resource_handler
 	@{
 */
 
-/// Resource loader reference.
-struct ResourceLoader {
+/// Resource handler.
+struct ResourceHandler {
 	/// Load a resource.
 	///
 	/// Returns pointer to resource, or nullptr on error.
@@ -93,13 +93,12 @@ struct ResourceLoader {
 		void* /*resource*/
 	);
 
-	void* _type_data;
-	load_func_type* _func_load;
-	unload_func_type* _func_unload;
-	ResourceType _type;
+	ResourceType type;
+	load_func_type* func_load;
+	unload_func_type* func_unload;
 };
 
-/** @} */ // end of doc-group resource_loader
+/** @} */ // end of doc-group resource_handler
 
 /**
 	@addtogroup resource_manager
@@ -108,7 +107,12 @@ struct ResourceLoader {
 
 /// Resource manager.
 struct ResourceManager {
-	HashMap<ResourceType, ResourceLoader> _loaders;
+	struct BoundHandler {
+		ResourceHandler handler;
+		void* type_data;
+	};
+
+	HashMap<ResourceType, BoundHandler> _handlers;
 	HashMap<ResourceNameHash, void*> _resources;
 
 	ResourceManager() = delete;

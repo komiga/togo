@@ -6,34 +6,32 @@
 #include <togo/config.hpp>
 #include <togo/assert.hpp>
 #include <togo/hash_map.hpp>
+#include <togo/resource_types.hpp>
 #include <togo/resource_manager.hpp>
 
 namespace togo {
 
 ResourceManager::ResourceManager(Allocator& allocator)
-	: _loaders(allocator)
+	: _handlers(allocator)
 	, _resources(allocator)
 {
-	hash_map::reserve(_loaders, 16);
+	hash_map::reserve(_handlers, 16);
 }
 
-void resource_manager::register_loader(
+void resource_manager::register_handler(
 	ResourceManager& rm,
-	ResourceType type,
-	void* type_data,
-	ResourceLoader::load_func_type& load_func,
-	ResourceLoader::unload_func_type& unload_func
+	ResourceHandler const& handler,
+	void* type_data
 ) {
 	TOGO_ASSERT(
-		!hash_map::has(rm._loaders, type),
+		handler.func_load && handler.func_unload,
+		"load_func and unload_func must be assigned in handler"
+	);
+	TOGO_ASSERT(
+		!hash_map::has(rm._handlers, handler.type),
 		"type has already been registered"
 	);
-	hash_map::set(rm._loaders, type, {
-		type_data,
-		&load_func,
-		&unload_func,
-		type
-	});
+	hash_map::push(rm._handlers, handler.type, {handler, type_data});
 }
 
 void* resource_manager::get_resource(
