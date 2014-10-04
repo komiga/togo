@@ -42,9 +42,9 @@ struct StringRef {
 
 	StringRef(null_tag);
 	StringRef(char const* const cstr, cstr_tag);
-	StringRef(char const* const data, unsigned const size);
+	constexpr StringRef(char const* const data, unsigned const size);
 	template<unsigned N>
-	StringRef(char const (&data)[N]);
+	constexpr StringRef(char const (&data)[N]);
 	template<unsigned N>
 	StringRef(FixedArray<char, N> const& array);
 

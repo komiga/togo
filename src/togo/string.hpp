@@ -63,7 +63,7 @@ inline StringRef::StringRef(char const* const cstr, cstr_tag)
 {}
 
 /// Construct to explicitly-sized data.
-inline StringRef::StringRef(char const* const data, unsigned const size)
+inline constexpr StringRef::StringRef(char const* const data, unsigned const size)
 	: data(data)
 	, size(
 		data
@@ -74,7 +74,7 @@ inline StringRef::StringRef(char const* const data, unsigned const size)
 
 /// Construct to string literal or string array.
 template<unsigned N>
-inline StringRef::StringRef(char const (&data)[N])
+inline constexpr StringRef::StringRef(char const (&data)[N])
 	: StringRef(data, N)
 {}
 
