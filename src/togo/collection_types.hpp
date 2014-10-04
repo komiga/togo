@@ -62,11 +62,16 @@ struct Array {
 */
 
 /**
-	Fixed-size array of POD objects.
+	Fixed-capacity array of POD objects.
 */
 template<class T, unsigned N>
 struct FixedArray {
 	TOGO_CONSTRAIN_POD(T);
+
+	enum : unsigned {
+		/// Array capacity.
+		CAPACITY = N
+	};
 
 	u32_fast _size;
 	T _data[N];
