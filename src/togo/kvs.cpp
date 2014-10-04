@@ -92,12 +92,12 @@ KVS const* kvs::find_impl(
 }
 
 KVS* kvs::find(KVS& kvs, StringRef const& name) {
-	hash64 const name_hash = hash::calc64(name.data, name.size);
+	hash64 const name_hash = hash::calc64(name);
 	return const_cast<KVS*>(kvs::find_impl(kvs, name, name_hash));
 }
 
 KVS const* kvs::find(KVS const& kvs, StringRef const& name) {
-	hash64 const name_hash = hash::calc64(name.data, name.size);
+	hash64 const name_hash = hash::calc64(name);
 	return kvs::find_impl(kvs, name, name_hash);
 }
 
@@ -143,7 +143,7 @@ void kvs::set_name(KVS& kvs, StringRef const& name) {
 		kvs._name[name.size] = '\0';
 	}
 	kvs._name_size = name.size;
-	kvs._name_hash = hash::calc64(name.data, name.size);
+	kvs._name_hash = hash::calc64(name);
 }
 
 void kvs::clear_name(KVS& kvs) {
