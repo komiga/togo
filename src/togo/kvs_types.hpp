@@ -111,6 +111,7 @@ public:
 
 // value ctors
 	KVS(s64 const value);
+	KVS(s32 const value);
 	KVS(f64 const value);
 	KVS(bool const value, bool_tag const);
 
@@ -126,6 +127,7 @@ public:
 	KVS(StringRef const& name, KVSType const type);
 
 	KVS(StringRef const& name, s64 const value);
+	KVS(StringRef const& name, s32 const value);
 	KVS(StringRef const& name, f64 const value);
 	KVS(StringRef const& name, bool const value, bool_tag const);
 

@@ -437,6 +437,9 @@ inline KVS::KVS(KVS const& other) : KVS() { kvs::copy(*this, other); }
 /// Construct with integer value.
 inline KVS::KVS(s64 const value) : KVS(KVSType::integer) { _value.integer = value; }
 
+/// Construct with integer value.
+inline KVS::KVS(s32 const value) : KVS(KVSType::integer) { _value.integer = value; }
+
 /// Construct with decimal value.
 inline KVS::KVS(f64 const value) : KVS(KVSType::decimal) { _value.decimal = value; }
 
@@ -466,6 +469,9 @@ inline KVS::KVS(StringRef const& name, KVSType const type) : KVS(type) { kvs::se
 
 /// Construct with name and integer value.
 inline KVS::KVS(StringRef const& name, s64 const value) : KVS(value) { kvs::set_name(*this, name); }
+
+/// Construct with name and integer value.
+inline KVS::KVS(StringRef const& name, s32 const value) : KVS(value) { kvs::set_name(*this, name); }
 
 /// Construct with name and decimal value.
 inline KVS::KVS(StringRef const& name, f64 const value) : KVS(value) { kvs::set_name(*this, name); }
