@@ -8,10 +8,9 @@
 #include <togo/string.hpp>
 
 namespace togo {
-namespace string {
 
 // TODO: Use memcmp()/block-wise compare?
-bool compare_equal(StringRef const& lhs, StringRef const& rhs) {
+bool string::compare_equal(StringRef const& lhs, StringRef const& rhs) {
 	if (lhs.size != rhs.size) {
 		return false;
 	}
@@ -26,5 +25,4 @@ bool compare_equal(StringRef const& lhs, StringRef const& rhs) {
 	return true;
 }
 
-} // namespace string
 } // namespace togo
