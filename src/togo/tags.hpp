@@ -30,6 +30,11 @@ enum class null_tag {};
 */
 enum class cstr_tag {};
 
+/**
+	Bool string tag.
+*/
+enum class bool_tag {};
+
 /// @}
 
 /** @} */ // end of doc-group utility
