@@ -12,6 +12,7 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/string_types.hpp>
 #include <togo/io_types.hpp>
 #include <togo/io_proto.hpp>
 
@@ -54,7 +55,8 @@ public:
 	/// Attempt to open a file.
 	///
 	/// Returns false if the file could not be opened.
-	bool open(char const* path);
+	/// path must be NUL-terminated.
+	bool open(StringRef const& path);
 
 	/// Close the stream.
 	void close();
@@ -96,7 +98,8 @@ public:
 	/// Returns false if the file could not be opened.
 	/// If append is true, the stream will be seeked to the end of
 	/// the file if it already exists.
-	bool open(char const* path, bool append);
+	/// path must be NUL-terminated.
+	bool open(StringRef const& path, bool append);
 
 	/// Close the stream.
 	void close();

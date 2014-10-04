@@ -6,6 +6,7 @@
 #include <togo/config.hpp>
 #include <togo/types.hpp>
 #include <togo/assert.hpp>
+#include <togo/string.hpp>
 #include <togo/log.hpp>
 #include <togo/file_io.hpp>
 
@@ -18,15 +19,15 @@ namespace togo {
 inline bool
 file_open(
 	PosixFileStreamData& data,
-	char const* const path,
+	StringRef const& path,
 	char const* const mode
 ) {
 	TOGO_ASSERT(!data.handle, "cannot open new path on an open stream");
-	data.handle = std::fopen(path, mode);
+	data.handle = std::fopen(path.data, mode);
 	if (!data.handle) {
 		TOGO_LOG_DEBUGF(
-			"failed to open file '%s' for reading: %d, %s\n",
-			path, errno, std::strerror(errno)
+			"failed to open file '%.*s' for reading: %d, %s\n",
+			path.size, path.data, errno, std::strerror(errno)
 		);
 		return false;
 	}
@@ -114,7 +115,7 @@ FileReader::~FileReader() {
 	this->close();
 }
 
-bool FileReader::open(char const* const path) {
+bool FileReader::open(StringRef const& path) {
 	return file_open(_data, path, "rb");
 }
 
@@ -138,7 +139,11 @@ u64 FileReader::seek_relative(s64 const offset) {
 	return file_seek_relative(_data, offset);
 }
 
-IOStatus FileReader::read(void* const data, unsigned const size, unsigned* const read_size) {
+IOStatus FileReader::read(
+	void* const data,
+	unsigned const size,
+	unsigned* const read_size
+) {
 	TOGO_DEBUG_ASSERT(_data.handle, "cannot perform IO on a closed stream");
 	std::clearerr(_data.handle);
 	std::size_t const op_read_size = std::fread(data, 1, size, _data.handle);
@@ -161,7 +166,7 @@ FileWriter::~FileWriter() {
 	this->close();
 }
 
-bool FileWriter::open(char const* const path, bool const append) {
+bool FileWriter::open(StringRef const& path, bool const append) {
 	return file_open(_data, path, append ? "ab" : "wb");
 }
 
@@ -185,7 +190,10 @@ u64 FileWriter::seek_relative(s64 const offset) {
 	return file_seek_relative(_data, offset);
 }
 
-IOStatus FileWriter::write(void const* const data, unsigned const size) {
+IOStatus FileWriter::write(
+	void const* const data,
+	unsigned const size
+) {
 	TOGO_DEBUG_ASSERT(_data.handle, "cannot perform IO on a closed stream");
 	std::clearerr(_data.handle);
 	std::size_t const write_size = std::fwrite(data, 1, size, _data.handle);
