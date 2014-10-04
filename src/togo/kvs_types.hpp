@@ -114,7 +114,6 @@ public:
 	KVS(f64 const value);
 	KVS(bool const value);
 
-	/// Construct with string value.
 	KVS(StringRef const& value);
 	template<unsigned N>
 	KVS(char const (&value)[N]);

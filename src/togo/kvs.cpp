@@ -39,18 +39,6 @@ inline void kvs::reset_children(KVS& kvs, unsigned const from, unsigned const to
 	}
 }
 
-KVS::KVS(StringRef const& value)
-	: KVS()
-{
-	kvs::string(*this, value);
-}
-
-KVS::KVS(KVS const& other)
-	: KVS()
-{
-	kvs::copy(*this, other);
-}
-
 KVS::KVS(KVS&& other)
 	: _type(other._type)
 	, _name_size(other._name_size)

@@ -432,6 +432,8 @@ inline KVS::KVS()
 	: KVS(KVSType::null)
 {}
 
+inline KVS::KVS(KVS const& other) : KVS() { kvs::copy(*this, other); }
+
 /// Construct with integer value.
 inline KVS::KVS(s64 const value) : KVS(KVSType::integer) { _value.integer = value; }
 
@@ -440,6 +442,9 @@ inline KVS::KVS(f64 const value) : KVS(KVSType::decimal) { _value.decimal = valu
 
 /// Construct with boolean value.
 inline KVS::KVS(bool const value) : KVS(KVSType::boolean) { _value.boolean = value; }
+
+/// Construct with string value.
+inline KVS::KVS(StringRef const& value) : KVS() { kvs::string(*this, value); }
 
 /// Construct with string value from literal.
 template<unsigned N>
