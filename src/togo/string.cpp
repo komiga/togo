@@ -7,6 +7,8 @@
 #include <togo/string_types.hpp>
 #include <togo/string.hpp>
 
+#include <cstring>
+
 namespace togo {
 
 // TODO: Use memcmp()/block-wise compare?
@@ -23,6 +25,13 @@ bool string::compare_equal(StringRef const& lhs, StringRef const& rhs) {
 		}
 	}
 	return true;
+}
+
+void string::copy(char* dst, StringRef const& src) {
+	if (!src.empty()) {
+		std::memcpy(dst, src.data, src.size);
+	}
+	dst[src.size] = '\0';
 }
 
 } // namespace togo

@@ -46,6 +46,25 @@ inline constexpr unsigned size(char const (&data)[N]) {
 /// This will short-circuit if lhs and rhs are not the same size.
 bool compare_equal(StringRef const& lhs, StringRef const& rhs);
 
+/// Copy string.
+///
+/// dst will be NUL-terminated.
+/// dst must be of size src.size + 1.
+void copy(char* dst, StringRef const& src);
+
+/// Copy string.
+///
+/// The data of dst is overwritten.
+/// The capacity of dst (N) must be at least src.size + 1.
+template<unsigned N>
+inline void copy(
+	FixedArray<char, N>& dst,
+	StringRef const& src
+) {
+	fixed_array::resize(dst, src.size + 1);
+	copy(fixed_array::begin(dst), src);
+}
+
 /** @} */ // end of doc-group string
 
 } // namespace string
