@@ -1,5 +1,6 @@
 
 #include <togo/assert.hpp>
+#include <togo/utility.hpp>
 #include <togo/fixed_array.hpp>
 #include <togo/string.hpp>
 
@@ -61,6 +62,31 @@ main() {
 		TEST_DEST(dest1, value1);
 
 		#undef TEST_DEST
+	}
+
+	{
+		#define TEST_TRIM(str__, res__) { \
+			char ca[array_extent(str__)]{str__}; \
+			FixedArray<char, array_extent(str__)> fa; \
+			string::copy(fa, ca); \
+			unsigned const res_size = string::size(res__); \
+			unsigned const ca_size = string::trim_trailing_slashes(ca, string::size(ca)); \
+			unsigned const fa_size = string::trim_trailing_slashes(fa); \
+			TOGO_ASSERTE(ca_size == res_size); \
+			TOGO_ASSERTE(string::compare_equal({ca, ca_size}, res__)); \
+			TOGO_ASSERTE(fa_size == res_size); \
+			TOGO_ASSERTE(string::compare_equal(fa, res__)); \
+			TOGO_ASSERTE(string::compare_equal(fa, {ca, ca_size})); \
+		}
+
+		TEST_TRIM("", "");
+		TEST_TRIM("a", "a");
+		TEST_TRIM("/", "");
+		TEST_TRIM("//", "");
+		TEST_TRIM("/a/", "/a");
+		TEST_TRIM("/a//", "/a");
+
+		#undef TEST_TRIM
 	}
 
 	return 0;
