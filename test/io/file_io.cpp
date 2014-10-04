@@ -1,4 +1,5 @@
 
+#include <togo/string.hpp>
 #include <togo/file_io.hpp>
 
 #include "./common.hpp"
@@ -7,7 +8,7 @@ using namespace togo;
 
 signed
 main() {
-	static constexpr char const* const path = "data/file_stream.bin";
+	static constexpr StringRef const path{"data/file_stream.bin"};
 	{
 		FileWriter writer;
 		TOGO_ASSERTE(writer.open(path, false));
