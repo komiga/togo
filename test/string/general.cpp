@@ -44,5 +44,24 @@ main() {
 		TOGO_ASSERTE(!string::compare_equal("aa", "a"));
 	}
 
+	{
+		#define TEST_DEST(dest__, value__) \
+			string::copy(dest__, value__); \
+			TOGO_ASSERTE(fixed_array::size(dest__) == value__.size + 1); \
+			TOGO_ASSERTE(string::compare_equal(dest__, value__))
+
+		StringRef const empty1{null_tag{}};
+		StringRef const empty2{""};
+		StringRef const value1{"abc"};
+
+		FixedArray<char, 4> dest1;
+
+		TEST_DEST(dest1, empty1);
+		TEST_DEST(dest1, empty2);
+		TEST_DEST(dest1, value1);
+
+		#undef TEST_DEST
+	}
+
 	return 0;
 }
