@@ -147,5 +147,47 @@ main() {
 		TOGO_ASSERTE(kvs::find(v, "x") == nullptr);
 	}
 
+	{
+		KVS null{};
+		KVS integer{1};
+		KVS decimal{1.0};
+		KVS boolean{true, bool_tag{}};
+		KVS string{"value"};
+		KVS vec1{Vec1{1}};
+		KVS vec2{Vec2{1, 2}};
+		KVS vec3{Vec3{1, 2, 3}};
+		KVS vec4{Vec4{1, 2, 3, 4}};
+
+		KVS null_n{"null", null_tag{}};
+		KVS integer_n{"integer", s64{1}};
+		KVS decimal_n{"decimal", 1.0};
+		KVS boolean_n{"boolean", true, bool_tag{}};
+		KVS string_n{"string", "value"};
+		KVS vec1_n{"vec1", Vec1{1}};
+		KVS vec2_n{"vec2", Vec2{1, 2}};
+		KVS vec3_n{"vec3", Vec3{1, 2, 3}};
+		KVS vec4_n{"vec4", Vec4{1, 2, 3, 4}};
+
+		TOGO_ASSERTE(!kvs::is_named(null) && kvs::is_null(null));
+		TOGO_ASSERTE(!kvs::is_named(integer) && kvs::is_integer(integer));
+		TOGO_ASSERTE(!kvs::is_named(decimal) && kvs::is_decimal(decimal));
+		TOGO_ASSERTE(!kvs::is_named(boolean) && kvs::is_boolean(boolean));
+		TOGO_ASSERTE(!kvs::is_named(string) && kvs::is_string(string));
+		TOGO_ASSERTE(!kvs::is_named(vec1) && kvs::is_vec1(vec1));
+		TOGO_ASSERTE(!kvs::is_named(vec2) && kvs::is_vec2(vec2));
+		TOGO_ASSERTE(!kvs::is_named(vec3) && kvs::is_vec3(vec3));
+		TOGO_ASSERTE(!kvs::is_named(vec4) && kvs::is_vec4(vec4));
+
+		TOGO_ASSERTE(kvs::is_named(null_n) && kvs::is_null(null_n));
+		TOGO_ASSERTE(kvs::is_named(integer_n) && kvs::is_integer(integer_n));
+		TOGO_ASSERTE(kvs::is_named(decimal_n) && kvs::is_decimal(decimal_n));
+		TOGO_ASSERTE(kvs::is_named(boolean_n) && kvs::is_boolean(boolean_n));
+		TOGO_ASSERTE(kvs::is_named(string_n) && kvs::is_string(string_n));
+		TOGO_ASSERTE(kvs::is_named(vec1_n) && kvs::is_vec1(vec1_n));
+		TOGO_ASSERTE(kvs::is_named(vec2_n) && kvs::is_vec2(vec2_n));
+		TOGO_ASSERTE(kvs::is_named(vec3_n) && kvs::is_vec3(vec3_n));
+		TOGO_ASSERTE(kvs::is_named(vec4_n) && kvs::is_vec4(vec4_n));
+	}
+
 	return 0;
 }
