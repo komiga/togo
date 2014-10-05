@@ -61,7 +61,7 @@ bool compare_equal(StringRef const& lhs, StringRef const& rhs);
 /// Copy string.
 ///
 /// dst will be NUL-terminated.
-/// dst must be of size src.size + 1.
+/// The capacity of dst must be at least src.size + 1.
 void copy(char* dst, StringRef const& src);
 
 /// Copy string.
@@ -75,6 +75,26 @@ inline void copy(
 ) {
 	fixed_array::resize(dst, src.size + 1);
 	copy(fixed_array::begin(dst), src);
+}
+
+/// Append to string.
+///
+/// dst will be NUL-terminated.
+/// The capacity of dst must be at least size + str.size + 1.
+inline void append(char* dst, unsigned size, StringRef const& str) {
+	copy(dst + size, str);
+}
+
+/// Append to string.
+///
+/// dst will be NUL-terminated.
+/// The capacity of dst (N) must be at least
+/// string::size(dst) + str.size + 1.
+template<unsigned N>
+inline void append(FixedArray<char, N>& dst, StringRef const& str) {
+	unsigned const size = string::size(dst);
+	fixed_array::resize(dst, size + str.size + 1);
+	copy(fixed_array::begin(dst) + size, str);
 }
 
 /// Trim trailing slashes from string.
