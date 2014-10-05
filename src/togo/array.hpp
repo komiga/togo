@@ -266,7 +266,7 @@ inline void remove(Array<T>& a, T const* const ptr) {
 	TOGO_ASSERTE(ptr != nullptr);
 	TOGO_DEBUG_ASSERTE(any(a));
 	TOGO_DEBUG_ASSERTE(array::begin(a) <= ptr && ptr < array::end(a));
-	remove((ptr - a._data) / sizeof(T));
+	remove(a, (ptr - a._data) / sizeof(T));
 }
 
 /** @} */ // end of doc-group array
