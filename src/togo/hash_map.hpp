@@ -239,24 +239,24 @@ inline void clear(HashMap<K, T>& hm) {
 ///
 /// If key does not exist, it will be inserted.
 template<class K, class T>
-inline void set(HashMap<K, T>& hm, K const key, T const& value) {
+inline T& set(HashMap<K, T>& hm, K const key, T const& value) {
 	if (!space(hm)) {
 		internal::grow(hm);
 	}
 	auto const index = internal::make(hm, key, true);
-	hm._data[index].value = value;
+	return hm._data[index].value = value;
 }
 
 /// Push item.
 ///
 /// If there are existing values with key, they are retained.
 template<class K, class T>
-inline void push(HashMap<K, T>& hm, K const key, T const& value) {
+inline T& push(HashMap<K, T>& hm, K const key, T const& value) {
 	if (!space(hm)) {
 		internal::grow(hm);
 	}
 	auto const index = internal::make(hm, key, false);
-	hm._data[index].value = value;
+	return hm._data[index].value = value;
 }
 
 /// Get item.
