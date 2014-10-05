@@ -46,7 +46,7 @@ main() {
 	}
 
 	{
-		#define TEST_DEST(dest__, value__) \
+		#define TEST_COPY(dest__, value__) \
 			string::copy(dest__, value__); \
 			TOGO_ASSERTE(fixed_array::size(dest__) == value__.size + 1); \
 			TOGO_ASSERTE(string::compare_equal(dest__, value__))
@@ -57,25 +57,50 @@ main() {
 
 		FixedArray<char, 4> dest1;
 
-		TEST_DEST(dest1, empty1);
-		TEST_DEST(dest1, empty2);
-		TEST_DEST(dest1, value1);
+		TEST_COPY(dest1, empty1);
+		TEST_COPY(dest1, empty2);
+		TEST_COPY(dest1, value1);
 
-		#undef TEST_DEST
+		#undef TEST_COPY
+	}
+
+	{
+		#define TEST_APPEND(init__, str__, res__) { \
+			char ca[array_extent(res__)]{init__}; \
+			FixedArray<char, array_extent(res__)> fa; \
+			string::copy(fa, init__); \
+			string::append(ca, string::size(init__), str__); \
+			string::append(fa, str__); \
+			unsigned const res_size = string::size(res__); \
+			unsigned const ca_size = string::size(ca); \
+			unsigned const fa_size = string::size(fa); \
+			TOGO_ASSERTE(ca_size == res_size); \
+			TOGO_ASSERTE(fa_size == res_size); \
+			TOGO_ASSERTE(string::compare_equal(res__, {ca, ca_size})); \
+			TOGO_ASSERTE(string::compare_equal(res__, fa)); \
+			TOGO_ASSERTE(string::compare_equal(fa, {ca, ca_size})); \
+		}
+
+		TEST_APPEND("", "", "");
+		TEST_APPEND("", "a", "a");
+		TEST_APPEND("a", "b", "ab");
+		TEST_APPEND("a", "", "a");
+
+		#undef TEST_APPEND
 	}
 
 	{
 		#define TEST_TRIM(str__, res__) { \
 			char ca[array_extent(str__)]{str__}; \
-			FixedArray<char, array_extent(str__)> fa; \
-			string::copy(fa, ca); \
+			FixedArray<char, array_extent(str__)> fa{}; \
+			string::copy(fa, str__); \
 			unsigned const res_size = string::size(res__); \
 			unsigned const ca_size = string::trim_trailing_slashes(ca, string::size(ca)); \
 			unsigned const fa_size = string::trim_trailing_slashes(fa); \
 			TOGO_ASSERTE(ca_size == res_size); \
-			TOGO_ASSERTE(string::compare_equal({ca, ca_size}, res__)); \
 			TOGO_ASSERTE(fa_size == res_size); \
-			TOGO_ASSERTE(string::compare_equal(fa, res__)); \
+			TOGO_ASSERTE(string::compare_equal(res__, {ca, ca_size})); \
+			TOGO_ASSERTE(string::compare_equal(res__, fa)); \
 			TOGO_ASSERTE(string::compare_equal(fa, {ca, ca_size})); \
 		}
 
