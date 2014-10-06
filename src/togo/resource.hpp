@@ -11,6 +11,7 @@
 
 #include <togo/config.hpp>
 #include <togo/string_types.hpp>
+#include <togo/hash.hpp>
 #include <togo/resource_types.hpp>
 
 namespace togo {
@@ -20,6 +21,16 @@ namespace resource {
 	@addtogroup resource
 	@{
 */
+
+/// Calculate hash of resource type.
+inline ResourceType hash_type(StringRef const& type) {
+	return hash::calc32(type);
+}
+
+/// Calculate hash of resource name.
+inline ResourceNameHash hash_name(StringRef const& name) {
+	return hash::calc64(name);
+}
 
 /// Parse resource path.
 ///

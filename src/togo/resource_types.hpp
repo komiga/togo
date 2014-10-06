@@ -30,13 +30,31 @@ using ResourceType = hash32;
 /// Resource name hash.
 using ResourceNameHash = hash64;
 
+/// Resource type hash literal.
+inline constexpr ResourceType
+operator"" _resource_type(
+	char const* const data,
+	std::size_t const size
+) {
+	return hash::calc32_ce(data, size);
+}
+
+/// Resource name hash literal.
+inline constexpr ResourceNameHash
+operator"" _resource_name(
+	char const* const data,
+	std::size_t const size
+) {
+	return hash::calc64_ce(data, size);
+}
+
 /// Resource types.
 enum : ResourceType {
 	/// Non-type.
 	RESTYPE_NULL = hash::IDENTITY32,
 
 	/// gfx::RenderConfig.
-	RESTYPE_RENDER_CONFIG = "render_config"_hash32,
+	RESTYPE_RENDER_CONFIG = "render_config"_resource_type,
 };
 
 /// Resource path parts.
