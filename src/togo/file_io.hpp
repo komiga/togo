@@ -52,6 +52,9 @@ public:
 	FileReader& operator=(FileReader const&) = delete;
 	FileReader& operator=(FileReader&&) = delete;
 
+	/// Check if stream is open.
+	bool is_open() const;
+
 	/// Attempt to open a file.
 	///
 	/// Returns false if the file could not be opened.
@@ -92,6 +95,9 @@ public:
 	FileWriter(FileWriter&&) = delete;
 	FileWriter& operator=(FileWriter const&) = delete;
 	FileWriter& operator=(FileWriter&&) = delete;
+
+	/// Check if stream is open.
+	bool is_open() const;
 
 	/// Attempt to open a file.
 	///

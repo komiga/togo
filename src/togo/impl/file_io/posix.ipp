@@ -17,6 +17,13 @@
 namespace togo {
 
 inline bool
+file_is_open(
+	PosixFileStreamData const& data
+) {
+	return data.handle != nullptr;
+}
+
+inline bool
 file_open(
 	PosixFileStreamData& data,
 	StringRef const& path,
@@ -115,6 +122,10 @@ FileReader::~FileReader() {
 	this->close();
 }
 
+bool FileReader::is_open() const {
+	return file_is_open(_data);
+}
+
 bool FileReader::open(StringRef const& path) {
 	return file_open(_data, path, "rb");
 }
@@ -164,6 +175,10 @@ IOStatus FileReader::read(
 
 FileWriter::~FileWriter() {
 	this->close();
+}
+
+bool FileWriter::is_open() const {
+	return file_is_open(_data);
 }
 
 bool FileWriter::open(StringRef const& path, bool const append) {
