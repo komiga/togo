@@ -69,9 +69,7 @@ TOGO_CONSTRAIN_SAME(hash32, am::detail::hash::fnv_hash_type<hash32_length>);
 TOGO_CONSTRAIN_SAME(hash64, am::detail::hash::fnv_hash_type<hash64_length>);
 /** @endcond */
 
-/**
-	Calculate H-bit hash.
-*/
+/// Calculate H-bit hash.
 template<class H>
 inline H calc_generic(
 	char const* const data,
@@ -84,17 +82,13 @@ inline H calc_generic(
 	;
 }
 
-/**
-	Calculate H-bit hash from string reference.
-*/
+/// Calculate H-bit hash from string reference.
 template<class H>
 inline H calc_generic(StringRef const& ref) {
 	return hash::calc_generic<H>(ref.data, ref.size);
 }
 
-/**
-	Calculate 32-bit hash.
-*/
+/// Calculate 32-bit hash.
 inline hash32 calc32(
 	char const* const data,
 	unsigned const size
@@ -102,16 +96,12 @@ inline hash32 calc32(
 	return hash::calc_generic<hash32>(data, size);
 }
 
-/**
-	Calculate 32-bit hash from string reference.
-*/
+/// Calculate 32-bit hash from string reference.
 inline hash32 calc32(StringRef const& ref) {
 	return hash::calc_generic<hash32>(ref.data, ref.size);
 }
 
-/**
-	Calculate 64-bit hash.
-*/
+/// Calculate 64-bit hash.
 inline hash64 calc64(
 	char const* const data,
 	unsigned const size
@@ -119,9 +109,7 @@ inline hash64 calc64(
 	return hash::calc_generic<hash64>(data, size);
 }
 
-/**
-	Calculate 64-bit hash from string reference.
-*/
+/// Calculate 64-bit hash from string reference.
 inline hash64 calc64(StringRef const& ref) {
 	return hash::calc_generic<hash64>(ref.data, ref.size);
 }
@@ -130,9 +118,7 @@ inline hash64 calc64(StringRef const& ref) {
 
 } // namespace hash
 
-/**
-	32-bit hash literal.
-*/
+/// 32-bit hash literal.
 inline constexpr hash32
 operator"" _hash32(
 	char const* const data,
@@ -145,9 +131,7 @@ operator"" _hash32(
 	;
 }
 
-/**
-	64-bit hash literal.
-*/
+/// 64-bit hash literal.
 inline constexpr hash64
 operator"" _hash64(
 	char const* const data,
