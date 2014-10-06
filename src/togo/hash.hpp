@@ -88,6 +88,25 @@ inline H calc_generic(StringRef const& ref) {
 	return hash::calc_generic<H>(ref.data, ref.size);
 }
 
+/// Calculate H-bit hash (constexpr).
+template<class H>
+inline constexpr H calc_generic_ce(
+	char const* const data,
+	unsigned const size
+) {
+	return
+		size != 0
+		? am::hash::fnv1a_c<hash_type_length<H>::value>(data, size)
+		: identity_generic<H>::value
+	;
+}
+
+/// Calculate H-bit hash from string reference (constexpr).
+template<class H>
+inline constexpr H calc_generic_ce(StringRef const& ref) {
+	return hash::calc_generic_ce<H>(ref.data, ref.size);
+}
+
 /// Calculate 32-bit hash.
 inline hash32 calc32(
 	char const* const data,
@@ -99,6 +118,19 @@ inline hash32 calc32(
 /// Calculate 32-bit hash from string reference.
 inline hash32 calc32(StringRef const& ref) {
 	return hash::calc_generic<hash32>(ref.data, ref.size);
+}
+
+/// Calculate 32-bit hash  (constexpr).
+inline constexpr hash32 calc32_ce(
+	char const* const data,
+	unsigned const size
+) {
+	return hash::calc_generic_ce<hash32>(data, size);
+}
+
+/// Calculate 32-bit hash from string reference  (constexpr).
+inline constexpr hash32 calc32_ce(StringRef const& ref) {
+	return hash::calc_generic_ce<hash32>(ref.data, ref.size);
 }
 
 /// Calculate 64-bit hash.
@@ -114,6 +146,19 @@ inline hash64 calc64(StringRef const& ref) {
 	return hash::calc_generic<hash64>(ref.data, ref.size);
 }
 
+/// Calculate 64-bit hash (constexpr).
+inline constexpr hash64 calc64_ce(
+	char const* const data,
+	unsigned const size
+) {
+	return hash::calc_generic_ce<hash64>(data, size);
+}
+
+/// Calculate 64-bit hash from string reference (constexpr).
+inline constexpr hash64 calc64_ce(StringRef const& ref) {
+	return hash::calc_generic_ce<hash64>(ref.data, ref.size);
+}
+
 /** @} */ // end of doc-group hash
 
 } // namespace hash
@@ -124,11 +169,7 @@ operator"" _hash32(
 	char const* const data,
 	std::size_t const size
 ) {
-	return
-		size != 0
-		? am::hash::fnv1a_c<hash::hash32_length>(data, size)
-		: hash::IDENTITY32
-	;
+	return hash::calc32_ce(data, size);
 }
 
 /// 64-bit hash literal.
@@ -137,11 +178,7 @@ operator"" _hash64(
 	char const* const data,
 	std::size_t const size
 ) {
-	return
-		size != 0
-		? am::hash::fnv1a_c<hash::hash64_length>(data, size)
-		: hash::IDENTITY64
-	;
+	return hash::calc64_ce(data, size);
 }
 
 } // namespace togo
