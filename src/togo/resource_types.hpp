@@ -12,10 +12,12 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/string_types.hpp>
 #include <togo/hash.hpp>
 #include <togo/memory_types.hpp>
 #include <togo/collection_types.hpp>
 #include <togo/io_types.hpp>
+#include <togo/file_io.hpp>
 
 namespace togo {
 
@@ -82,7 +84,33 @@ struct ResourceManager;
 */
 
 /// Resource package.
-struct ResourcePackage;
+struct ResourcePackage {
+	struct Entry {
+		ResourceType type;
+		u8 path_size;
+		char path[256];
+	};
+
+	using EntryNode = HashMapNode<ResourceNameHash, Entry>;
+
+	hash64 _root_hash;
+	FileReader _data_stream;
+	HashMap<ResourceNameHash, Entry> _entries;
+	FixedArray<char, 128> _root;
+
+	ResourcePackage() = delete;
+	ResourcePackage(ResourcePackage const&) = delete;
+	ResourcePackage(ResourcePackage&&) = delete;
+	ResourcePackage& operator=(ResourcePackage const&) = delete;
+	ResourcePackage& operator=(ResourcePackage&&) = delete;
+
+	~ResourcePackage() = default;
+
+	ResourcePackage(
+		StringRef const& root,
+		Allocator& allocator
+	);
+};
 
 /** @} */ // end of doc-group resource_package
 
@@ -130,8 +158,14 @@ struct ResourceManager {
 		void* type_data;
 	};
 
+	struct TypedResource {
+		void* value;
+		ResourceType type;
+	};
+
 	HashMap<ResourceType, BoundHandler> _handlers;
-	HashMap<ResourceNameHash, void*> _resources;
+	HashMap<ResourceNameHash, TypedResource> _resources;
+	Array<ResourcePackage*> _packages;
 
 	ResourceManager() = delete;
 	ResourceManager(ResourceManager const&) = delete;
@@ -139,8 +173,7 @@ struct ResourceManager {
 	ResourceManager& operator=(ResourceManager const&) = delete;
 	ResourceManager& operator=(ResourceManager&&) = delete;
 
-	~ResourceManager() = default;
-
+	~ResourceManager();
 	ResourceManager(Allocator& allocator);
 };
 
