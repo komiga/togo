@@ -107,7 +107,7 @@ public:
 	/// Deallocate a pointer.
 	///
 	/// Does nothing if p is nullptr.
-	virtual void deallocate(void* p) = 0;
+	virtual void deallocate(void const* p) = 0;
 };
 inline Allocator::~Allocator() = default;
 

@@ -109,10 +109,10 @@ public:
 		return p;
 	}
 
-	void deallocate(void* p) override {
+	void deallocate(void const* const p) override {
 		if (p) {
 			MutexLock op_mutex_lock{_op_mutex};
-			mspace_free(_mspace, p);
+			mspace_free(_mspace, const_cast<void*>(p));
 			--_num_allocations;
 		}
 	}

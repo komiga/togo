@@ -90,7 +90,7 @@ public:
 	void* allocate(u32 const size, u32 const align = DEFAULT_ALIGNMENT) override;
 
 	/// Does nothing.
-	void deallocate(void* const) override {}
+	void deallocate(void const* const) override {}
 };
 
 /** @} */ // end of doc-group memory
