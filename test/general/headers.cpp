@@ -24,6 +24,7 @@
 #include <togo/queue.hpp>
 #include <togo/resource.hpp>
 #include <togo/resource_manager.hpp>
+#include <togo/resource_package.hpp>
 #include <togo/resource_types.hpp>
 #include <togo/system.hpp>
 #include <togo/task_manager.hpp>
