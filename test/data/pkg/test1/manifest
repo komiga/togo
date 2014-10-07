@@ -1,0 +1,6 @@
+
+resources = [
+	"1.dummy"
+	"subdir/2.dummy"
+	"non_existent.dummy"
+]
