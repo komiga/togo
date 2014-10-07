@@ -14,7 +14,7 @@ using namespace togo;
 signed
 main() {
 	memory_init();
-	gfx::init(3, 2);
+	gfx::init(3, 3);
 
 	gfx::DisplayConfig config{};
 	config.color_bits = {8, 8, 8, 0};
