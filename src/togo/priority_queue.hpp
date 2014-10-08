@@ -25,7 +25,7 @@ namespace togo {
 /// explicitly through reserve() or by insertion).
 template<class T>
 inline PriorityQueue<T>::PriorityQueue(
-	PriorityQueue<T>::less_func_type less_func,
+	PriorityQueue<T>::less_func_type& less_func,
 	Allocator& allocator
 )
 	: _data(allocator)
@@ -225,6 +225,17 @@ inline void pop(PriorityQueue<T>& pq) {
 	#if defined(TOGO_TEST_PRIORITY_QUEUE)
 		TOGO_DEBUG_ASSERTE(is_valid(pq));
 	#endif
+}
+
+/// Copy queue.
+///
+/// The allocator of dst is unchanged.
+/// The comparison function of dst is changed to src's
+/// (order invariant).
+template<class T>
+inline void copy(PriorityQueue<T>& dst, PriorityQueue<T> const& src) {
+	array::copy(dst._data, src._data);
+	dst._less_func = src._less_func;
 }
 
 /** @} */ // end of doc-group priority_queue

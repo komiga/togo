@@ -269,6 +269,20 @@ inline void remove(Array<T>& a, T const* const ptr) {
 	remove(a, (ptr - a._data) / sizeof(T));
 }
 
+/// Copy array.
+///
+/// The allocator of dst is unchanged.
+/// Existing capacity in dst will be retained.
+template<class T>
+inline void copy(Array<T>& dst, Array<T> const& src) {
+	// If resize would incur memcpy(), prevent it
+	if (src._size > dst._capacity) {
+		dst._allocator->deallocate(dst._data);
+	}
+	resize(dst, src._size);
+	std::memcpy(dst._data, src._data, src._size * sizeof(T));
+}
+
 /** @} */ // end of doc-group array
 
 } // namespace array

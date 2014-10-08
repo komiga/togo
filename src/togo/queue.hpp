@@ -212,6 +212,16 @@ inline void pop_front(Queue<T>& q) {
 	}
 }
 
+/// Copy queue.
+///
+/// The allocator of dst is unchanged.
+template<class T>
+inline void copy(Queue<T>& dst, Queue<T> const& src) {
+	array::copy(dst._data, src._data);
+	dst._head = src._head;
+	dst._size = src._size;
+}
+
 /** @} */ // end of doc-group queue
 
 } // namespace queue

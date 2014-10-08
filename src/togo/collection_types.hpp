@@ -136,10 +136,10 @@ template<class T>
 struct PriorityQueue {
 	TOGO_CONSTRAIN_POD(T);
 
-	using less_func_type = bool (&)(T const&, T const&);
+	using less_func_type = bool (T const&, T const&);
 
 	Array<T> _data;
-	less_func_type _less_func;
+	less_func_type* _less_func;
 
 	~PriorityQueue() = default;
 	PriorityQueue(PriorityQueue<T>&&) = default;
@@ -150,7 +150,7 @@ struct PriorityQueue {
 	PriorityQueue& operator=(PriorityQueue<T> const&) = delete;
 
 	PriorityQueue(
-		PriorityQueue<T>::less_func_type less_func,
+		PriorityQueue<T>::less_func_type& less_func,
 		Allocator& allocator
 	);
 

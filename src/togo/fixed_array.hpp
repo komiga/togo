@@ -16,6 +16,8 @@
 #include <togo/memory.hpp>
 #include <togo/assert.hpp>
 
+#include <cstring>
+
 namespace togo {
 
 /// Construct.
@@ -145,6 +147,13 @@ template<class T, unsigned N>
 inline void pop_back(FixedArray<T, N>& a) {
 	TOGO_DEBUG_ASSERTE(any(a));
 	--a._size;
+}
+
+/// Copy array.
+template<class T, unsigned N, unsigned M>
+inline void copy(FixedArray<T, N>& dst, FixedArray<T, M> const& src) {
+	resize(dst, src._size);
+	std::memcpy(dst._data, src._data, src._size * sizeof(T));
 }
 
 /** @} */ // end of doc-group fixed_array
