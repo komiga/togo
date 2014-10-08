@@ -58,6 +58,15 @@ main() {
 		++count;
 	}
 
+	// Copy
+	Array<u32> copy{memory::default_allocator()};
+
+	array::copy(copy, a);
+	TOGO_ASSERTE(array::size(copy) == array::size(a));
+	for (u32 i = 0; i < array::size(copy); ++i) {
+		TOGO_ASSERTE(copy[i] == a[i]);
+	}
+
 	// Removal
 	count = 5;
 	while (count--) {

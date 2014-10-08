@@ -53,6 +53,15 @@ main() {
 		++count;
 	}
 
+	// Copy
+	FixedArray<u32, 10> copy{};
+
+	fixed_array::copy(copy, a);
+	TOGO_ASSERTE(fixed_array::size(copy) == fixed_array::size(a));
+	for (u32 i = 0; i < fixed_array::size(copy); ++i) {
+		TOGO_ASSERTE(copy[i] == a[i]);
+	}
+
 	// Removal
 	count = 5;
 	while (count--) {

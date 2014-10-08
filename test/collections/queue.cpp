@@ -49,6 +49,15 @@ main() {
 		}
 		TOGO_LOG("\n");
 
+		// Copy
+		Queue<u32> copy{memory::default_allocator()};
+
+		queue::copy(copy, q);
+		TOGO_ASSERTE(queue::size(copy) == queue::size(q));
+		for (u32 i = 0; i < queue::size(copy); ++i) {
+			TOGO_ASSERTE(copy[i] == q[i]);
+		}
+
 		// Unbroken FIFO removal
 		TOGO_LOG("FIFO order (pop): ");
 		count = 5;

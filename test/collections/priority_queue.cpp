@@ -51,6 +51,15 @@ main() {
 		}
 		TOGO_LOG("\n");
 
+		// Copy
+		PriorityQueue<u32> copy{less_func, memory::default_allocator()};
+
+		priority_queue::copy(copy, pq);
+		TOGO_ASSERTE(priority_queue::size(copy) == priority_queue::size(pq));
+		for (u32 i = 0; i < priority_queue::size(copy); ++i) {
+			TOGO_ASSERTE(copy[i] == pq[i]);
+		}
+
 		// Unbroken removal
 		TOGO_LOG("max order (pop): ");
 		count = 10;
