@@ -187,6 +187,46 @@ void sort_radix_k64(
 	}
 }
 
+/// Insertion sort a collection.
+///
+/// T must be POD.
+///
+/// LFunc must be a 2-arity comparison function returning true
+/// if arg1 < arg2 (less-than).
+///
+/// This implementation is in-place and stable.
+///
+/// Insertion sort is fast only for extremely small collections.
+/// If the collection is near or above 200 values, another sort
+/// should be considered instead.
+template<class T, class LFunc>
+void sort_insertion(
+	T* const begin,
+	T* const end,
+	LFunc less_func
+) {
+	TOGO_CONSTRAIN_POD(T);
+
+	T ivalue;
+	T* i;
+	T* j;
+	for (i = begin + 1; i < end; ++i) {
+		// Take value at current position
+		ivalue = *i;
+
+		// Shift elements behind ivalue forward until ivalue would
+		// be in its sub-sorted position
+		for (j = i; j > begin && less_func(ivalue, *(j - 1)); --j) {
+			*j = *(j - 1);
+		}
+
+		// Place ivalue in its position
+		if (j != i) {
+			*j = ivalue;
+		}
+	}
+}
+
 /** @} */ // end of doc-group algorithm
 
 } // namespace togo
