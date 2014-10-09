@@ -124,7 +124,7 @@ inline StringRef name_ref(KVS const& kvs) {
 }
 
 /// Get name hash.
-inline hash64 name_hash(KVS const& kvs) {
+inline hash32 name_hash(KVS const& kvs) {
 	return kvs._name_hash;
 }
 
@@ -268,10 +268,10 @@ KVS* find(KVS& kvs, StringRef const& name);
 KVS const* find(KVS const& kvs, StringRef const& name);
 
 /// Find item in collection by name hash.
-KVS* find(KVS& kvs, hash64 name_hash);
+KVS* find(KVS& kvs, hash32 name_hash);
 
 /// Find item in collection by name hash.
-KVS const* find(KVS const& kvs, hash64 name_hash);
+KVS const* find(KVS const& kvs, hash32 name_hash);
 
 /// Free value if dynamic and change type iff type differs.
 ///
@@ -422,7 +422,7 @@ inline KVS::~KVS() {
 inline KVS::KVS(KVSType const type)
 	: _type(type)
 	, _name_size(0)
-	, _name_hash(hash::IDENTITY64)
+	, _name_hash(hash::IDENTITY32)
 	, _name(nullptr)
 	, _value()
 {}

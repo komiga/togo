@@ -58,7 +58,7 @@ enum class KVSType : u32 {
 struct KVS {
 	KVSType _type;
 	u32 _name_size;
-	hash64 _name_hash;
+	hash32 _name_hash;
 	char* _name;
 
 	struct StringValue {
