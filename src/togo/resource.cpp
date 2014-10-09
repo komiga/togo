@@ -5,11 +5,21 @@
 
 #include <togo/config.hpp>
 #include <togo/utility.hpp>
+#include <togo/algorithm.hpp>
 #include <togo/string.hpp>
 #include <togo/fixed_array.hpp>
 #include <togo/resource.hpp>
 
 namespace togo {
+
+struct TagLessThan {
+	inline bool operator()(
+		ResourcePathParts::Tag const& x,
+		ResourcePathParts::Tag const& y
+	) const noexcept {
+		return x.hash < y.hash;
+	}
+};
 
 bool resource::parse_path(
 	StringRef const& path,
@@ -80,6 +90,8 @@ bool resource::parse_path(
 		tag.hash = hash::calc32(tag.name);
 		fixed_array::push_back(pp.tags, tag);
 	}
+	sort_insertion(begin(pp.tags), end(pp.tags), TagLessThan{});
+	// TODO: Calculate cumulative hash of tags
 	return true;
 }
 

@@ -34,6 +34,7 @@ inline ResourceNameHash hash_name(StringRef const& name) {
 
 /// Parse resource path.
 ///
+/// Tags are sorted by hash value.
 /// Returns false if the given path is malformed.
 bool parse_path(
 	StringRef const& path,
