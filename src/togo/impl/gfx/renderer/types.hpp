@@ -42,6 +42,15 @@ namespace {
 
 	constexpr u32 npot(u32 x) {
 		// NB: Does not kindly handle x = 0
+		/*
+			--x;
+			x |= x >> 1;
+			x |= x >> 2;
+			x |= x >> 4;
+			x |= x >> 8;
+			x |= x >> 16;
+			++x;
+		*/
 		return 1 + npot_s(npot_s(npot_s(npot_s(npot_s(x - 1, 1), 2), 4), 8), 16);
 	}
 } // anonymous namespace
