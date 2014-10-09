@@ -45,7 +45,7 @@ main() {
 		TOGO_ASSERTE(kvs::empty(identity));
 		TOGO_ASSERTE(kvs::begin(identity) == nullptr);
 		TOGO_ASSERTE(kvs::end(identity) == nullptr);
-		TOGO_ASSERTE(kvs::find(identity, hash::IDENTITY64) == nullptr);
+		TOGO_ASSERTE(kvs::find(identity, hash::IDENTITY32) == nullptr);
 		TOGO_ASSERTE(kvs::find(identity, "") == nullptr);
 	}
 
@@ -115,7 +115,7 @@ main() {
 		TOGO_ASSERTE(kvs::any(c));
 		TOGO_ASSERTE(!kvs::empty(c));
 		TOGO_ASSERTE(kvs::is_null(kvs::back(c)));
-		TOGO_ASSERTE(kvs::find(c, hash::IDENTITY64) == nullptr);
+		TOGO_ASSERTE(kvs::find(c, hash::IDENTITY32) == nullptr);
 		TOGO_ASSERTE(kvs::find(c, "") == nullptr);
 		TOGO_ASSERTE(kvs::find(c, "x") == nullptr);
 	}
