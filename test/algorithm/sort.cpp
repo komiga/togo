@@ -240,7 +240,7 @@ main() {
 
 	TOGO_LOG("\n");
 	test_and_validate<u8, u16, std::mt19937>(static_cast<u16>(-1), rdev());
-	test_and_validate<u32, u16, std::mt19937>(static_cast<u16>(-1), rdev());
+	test_and_validate<u16, u16, std::mt19937>(static_cast<u16>(-1), rdev());
 	test_and_validate<u32, u16, std::mt19937>(static_cast<u16>(-1), rdev());
 	test_and_validate<u64, u16, std::mt19937_64>(static_cast<u16>(-1), rdev());
 
