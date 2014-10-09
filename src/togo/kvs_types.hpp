@@ -56,11 +56,6 @@ enum class KVSType : u32 {
 	Key-value store.
 */
 struct KVS {
-	KVSType _type;
-	u32 _name_size;
-	hash32 _name_hash;
-	char* _name;
-
 	struct StringValue {
 		u32 size;
 		u32 capacity;
@@ -95,7 +90,13 @@ struct KVS {
 		inline Value()
 			: _init()
 		{}
-	} _value;
+	};
+
+	KVSType _type;
+	u32 _name_size;
+	hash32 _name_hash;
+	char* _name;
+	Value _value;
 
 	KVS& operator=(KVS const&) = delete;
 	KVS& operator=(KVS&&) = delete;
