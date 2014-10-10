@@ -230,11 +230,11 @@ inline void clear(Array<T>& a) {
 
 /// Add an item to the end. The array will grow if needed.
 template<class T>
-inline void push_back(Array<T>& a, T const& item) {
+inline T& push_back(Array<T>& a, T const& item) {
 	if (!space(a)) {
 		grow(a);
 	}
-	a._data[a._size++] = item;
+	return a._data[a._size++] = item;
 }
 
 /// Remove the last item.

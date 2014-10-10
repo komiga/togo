@@ -170,11 +170,11 @@ inline void clear(Queue<T>& q) {
 
 /// Push an item to the back of the queue.
 template<class T>
-inline void push_back(Queue<T>& q, T const& item) {
+inline T& push_back(Queue<T>& q, T const& item) {
 	if (!space(q)) {
 		grow(q);
 	}
-	q[q._size++] = item;
+	return q[q._size++] = item;
 }
 
 /// Remove an item from the back of the queue.
@@ -190,13 +190,13 @@ inline void pop_back(Queue<T>& q) {
 
 /// Push an item to the front of the queue.
 template<class T>
-inline void push_front(Queue<T>& q, T const& item) {
+inline T& push_front(Queue<T>& q, T const& item) {
 	if (!space(q)) {
 		grow(q);
 	}
 	q._head = (q._head - 1 + array::size(q._data)) % array::size(q._data);
 	++q._size;
-	q[0] = item;
+	return q[0] = item;
 }
 
 /// Remove an item from the front of the queue.

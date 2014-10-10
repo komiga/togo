@@ -135,9 +135,9 @@ inline void clear(FixedArray<T, N>& a) {
 ///
 /// An assertion will fail if the array is full.
 template<class T, unsigned N>
-inline void push_back(FixedArray<T, N>& a, T const& item) {
+inline T& push_back(FixedArray<T, N>& a, T const& item) {
 	TOGO_DEBUG_ASSERTE(space(a));
-	a._data[a._size++] = item;
+	return a._data[a._size++] = item;
 }
 
 /// Remove the last item.
