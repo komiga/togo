@@ -91,8 +91,8 @@ void resource_package::load_manifest(
 			continue;
 		}
 		// Retain root path, replace inner path part
-		fixed_array::resize(full_path, base_size + rpath_ref.size + 1);
-		string::copy(fixed_array::begin(full_path) + base_size, rpath_ref);
+		fixed_array::resize(full_path, base_size);
+		string::append(full_path, rpath_ref);
 		full_path_ref = full_path;
 		parse_path_success = resource::parse_path(rpath_ref, pparts);
 		if (!parse_path_success) {

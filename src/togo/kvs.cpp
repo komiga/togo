@@ -129,7 +129,7 @@ void kvs::set_name(KVS& kvs, StringRef const& name) {
 		);
 	}
 	if (name.any()) {
-		string::copy(kvs._name, name);
+		string::copy(kvs._name, name.size + 1, name);
 	}
 	kvs._name_size = name.size;
 	kvs._name_hash = hash::calc32(name);
@@ -240,7 +240,7 @@ void kvs::string(KVS& kvs, StringRef const& value) {
 		);
 	}
 	if (value.any()) {
-		string::copy(kvs._value.string.data, value);
+		string::copy(kvs._value.string.data, kvs._value.string.capacity, value);
 	}
 	kvs._value.string.size = value.size;
 }

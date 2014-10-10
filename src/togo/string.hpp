@@ -62,11 +62,20 @@ bool compare_equal(StringRef const& lhs, StringRef const& rhs);
 ///
 /// dst will be NUL-terminated.
 /// The capacity of dst must be at least src.size + 1.
-void copy(char* dst, StringRef const& src);
+void copy(char* dst, unsigned capacity, StringRef const& src);
 
 /// Copy string.
 ///
-/// The data of dst is overwritten.
+/// dst will be NUL-terminated.
+/// The capacity of dst (N) must be at least src.size + 1.
+template<unsigned N>
+inline void copy(char (&dst)[N], StringRef const& src) {
+	copy(dst, N, src);
+}
+
+/// Copy string.
+///
+/// dst will be NUL-terminated.
 /// The capacity of dst (N) must be at least src.size + 1.
 template<unsigned N>
 inline void copy(
@@ -74,15 +83,29 @@ inline void copy(
 	StringRef const& src
 ) {
 	fixed_array::resize(dst, src.size + 1);
-	copy(fixed_array::begin(dst), src);
+	copy(fixed_array::begin(dst), fixed_array::size(dst), src);
 }
 
 /// Append to string.
 ///
 /// dst will be NUL-terminated.
 /// The capacity of dst must be at least size + str.size + 1.
-inline void append(char* dst, unsigned size, StringRef const& str) {
-	copy(dst + size, str);
+inline void append(
+	char* const dst,
+	unsigned const capacity,
+	unsigned const size,
+	StringRef const& str
+) {
+	copy(dst + size, capacity, str);
+}
+
+/// Append to string.
+///
+/// dst will be NUL-terminated.
+/// The capacity of dst (N) must be at least size + str.size + 1.
+template<unsigned N>
+inline void append(char (&dst)[N], unsigned const size, StringRef const& str) {
+	copy(dst + size, N, str);
 }
 
 /// Append to string.
@@ -94,7 +117,7 @@ template<unsigned N>
 inline void append(FixedArray<char, N>& dst, StringRef const& str) {
 	unsigned const size = string::size(dst);
 	fixed_array::resize(dst, size + str.size + 1);
-	copy(fixed_array::begin(dst) + size, str);
+	copy(fixed_array::begin(dst) + size, str.size + 1, str);
 }
 
 /// Trim trailing slashes from string.
