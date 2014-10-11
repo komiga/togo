@@ -5,7 +5,7 @@
 @file
 @brief Memory IO.
 @ingroup io
-@ingroup memory_io
+@ingroup io_memory
 */
 
 #pragma once
@@ -21,7 +21,7 @@
 namespace togo {
 
 /**
-	@addtogroup memory_io
+	@addtogroup io_memory
 	@{
 */
 
@@ -120,6 +120,6 @@ private:
 	IOStatus read(void* data, unsigned size, unsigned* read_size) override;
 };
 
-/** @} */ // end of doc-group memory_io
+/** @} */ // end of doc-group io_memory
 
 } // namespace togo

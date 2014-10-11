@@ -5,7 +5,7 @@
 @file
 @brief File IO.
 @ingroup io
-@ingroup file_io
+@ingroup io_file
 */
 
 #pragma once
@@ -25,7 +25,7 @@
 namespace togo {
 
 /**
-	@addtogroup file_io
+	@addtogroup io_file
 	@{
 */
 
@@ -119,6 +119,6 @@ private:
 	IOStatus write(void const* data, unsigned size) override;
 };
 
-/** @} */ // end of doc-group file_io
+/** @} */ // end of doc-group io_file
 
 } // namespace togo
