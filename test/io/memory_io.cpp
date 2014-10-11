@@ -10,8 +10,7 @@
 
 using namespace togo;
 
-signed
-main() {
+signed main() {
 	memory_init();
 
 	MemoryStream stream{memory::default_allocator(), 0};

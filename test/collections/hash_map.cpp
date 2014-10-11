@@ -40,8 +40,7 @@ void set_first(HashMap<K, Value>& hm) {
 	}
 }
 
-signed
-main() {
+signed main() {
 	memory_init();
 
 	TOGO_LOGF("sizeof(HashMap<hash32, u32>) = %zu\n", sizeof(HashMap<hash32, u32>));

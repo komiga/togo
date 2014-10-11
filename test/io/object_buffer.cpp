@@ -76,8 +76,7 @@ void test_object_buffer(Allocator& allocator, u32 const init_capacity) {
 	TOGO_ASSERTE(object_buffer::size(ob) == 0 && object_buffer::empty(ob));
 }
 
-signed
-main() {
+signed main() {
 	memory_init();
 
 	test_object_buffer<u8, u8>(memory::default_allocator(), 0);

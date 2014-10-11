@@ -64,8 +64,7 @@ void* queen_func(void*) {
 	return nullptr;
 }
 
-signed
-main() {
+signed main() {
 	memory_init();
 
 	Thread* queen = thread::create("queen", nullptr, queen_func);

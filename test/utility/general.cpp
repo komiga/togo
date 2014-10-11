@@ -20,8 +20,7 @@ struct NotEmpty {
 	u8 x;
 };
 
-signed
-main() {
+signed main() {
 	E1 e = E1::A & E1::A;
 	TOGO_ASSERTE(e == E1::A);
 	e |= E1::B;

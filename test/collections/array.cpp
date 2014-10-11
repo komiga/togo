@@ -15,8 +15,7 @@ using namespace togo;
 	TOGO_ASSERTE(array::any(a) == (_size > 0))
 //
 
-signed
-main() {
+signed main() {
 	memory_init();
 
 	TOGO_LOGF("sizeof(Array<u32>) = %zu\n", sizeof(Array<u32>));

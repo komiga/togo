@@ -11,8 +11,7 @@ using namespace togo;
 	TOGO_ASSERTE(fixed_array::any(a) == (_size > 0))
 //
 
-signed
-main() {
+signed main() {
 	TOGO_LOGF("sizeof(FixedArray<u32, 10>) = %zu\n", sizeof(FixedArray<u32, 10>));
 	TOGO_LOGF("alignof(FixedArray<u32, 10>) = %zu\n", alignof(FixedArray<u32, 10>));
 

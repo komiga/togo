@@ -11,8 +11,7 @@
 
 using namespace togo;
 
-signed
-main() {
+signed main() {
 	memory_init();
 
 	TOGO_LOGF("sizeof(KVS) = %u\n", static_cast<unsigned>(sizeof(KVS)));

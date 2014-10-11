@@ -119,8 +119,7 @@ void test_str(KVS& root, StringRef const& data, bool const expected = true) {
 	TOGO_ASSERTE(success == expected);
 }
 
-signed
-main() {
+signed main() {
 	memory_init();
 
 	{

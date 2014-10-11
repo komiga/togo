@@ -94,8 +94,7 @@ void test(
 	}
 }
 
-signed
-main() {
+signed main() {
 	memory_init();
 
 	ResourceManager rm{memory::default_allocator()};

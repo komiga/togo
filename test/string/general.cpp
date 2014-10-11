@@ -8,8 +8,7 @@
 
 using namespace togo;
 
-signed
-main() {
+signed main() {
 	{
 		FixedArray<char, 3> fa;
 		fixed_array::resize(fa, 3);

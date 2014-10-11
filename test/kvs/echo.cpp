@@ -47,8 +47,7 @@ void echo(KVS& root, StringRef const& path) {
 	stream.close();
 }
 
-signed
-main(signed argc, char* argv[]) {
+signed main(signed argc, char* argv[]) {
 	memory_init();
 	KVS root;
 	for (signed i = 1; i < argc; ++i) {

@@ -105,8 +105,7 @@ void test_rng(u64 const seed) {
 	test_sdist<N, long double>(s);
 }
 
-signed
-main() {
+signed main() {
 	memory_init();
 
 	TOGO_LOGF("unsigned range: [0x%lX, 0x%lX]  [%lu, %lu]\n", RNG_MIN  , RNG_MAX  , RNG_MIN  , RNG_MAX);

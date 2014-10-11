@@ -4,8 +4,7 @@
 
 using namespace togo;
 
-signed
-main() {
+signed main() {
 	Mutex m1{};
 	mutex::lock(m1);
 	TOGO_ASSERTE(!mutex::try_lock(m1));

@@ -37,8 +37,7 @@ void AppModel<TestAppData>::render(App<TestAppData>& /*app*/) {
 	//TOGO_LOG("render()\n");
 }
 
-signed
-main(signed argc, char const* argv[]) {
+signed main(signed argc, char* argv[]) {
 	memory_init();
 
 	App<TestAppData> app{

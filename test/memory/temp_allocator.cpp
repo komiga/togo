@@ -31,8 +31,7 @@ void f() {
 	}
 }
 
-signed
-main() {
+signed main() {
 	memory_init();
 	f();
 	return 0;

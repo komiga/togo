@@ -54,8 +54,7 @@ void test_path(
 	TOGO_ASSERTE(valid == expect_valid);
 }
 
-signed
-main() {
+signed main() {
 	ResourcePathParts pp;
 
 	test_path(pp, "", false, "", "", {});

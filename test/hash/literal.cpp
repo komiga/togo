@@ -13,8 +13,7 @@ static constexpr hash64 const
 h64_identity = ""_hash64,
 h64_test = "test"_hash64;
 
-signed
-main() {
+signed main() {
 	TOGO_ASSERTE(hash::IDENTITY32 == h32_identity);
 	TOGO_ASSERTE(hash::calc32("test", 4) == h32_test);
 	TOGO_LOGF(

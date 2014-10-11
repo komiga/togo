@@ -310,8 +310,7 @@ void test_growth(
 	);
 }
 
-signed
-main() {
+signed main() {
 	memory_init();
 
 	TOGO_LOG("time is in milliseconds\n");

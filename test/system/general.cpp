@@ -5,8 +5,7 @@
 
 using namespace togo;
 
-signed
-main() {
+signed main() {
 	TOGO_LOGF("num_cores = %u\n", system::num_cores());
 	TOGO_LOG("Sleeping for 5 seconds\n");
 	TOGO_LOGF("exec_dir: %s\n", system::exec_dir());

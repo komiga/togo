@@ -11,8 +11,7 @@
 
 using namespace togo;
 
-signed
-main() {
+signed main() {
 	memory_init();
 	gfx::init(3, 3);
 

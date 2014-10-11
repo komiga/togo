@@ -16,8 +16,7 @@ void* thread_func(void* i_void) {
 	return &static_rv_check;
 }
 
-signed
-main() {
+signed main() {
 	memory_init();
 
 	TOGO_LOGF("main thread: '%s'\n", thread::name());

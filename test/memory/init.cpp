@@ -3,8 +3,7 @@
 
 using namespace togo;
 
-signed
-main() {
+signed main() {
 	memory::init();
 	memory::shutdown();
 	return 0;

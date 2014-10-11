@@ -34,7 +34,6 @@
 #include <togo/types.hpp>
 #include <togo/utility.hpp>
 
-signed
-main() {
+signed main() {
 	return 0;
 }

@@ -17,8 +17,7 @@ using namespace togo;
 	TOGO_ASSERTE(priority_queue::any(a) == (_size > 0))
 //
 
-signed
-main() {
+signed main() {
 	memory_init();
 
 	TOGO_LOGF("sizeof(PriorityQueue<u32>) = %zu\n", sizeof(PriorityQueue<u32>));

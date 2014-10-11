@@ -34,8 +34,7 @@ TaskWork task_work_num(WorkNum& wnum) {
 	return {&wnum, task_func};
 }
 
-signed
-main() {
+signed main() {
 	WorkNum wnum_list[]{
 		{10}, {9}, {8}, {7}, {6},
 		{ 5}, {4}, {3}, {2}, {1}

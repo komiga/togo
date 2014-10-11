@@ -6,8 +6,7 @@
 
 using namespace togo;
 
-signed
-main() {
+signed main() {
 	static constexpr StringRef const path{"data/file_stream.bin"};
 	{
 		FileWriter writer;
