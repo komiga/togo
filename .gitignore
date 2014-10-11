@@ -1,7 +1,7 @@
 
 togo.sublime-workspace
 
-togo.make
+*.make
 Makefile
 out/
 lib/
