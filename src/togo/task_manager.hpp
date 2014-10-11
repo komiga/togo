@@ -18,10 +18,6 @@ namespace togo {
 namespace task_manager {
 
 /**
-	@addtogroup threading
-	@{
-*/
-/**
 	@addtogroup task_manager
 	@{
 */
@@ -59,7 +55,6 @@ void end_hold(TaskManager& tm, TaskID const id);
 void wait(TaskManager& tm, TaskID const id);
 
 /** @} */ // end of doc-group task_manager
-/** @} */ // end of doc-group threading
 
 } // namespace task_manager
 } // namespace togo

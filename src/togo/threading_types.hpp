@@ -30,11 +30,6 @@
 namespace togo {
 
 /**
-	@addtogroup threading
-	@{
-*/
-
-/**
 	@addtogroup thread
 	@{
 */
@@ -193,6 +188,5 @@ struct TaskManager {
 };
 
 /** @} */ // end of doc-group task_manager
-/** @} */ // end of doc-group threading
 
 } // namespace togo

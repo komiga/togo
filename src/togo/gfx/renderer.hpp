@@ -20,10 +20,6 @@ namespace gfx {
 namespace renderer {
 
 /**
-	@addtogroup gfx
-	@{
-*/
-/**
 	@addtogroup gfx_renderer
 	@{
 */
@@ -72,7 +68,6 @@ void destroy_index_buffer(
 );
 
 /** @} */ // end of doc-group gfx_renderer
-/** @} */ // end of doc-group gfx
 
 } // namespace renderer
 } // namespace gfx

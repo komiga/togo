@@ -19,10 +19,6 @@
 namespace togo {
 
 /**
-	@addtogroup io
-	@{
-*/
-/**
 	@addtogroup object_buffer
 	@{
 */
@@ -54,6 +50,5 @@ struct ObjectBuffer {
 };
 
 /** @} */ // end of doc-group object_buffer
-/** @} */ // end of doc-group io
 
 } // namespace togo

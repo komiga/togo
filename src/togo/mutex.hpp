@@ -15,11 +15,6 @@
 
 namespace togo {
 
-/**
-	@addtogroup threading
-	@{
-*/
-
 namespace mutex {
 
 /**
@@ -77,7 +72,5 @@ inline MutexLock::MutexLock(Mutex& m)
 {
 	mutex::lock(_mutex);
 }
-
-/** @} */ // end of doc-group threading
 
 } // namespace togo

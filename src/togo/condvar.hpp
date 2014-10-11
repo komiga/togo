@@ -15,11 +15,6 @@
 
 namespace togo {
 
-/**
-	@addtogroup threading
-	@{
-*/
-
 namespace condvar {
 
 /**
@@ -74,7 +69,5 @@ inline void wait(CondVar& cv, MutexLock& l) {
 inline CondVar::CondVar()
 	: _impl(*this)
 {}
-
-/** @} */ // end of doc-group threading
 
 } // namespace togo

@@ -20,10 +20,6 @@ namespace gfx {
 namespace display {
 
 /**
-	@addtogroup gfx
-	@{
-*/
-/**
 	@addtogroup gfx_display
 	@{
 */
@@ -78,7 +74,6 @@ void swap_buffers(gfx::Display* display);
 void destroy(gfx::Display* display);
 
 /** @} */ // end of doc-group gfx_display
-/** @} */ // end of doc-group gfx
 
 } // namespace display
 } // namespace gfx

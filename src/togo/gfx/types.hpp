@@ -21,11 +21,6 @@ namespace togo {
 namespace gfx {
 
 /**
-	@addtogroup gfx
-	@{
-*/
-
-/**
 	@addtogroup gfx_display
 	@{
 */
@@ -217,8 +212,6 @@ using UniformID = ResourceID<Uniform>;
 using ShaderID = ResourceID<Shader>;
 
 /** @} */ // end of doc-group gfx_renderer
-
-/** @} */ // end of doc-group gfx
 
 } // namespace gfx
 

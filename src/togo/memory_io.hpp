@@ -21,10 +21,6 @@
 namespace togo {
 
 /**
-	@addtogroup io
-	@{
-*/
-/**
 	@addtogroup memory_io
 	@{
 */
@@ -125,6 +121,5 @@ private:
 };
 
 /** @} */ // end of doc-group memory_io
-/** @} */ // end of doc-group io
 
 } // namespace togo

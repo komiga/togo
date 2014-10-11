@@ -18,10 +18,6 @@ namespace togo {
 namespace thread {
 
 /**
-	@addtogroup threading
-	@{
-*/
-/**
 	@addtogroup thread
 	@{
 */
@@ -63,7 +59,6 @@ char const* name(Thread* t);
 void* join(Thread* t);
 
 /** @} */ // end of doc-group thread
-/** @} */ // end of doc-group threading
 
 } // namespace thread
 } // namespace togo
