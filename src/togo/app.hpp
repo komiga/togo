@@ -20,7 +20,7 @@ namespace togo {
 template<class Data>
 inline App<Data>::App(
 	unsigned num_args,
-	char const* args[],
+	char const* const args[],
 	float update_freq,
 	Data&& data
 )

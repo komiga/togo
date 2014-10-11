@@ -47,7 +47,7 @@ struct AppBase {
 	render_func_type _func_render;
 
 	unsigned _num_args;
-	char const** _args;
+	char const* const* _args;
 
 	TaskManager _task_manager;
 	gfx::Display* _display;
@@ -70,7 +70,7 @@ struct AppBase {
 		update_func_type func_update,
 		render_func_type func_render,
 		unsigned num_args,
-		char const* args[],
+		char const* const args[],
 		float update_freq
 	);
 };
@@ -92,7 +92,7 @@ struct App
 
 	App(
 		unsigned num_args,
-		char const* args[],
+		char const* const args[],
 		float update_freq,
 		Data&& data
 	);

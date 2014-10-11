@@ -23,7 +23,7 @@ AppBase::AppBase(
 	update_func_type func_update,
 	render_func_type func_render,
 	unsigned num_args,
-	char const* args[],
+	char const* const args[],
 	float update_freq
 )
 	: _func_init(func_init)
