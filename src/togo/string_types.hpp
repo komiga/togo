@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file string_types.hpp
+@file
 @brief String types.
 @ingroup types
 @ingroup string

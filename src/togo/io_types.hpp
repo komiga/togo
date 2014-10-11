@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file io_types.hpp
+@file
 @brief IO types.
 @ingroup types
 @ingroup io

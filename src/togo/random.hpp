@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file random.hpp
+@file
 @brief Random interface.
 @ingroup random
 */

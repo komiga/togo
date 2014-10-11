@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file array.hpp
+@file
 @brief Array interface.
 @ingroup collections
 @ingroup array

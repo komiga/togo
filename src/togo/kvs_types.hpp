@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file kvs_types.hpp
+@file
 @brief KVS types.
 @ingroup types
 @ingroup kvs

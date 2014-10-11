@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file io_proto.hpp
+@file
 @brief IO interface classes.
 @ingroup io
 */

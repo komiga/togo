@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file temp_allocator.hpp
+@file
 @brief TempAllocator class.
 @ingroup memory
 */

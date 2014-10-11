@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file tags.hpp
+@file
 @brief Variation/placeholder tags.
 @ingroup utility
 */

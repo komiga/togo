@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file resource.hpp
+@file
 @brief Resource interface.
 @ingroup resource
 */

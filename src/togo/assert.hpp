@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file assert.hpp
+@file
 @brief Assertion macros and debugging.
 @ingroup debug
 */

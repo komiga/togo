@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file fixed_array.hpp
+@file
 @brief FixedArray interface.
 @ingroup collections
 @ingroup fixed_array

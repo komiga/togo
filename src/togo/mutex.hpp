@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file mutex.hpp
+@file
 @brief Mutex interface.
 @ingroup threading
 @ingroup mutex

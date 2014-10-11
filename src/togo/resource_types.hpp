@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file resource_types.hpp
+@file
 @brief Resource types.
 @ingroup types
 @ingroup resource

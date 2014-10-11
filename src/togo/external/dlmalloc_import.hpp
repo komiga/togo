@@ -1,7 +1,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file external/dlmalloc_import.hpp
+@file
 @brief dlmalloc configuration and import.
 */
 

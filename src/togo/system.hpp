@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file system.hpp
+@file
 @brief OS interface.
 @ingroup system
 */

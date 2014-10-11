@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file input_types.hpp
+@file
 @brief Input types.
 @ingroup types
 @ingroup input

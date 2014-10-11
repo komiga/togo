@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file types.hpp
+@file
 @brief Core types.
 @ingroup types
 */

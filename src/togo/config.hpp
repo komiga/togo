@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file config.hpp
+@file
 @brief Core configuration.
 @ingroup config
 */

@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file debug_constraints.hpp
+@file
 @brief Definitions for constraints.
 */
 

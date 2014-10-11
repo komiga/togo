@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file memory_types.hpp
+@file
 @brief Memory types.
 @ingroup types
 @ingroup memory

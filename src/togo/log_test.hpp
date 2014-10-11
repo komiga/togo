@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file log_test.hpp
+@file
 @brief Test logging.
 @ingroup log
 */

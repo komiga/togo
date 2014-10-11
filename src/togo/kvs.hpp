@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file kvs.hpp
+@file
 @brief KVS interface.
 @ingroup kvs
 */

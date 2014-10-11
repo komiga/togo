@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file string.hpp
+@file
 @brief String interface.
 @ingroup string
 */

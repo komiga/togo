@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file object_buffer.hpp
+@file
 @brief Object buffer interface.
 @ingroup object_buffer
 */

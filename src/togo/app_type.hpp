@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file app_type.hpp
+@file
 @brief Application type.
 @ingroup types
 @ingroup app

@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file traits.hpp
+@file
 @brief Type traits.
 @ingroup utility
 */

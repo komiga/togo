@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file condvar.hpp
+@file
 @brief CondVar interface.
 @ingroup threading
 @ingroup condvar

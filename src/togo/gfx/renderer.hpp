@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file gfx/renderer.hpp
+@file
 @brief Renderer interface.
 @ingroup gfx
 @ingroup gfx_renderer

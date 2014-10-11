@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file hash.hpp
+@file
 @brief Hashing utilities.
 @ingroup hash
 */

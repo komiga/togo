@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file app.hpp
+@file
 @brief Application interface.
 @ingroup app
 */

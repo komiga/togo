@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file hash_map.hpp
+@file
 @brief HashMap interface.
 @ingroup collections
 @ingroup hash_map

@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file math_types.hpp
+@file
 @brief Math types.
 @ingroup types
 @ingroup math

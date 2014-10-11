@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file memory_io.hpp
+@file
 @brief Memory IO.
 @ingroup io
 @ingroup memory_io

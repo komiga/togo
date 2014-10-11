@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file queue.hpp
+@file
 @brief Queue interface.
 @ingroup collections
 @ingroup queue

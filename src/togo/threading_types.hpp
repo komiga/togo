@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file threading_types.hpp
+@file
 @brief Threading types.
 @ingroup types
 @ingroup threading

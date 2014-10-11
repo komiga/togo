@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file random_types.hpp
+@file
 @brief Random types.
 @ingroup types
 @ingroup random

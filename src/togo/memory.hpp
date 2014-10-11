@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file memory.hpp
+@file
 @brief Memory interface.
 @ingroup memory
 */

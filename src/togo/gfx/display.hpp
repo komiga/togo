@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file gfx/display.hpp
+@file
 @brief Graphics display interface.
 @ingroup gfx
 @ingroup gfx_display

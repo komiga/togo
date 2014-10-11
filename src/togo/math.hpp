@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file math.hpp
+@file
 @brief Math interface.
 @ingroup math
 */

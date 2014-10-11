@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file gfx/types.hpp
+@file
 @brief Graphics types.
 @ingroup types
 @ingroup gfx

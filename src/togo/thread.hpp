@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file thread.hpp
+@file
 @brief Thread interface.
 @ingroup threading
 @ingroup thread

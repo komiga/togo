@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file jump_block_allocator.hpp
+@file
 @brief JumpBlockAllocator class.
 @ingroup memory
 */

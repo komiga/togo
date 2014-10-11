@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file priority_queue.hpp
+@file
 @brief PriorityQueue interface.
 @ingroup collections
 @ingroup priority_queue

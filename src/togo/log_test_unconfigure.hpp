@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file log_test_unconfigure.hpp
+@file
 @brief Undefine all test logging macros.
 @ingroup log
 */

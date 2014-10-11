@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file collection_types.hpp
+@file
 @brief Collection types.
 @ingroup types
 @ingroup collections

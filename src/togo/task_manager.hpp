@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file task_manager.hpp
+@file
 @brief TaskManager interface.
 @ingroup threading
 @ingroup task_manager

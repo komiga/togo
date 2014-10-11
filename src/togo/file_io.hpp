@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file file_io.hpp
+@file
 @brief File IO.
 @ingroup io
 @ingroup file_io

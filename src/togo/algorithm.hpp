@@ -2,7 +2,7 @@
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
-@file algorithm.hpp
+@file
 @brief Algorithms.
 @ingroup algorithm
 */
