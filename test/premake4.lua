@@ -9,7 +9,6 @@ function make_test(group, name, srcglob, configs)
 		nil, configs
 	)
 	precore.apply("togo-strict")
-	precore.apply("threading-support")
 
 	if nil == srcglob then
 		srcglob = name .. ".cpp"
@@ -30,16 +29,6 @@ function make_tests(group, tests)
 		make_test(group, name, test[1], test[2])
 	end
 end
-
-precore.make_config(
-"threading-support", {{
-project = function()
-	configuration {"linux"}
-		buildoptions {
-			"-pthread"
-		}
-		links {"pthread"}
-end}})
 
 -- Test solution
 

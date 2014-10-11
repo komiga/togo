@@ -101,6 +101,14 @@ end}})
 precore.make_config(
 "togo-deps-link", {{
 project = function()
+	configuration {"linux"}
+		buildoptions {
+			"-pthread",
+		}
+		links {
+			"pthread",
+		}
+
 	configuration {"opengl"}
 		libdirs {
 			precore.subst("${ROOT}/dep/glew/lib/"),
