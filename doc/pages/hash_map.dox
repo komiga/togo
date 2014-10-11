@@ -1,7 +1,7 @@
 
 /**
 
-@addtogroup collections
+@ingroup collections
 @defgroup hash_map HashMap
 @details
 

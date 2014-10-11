@@ -1,7 +1,7 @@
 
 /**
 
-@addtogroup threading
+@ingroup threading
 @defgroup thread Thread
 @details
 

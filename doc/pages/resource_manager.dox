@@ -1,7 +1,7 @@
 
 /**
 
-@addtogroup resource
+@ingroup resource
 @defgroup resource_manager ResourceManager
 @details
 

@@ -1,7 +1,7 @@
 
 /**
 
-@addtogroup threading
+@ingroup threading
 @defgroup mutex Mutex
 @details
 

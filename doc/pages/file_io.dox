@@ -1,7 +1,7 @@
 
 /**
 
-@addtogroup io
+@ingroup io
 @defgroup file_io File IO
 @details
 

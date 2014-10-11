@@ -1,7 +1,7 @@
 
 /**
 
-@addtogroup io
+@ingroup io
 @defgroup memory_io Memory IO
 @details
 

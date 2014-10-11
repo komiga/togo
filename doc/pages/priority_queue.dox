@@ -1,7 +1,7 @@
 
 /**
 
-@addtogroup collections
+@ingroup collections
 @defgroup priority_queue PriorityQueue
 @details
 

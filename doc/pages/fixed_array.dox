@@ -1,7 +1,7 @@
 
 /**
 
-@addtogroup collections
+@ingroup collections
 @defgroup fixed_array FixedArray
 @details
 

@@ -1,7 +1,7 @@
 
 /**
 
-@addtogroup gfx
+@ingroup gfx
 @defgroup gfx_renderer Renderer
 @details
 
