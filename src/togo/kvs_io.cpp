@@ -815,10 +815,11 @@ static constexpr char const TABS[]{
 
 static bool write_tabs(IWriter& stream, unsigned tabs) {
 	while (tabs > 0) {
-		if (!io::write(stream, TABS, tabs)) {
+		unsigned const amount = min(tabs, array_extent(TABS));
+		if (!io::write(stream, TABS, amount)) {
 			return false;
 		}
-		tabs -= min(tabs, array_extent(TABS));
+		tabs -= amount;
 	}
 	return true;
 }
