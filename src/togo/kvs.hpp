@@ -396,6 +396,39 @@ inline KVS& back(KVS const& kvs) {
 	return kvs._value.collection.data[kvs._value.collection.size - 1];
 }
 
+/// Add an item to the end.
+inline KVS& push_back(KVS& kvs, KVS const& item) {
+	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
+	kvs::resize(kvs, kvs._value.collection.size + 1);
+	KVS& back = kvs::back(kvs);
+	kvs::copy(back, item);
+	return back;
+}
+
+/// Add an item to the end (rvalue reference).
+inline KVS& push_back(KVS& kvs, KVS&& item) {
+	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
+	kvs::resize(kvs, kvs._value.collection.size + 1);
+	KVS& back = kvs::back(kvs);
+	kvs::move(back, item);
+	return back;
+}
+
+/// Remove the last item.
+inline void pop_back(KVS& kvs) {
+	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
+	TOGO_ASSERTE(kvs::any(kvs));
+	kvs::resize(kvs, kvs._value.collection.size - 1);
+}
+
+/// Remove an item by index.
+void remove(KVS& kvs, unsigned const i);
+
+/// Remove an item by address.
+///
+/// If ptr is nullptr, an assertion will fail.
+void remove(KVS& kvs, KVS const* const ptr);
+
 /// Read from stream.
 ///
 /// Returns false if a parser error occurred. pinfo will have the

@@ -11,9 +11,9 @@
 #include <togo/log.hpp>
 #include <togo/kvs.hpp>
 
-#include <utility>
-
 #include <cstring>
+
+#include <utility>
 
 namespace togo {
 
@@ -296,6 +296,29 @@ void kvs::resize(KVS& kvs, u32 const new_size) {
 		kvs::reset_children(kvs, kvs._value.collection.size, new_size);
 	}
 	kvs._value.collection.size = new_size;
+}
+
+void kvs::remove(KVS& kvs, unsigned const i) {
+	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
+	TOGO_ASSERTE(kvs::any(kvs));
+	TOGO_ASSERTE(i < kvs._value.collection.size);
+	u32 const new_size = kvs._value.collection.size - 1;
+	if (i < new_size) {
+		kvs._value.collection.data[i].~KVS();
+		std::memmove(
+			kvs._value.collection.data + i, kvs._value.collection.data + i + 1,
+			(new_size - i) * sizeof(KVS)
+		);
+	}
+	kvs::resize(kvs, new_size);
+}
+
+void kvs::remove(KVS& kvs, KVS const* const ptr) {
+	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
+	TOGO_ASSERTE(ptr != nullptr);
+	TOGO_ASSERTE(kvs::any(kvs));
+	TOGO_ASSERTE(kvs::begin(kvs) <= ptr && ptr < kvs::end(kvs));
+	kvs::remove(kvs, (ptr - kvs._value.collection.data) / sizeof(KVS));
 }
 
 } // namespace togo
