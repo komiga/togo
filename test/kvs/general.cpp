@@ -130,14 +130,24 @@ signed main() {
 		TOGO_ASSERTE(kvs::space(c) == 0);
 		TOGO_ASSERTE(!kvs::any(c));
 		TOGO_ASSERTE(kvs::empty(c));
-		kvs::resize(c, 3);
-		KVS& item0 = c[0];
-		KVS& item2 = c[2];
-		kvs::set_name(item0, "item0");
-		kvs::set_name(item2, "item2");
-		TOGO_ASSERTE(kvs::find(c, "item0") == &item0);
-		TOGO_ASSERTE(kvs::find(c, "item1") == nullptr);
-		TOGO_ASSERTE(kvs::find(c, "item2") == &item2);
+
+		{
+			kvs::resize(c, 2);
+			KVS& item0 = c[0];
+			kvs::set_name(item0, "item0");
+			KVS& item2 = kvs::push_back(c, {"item2", null_tag{}});
+			TOGO_ASSERTE(kvs::size(c) == 3);
+			TOGO_ASSERTE(kvs::find(c, "item0") == &item0);
+			TOGO_ASSERTE(kvs::find(c, "item1") == nullptr);
+			TOGO_ASSERTE(kvs::find(c, "item2") == &item2);
+		}
+
+		kvs::pop_back(c);
+		TOGO_ASSERTE(kvs::size(c) == 2);
+		kvs::remove(c, unsigned{0});
+		TOGO_ASSERTE(kvs::size(c) == 1);
+		kvs::pop_back(c);
+		TOGO_ASSERTE(kvs::empty(c));
 	}
 
 	{
