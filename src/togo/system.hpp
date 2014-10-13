@@ -11,6 +11,7 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/string_types.hpp>
 
 namespace togo {
 namespace system {
@@ -35,8 +36,8 @@ float time_monotonic();
 /// Get the system time in seconds since the POSIX epoch.
 u64 secs_since_epoch();
 
-/// Get the directory of the current process's executable.
-char const* exec_dir();
+/// Get the path to the directory of the current process's executable.
+StringRef exec_dir();
 
 /** @} */ // end of doc-group system
 

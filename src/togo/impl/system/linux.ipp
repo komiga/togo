@@ -6,6 +6,7 @@
 #include <togo/config.hpp>
 #include <togo/assert.hpp>
 #include <togo/utility.hpp>
+#include <togo/string.hpp>
 #include <togo/log.hpp>
 #include <togo/system.hpp>
 
@@ -34,7 +35,10 @@ void system::sleep_ms(unsigned duration_ms) {
 		err = nanosleep(&duration, &remaining);
 	} while (err != 0 && errno == EINTR);
 	if (err != 0 && errno != 0) {
-		TOGO_LOG_DEBUGF("sleep_ms: errno = %d, %s\n", errno, std::strerror(errno));
+		TOGO_LOG_DEBUGF(
+			"sleep_ms: errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
 	}
 }
 
@@ -50,16 +54,20 @@ float system::time_monotonic() {
 	return static_cast<float>(ts.tv_sec) + static_cast<float>(ts.tv_nsec) / 1e9;
 }
 
-char const* system::exec_dir() {
+StringRef system::exec_dir() {
+	static unsigned exec_dir_str_size{0};
 	static char exec_dir_str[PATH_MAX]{'\0'};
-	if (exec_dir_str[0] == '\0') {
+	if (exec_dir_str_size == 0) {
 		ssize_t size = ::readlink(
 			"/proc/self/exe",
 			exec_dir_str,
 			array_extent(exec_dir_str) - 1
 		);
 		if (size == -1) {
-			TOGO_LOG_DEBUGF("exec_dir: errno = %d, %s\n", errno, std::strerror(errno));
+			TOGO_LOG_DEBUGF(
+				"exec_dir: errno = %d, %s\n",
+				errno, std::strerror(errno)
+			);
 		} else {
 			for (ssize_t i = size - 1; i >= 0; --i) {
 				if (exec_dir_str[i] == '/') {
@@ -67,10 +75,11 @@ char const* system::exec_dir() {
 					break;
 				}
 			}
-			exec_dir_str[max(ssize_t{1}, size)] = '\0';
+			exec_dir_str_size = max(1u, static_cast<unsigned>(size));
+			exec_dir_str[exec_dir_str_size] = '\0';
 		}
 	}
-	return exec_dir_str;
+	return {exec_dir_str, exec_dir_str_size};
 }
 
 } // namespace togo
