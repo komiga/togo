@@ -11,6 +11,7 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/fixed_array.hpp>
 #include <togo/string_types.hpp>
 
 namespace togo {
@@ -38,6 +39,31 @@ u64 secs_since_epoch();
 
 /// Get the path to the directory of the current process's executable.
 StringRef exec_dir();
+
+/// Get the path to the working directory.
+///
+/// str will be NUL-terminated.
+/// Returns the size of str, or 0 if an error occurred.
+unsigned working_dir(char* str, unsigned capacity);
+
+/// Get the path to the working directory.
+template<unsigned N>
+inline unsigned working_dir(char (&str)[N]) {
+	return working_dir(str, N);
+}
+
+/// Get the path to the working directory.
+template<unsigned N>
+inline unsigned working_dir(FixedArray<char, N>& str) {
+	unsigned const size = working_dir(str._data, N);
+	fixed_array::resize(str, size);
+	return size;
+}
+
+/// Change the working directory.
+///
+/// path must be NUL-terminated.
+bool change_working_dir(StringRef const& path);
 
 /** @} */ // end of doc-group system
 

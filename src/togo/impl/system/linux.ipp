@@ -82,4 +82,28 @@ StringRef system::exec_dir() {
 	return {exec_dir_str, exec_dir_str_size};
 }
 
+unsigned system::working_dir(char* str, unsigned capacity) {
+	TOGO_ASSERTE(str);
+	if (::getcwd(str, capacity) == nullptr) {
+		TOGO_LOG_DEBUGF(
+			"working_dir: errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+		return 0;
+	}
+	return string::size(str);
+}
+
+bool system::change_working_dir(StringRef const& path) {
+	signed const err = ::chdir(path.data);
+	if (err != 0) {
+		TOGO_LOG_DEBUGF(
+			"change_working_dir: errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+		return false;
+	}
+	return true;
+}
+
 } // namespace togo
