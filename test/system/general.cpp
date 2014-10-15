@@ -37,12 +37,14 @@ signed main() {
 	TOGO_LOGF("wd_init: '%.*s'\n", string::size(wd_init), fixed_array::begin(wd_init));
 	TOGO_ASSERTE(wd_init_size > 0 && wd_init_size == fixed_array::size(wd_init));
 
-	system::set_working_dir("/");
+	TOGO_ASSERTE(system::set_working_dir("/"));
 	FixedArray<char, 256> wd_root{};
 	unsigned const wd_root_size = system::working_dir(wd_root);
 	TOGO_LOGF("wd_root: '%.*s'\n", string::size(wd_root), fixed_array::begin(wd_root));
 	TOGO_ASSERTE(wd_root_size > 0 && wd_root_size == fixed_array::size(wd_root));
 	TOGO_ASSERTE(string::compare_equal(wd_root, "/"));
+
+	TOGO_ASSERTE(system::set_working_dir(exec_dir));
 
 	TOGO_LOG("\n");
 	float const start = system::time_monotonic();
