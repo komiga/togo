@@ -13,6 +13,7 @@
 #include <cerrno>
 #include <cstring>
 
+#include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
 
@@ -52,6 +53,37 @@ float system::time_monotonic() {
 		std::strerror(errno)
 	);
 	return static_cast<float>(ts.tv_sec) + static_cast<float>(ts.tv_nsec) / 1e9;
+}
+
+StringRef system::environment_variable(StringRef const& name) {
+	char const* const value = ::getenv(name.data);
+	return {value, cstr_tag{}};
+}
+
+bool system::set_environment_variable(
+	StringRef const& name,
+	StringRef const& value
+) {
+	signed const err = ::setenv(name.data, value.data, 1/*true*/);
+	if (err == -1) {
+		TOGO_LOG_DEBUGF(
+			"set_environment_variable: errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+	}
+	return err == 0;
+}
+
+bool system::remove_environment_variable(StringRef const& name) {
+	// NB: unsetenv() succeeds even if the variable does not exist
+	signed const err = ::unsetenv(name.data);
+	if (err == -1) {
+		TOGO_LOG_DEBUGF(
+			"remove_environment_variable: errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+	}
+	return err == 0;
 }
 
 StringRef system::exec_dir() {
