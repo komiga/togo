@@ -13,6 +13,25 @@ signed main() {
 	TOGO_LOGF("exec_dir: %.*s\n", exec_dir.size, exec_dir.data);
 	TOGO_ASSERTE(system::secs_since_epoch() > 1407135980u);
 
+	StringRef const env_path = system::environment_variable("PATH");
+	TOGO_LOGF("PATH = '%.*s'\n", env_path.size, env_path.data);
+
+	StringRef const env_test_name = "__TOGO_TEST";
+
+	// Base state of unassigned variable
+	StringRef env_test_value = system::environment_variable(env_test_name);
+	TOGO_ASSERTE(!env_test_value.valid());
+
+	// Assignment
+	TOGO_ASSERTE(system::set_environment_variable(env_test_name, "test"));
+	env_test_value = system::environment_variable(env_test_name);
+	TOGO_ASSERTE(string::compare_equal(env_test_value, "test"));
+
+	// Removal (return to unassigned state)
+	TOGO_ASSERTE(system::remove_environment_variable(env_test_name));
+	env_test_value = system::environment_variable(env_test_name);
+	TOGO_ASSERTE(!env_test_value.valid());
+
 	FixedArray<char, 256> wd_init{};
 	unsigned const wd_init_size = system::working_dir(wd_init);
 	TOGO_LOGF("wd_init: '%.*s'\n", string::size(wd_init), fixed_array::begin(wd_init));
