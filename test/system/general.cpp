@@ -10,7 +10,7 @@ using namespace togo;
 signed main() {
 	TOGO_LOGF("num_cores = %u\n", system::num_cores());
 	StringRef exec_dir = system::exec_dir();
-	TOGO_LOGF("exec_dir: %.*s\n", exec_dir.size, exec_dir.data);
+	TOGO_LOGF("exec_dir: '%.*s'\n", exec_dir.size, exec_dir.data);
 	TOGO_ASSERTE(system::secs_since_epoch() > 1407135980u);
 
 	StringRef const env_path = system::environment_variable("PATH");
