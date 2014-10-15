@@ -94,11 +94,11 @@ unsigned system::working_dir(char* str, unsigned capacity) {
 	return string::size(str);
 }
 
-bool system::change_working_dir(StringRef const& path) {
+bool system::set_working_dir(StringRef const& path) {
 	signed const err = ::chdir(path.data);
 	if (err != 0) {
 		TOGO_LOG_DEBUGF(
-			"change_working_dir: errno = %d, %s\n",
+			"set_working_dir: errno = %d, %s\n",
 			errno, std::strerror(errno)
 		);
 		return false;

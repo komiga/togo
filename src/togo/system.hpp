@@ -60,10 +60,10 @@ inline unsigned working_dir(FixedArray<char, N>& str) {
 	return size;
 }
 
-/// Change the working directory.
+/// Set the working directory.
 ///
 /// path must be NUL-terminated.
-bool change_working_dir(StringRef const& path);
+bool set_working_dir(StringRef const& path);
 
 /** @} */ // end of doc-group system
 
