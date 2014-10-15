@@ -6,7 +6,6 @@
 #include <togo/kvs.hpp>
 #include <togo/io.hpp>
 #include <togo/memory_io.hpp>
-#include <togo/file_io.hpp>
 
 #include "../common/helpers.hpp"
 
@@ -16,35 +15,21 @@
 using namespace togo;
 
 void echo(KVS& root, StringRef const& path) {
-	ParserInfo pinfo;
-	FileReader stream;
-	if (!stream.open(path)) {
-		TOGO_LOG_ERRORF("#### failed to open file: '%.*s'\n", path.size, path.data);
-		return;
-	}
 	TOGO_LOGF("#### reading file: '%.*s'\n", path.size, path.data);
-	if (kvs::read(root, stream, pinfo)) {
-		MemoryStream out_stream{
-			memory::default_allocator(),
-			static_cast<unsigned>(io::position(stream) + 128)
-		};
+	if (kvs::read_file(root, path)) {
+		MemoryStream out_stream{memory::default_allocator(), 2048};
 		TOGO_ASSERTE(kvs::write(root, out_stream));
+		unsigned const size = static_cast<unsigned>(
+			array::size(out_stream.buffer())
+		);
 		TOGO_LOGF(
 			"#### rewritten (%u): <%.*s>\n",
-			static_cast<unsigned>(array::size(out_stream.buffer())),
-			static_cast<unsigned>(array::size(out_stream.buffer())),
-			array::begin(out_stream.buffer())
+			size, size, array::begin(out_stream.buffer())
 		);
 	} else {
-		TOGO_LOG_ERRORF(
-			"#### failed to read: [%2u,%2u]: %s\n",
-			pinfo.line,
-			pinfo.column,
-			pinfo.message
-		);
+		TOGO_LOG_ERROR("#### failed to read file\n");
 	}
 	TOGO_LOG("\n");
-	stream.close();
 }
 
 signed main(signed argc, char* argv[]) {
