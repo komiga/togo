@@ -58,6 +58,31 @@ signed main() {
 	TOGO_ASSERTE( system::is_directory("."));
 	TOGO_ASSERTE( system::is_directory(".."));
 
+	#define TEST_DIR "test_dir"
+	#define TEST_FILE TEST_DIR "/test_file"
+
+	// Directory creation
+	TOGO_ASSERTE(!system::is_directory(TEST_DIR));
+	TOGO_ASSERTE(system::create_directory(TEST_DIR));
+	TOGO_ASSERTE(system::is_directory(TEST_DIR));
+	TOGO_ASSERTE(!system::create_directory(TEST_DIR));
+
+	// File creation
+	TOGO_ASSERTE(!system::is_file(TEST_FILE));
+	TOGO_ASSERTE(system::create_file(TEST_FILE));
+	TOGO_ASSERTE(system::is_file(TEST_FILE));
+	TOGO_ASSERTE(!system::create_file(TEST_FILE));
+
+	// File removal
+	TOGO_ASSERTE(system::remove_file(TEST_FILE));
+	TOGO_ASSERTE(!system::is_file(TEST_FILE));
+	TOGO_ASSERTE(!system::remove_file(TEST_FILE));
+
+	// Directory removal
+	TOGO_ASSERTE(system::remove_directory(TEST_DIR));
+	TOGO_ASSERTE(!system::is_directory(TEST_DIR));
+	TOGO_ASSERTE(!system::remove_directory(TEST_DIR));
+
 	TOGO_LOG("\n");
 	float const start = system::time_monotonic();
 	system::sleep_ms(1000u);
