@@ -435,11 +435,20 @@ void remove(KVS& kvs, KVS const* const ptr);
 /// position and error message of the parser.
 bool read(KVS& root, IReader& stream, ParserInfo& pinfo);
 
+/// Read from stream (sans parser info).
+bool read(KVS& root, IReader& stream);
+
+/// Read from file.
+bool read_file(KVS& root, StringRef const& path);
+
 /// Write to stream.
 ///
 /// Returns IO status of the stream (output is likely incomplete
 /// if !status).
 IOStatus write(KVS const& kvs, IWriter& stream);
+
+/// Write to file.
+bool write_file(KVS const& kvs, StringRef const& path);
 
 /** @} */ // end of doc-group kvs
 

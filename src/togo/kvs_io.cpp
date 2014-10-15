@@ -5,11 +5,13 @@
 
 #include <togo/config.hpp>
 #include <togo/assert.hpp>
+#include <togo/log.hpp>
 #include <togo/memory.hpp>
 #include <togo/temp_allocator.hpp>
 #include <togo/array.hpp>
 #include <togo/io_types.hpp>
 #include <togo/io.hpp>
+#include <togo/file_io.hpp>
 #include <togo/kvs.hpp>
 
 #include <cstdlib>
@@ -805,6 +807,43 @@ bool kvs::read(KVS& root, IReader& stream, ParserInfo& pinfo) {
 	return ~p.flags & PF_ERROR;
 }
 
+bool kvs::read(KVS& root, IReader& stream) {
+	ParserInfo pinfo;
+	if (!kvs::read(root, stream, pinfo)) {
+		TOGO_LOG_ERRORF(
+			"failed to read KVS: [%2u,%2u]: %s\n",
+			pinfo.line, pinfo.column, pinfo.message
+		);
+		return false;
+	}
+	return true;
+}
+
+bool kvs::read_file(KVS& root, StringRef const& path) {
+	FileReader stream{};
+	if (!stream.open(path)) {
+		TOGO_LOG_ERRORF(
+			"failed to read KVS from '%.*s': failed to open file\n",
+			path.size, path.data
+		);
+		return false;
+	}
+
+	ParserInfo pinfo;
+	bool const success = kvs::read(root, stream, pinfo);
+	if (!success) {
+		TOGO_LOG_ERRORF(
+			"failed to read KVS from '%.*s': [%2u,%2u]: %s\n",
+			path.size, path.data,
+			pinfo.line, pinfo.column, pinfo.message
+		);
+	}
+	stream.close();
+	return success;
+}
+
+// write
+
 namespace {
 
 static constexpr char const TABS[]{
@@ -969,6 +1008,21 @@ static bool kvs_write(
 IOStatus kvs::write(KVS const& kvs, IWriter& stream) {
 	kvs_write(kvs, stream, KVSType::node, 0, true);
 	return io::status(stream);
+}
+
+bool kvs::write_file(KVS const& kvs, StringRef const& path) {
+	FileWriter stream{};
+	if (!stream.open(path, false)) {
+		TOGO_LOG_ERRORF(
+			"failed to write KVS to '%.*s': failed to open file\n",
+			path.size, path.data
+		);
+		return false;
+	}
+
+	bool success = kvs::write(kvs, stream).ok();
+	stream.close();
+	return success;
 }
 
 } // namespace togo
