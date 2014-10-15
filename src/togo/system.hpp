@@ -87,6 +87,16 @@ inline unsigned working_dir(FixedArray<char, N>& str) {
 /// path must be NUL-terminated.
 bool set_working_dir(StringRef const& path);
 
+/// Check if a path is a file.
+///
+/// path must be NUL-terminated.
+bool is_file(StringRef const& path);
+
+/// Check if a path is a directory.
+///
+/// path must be NUL-terminated.
+bool is_directory(StringRef const& path);
+
 /** @} */ // end of doc-group system
 
 } // namespace system

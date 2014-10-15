@@ -17,6 +17,8 @@
 #include <unistd.h>
 #include <time.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <linux/limits.h>
 
 namespace togo {
@@ -65,7 +67,7 @@ bool system::set_environment_variable(
 	StringRef const& value
 ) {
 	signed const err = ::setenv(name.data, value.data, 1/*true*/);
-	if (err == -1) {
+	if (err != 0) {
 		TOGO_LOG_DEBUGF(
 			"set_environment_variable: errno = %d, %s\n",
 			errno, std::strerror(errno)
@@ -77,7 +79,7 @@ bool system::set_environment_variable(
 bool system::remove_environment_variable(StringRef const& name) {
 	// NB: unsetenv() succeeds even if the variable does not exist
 	signed const err = ::unsetenv(name.data);
-	if (err == -1) {
+	if (err != 0) {
 		TOGO_LOG_DEBUGF(
 			"remove_environment_variable: errno = %d, %s\n",
 			errno, std::strerror(errno)
@@ -136,6 +138,37 @@ bool system::set_working_dir(StringRef const& path) {
 		return false;
 	}
 	return true;
+}
+
+inline static bool stat_wrapper(
+	StringRef const& path,
+	struct ::stat& stat_buf
+) {
+	signed const err = ::stat(path.data, &stat_buf);
+	if (err != 0) {
+		TOGO_LOG_DEBUGF(
+			"stat_wrapper: errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+		return false;
+	}
+	return true;
+}
+
+bool system::is_file(StringRef const& path) {
+	struct ::stat stat_buf{};
+	if (!stat_wrapper(path, stat_buf)) {
+		return false;
+	}
+	return S_ISREG(stat_buf.st_mode);
+}
+
+bool system::is_directory(StringRef const& path) {
+	struct ::stat stat_buf{};
+	if (!stat_wrapper(path, stat_buf)) {
+		return false;
+	}
+	return S_ISDIR(stat_buf.st_mode);
 }
 
 } // namespace togo
