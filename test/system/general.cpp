@@ -46,6 +46,18 @@ signed main() {
 
 	TOGO_ASSERTE(system::set_working_dir(exec_dir));
 
+	TOGO_ASSERTE(!system::is_file("/non/existent/file"));
+	TOGO_ASSERTE(!system::is_file("."));
+	#if defined(TOGO_PLATFORM_LINUX)
+		TOGO_ASSERTE(system::is_file("general.elf"));
+	#elif defined(TOGO_PLATFORM_WINDOWS)
+		TOGO_ASSERTE(system::is_file("general.exe"));
+	#endif
+
+	TOGO_ASSERTE(!system::is_directory("/non/existent/directory"));
+	TOGO_ASSERTE( system::is_directory("."));
+	TOGO_ASSERTE( system::is_directory(".."));
+
 	TOGO_LOG("\n");
 	float const start = system::time_monotonic();
 	system::sleep_ms(1000u);
