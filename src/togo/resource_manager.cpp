@@ -6,6 +6,7 @@
 #include <togo/config.hpp>
 #include <togo/assert.hpp>
 #include <togo/memory.hpp>
+#include <togo/array.hpp>
 #include <togo/hash_map.hpp>
 #include <togo/log.hpp>
 #include <togo/resource_types.hpp>
@@ -61,7 +62,7 @@ void resource_manager::register_handler(
 ) {
 	TOGO_ASSERT(
 		handler.func_load && handler.func_unload,
-		"load_func and unload_func must be assigned in handler"
+		"func_load and func_unload must be assigned in handler"
 	);
 	TOGO_ASSERT(
 		!hash_map::has(rm._handlers, handler.type),
