@@ -97,6 +97,29 @@ bool is_file(StringRef const& path);
 /// path must be NUL-terminated.
 bool is_directory(StringRef const& path);
 
+/// Create a file.
+///
+/// path must be NUL-terminated.
+/// If the file already exists, this will fail.
+bool create_file(StringRef const& path);
+
+/// Remove a file.
+///
+/// path must be NUL-terminated.
+bool remove_file(StringRef const& path);
+
+/// Create a directory.
+///
+/// path must be NUL-terminated.
+/// If the directory already exists, this will fail.
+bool create_directory(StringRef const& path);
+
+/// Remove a directory.
+///
+/// path must be NUL-terminated.
+/// The directory must be empty.
+bool remove_directory(StringRef const& path);
+
 /** @} */ // end of doc-group system
 
 } // namespace system

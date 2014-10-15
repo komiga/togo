@@ -13,13 +13,14 @@
 #include <cerrno>
 #include <cstring>
 
-#include <stdlib.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <linux/limits.h>
+#include <fcntl.h>
 
 namespace togo {
 
@@ -169,6 +170,73 @@ bool system::is_directory(StringRef const& path) {
 		return false;
 	}
 	return S_ISDIR(stat_buf.st_mode);
+}
+
+bool system::create_file(StringRef const& path) {
+	signed const fd = ::open(
+		path.data,
+		O_CREAT | O_WRONLY | O_EXCL,
+		// rw- rw- r--
+		/* user  */ S_IRUSR | S_IWUSR |
+		/* group */ S_IRGRP | S_IWGRP |
+		/* other */ S_IROTH
+	);
+	if (fd == -1) {
+		TOGO_LOG_DEBUGF(
+			"create_file: errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+		return false;
+	}
+	if (::close(fd) != 0) {
+		TOGO_LOG_DEBUGF(
+			"create_file: close(): errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+	}
+	return true;
+}
+
+bool system::remove_file(StringRef const& path) {
+	signed const err = ::unlink(path.data);
+	if (err != 0) {
+		TOGO_LOG_DEBUGF(
+			"remove_file: errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+		return false;
+	}
+	return true;
+}
+
+bool system::create_directory(StringRef const& path) {
+	signed const err = ::mkdir(
+		path.data,
+		// rwx rwx r-x
+		/* user  */ S_IRWXU |
+		/* group */ S_IRWXG |
+		/* other */ S_IROTH | S_IXOTH
+	);
+	if (err != 0) {
+		TOGO_LOG_DEBUGF(
+			"create_directory: errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+		return false;
+	}
+	return true;
+}
+
+bool system::remove_directory(StringRef const& path) {
+	signed const err = ::rmdir(path.data);
+	if (err != 0) {
+		TOGO_LOG_DEBUGF(
+			"remove_directory: errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+		return false;
+	}
+	return true;
 }
 
 } // namespace togo
