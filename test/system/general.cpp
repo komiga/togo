@@ -27,15 +27,20 @@ signed main() {
 
 	TOGO_LOG("\n");
 	float const start = system::time_monotonic();
-	TOGO_LOGF("start       : time_monotonic() = %.6f\n", start);
 	system::sleep_ms(1000u);
-	TOGO_LOGF("1000ms delay: time_monotonic() = %.6f\n", system::time_monotonic() - start);
+	float const d_1000ms = system::time_monotonic() - start;
 	system::sleep_ms(100u);
-	TOGO_LOGF("100ms delay : time_monotonic() = %.6f\n", system::time_monotonic() - start);
+	float const d_100ms = system::time_monotonic() - start;
 	system::sleep_ms(10u);
-	TOGO_LOGF("10ms delay  : time_monotonic() = %.6f\n", system::time_monotonic() - start);
+	float const d_10ms = system::time_monotonic() - start;
 	system::sleep_ms(1u);
-	TOGO_LOGF("1ms delay   : time_monotonic() = %.6f\n", system::time_monotonic() - start);
+	float const d_1ms = system::time_monotonic() - start;
+
+	TOGO_LOGF("start       : time_monotonic() = %.6f\n", start);
+	TOGO_LOGF("1000ms delay: time_monotonic() = %.6f\n", d_1000ms);
+	TOGO_LOGF("100ms delay : time_monotonic() = %.6f\n", d_100ms);
+	TOGO_LOGF("10ms delay  : time_monotonic() = %.6f\n", d_10ms);
+	TOGO_LOGF("1ms delay   : time_monotonic() = %.6f\n", d_1ms);
 
 	return 0;
 }
