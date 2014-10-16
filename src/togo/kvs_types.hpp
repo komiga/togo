@@ -17,6 +17,7 @@
 #include <togo/utility.hpp>
 #include <togo/math_types.hpp>
 #include <togo/string_types.hpp>
+#include <togo/hash.hpp>
 
 namespace togo {
 
@@ -24,6 +25,23 @@ namespace togo {
 	@addtogroup kvs
 	@{
 */
+
+/// KVS name hash.
+using KVSNameHash = hash32;
+
+/// KVS name hash literal.
+inline constexpr KVSNameHash
+operator"" _kvs_name(
+	char const* const data,
+	std::size_t const size
+) {
+	return hash::calc32_ce(data, size);
+}
+
+/// KVS names.
+enum : KVSNameHash {
+	KVS_NAME_NULL = ""_kvs_name,
+};
 
 /**
 	Key-value store type.
@@ -95,7 +113,7 @@ struct KVS {
 
 	KVSType _type;
 	u32 _name_size;
-	hash32 _name_hash;
+	KVSNameHash _name_hash;
 	char* _name;
 	Value _value;
 

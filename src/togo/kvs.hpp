@@ -52,6 +52,11 @@ namespace kvs {
 	@{
 */
 
+/// Calculate KVS name hash of string.
+inline KVSNameHash hash_name(StringRef const& name) {
+	return hash::calc32(name);
+}
+
 /// Get type.
 inline KVSType type(KVS const& kvs) {
 	return kvs._type;
@@ -124,7 +129,7 @@ inline StringRef name_ref(KVS const& kvs) {
 }
 
 /// Get name hash.
-inline hash32 name_hash(KVS const& kvs) {
+inline KVSNameHash name_hash(KVS const& kvs) {
 	return kvs._name_hash;
 }
 
@@ -268,10 +273,10 @@ KVS* find(KVS& kvs, StringRef const& name);
 KVS const* find(KVS const& kvs, StringRef const& name);
 
 /// Find item in collection by name hash.
-KVS* find(KVS& kvs, hash32 name_hash);
+KVS* find(KVS& kvs, KVSNameHash name_hash);
 
 /// Find item in collection by name hash.
-KVS const* find(KVS const& kvs, hash32 name_hash);
+KVS const* find(KVS const& kvs, KVSNameHash name_hash);
 
 /// Free value if dynamic and change type iff type differs.
 ///
@@ -464,7 +469,7 @@ inline KVS::~KVS() {
 inline KVS::KVS(KVSType const type)
 	: _type(type)
 	, _name_size(0)
-	, _name_hash(hash::IDENTITY32)
+	, _name_hash(KVS_NAME_NULL)
 	, _name(nullptr)
 	, _value()
 {}

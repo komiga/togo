@@ -23,7 +23,7 @@ namespace kvs {
 	static KVS const* find_impl(
 		KVS const& kvs,
 		StringRef const& name,
-		hash32 const name_hash
+		KVSNameHash const name_hash
 	);
 } // namespace kvs
 
@@ -49,15 +49,15 @@ KVS::KVS(KVS&& other)
 	other._type = KVSType::null;
 	other._name = nullptr;
 	other._name_size = 0;
-	other._name_hash = hash::IDENTITY32;
+	other._name_hash = KVS_NAME_NULL;
 }
 
 KVS const* kvs::find_impl(
 	KVS const& kvs,
 	StringRef const& name,
-	hash32 const name_hash
+	KVSNameHash const name_hash
 ) {
-	if (name_hash == hash::IDENTITY32 || kvs::empty(kvs)) {
+	if (name_hash == KVS_NAME_NULL || kvs::empty(kvs)) {
 		return nullptr;
 	}
 	for (KVS const& item : kvs) {
@@ -80,22 +80,22 @@ KVS const* kvs::find_impl(
 }
 
 KVS* kvs::find(KVS& kvs, StringRef const& name) {
-	hash32 const name_hash = hash::calc32(name);
+	KVSNameHash const name_hash = kvs::hash_name(name);
 	return const_cast<KVS*>(kvs::find_impl(kvs, name, name_hash));
 }
 
 KVS const* kvs::find(KVS const& kvs, StringRef const& name) {
-	hash32 const name_hash = hash::calc32(name);
+	KVSNameHash const name_hash = kvs::hash_name(name);
 	return kvs::find_impl(kvs, name, name_hash);
 }
 
-KVS* kvs::find(KVS& kvs, hash32 const name_hash) {
+KVS* kvs::find(KVS& kvs, KVSNameHash const name_hash) {
 	return const_cast<KVS*>(
 		kvs::find_impl(kvs, StringRef{null_tag{}}, name_hash)
 	);
 }
 
-KVS const* kvs::find(KVS const& kvs, hash32 const name_hash) {
+KVS const* kvs::find(KVS const& kvs, KVSNameHash const name_hash) {
 	return kvs::find_impl(kvs, StringRef{null_tag{}}, name_hash);
 }
 
@@ -132,7 +132,7 @@ void kvs::set_name(KVS& kvs, StringRef const& name) {
 		string::copy(kvs._name, name.size + 1, name);
 	}
 	kvs._name_size = name.size;
-	kvs._name_hash = hash::calc32(name);
+	kvs._name_hash = kvs::hash_name(name);
 }
 
 void kvs::clear_name(KVS& kvs) {
@@ -140,7 +140,7 @@ void kvs::clear_name(KVS& kvs) {
 		TOGO_DESTROY(memory::default_allocator(), kvs._name);
 		kvs._name = nullptr;
 		kvs._name_size = 0;
-		kvs._name_hash = hash::IDENTITY32;
+		kvs._name_hash = KVS_NAME_NULL;
 	}
 }
 
@@ -221,7 +221,7 @@ void kvs::move(KVS& dst, KVS& src) {
 	src._type = KVSType::null;
 	src._name = nullptr;
 	src._name_size = 0;
-	src._name_hash = hash::IDENTITY32;
+	src._name_hash = KVS_NAME_NULL;
 }
 
 void kvs::string(KVS& kvs, StringRef const& value) {
