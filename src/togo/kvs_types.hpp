@@ -14,6 +14,7 @@
 #include <togo/tags.hpp>
 #include <togo/traits.hpp>
 #include <togo/types.hpp>
+#include <togo/utility.hpp>
 #include <togo/math_types.hpp>
 #include <togo/string_types.hpp>
 
