@@ -10,7 +10,8 @@
 				"src",
 				"test",
 				"out",
-				"lib"
+				"lib",
+				"bin"
 			],
 			"file_exclude_patterns": [
 				"Makefile",
@@ -33,7 +34,14 @@
 		},
 		{
 			"name": "- Source",
-			"path": "./src/togo/"
+			"path": "./src/togo/",
+			"folder_exclude_patterns": [
+				"tool_build"
+			]
+		},
+		{
+			"name": "- Source: tool_build",
+			"path": "./src/togo/tool_build/"
 		},
 		{
 			"name": "- Test",
