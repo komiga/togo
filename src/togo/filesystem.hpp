@@ -10,7 +10,7 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/types.hpp>
+#include <togo/assert.hpp>
 #include <togo/fixed_array.hpp>
 #include <togo/string_types.hpp>
 #include <togo/filesystem_types.hpp>
