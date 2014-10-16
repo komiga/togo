@@ -13,26 +13,29 @@
 namespace togo {
 
 bool parse_args(
-	KVS& options,
-	KVS& command,
+	KVS& k_options,
+	KVS& k_command_options,
+	KVS& k_command,
 	signed const argc,
 	char const* const argv[]
 ) {
-	kvs::set_type(options, KVSType::node);
-	kvs::set_type(command, KVSType::node);
-	kvs::clear(options);
-	kvs::clear(command);
+	kvs::set_type(k_options, KVSType::node);
+	kvs::set_type(k_command_options, KVSType::node);
+	kvs::set_type(k_command, KVSType::node);
+	kvs::clear(k_options);
+	kvs::clear(k_command_options);
+	kvs::clear(k_command);
 	if (argc == 0) {
 		return false;
 	}
-	kvs::set_name(options, StringRef{argv[0], cstr_tag{}});
+	kvs::set_name(k_options, StringRef{argv[0], cstr_tag{}});
 
 	signed aidx;
 	char const* str;
 	signed pos;
 	signed pos_eq;
 	bool dashed;
-	KVS* current = &options;
+	KVS* k_current = &k_options;
 	for (aidx = 1; argc > aidx; ++aidx) {
 		str = argv[aidx];
 		pos = 0;
@@ -50,13 +53,13 @@ bool parse_args(
 			// Continue to the end of the string
 			// (pos becomes size of string)
 		}
+		if (pos_eq == 0) {
+			pos_eq = pos;
+		}
 		if (dashed) {
-			if (pos_eq == 0) {
-				pos_eq = pos;
-			}
 			KVS& back = kvs::push_back(
-				*current,
-				{StringRef{str, unsigned_cast(pos_eq)}, null_tag{}}
+				*k_current,
+				KVS{StringRef{str, unsigned_cast(pos_eq)}, null_tag{}}
 			);
 			if (pos > pos_eq) {
 				++pos_eq;
@@ -68,16 +71,17 @@ bool parse_args(
 			} else {
 				kvs::boolean(back, true);
 			}
-		} else if (current != &command) {
-			// Command reached
-			current = &command;
-			kvs::set_name(*current, {StringRef{str, unsigned_cast(pos)}});
+		} else if (k_current == &k_options) {
+			// Command reached; switch to parse leading options
+			k_current = &k_command_options;
+			kvs::set_name(k_command, StringRef{str, unsigned_cast(pos)} );
 		} else {
 			// Undashed argument to command
-			kvs::push_back(*current, {StringRef{str, unsigned_cast(pos)}});
+			k_current = &k_command;
+			kvs::push_back(*k_current, KVS{StringRef{str, unsigned_cast(pos)}});
 		}
 	}
-	return current == &command;
+	return k_current != &k_options;
 }
 
 } // namespace togo
