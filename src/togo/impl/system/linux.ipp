@@ -25,7 +25,7 @@
 namespace togo {
 
 unsigned system::num_cores() {
-	signed const num = sysconf(_SC_NPROCESSORS_ONLN);
+	signed const num = ::sysconf(_SC_NPROCESSORS_ONLN);
 	return static_cast<unsigned>(max(1, num));
 }
 
@@ -36,7 +36,7 @@ void system::sleep_ms(unsigned duration_ms) {
 	duration.tv_nsec = (duration_ms % 1000) * 1000000; // 10^6
 	signed err = 0;
 	do {
-		err = nanosleep(&duration, &remaining);
+		err = ::nanosleep(&duration, &remaining);
 	} while (err != 0 && errno == EINTR);
 	if (err != 0 && errno != 0) {
 		TOGO_LOG_DEBUGF(
@@ -48,7 +48,7 @@ void system::sleep_ms(unsigned duration_ms) {
 
 float system::time_monotonic() {
 	timespec ts;
-	signed const err = clock_gettime(CLOCK_MONOTONIC, &ts);
+	signed const err = ::clock_gettime(CLOCK_MONOTONIC, &ts);
 	TOGO_ASSERTF(
 		err == 0,
 		"clock_gettime() with CLOCK_MONOTONIC failed; errno = %d, %s\n",
