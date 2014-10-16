@@ -4,4 +4,7 @@
 @defgroup filesystem Filesystem
 @details
 
+All paths must be NUL-terminated. Any returned/assigned paths are
+NUL-terminated.
+
 */

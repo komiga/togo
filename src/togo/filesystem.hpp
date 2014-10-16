@@ -29,7 +29,6 @@ StringRef exec_dir();
 
 /// Get the path to the working directory.
 ///
-/// str will be NUL-terminated.
 /// Returns the size of str, or 0 if an error occurred.
 unsigned working_dir(char* str, unsigned capacity);
 
@@ -48,40 +47,29 @@ inline unsigned working_dir(FixedArray<char, N>& str) {
 }
 
 /// Set the working directory.
-///
-/// path must be NUL-terminated.
 bool set_working_dir(StringRef const& path);
 
 /// Check if a path is a file.
-///
-/// path must be NUL-terminated.
 bool is_file(StringRef const& path);
 
 /// Check if a path is a directory.
-///
-/// path must be NUL-terminated.
 bool is_directory(StringRef const& path);
 
 /// Create a file.
 ///
-/// path must be NUL-terminated.
 /// If the file already exists, this will fail.
 bool create_file(StringRef const& path);
 
 /// Remove a file.
-///
-/// path must be NUL-terminated.
 bool remove_file(StringRef const& path);
 
 /// Create a directory.
 ///
-/// path must be NUL-terminated.
 /// If the directory already exists, this will fail.
 bool create_directory(StringRef const& path);
 
 /// Remove a directory.
 ///
-/// path must be NUL-terminated.
 /// The directory must be empty.
 bool remove_directory(StringRef const& path);
 
