@@ -50,6 +50,7 @@ precore.make_solution(
 include("algorithm")
 include("app")
 include("collections")
+include("filesystem")
 include("general")
 include("gfx")
 include("hash")
