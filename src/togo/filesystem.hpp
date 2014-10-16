@@ -13,8 +13,10 @@
 #include <togo/types.hpp>
 #include <togo/fixed_array.hpp>
 #include <togo/string_types.hpp>
+#include <togo/filesystem_types.hpp>
 
 namespace togo {
+
 namespace filesystem {
 
 /**
@@ -86,4 +88,21 @@ bool remove_directory(StringRef const& path);
 /** @} */ // end of doc-group filesystem
 
 } // namespace filesystem
+
+/// Resets the working directory to its pre-initialization path.
+inline WorkingDirScope::~WorkingDirScope() {
+	TOGO_ASSERTE(filesystem::set_working_dir(_prev_path));
+}
+
+/// Stores the current working directory path and then sets the
+/// working directory to path.
+inline WorkingDirScope::WorkingDirScope(
+	StringRef const& path
+)
+	: _prev_path()
+{
+	TOGO_ASSERTE(filesystem::working_dir(_prev_path));
+	TOGO_ASSERTE(filesystem::set_working_dir(path));
+}
+
 } // namespace togo

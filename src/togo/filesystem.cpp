@@ -4,6 +4,7 @@
 */
 
 #include <togo/config.hpp>
+#include <togo/filesystem_types.hpp>
 #include <togo/filesystem.hpp>
 
 #if defined(TOGO_PLATFORM_LINUX)
