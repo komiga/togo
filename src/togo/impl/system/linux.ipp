@@ -141,16 +141,18 @@ bool system::set_working_dir(StringRef const& path) {
 	return true;
 }
 
-inline static bool stat_wrapper(
+inline static bool is_type_wrapper(
 	StringRef const& path,
 	struct ::stat& stat_buf
 ) {
 	signed const err = ::stat(path.data, &stat_buf);
 	if (err != 0) {
-		TOGO_LOG_DEBUGF(
-			"stat_wrapper: errno = %d, %s\n",
-			errno, std::strerror(errno)
-		);
+		if (errno != ENOENT) {
+			TOGO_LOG_DEBUGF(
+				"is_type_wrapper: errno = %d, %s\n",
+				errno, std::strerror(errno)
+			);
+		}
 		return false;
 	}
 	return true;
@@ -158,7 +160,7 @@ inline static bool stat_wrapper(
 
 bool system::is_file(StringRef const& path) {
 	struct ::stat stat_buf{};
-	if (!stat_wrapper(path, stat_buf)) {
+	if (!is_type_wrapper(path, stat_buf)) {
 		return false;
 	}
 	return S_ISREG(stat_buf.st_mode);
@@ -166,7 +168,7 @@ bool system::is_file(StringRef const& path) {
 
 bool system::is_directory(StringRef const& path) {
 	struct ::stat stat_buf{};
-	if (!stat_wrapper(path, stat_buf)) {
+	if (!is_type_wrapper(path, stat_buf)) {
 		return false;
 	}
 	return S_ISDIR(stat_buf.st_mode);
