@@ -36,8 +36,8 @@ void test_path(
 		}
 		TOGO_LOG("]\n\n");
 
-		auto const type_hash = hash::calc_generic<ResourceType>(type);
-		auto const name_hash = hash::calc_generic<ResourceNameHash>(name);
+		auto const type_hash = resource::hash_type(type);
+		auto const name_hash = resource::hash_name(name);
 		TOGO_ASSERTE(type_hash == pp.type_hash);
 		TOGO_ASSERTE(string::compare_equal(type, pp.type));
 		TOGO_ASSERTE(name_hash == pp.name_hash);
@@ -45,7 +45,9 @@ void test_path(
 
 		for (unsigned i = 0; i < fixed_array::size(pp.tags); ++i) {
 			auto const name = *(begin(tags) + i);
-			auto const hash = hash::calc32(name);
+			auto const hash = hash::calc_generic<
+				decltype(ResourcePathParts::Tag::hash)
+			>(name);
 			TOGO_ASSERTE(hash == pp.tags[i].hash);
 			TOGO_ASSERTE(string::compare_equal(name, pp.tags[i].name));
 		}
