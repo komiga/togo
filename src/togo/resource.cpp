@@ -29,7 +29,7 @@ bool resource::parse_path(
 		NOT_FOUND = ~0u,
 	};
 
-	pp.type_hash = RESTYPE_NULL;
+	pp.type_hash = RES_TYPE_NULL;
 	pp.name_hash = hash::IDENTITY64;
 	pp.type = StringRef{null_tag{}};
 	pp.name = StringRef{null_tag{}};

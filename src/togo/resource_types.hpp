@@ -67,10 +67,10 @@ operator"" _resource_name(
 /// Resource types.
 enum : ResourceType {
 	/// Non-type.
-	RESTYPE_NULL = hash::IDENTITY32,
+	RES_TYPE_NULL = ""_resource_type,
 
 	/// gfx::RenderConfig.
-	RESTYPE_RENDER_CONFIG = "render_config"_resource_type,
+	RES_TYPE_RENDER_CONFIG = "render_config"_resource_type,
 };
 
 /// Resource path parts.
