@@ -33,6 +33,9 @@ using ResourceType = hash32;
 /// Resource name hash.
 using ResourceNameHash = hash64;
 
+/// Package name hash.
+using ResourcePackageNameHash = hash32;
+
 /** @cond INTERNAL */
 static_assert(
 	is_same<ResourceType, hash32>::value,
@@ -62,6 +65,15 @@ operator"" _resource_name(
 	std::size_t const size
 ) {
 	return hash::calc64_ce(data, size);
+}
+
+/// Package name hash literal.
+inline constexpr ResourcePackageNameHash
+operator"" _resource_package_name(
+	char const* const data,
+	std::size_t const size
+) {
+	return hash::calc32_ce(data, size);
 }
 
 /// Resource types.

@@ -32,6 +32,11 @@ inline ResourceNameHash hash_name(StringRef const& name) {
 	return hash::calc64(name);
 }
 
+/// Calculate hash of resource package name.
+inline ResourcePackageNameHash hash_package_name(StringRef const& name) {
+	return hash::calc32(name);
+}
+
 /// Parse resource path.
 ///
 /// Tags are sorted by hash value.
