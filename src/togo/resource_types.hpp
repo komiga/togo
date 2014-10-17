@@ -12,6 +12,7 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/traits.hpp>
 #include <togo/string_types.hpp>
 #include <togo/hash.hpp>
 #include <togo/memory_types.hpp>
@@ -31,6 +32,19 @@ using ResourceType = hash32;
 
 /// Resource name hash.
 using ResourceNameHash = hash64;
+
+/** @cond INTERNAL */
+static_assert(
+	is_same<ResourceType, hash32>::value,
+	"changed ResourceType type breaks binary formats,"
+	" hash functions, and likely other things"
+);
+static_assert(
+	is_same<ResourceNameHash, hash64>::value,
+	"changed ResourceNameHash type breaks binary formats,"
+	" hash functions, and likely other things"
+);
+/** @endcond */ // INTERNAL
 
 /// Resource type hash literal.
 inline constexpr ResourceType
