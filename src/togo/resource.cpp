@@ -30,7 +30,7 @@ bool resource::parse_path(
 	};
 
 	pp.type_hash = RES_TYPE_NULL;
-	pp.name_hash = hash::IDENTITY64;
+	pp.name_hash = RES_NAME_NULL;
 	pp.type = StringRef{null_tag{}};
 	pp.name = StringRef{null_tag{}};
 	fixed_array::clear(pp.tags);
@@ -77,8 +77,8 @@ bool resource::parse_path(
 	}
 	pp.type = StringRef{path.data + type_first, type_last - type_first};
 	pp.name = StringRef{path.data, ext_i};
-	pp.type_hash = hash::calc_generic<ResourceType>(pp.type);
-	pp.name_hash = hash::calc_generic<ResourceNameHash>(pp.name);
+	pp.type_hash = resource::hash_type(pp.type);
+	pp.name_hash = resource::hash_name(pp.name);
 	if (tag_i < path.size) {
 		if (fixed_array::space(pp.tags) == 0) {
 			return false;
