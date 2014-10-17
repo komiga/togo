@@ -73,6 +73,12 @@ enum : ResourceType {
 	RES_TYPE_RENDER_CONFIG = "render_config"_resource_type,
 };
 
+/// Resource names.
+enum : ResourceNameHash {
+	/// Null name.
+	RES_NAME_NULL = ""_resource_name,
+};
+
 /// Resource path parts.
 struct ResourcePathParts {
 	struct Tag {
