@@ -43,9 +43,7 @@ enum : KVSNameHash {
 	KVS_NAME_NULL = ""_kvs_name,
 };
 
-/**
-	Key-value store type.
-*/
+/// Key-value store type.
 enum class KVSType : u32 {
 	/// Empty value.
 	null		= 1 << 0,
@@ -71,9 +69,7 @@ enum class KVSType : u32 {
 	node		= 1 << 10,
 };
 
-/**
-	Key-value store.
-*/
+/// Key-value store.
 struct KVS {
 	struct StringValue {
 		u32 size;
@@ -162,9 +158,7 @@ public:
 	KVS const& operator[](unsigned const i) const;
 };
 
-/**
-	KVS parser information.
-*/
+/// KVS parser information.
 struct ParserInfo {
 	/// Line in stream.
 	unsigned line{0};
