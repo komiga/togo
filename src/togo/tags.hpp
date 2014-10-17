@@ -20,19 +20,13 @@ namespace togo {
 
 /** @name Variation/placeholder tags */ /// @{
 
-/**
-	Null value tag.
-*/
+/// Null value tag.
 enum class null_tag {};
 
-/**
-	NUL-terminated string tag.
-*/
+/// NUL-terminated string tag.
 enum class cstr_tag {};
 
-/**
-	Bool string tag.
-*/
+/// Boolean value tag.
 enum class bool_tag {};
 
 /// @}
