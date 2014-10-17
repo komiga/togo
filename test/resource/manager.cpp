@@ -16,7 +16,7 @@
 using namespace togo;
 
 enum : ResourceType {
-	RESTYPE_DUMMY = "dummy"_resource_type,
+	RES_TYPE_DUMMY = "dummy"_resource_type,
 };
 
 enum : ResourceNameHash {
@@ -66,7 +66,7 @@ static void dummy_unload(
 }
 
 static ResourceHandler const
-s_handler_dummy{RESTYPE_DUMMY, dummy_load, dummy_unload};
+s_handler_dummy{RES_TYPE_DUMMY, dummy_load, dummy_unload};
 
 void test(
 	ResourceManager& rm,
@@ -75,21 +75,21 @@ void test(
 	u32 const x
 ) {
 	TOGO_ASSERTE(!resource_manager::get_resource(
-		rm, RESTYPE_DUMMY, name_hash
+		rm, RES_TYPE_DUMMY, name_hash
 	));
 	auto const* dummy = static_cast<Dummy*>(
-		resource_manager::load_resource(rm, RESTYPE_DUMMY, name_hash)
+		resource_manager::load_resource(rm, RES_TYPE_DUMMY, name_hash)
 	);
 	TOGO_ASSERTE(static_cast<bool>(dummy) == expect_success);
 	TOGO_ASSERTE(dummy == resource_manager::get_resource(
-		rm, RESTYPE_DUMMY, name_hash
+		rm, RES_TYPE_DUMMY, name_hash
 	));
 	if (dummy) {
 		TOGO_ASSERTE(dummy->x == x && dummy->name_hash == name_hash);
-		resource_manager::unload_resource(rm, RESTYPE_DUMMY, name_hash);
+		resource_manager::unload_resource(rm, RES_TYPE_DUMMY, name_hash);
 		dummy = nullptr;
 		TOGO_ASSERTE(!resource_manager::get_resource(
-			rm, RESTYPE_DUMMY, name_hash
+			rm, RES_TYPE_DUMMY, name_hash
 		));
 	}
 }
