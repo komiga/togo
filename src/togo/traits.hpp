@@ -70,22 +70,22 @@ using remove_ref = typename remove_ref_impl<T>::type;
 namespace {
 
 template<class T>
-struct remove_cvr_impl {
+struct remove_cv_impl {
 	using type = T;
 };
 
 template<class T>
-struct remove_cvr_impl<T const> {
+struct remove_cv_impl<T const> {
 	using type = T;
 };
 
 template<class T>
-struct remove_cvr_impl<T volatile> {
+struct remove_cv_impl<T volatile> {
 	using type = T;
 };
 
 template<class T>
-struct remove_cvr_impl<T const volatile> {
+struct remove_cv_impl<T const volatile> {
 	using type = T;
 };
 
@@ -93,7 +93,11 @@ struct remove_cvr_impl<T const volatile> {
 
 /// Remove const, volatile, and reference qualifications from type.
 template<class T>
-using remove_cvr = typename remove_cvr_impl<remove_ref<T>>::type;
+using remove_cv = typename remove_cv_impl<T>::type;
+
+/// Remove const, volatile, and reference qualifications from type.
+template<class T>
+using remove_cvr = typename remove_cv<remove_ref<T>>::type;
 
 namespace {
 
