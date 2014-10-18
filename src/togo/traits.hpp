@@ -38,6 +38,25 @@ struct true_type {
 	static constexpr bool const value = true;
 };
 
+namespace {
+	template<bool, class, class>
+	struct type_if_impl;
+
+	template<class T, class E>
+	struct type_if_impl<false, T, E> {
+		using type = E;
+	};
+
+	template<class T, class E>
+	struct type_if_impl<true, T, E> {
+		using type = T;
+	};
+} // anonymous namespace
+
+/// Type alias to T if C is true, or E if C is false.
+template<bool C, class T, class E>
+using type_if = typename type_if_impl<C, T, E>::type;
+
 /** @cond INTERNAL */
 namespace {
 	template<bool, class>
