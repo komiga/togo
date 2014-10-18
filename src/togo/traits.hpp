@@ -124,6 +124,20 @@ using remove_cvr = typename remove_cv<remove_ref<T>>::type;
 
 namespace {
 
+template<class T, class U>
+struct is_same_impl : false_type {};
+
+template<class T>
+struct is_same_impl<T, T> : true_type {};
+
+} // anonymous namespace
+
+/// Boolean constant of true if T is the same as U.
+template<class T, class U>
+using is_same = is_same_impl<T, U>;
+
+namespace {
+
 template<class T>
 struct is_signed_impl : false_type {};
 
@@ -168,17 +182,23 @@ using is_unsigned = is_unsigned_impl<remove_cv<T>>;
 
 namespace {
 
-template<class T, class U>
-struct is_same_impl : false_type {};
-
 template<class T>
-struct is_same_impl<T, T> : true_type {};
+struct is_floating_point_impl : false_type {};
+
+#define IMPL_SPECIALIZE(T) \
+	template<> struct is_floating_point_impl<T> : true_type {} //
+
+IMPL_SPECIALIZE(float);
+IMPL_SPECIALIZE(double);
+IMPL_SPECIALIZE(long double);
+
+#undef IMPL_SPECIALIZE
 
 } // anonymous namespace
 
-/// Boolean constant of true if T is the same as U.
-template<class T, class U>
-using is_same = is_same_impl<T, U>;
+/// Boolean constant of true if T is a floating-point type.
+template<class T>
+using is_floating_point = is_floating_point_impl<remove_cv<T>>;
 
 /// @}
 
