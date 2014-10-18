@@ -24,9 +24,7 @@ struct FixedArray;
 	@{
 */
 
-/**
-	Constant string reference.
-*/
+/// Constant string reference.
 struct StringRef {
 	/// String data.
 	char const* data;

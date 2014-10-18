@@ -61,9 +61,7 @@ namespace {
 		(p)->~pointer_type<decltype(p)>(); (a).deallocate(p); \
 	} } while (false)
 
-/**
-	%Allocator base class.
-*/
+/// %Allocator base class.
 class Allocator {
 public:
 	static constexpr u32 const

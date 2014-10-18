@@ -23,12 +23,10 @@ namespace togo {
 	@{
 */
 
-/**
-	Object buffer.
-
-	@tparam T Integral type to use for object types.
-	@tparam S Integral type to use for object sizes.
-*/
+/// Object buffer.
+///
+/// @tparam T Integral type to use for object types.
+/// @tparam S Integral type to use for object sizes.
 template<class T, class S>
 struct ObjectBuffer {
 	TOGO_CONSTRAIN_INTEGRAL(T);

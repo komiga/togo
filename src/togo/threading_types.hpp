@@ -51,9 +51,7 @@ enum class MutexType : unsigned {
 	recursive,
 };
 
-/**
-	Mutex.
-*/
+/// Mutex.
 struct Mutex {
 	MutexType _type;
 	MutexImpl _impl;
@@ -68,9 +66,7 @@ struct Mutex {
 	Mutex(MutexType const type = MutexType::normal);
 };
 
-/**
-	Automatic mutex lock.
-*/
+/// Automatic mutex lock.
 struct MutexLock {
 	Mutex& _mutex;
 
@@ -92,9 +88,7 @@ struct MutexLock {
 	@{
 */
 
-/**
-	Condition variable.
-*/
+/// Condition variable.
 struct CondVar {
 	CondVarImpl _impl;
 
@@ -147,9 +141,7 @@ union TaskSlot {
 	TaskHole hole;
 };
 
-/**
-	Task manager.
-*/
+/// Task manager.
 struct TaskManager {
 	TaskSlot _tasks[128];
 	PriorityQueue<Task*> _queue;

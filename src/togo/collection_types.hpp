@@ -28,9 +28,7 @@ namespace togo {
 	@{
 */
 
-/**
-	Dynamic array of POD objects.
-*/
+/// Dynamic array of POD objects.
 template<class T>
 struct Array {
 	TOGO_CONSTRAIN_POD(T);
@@ -61,9 +59,7 @@ struct Array {
 	@{
 */
 
-/**
-	Fixed-capacity array of POD objects.
-*/
+/// Fixed-capacity array of POD objects.
 template<class T, unsigned N>
 struct FixedArray {
 	TOGO_CONSTRAIN_POD(T);
@@ -96,9 +92,7 @@ struct FixedArray {
 	@{
 */
 
-/**
-	Dynamic double-ended queue of POD objects.
-*/
+/// Dynamic double-ended queue of POD objects.
 template<class T>
 struct Queue {
 	TOGO_CONSTRAIN_POD(T);
@@ -129,9 +123,7 @@ struct Queue {
 	@{
 */
 
-/**
-	Priority queue of POD objects.
-*/
+/// Priority queue of POD objects.
 template<class T>
 struct PriorityQueue {
 	TOGO_CONSTRAIN_POD(T);
@@ -165,9 +157,7 @@ struct PriorityQueue {
 	@{
 */
 
-/**
-	HashMap node.
-*/
+/// HashMap node.
 template<class K, class T>
 struct HashMapNode {
 	K key;
@@ -175,9 +165,7 @@ struct HashMapNode {
 	T value;
 };
 
-/**
-	Hash map of POD objects.
-*/
+/// Hash map of POD objects.
 template<class K, class T>
 struct HashMap {
 	TOGO_CONSTRAIN_POD(T);

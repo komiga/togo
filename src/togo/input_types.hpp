@@ -22,9 +22,7 @@ namespace togo {
 	@{
 */
 
-/**
-	Input event types.
-*/
+/// Input event types.
 enum class InputEventType : unsigned {
 	key,
 	mouse_button,
@@ -41,9 +39,7 @@ enum : unsigned {
 	INPUT_SYSTEM_DEFAULT_INIT_CAPACITY = 1024,
 };
 
-/**
-	Input buffer.
-*/
+/// Input buffer.
 struct InputBuffer {
 	unsigned _num_displays;
 	gfx::Display* _displays[INPUT_SYSTEM_NUM_DISPLAYS];
@@ -62,9 +58,7 @@ struct InputBuffer {
 	);
 };
 
-/**
-	Key codes.
-*/
+/// Key codes.
 enum class KeyCode : unsigned {
 	f1,
 	f2,
@@ -183,18 +177,14 @@ enum class KeyCode : unsigned {
 	COUNT
 };
 
-/**
-	Key event actions.
-*/
+/// Key event actions.
 enum class KeyAction : unsigned {
 	press,
 	release,
 	repeat,
 };
 
-/**
-	Key modifiers.
-*/
+/// Key modifiers.
 enum class KeyMod {
 	none = 0,
 	alt = 1 << 0,
@@ -202,9 +192,7 @@ enum class KeyMod {
 	shift = 1 << 2,
 };
 
-/**
-	Key input event.
-*/
+/// Key input event.
 struct KeyEvent {
 	gfx::Display* display;
 	KeyAction action;
@@ -212,9 +200,7 @@ struct KeyEvent {
 	KeyMod mods;
 };
 
-/**
-	Mouse buttons.
-*/
+/// Mouse buttons.
 enum class MouseButton : unsigned {
 	left,
 	right,
@@ -223,50 +209,38 @@ enum class MouseButton : unsigned {
 	COUNT
 };
 
-/**
-	Mouse button event actions.
-*/
+/// Mouse button event actions.
 enum class MouseButtonAction : unsigned {
 	press,
 	release,
 };
 
-/**
-	Mouse button event.
-*/
+/// Mouse button event.
 struct MouseButtonEvent {
 	gfx::Display* display;
 	MouseButtonAction action;
 	MouseButton button;
 };
 
-/**
-	Mouse motion event.
-*/
+/// Mouse motion event.
 struct MouseMotionEvent {
 	gfx::Display* display;
 	signed x;
 	signed y;
 };
 
-/**
-	Display focus event.
-*/
+/// Display focus event.
 struct DisplayFocusEvent {
 	gfx::Display* display;
 	bool focused;
 };
 
-/**
-	Display close request event.
-*/
+/// Display close request event.
 struct DisplayCloseRequestEvent {
 	gfx::Display* display;
 };
 
-/**
-	Display close request event.
-*/
+/// Display close request event.
 struct DisplayResizeEvent {
 	gfx::Display* display;
 	unsigned old_width;
@@ -275,12 +249,10 @@ struct DisplayResizeEvent {
 	unsigned new_height;
 };
 
-/**
-	Input event union.
-
-	@warning Members should only be accessed by the reported event
-	type from input_buffer::poll().
-*/
+/// Input event union.
+///
+/// @warning Members should only be accessed by the reported event
+/// type from input_buffer::poll().
 union InputEvent {
 	gfx::Display* const display;
 

@@ -25,9 +25,7 @@ namespace togo {
 	@{
 */
 
-/**
-	Growing memory reader/writer.
-*/
+/// Growing memory reader/writer.
 class MemoryStream
 	: public virtual IStreamBase
 	, public IStreamSeekable
@@ -72,9 +70,7 @@ private:
 	IOStatus write(void const* data, unsigned size) override;
 };
 
-/**
-	Memory buffer reader.
-*/
+/// Memory buffer reader.
 class MemoryReader
 	: public virtual IStreamBase
 	, public IStreamSeekable

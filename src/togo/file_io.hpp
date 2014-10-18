@@ -29,9 +29,7 @@ namespace togo {
 	@{
 */
 
-/**
-	File reader.
-*/
+/// File reader.
 class FileReader
 	: public virtual IStreamBase
 	, public IStreamSeekable
@@ -73,9 +71,7 @@ private:
 	IOStatus read(void* data, unsigned size, unsigned* read_size) override;
 };
 
-/**
-	File writer.
-*/
+/// File writer.
 class FileWriter
 	: public virtual IStreamBase
 	, public IStreamSeekable

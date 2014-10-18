@@ -21,9 +21,7 @@ namespace togo {
 	@{
 */
 
-/**
-	Base stream interface.
-*/
+/// Base stream interface.
 class IStreamBase {
 public:
 	IStreamBase() = default;
@@ -38,9 +36,7 @@ public:
 };
 inline IStreamBase::~IStreamBase() = default;
 
-/**
-	Seekable stream interface.
-*/
+/// Seekable stream interface.
 class IStreamSeekable
 	: public virtual IStreamBase
 {
@@ -59,9 +55,7 @@ public:
 };
 inline IStreamSeekable::~IStreamSeekable() = default;
 
-/**
-	Stream reader interface.
-*/
+/// Stream reader interface.
 class IReader
 	: public virtual IStreamBase
 {
@@ -78,9 +72,7 @@ public:
 };
 inline IReader::~IReader() = default;
 
-/**
-	Stream writer interface.
-*/
+/// Stream writer interface.
 class IWriter
 	: public virtual IStreamBase
 {

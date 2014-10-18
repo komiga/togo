@@ -31,25 +31,21 @@ namespace togo {
 */
 
 #if defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
-	/**
-		Whether to use assertions
-
-		This is enabled if it is defined.
-	*/
+	/// Whether to use assertions
+	///
+	/// This is enabled if it is defined.
 	#define TOGO_DISABLE_ASSERTIONS
-	/**
-		Whether to use assertions
 
-		This is enabled if it is defined. It is automatically enabled
-		if DEBUG is defined or if NDEBUG is not defined.
-	*/
+	/// Whether to use assertions
+	///
+	/// This is enabled if it is defined. It is automatically enabled
+	/// if DEBUG is defined or if NDEBUG is not defined.
 	#define TOGO_DEBUG
-	/**
-		Whether to use stdlib constraints to ensure types are being
-		used properly.
 
-		This is enabled if it is defined.
-	*/
+	/// Whether to use stdlib constraints to ensure types are being
+	/// used properly.
+	///
+	/// This is enabled if it is defined.
 	#define TOGO_USE_CONSTRAINTS
 #else
 	#if !defined(TOGO_DEBUG) && (defined(DEBUG) || !defined(NDEBUG))
@@ -60,34 +56,22 @@ namespace togo {
 /** @name System detection */ /// @{
 
 #if defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
-	/**
-		Defined if the target platform is Linux.
-	*/
+	/// Defined if the target platform is Linux.
 	#define TOGO_PLATFORM_LINUX
-	/**
-		Defined if the target platform is MacOS.
-	*/
+	/// Defined if the target platform is MacOS.
 	#define TOGO_PLATFORM_MACOS
-	/**
-		Defined if the target platform is Windows.
-	*/
+	/// Defined if the target platform is Windows.
 	#define TOGO_PLATFORM_WINDOWS
 
-	/**
-		Defined if the target platform is POSIX-compliant.
-
-		This is defined if #TOGO_PLATFORM_LINUX or #TOGO_PLATFORM_MACOS
-		are defined.
-	*/
+	/// Defined if the target platform is POSIX-compliant.
+	///
+	/// This is defined if #TOGO_PLATFORM_LINUX or #TOGO_PLATFORM_MACOS
+	/// are defined.
 	#define TOGO_PLATFORM_IS_POSIX
 
-	/**
-		Defined if the target processor is x86.
-	*/
+	/// Defined if the target processor is x86.
 	#define TOGO_ARCH_X86
-	/**
-		Defined if the target processor is x86_64.
-	*/
+	/// Defined if the target processor is x86_64.
 	#define TOGO_ARCH_X86_64
 #else
 	#if defined(__linux__)
@@ -122,17 +106,11 @@ namespace togo {
 /** @name Compiler detection */ /// @{
 
 #if defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
-	/**
-		Defined if the compiler is Clang.
-	*/
+	/// Defined if the compiler is Clang.
 	#define TOGO_COMPILER_CLANG
-	/**
-		Defined if the compiler is GCC.
-	*/
+	/// Defined if the compiler is GCC.
 	#define TOGO_COMPILER_GCC
-	/**
-		Defined if the compiler is MSVC.
-	*/
+	/// Defined if the compiler is MSVC.
 	#define TOGO_COMPILER_MSVC
 #else
 	#if defined(__clang__)
@@ -150,47 +128,37 @@ namespace togo {
 
 /** @name Graphics configuration */ /// @{
 
-/**
-	SDL graphics backend.
-
-	This backend can be used with the following renderers:
-
-	- #TOGO_RENDERER_OPENGL
-*/
+/// SDL graphics backend.
+///
+/// This backend can be used with the following renderers:
+///
+/// - #TOGO_RENDERER_OPENGL
 #define TOGO_GRAPHICS_BACKEND_SDL 0x00000001
 
-/**
-	GLFW graphics backend.
-
-	This backend can be used with the following renderers:
-
-	- #TOGO_RENDERER_OPENGL
-*/
+/// GLFW graphics backend.
+///
+/// This backend can be used with the following renderers:
+///
+/// - #TOGO_RENDERER_OPENGL
 #define TOGO_GRAPHICS_BACKEND_GLFW 0x00000002
 
-/**
-	OpenGL renderer.
-*/
+/// OpenGL renderer.
 #define TOGO_RENDERER_OPENGL 0x00000100
 
 #if defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
-	/**
-		Configure the graphics backend to use.
-
-		Options:
-
-		- #TOGO_GRAPHICS_BACKEND_SDL
-		- #TOGO_GRAPHICS_BACKEND_GLFW
-	*/
+	/// Configure the graphics backend to use.
+	///
+	/// Options:
+	///
+	/// - #TOGO_GRAPHICS_BACKEND_SDL
+	/// - #TOGO_GRAPHICS_BACKEND_GLFW
 	#define TOGO_CONFIG_GRAPHICS_BACKEND
 
-	/**
-		Configure the renderer to use.
-
-		Options:
-
-		- #TOGO_RENDERER_OPENGL
-	*/
+	/// Configure the renderer to use.
+	///
+	/// Options:
+	///
+	/// - #TOGO_RENDERER_OPENGL
 	#define TOGO_CONFIG_RENDERER
 #else
 	#if !defined(TOGO_CONFIG_GRAPHICS_BACKEND)
