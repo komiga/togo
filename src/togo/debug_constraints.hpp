@@ -38,13 +38,6 @@
 			"T is not an arithmetic type"							\
 		)
 
-	#define TOGO_CONSTRAIN_INTEGRAL_ARITHMETIC(T)					\
-		static_assert(												\
-			is_integral<T>::value &&								\
-			is_arithmetic<T>::value,								\
-			"T is not an integral arithmetic type"					\
-		)
-
 	#define TOGO_CONSTRAIN_FLOATING_POINT(T)						\
 		static_assert(												\
 			is_floating_point<T>::value,							\
@@ -78,9 +71,6 @@
 
 	/// Statically assert that type T is an arithmetic type.
 	#define TOGO_CONSTRAIN_ARITHMETIC(T)
-
-	/// Statically assert that type T is an integral arithmetic type.
-	#define TOGO_CONSTRAIN_INTEGRAL_ARITHMETIC(T)
 
 	/// Statically assert that type T is a floating-point type.
 	#define TOGO_CONSTRAIN_FLOATING_POINT(T)
