@@ -58,7 +58,11 @@ inline IOStatus read(
 }
 
 /// Write bytes from a buffer.
-inline IOStatus write(IWriter& stream, void const* const buffer, unsigned const size) {
+inline IOStatus write(
+	IWriter& stream,
+	void const* const buffer,
+	unsigned const size
+) {
 	return stream.write(buffer, size);
 }
 
@@ -69,13 +73,6 @@ inline IOStatus read_value(IReader& stream, T& value) {
 	return io::read(stream, &value, sizeof(T));
 }
 
-/// Read an arithmetic array.
-template<class T>
-inline IOStatus read_array(IReader& stream, T* const data, unsigned const count) {
-	TOGO_CONSTRAIN_ARITHMETIC(T);
-	return io::read(stream, data, count * sizeof(T));
-}
-
 /// Write an arithmetic value.
 template<class T>
 inline IOStatus write_value(IWriter& stream, T const& value) {
@@ -83,9 +80,24 @@ inline IOStatus write_value(IWriter& stream, T const& value) {
 	return io::write(stream, &value, sizeof(T));
 }
 
+/// Read an arithmetic array.
+template<class T>
+inline IOStatus read_array(
+	IReader& stream,
+	T* const data,
+	unsigned const count
+) {
+	TOGO_CONSTRAIN_ARITHMETIC(T);
+	return io::read(stream, data, count * sizeof(T));
+}
+
 /// Write an arithmetic array.
 template<class T>
-inline IOStatus write_array(IWriter& stream, T const* const data, unsigned const count) {
+inline IOStatus write_array(
+	IWriter& stream,
+	T const* const data,
+	unsigned const count
+) {
 	TOGO_CONSTRAIN_ARITHMETIC(T);
 	return io::write(stream, data, count * sizeof(T));
 }
