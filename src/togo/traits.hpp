@@ -138,6 +138,29 @@ using is_same = is_same_impl<T, U>;
 
 namespace {
 
+template<class T> struct is_pointer_impl : false_type {};
+template<class T> struct is_pointer_impl<T*> : true_type {};
+
+} // anonymous namespace
+
+/// Boolean constant of true if T is a pointer.
+template<class T>
+using is_pointer = is_pointer_impl<remove_cv<T>>;
+
+namespace {
+
+template<class T> struct is_reference_impl : false_type {};
+template<class T> struct is_reference_impl<T&> : true_type {};
+template<class T> struct is_reference_impl<T&&> : true_type {};
+
+} // anonymous namespace
+
+/// Boolean constant of true if T is an lvalue or rvalue reference.
+template<class T>
+using is_reference = is_reference_impl<remove_cv<T>>;
+
+namespace {
+
 template<class T>
 struct is_signed_impl : false_type {};
 
@@ -199,6 +222,24 @@ IMPL_SPECIALIZE(long double);
 /// Boolean constant of true if T is a floating-point type.
 template<class T>
 using is_floating_point = is_floating_point_impl<remove_cv<T>>;
+
+/// Boolean constant of true if T is an integral type.
+template<class T>
+using is_integral = integral_constant<
+	bool,
+	is_same<remove_cv<T>, char>::value ||
+	is_same<remove_cv<T>, bool>::value ||
+	is_unsigned<T>::value ||
+	is_signed<T>::value
+>;
+
+/// Boolean constant of true if T is an integral or floating-point type.
+template<class T>
+using is_arithmetic = integral_constant<
+	bool,
+	is_integral<T>::value ||
+	is_floating_point<T>::value
+>;
 
 /// @}
 
