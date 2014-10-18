@@ -20,6 +20,14 @@ namespace togo {
 
 /** @name Type traits */ /// @{
 
+/// Typed static constexpr integral value.
+///
+/// T must be an integral type.
+template<class T, T V>
+struct integral_constant {
+	static constexpr T const value = V;
+};
+
 /// Type with static constexpr value equal to false.
 struct false_type {
 	static constexpr bool const value = false;
