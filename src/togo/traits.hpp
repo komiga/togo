@@ -127,16 +127,20 @@ namespace {
 template<class T>
 struct is_signed_impl : false_type {};
 
-template<> struct is_signed_impl<signed char> : true_type {};
-template<> struct is_signed_impl<signed short> : true_type {};
-template<> struct is_signed_impl<signed int> : true_type {};
-template<> struct is_signed_impl<signed long> : true_type {};
-template<> struct is_signed_impl<signed long long> : true_type {};
+#define IMPL_SPECIALIZE(T) \
+	template<> struct is_signed_impl<T> : true_type {} //
+
+IMPL_SPECIALIZE(signed char);
+IMPL_SPECIALIZE(signed short);
+IMPL_SPECIALIZE(signed int);
+IMPL_SPECIALIZE(signed long);
+IMPL_SPECIALIZE(signed long long);
+
+#undef IMPL_SPECIALIZE
 
 } // anonymous namespace
 
-/// Type with static constexpr value equal to true if T is
-/// a signed integral.
+/// Boolean constant of true if T is a signed integral.
 template<class T>
 using is_signed = is_signed_impl<remove_cv<T>>;
 
@@ -145,16 +149,20 @@ namespace {
 template<class T>
 struct is_unsigned_impl : false_type {};
 
-template<> struct is_unsigned_impl<unsigned char> : true_type {};
-template<> struct is_unsigned_impl<unsigned short> : true_type {};
-template<> struct is_unsigned_impl<unsigned int> : true_type {};
-template<> struct is_unsigned_impl<unsigned long> : true_type {};
-template<> struct is_unsigned_impl<unsigned long long> : true_type {};
+#define IMPL_SPECIALIZE(T) \
+	template<> struct is_unsigned_impl<T> : true_type {} //
+
+IMPL_SPECIALIZE(unsigned char);
+IMPL_SPECIALIZE(unsigned short);
+IMPL_SPECIALIZE(unsigned int);
+IMPL_SPECIALIZE(unsigned long);
+IMPL_SPECIALIZE(unsigned long long);
+
+#undef IMPL_SPECIALIZE
 
 } // anonymous namespace
 
-/// Type with static constexpr value equal to true if T is
-/// an unsigned integral.
+/// Boolean constant of true if T is an unsigned integral.
 template<class T>
 using is_unsigned = is_unsigned_impl<remove_cv<T>>;
 
@@ -168,8 +176,7 @@ struct is_same_impl<T, T> : true_type {};
 
 } // anonymous namespace
 
-/// Type with static constexpr value equal to true if T is
-/// the same as U.
+/// Boolean constant of true if T is the same as U.
 template<class T, class U>
 using is_same = is_same_impl<T, U>;
 
