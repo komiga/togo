@@ -118,7 +118,7 @@ using remove_cv = typename remove_cv_impl<T>::type;
 
 /// Remove const, volatile, and reference qualifications from type.
 template<class T>
-using remove_cvr = typename remove_cv<remove_ref<T>>::type;
+using remove_cvr = remove_cv<remove_ref<T>>;
 
 namespace {
 
