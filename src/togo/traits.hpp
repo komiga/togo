@@ -20,19 +20,17 @@ namespace togo {
 
 /** @name Type traits */ /// @{
 
-/// Typed static constexpr integral value.
-///
-/// T must be an integral type.
+/// Type wrapping static constexpr value.
 template<class T, T V>
-struct integral_constant {
+struct constant_type {
 	static constexpr T const value = V;
 };
 
 /// Boolean constant of false.
-using false_type = integral_constant<bool, false>;
+using false_type = constant_type<bool, false>;
 
 /// Boolean constant of true.
-using true_type = integral_constant<bool, true>;
+using true_type = constant_type<bool, true>;
 
 namespace {
 	template<bool, class, class>
@@ -228,7 +226,7 @@ using is_floating_point = is_floating_point_impl<remove_cv<T>>;
 /// Contrary to the stdlib, this does not consider bool and character
 /// types other than char to be integral.
 template<class T>
-using is_integral = integral_constant<
+using is_integral = constant_type<
 	bool,
 	is_same<remove_cv<T>, char>::value ||
 	is_unsigned<T>::value ||
@@ -238,7 +236,7 @@ using is_integral = integral_constant<
 /// Boolean constant of true if T is an integral or
 /// floating-point type.
 template<class T>
-using is_arithmetic = integral_constant<
+using is_arithmetic = constant_type<
 	bool,
 	is_integral<T>::value ||
 	is_floating_point<T>::value
