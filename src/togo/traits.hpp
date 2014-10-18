@@ -72,6 +72,17 @@ using enable_if = typename enable_if_impl<C, T>::type;
 
 namespace {
 
+template<class T> struct is_const_impl : false_type {};
+template<class T> struct is_const_impl<T const> : true_type {};
+
+} // anonymous namespace
+
+/// Boolean constant of true if T is const.
+template<class T>
+using is_const = is_const_impl<T>;
+
+namespace {
+
 template<class T>
 struct remove_ref_impl {
 	using type = T;
