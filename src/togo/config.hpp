@@ -31,15 +31,17 @@ namespace togo {
 */
 
 #if defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
-	/// Whether to use assertions
+	/// Whether to disable assertions.
 	///
 	/// This is enabled if it is defined.
 	#define TOGO_DISABLE_ASSERTIONS
 
-	/// Whether to use assertions
+	/// Whether to enable debugging facilities.
 	///
 	/// This is enabled if it is defined. It is automatically enabled
 	/// if DEBUG is defined or if NDEBUG is not defined.
+	/// If assertions are enabled (default), debug assertions will be
+	/// defined when this is enabled.
 	#define TOGO_DEBUG
 
 	/// Whether to use stdlib constraints to ensure types are being
