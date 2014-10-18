@@ -224,16 +224,19 @@ template<class T>
 using is_floating_point = is_floating_point_impl<remove_cv<T>>;
 
 /// Boolean constant of true if T is an integral type.
+///
+/// Contrary to the stdlib, this does not consider bool and character
+/// types other than char to be integral.
 template<class T>
 using is_integral = integral_constant<
 	bool,
 	is_same<remove_cv<T>, char>::value ||
-	is_same<remove_cv<T>, bool>::value ||
 	is_unsigned<T>::value ||
 	is_signed<T>::value
 >;
 
-/// Boolean constant of true if T is an integral or floating-point type.
+/// Boolean constant of true if T is an integral or
+/// floating-point type.
 template<class T>
 using is_arithmetic = integral_constant<
 	bool,
