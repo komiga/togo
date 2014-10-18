@@ -28,15 +28,11 @@ struct integral_constant {
 	static constexpr T const value = V;
 };
 
-/// Type with static constexpr value equal to false.
-struct false_type {
-	static constexpr bool const value = false;
-};
+/// Boolean constant of false.
+using false_type = integral_constant<bool, false>;
 
-/// Type with static constexpr value equal to true.
-struct true_type {
-	static constexpr bool const value = true;
-};
+/// Boolean constant of true.
+using true_type = integral_constant<bool, true>;
 
 namespace {
 	template<bool, class, class>
