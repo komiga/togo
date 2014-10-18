@@ -90,25 +90,10 @@ using remove_ref = typename remove_ref_impl<T>::type;
 
 namespace {
 
-template<class T>
-struct remove_cv_impl {
-	using type = T;
-};
-
-template<class T>
-struct remove_cv_impl<T const> {
-	using type = T;
-};
-
-template<class T>
-struct remove_cv_impl<T volatile> {
-	using type = T;
-};
-
-template<class T>
-struct remove_cv_impl<T const volatile> {
-	using type = T;
-};
+template<class T> struct remove_cv_impl { using type = T; };
+template<class T> struct remove_cv_impl<T const> { using type = T; };
+template<class T> struct remove_cv_impl<T volatile> { using type = T; };
+template<class T> struct remove_cv_impl<T const volatile> { using type = T; };
 
 } // anonymous namespace
 
@@ -122,11 +107,8 @@ using remove_cvr = remove_cv<remove_ref<T>>;
 
 namespace {
 
-template<class T, class U>
-struct is_same_impl : false_type {};
-
-template<class T>
-struct is_same_impl<T, T> : true_type {};
+template<class T, class U> struct is_same_impl : false_type {};
+template<class T> struct is_same_impl<T, T> : true_type {};
 
 } // anonymous namespace
 
