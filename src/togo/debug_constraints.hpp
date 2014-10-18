@@ -28,26 +28,26 @@
 
 	#define TOGO_CONSTRAIN_INTEGRAL(T)								\
 		static_assert(												\
-			std::is_integral<T>::value,								\
+			is_integral<T>::value,									\
 			"T is not an integral type"								\
 		)
 
 	#define TOGO_CONSTRAIN_ARITHMETIC(T)							\
 		static_assert(												\
-			std::is_arithmetic<T>::value,							\
+			is_arithmetic<T>::value,								\
 			"T is not an arithmetic type"							\
 		)
 
 	#define TOGO_CONSTRAIN_INTEGRAL_ARITHMETIC(T)					\
 		static_assert(												\
-			std::is_integral<T>::value &&							\
-			std::is_arithmetic<T>::value,							\
+			is_integral<T>::value &&								\
+			is_arithmetic<T>::value,								\
 			"T is not an integral arithmetic type"					\
 		)
 
 	#define TOGO_CONSTRAIN_FLOATING_POINT(T)						\
 		static_assert(												\
-			std::is_floating_point<T>::value,						\
+			is_floating_point<T>::value,							\
 			"T is not a floating-point type"						\
 		)
 
@@ -59,10 +59,10 @@
 
 	#define TOGO_CONSTRAIN_COMPARABLE(T)							\
 		static_assert(												\
-			std::is_pointer<T>::value ||							\
+			is_pointer<T>::value ||									\
 			(														\
-				std::is_integral<T>::value &&						\
-				std::is_arithmetic<T>::value						\
+				is_integral<T>::value &&							\
+				is_arithmetic<T>::value								\
 			),														\
 			"T is not a permitted built-in comparable type"			\
 		)
