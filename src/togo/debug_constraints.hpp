@@ -4,11 +4,17 @@
 
 @file
 @brief Definitions for constraints.
+@ingroup debug
 */
 
 #pragma once
 
 #include <togo/config.hpp>
+
+/**
+	@addtogroup debug
+	@{
+*/
 
 #if defined(TOGO_USE_CONSTRAINTS)
 	#include <togo/traits.hpp>
@@ -68,3 +74,5 @@
 	/// Statically assert that type T is an unsigned integral type.
 	#define TOGO_CONSTRAIN_UNSIGNED(T)
 #endif
+
+/** @} */ // end of doc-group debug
