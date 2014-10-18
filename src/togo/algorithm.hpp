@@ -32,7 +32,7 @@ namespace togo {
 
 /// 2048-radix sort a T-value K-keyed collection with B-value bins.
 ///
-/// T must be POD. K and B must be unsigned integral arithmetic types.
+/// T must be POD. K and B must be unsigned integral types.
 ///
 /// KFunc is a key accessor function type or function object type.
 /// key_func should return K for a given T.
@@ -75,8 +75,6 @@ bool sort_radix_generic(
 	KFunc key_func
 ) noexcept {
 	TOGO_CONSTRAIN_POD(T);
-	TOGO_CONSTRAIN_INTEGRAL_ARITHMETIC(K);
-	TOGO_CONSTRAIN_INTEGRAL_ARITHMETIC(B);
 	TOGO_CONSTRAIN_UNSIGNED(K);
 	TOGO_CONSTRAIN_UNSIGNED(B);
 

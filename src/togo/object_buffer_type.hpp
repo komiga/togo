@@ -26,13 +26,13 @@ namespace togo {
 /**
 	Object buffer.
 
-	@tparam T Integral arithmetic type to use for object types.
-	@tparam S Integral arithmetic type to use for object sizes.
+	@tparam T Integral type to use for object types.
+	@tparam S Integral type to use for object sizes.
 */
 template<class T, class S>
 struct ObjectBuffer {
-	TOGO_CONSTRAIN_INTEGRAL_ARITHMETIC(T);
-	TOGO_CONSTRAIN_INTEGRAL_ARITHMETIC(S);
+	TOGO_CONSTRAIN_INTEGRAL(T);
+	TOGO_CONSTRAIN_INTEGRAL(S);
 
 	MemoryStream _stream;
 	unsigned _num_objects;

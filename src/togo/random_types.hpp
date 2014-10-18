@@ -92,7 +92,7 @@ struct XS1024M {
 */
 template<class T>
 struct IntUDist {
-	TOGO_CONSTRAIN_INTEGRAL_ARITHMETIC(T);
+	TOGO_CONSTRAIN_INTEGRAL(T);
 
 	using value_type = T;
 
