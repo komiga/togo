@@ -91,21 +91,21 @@ inline bool greater(T const& x, T const& y) {
 /// Get the smallest of two values.
 template<class T>
 inline constexpr T min(T const x, T const y) noexcept {
-	TOGO_CONSTRAIN_COMPARABLE(T);
+	TOGO_CONSTRAIN_INTEGRAL(T);
 	return x < y ? x : y;
 }
 
 /// Get the largest of two values.
 template<class T>
 inline constexpr T max(T const x, T const y) noexcept {
-	TOGO_CONSTRAIN_COMPARABLE(T);
+	TOGO_CONSTRAIN_INTEGRAL(T);
 	return x > y ? x : y;
 }
 
 /// Clamp a value between a minimum and maximum.
 template<class T>
 inline constexpr T clamp(T const x, T const minimum, T const maximum) noexcept {
-	TOGO_CONSTRAIN_COMPARABLE(T);
+	TOGO_CONSTRAIN_INTEGRAL(T);
 	return
 		  x < minimum
 		? minimum

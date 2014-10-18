@@ -49,16 +49,6 @@
 			is_unsigned<T>::value,									\
 			"T is not an unsigned arithmetic type"					\
 		)
-
-	#define TOGO_CONSTRAIN_COMPARABLE(T)							\
-		static_assert(												\
-			is_pointer<T>::value ||									\
-			(														\
-				is_integral<T>::value &&							\
-				is_arithmetic<T>::value								\
-			),														\
-			"T is not a permitted built-in comparable type"			\
-		)
 #else
 	/// Statically assert that type T is of standard layout.
 	#define TOGO_CONSTRAIN_POD(T)
@@ -75,11 +65,6 @@
 	/// Statically assert that type T is a floating-point type.
 	#define TOGO_CONSTRAIN_FLOATING_POINT(T)
 
-	/// Statically assert that type T is an unsigned arithmetic type.
+	/// Statically assert that type T is an unsigned integral type.
 	#define TOGO_CONSTRAIN_UNSIGNED(T)
-
-	/// Statically assert that type T is a built-in comparable type.
-	///
-	/// Comparable types are arithmetic integrals and pointers.
-	#define TOGO_CONSTRAIN_COMPARABLE(T)
 #endif
