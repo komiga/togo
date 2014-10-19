@@ -148,7 +148,7 @@ template<class T> struct is_reference_impl<T&&> : true_type {};
 
 /// Boolean constant of true if T is an lvalue or rvalue reference.
 template<class T>
-using is_reference = is_reference_impl<remove_cv<T>>;
+using is_reference = is_reference_impl<T>;
 
 namespace {
 
