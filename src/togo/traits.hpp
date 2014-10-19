@@ -83,15 +83,19 @@ using is_const = is_const_impl<T>;
 
 namespace {
 
-template<class T>
-struct remove_ref_impl {
-	using type = T;
-};
+template<class T> struct remove_ptr_impl { using type = T; };
+template<class T> struct remove_ptr_impl<T*> { using type = T; };
 
+} // anonymous namespace
+
+/// Remove pointer qualification from type.
 template<class T>
-struct remove_ref_impl<T&> {
-	using type = T;
-};
+using remove_ptr = typename remove_ptr_impl<T>::type;
+
+namespace {
+
+template<class T> struct remove_ref_impl { using type = T; };
+template<class T> struct remove_ref_impl<T&> { using type = T; };
 
 } // anonymous namespace
 
