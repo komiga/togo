@@ -28,14 +28,18 @@ namespace string {
 /// Get size of a NUL-terminated string.
 ///
 /// This does not include the NUL terminator.
-inline unsigned size(char const* cstr) {
+inline unsigned size(char const* cstr, cstr_tag = cstr_tag{}) {
 	return cstr ? std::strlen(cstr) : 0;
 }
 
-/// Get size of a string literal or string array.
+/// Get size of a string literal.
 ///
 /// This does not include the NUL terminator if there is one.
 /// If there are NULs before N, they are counted.
+///
+/// @warning This should only be called for string literals.
+/// The C-string variant should be used for character arrays that may
+/// have empty space before N.
 template<unsigned N>
 inline constexpr unsigned size(char const (&data)[N]) {
 	return N > 0 && data[N - 1] == '\0' ? N - 1 : N;
@@ -168,7 +172,11 @@ inline constexpr StringRef::StringRef(char const* const data, unsigned const siz
 	)
 {}
 
-/// Construct to string literal or string array.
+/// Construct to string literal.
+///
+/// @warning This should only be used for string literals.
+/// The sized or C-string constructors should be used for character
+/// arrays that may have empty space before N.
 template<unsigned N>
 inline constexpr StringRef::StringRef(char const (&data)[N])
 	: StringRef(data, N)

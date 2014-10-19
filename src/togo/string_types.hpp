@@ -17,7 +17,7 @@ namespace togo {
 
 // Forward declarations
 template<class T, unsigned N>
-struct FixedArray;
+struct FixedArray; // external
 
 /**
 	@addtogroup string
