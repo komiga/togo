@@ -25,12 +25,6 @@ namespace togo {
 
 /** @cond INTERNAL */
 
-namespace {
-	template<class> struct ser_match_inner : false_type {};
-	template<class T, unsigned N>
-	struct ser_match_inner<FixedArray<T, N>> : true_type {};
-} // anonymous namespace
-
 template<class Ser, class S, class T, unsigned N>
 inline void
 read(serializer_tag, Ser& ser, SerCollection<S, FixedArray<T, N>>&& value) {

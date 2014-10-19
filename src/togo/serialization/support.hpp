@@ -91,27 +91,27 @@ serializer_cast_safe(T& value) {
 	return value;
 }
 
-/// Make serializable buffer.
+/// Make serial buffer configuration.
 template<class T>
 inline SerBuffer<is_const<T>::value>
 make_ser_buffer(T* const ptr, unsigned const size) {
 	return {ptr, size};
 }
 
-/// Make serializable sequence.
+/// Make serial sequence configuration.
 template<class T>
 inline SerSequence<T>
 make_ser_sequence(T* const ptr, unsigned const size) {
 	return {ptr, size};
 }
 
-/// Make serializable collection.
+/// Make serial collection configuration.
 ///
 /// S is used as the serial form of the size of the collection.
 /// S must be an unsigned integral.
-template<class S, class C>
-inline SerCollection<S, C, is_const<C>::value>
-make_ser_collection(C& value) {
+template<class S, class T>
+inline SerCollection<S, T, is_const<T>::value>
+make_ser_collection(T& value) {
 	return {value};
 }
 
@@ -124,8 +124,8 @@ template<class Ser, class S, class T>
 inline enable_if<!is_binary_serializable<T>::value, void>
 serialize(serializer_tag, Ser& ser, SerSequence<T>&& seq_unsafe) {
 	auto& seq = serializer_cast_safe<Ser>(seq_unsafe);
-	T const* const end = seq.ptr + seq.size;
-	for (T* it = seq.ptr; it != end; ++it) {
+	auto const* const end = seq.ptr + seq.size;
+	for (auto* it = seq.ptr; it != end; ++it) {
 		ser % *it;
 	}
 }
