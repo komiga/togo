@@ -25,7 +25,7 @@ signed main() {
 	XS128A rng{seed};
 	TOGO_LOGF("RNG seed: %ld\n", seed);
 
-	MemoryStream stream{memory::default_allocator(), 256};
+	MemoryStream stream{memory::default_allocator(), 2048};
 	BinaryOutputSerializer oser{stream};
 	BinaryInputSerializer iser{stream};
 
@@ -64,12 +64,12 @@ signed main() {
 		oser % make_ser_collection<u8>(basis);
 		io::seek_to(stream, 0);
 
-		FixedArray<u64, SIZE> read{};
-		iser % make_ser_collection<u8>(read);
-		TOGO_ASSERTE(fixed_array::size(read) == SIZE);
+		FixedArray<u64, SIZE> value{};
+		iser % make_ser_collection<u8>(value);
+		TOGO_ASSERTE(fixed_array::size(value) == SIZE);
 
 		for (unsigned i = 0; i < SIZE; ++i) {
-			TOGO_ASSERTE(read[i] == basis[i]);
+			TOGO_ASSERTE(value[i] == basis[i]);
 		}
 	}
 	stream.clear();
