@@ -167,16 +167,9 @@ operator%(
 template<class Impl, class T>
 inline enable_if<serializer_read_num_defined<Impl, T>() != 1, Impl&>
 operator%(
-	InputSerializer<Impl>& ser,
-	T&& value
+	InputSerializer<Impl>& /*ser*/,
+	T&& /*value*/
 ) {
-	// To show call deduction failures
-	(void)ser; (void)value;
-	#if defined(TOGO_DEBUG)
-		serializer::read(ser.impl(), std::forward<T>(value));
-		return ser.impl();
-	#endif
-
 	static_assert(
 		serializer_read_num_defined<Impl, T>() != 0,
 		"no read-serialize function defined for T with this serializer"
@@ -206,16 +199,9 @@ operator%(
 template<class Impl, class T>
 inline enable_if<serializer_write_num_defined<Impl, T>() != 1, Impl&>
 operator%(
-	OutputSerializer<Impl>& ser,
-	T const& value
+	OutputSerializer<Impl>& /*ser*/,
+	T const& /*value*/
 ) {
-	// To show call deduction failures
-	(void)ser; (void)value;
-	#if defined(TOGO_DEBUG)
-		serializer::write(ser.impl(), value);
-		return ser.impl();
-	#endif
-
 	static_assert(
 		serializer_write_num_defined<Impl, T>() != 0,
 		"no write-serialize function defined for T with this serializer"
