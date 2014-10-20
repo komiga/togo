@@ -1,5 +1,6 @@
 
 #include <togo/assert.hpp>
+#include <togo/utility.hpp>
 #include <togo/log.hpp>
 #include <togo/fixed_array.hpp>
 #include <togo/array.hpp>
@@ -12,6 +13,7 @@
 #include <togo/serialization/support.hpp>
 #include <togo/serialization/fixed_array.hpp>
 #include <togo/serialization/array.hpp>
+#include <togo/serialization/string.hpp>
 #include <togo/binary_serializer.hpp>
 
 #include "../common/helpers.hpp"
@@ -91,6 +93,35 @@ signed main() {
 		for (unsigned i = 0; i < SIZE; ++i) {
 			TOGO_ASSERTE(value[i] == basis[i]);
 		}
+	}
+	stream.clear();
+
+	// String (FixedArray<char, N>)
+	{
+		static constexpr char const BASIS[]{"value"};
+		FixedArray<char, array_extent(BASIS)> basis{};
+		string::copy(basis, BASIS);
+		oser % make_ser_string<u32>(basis);
+		io::seek_to(stream, 0);
+
+		decltype(basis) value{};
+		iser % make_ser_string<u32>(value);
+		TOGO_ASSERTE(string::compare_equal(value, basis));
+	}
+	stream.clear();
+
+	// String (char[N])
+	{
+		char basis[]{"value"};
+		oser % make_ser_string<u32>(basis);
+		io::seek_to(stream, 0);
+
+		decltype(basis) value{};
+		iser % make_ser_string<u32>(value);
+
+		// NB: non-C-string StringRefs here OK due to
+		// capacity == size of the strings
+		TOGO_ASSERTE(string::compare_equal(value, basis));
 	}
 	stream.clear();
 
