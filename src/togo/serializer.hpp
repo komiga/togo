@@ -118,25 +118,25 @@ inline constexpr unsigned serializer_write_num_defined() {
 namespace serializer {
 
 template<class Ser, class T>
-inline enable_if<has_serializer_serialize<Ser, T>::value>
+inline enable_if<has_serializer_serialize<Ser, T>::value, void>
 read(Ser& ser, T&& value) {
 	serialize(serializer_tag{}, ser, std::forward<T>(value));
 }
 
 template<class Ser, class T>
-inline enable_if<has_serializer_read<Ser, T>::value>
+inline enable_if<has_serializer_read<Ser, T>::value, void>
 read(Ser& ser, T&& value) {
 	read(serializer_tag{}, ser, std::forward<T>(value));
 }
 
 template<class Ser, class T>
-inline enable_if<has_serializer_serialize<Ser, T>::value>
+inline enable_if<has_serializer_serialize<Ser, T>::value, void>
 write(Ser& ser, T const& value) {
 	serialize(serializer_tag{}, ser, const_cast<remove_cvr<T>&>(value));
 }
 
 template<class Ser, class T>
-inline enable_if<has_serializer_write<Ser, T>::value>
+inline enable_if<has_serializer_write<Ser, T>::value, void>
 write(Ser& ser, T const& value) {
 	write(serializer_tag{}, ser, value);
 }
