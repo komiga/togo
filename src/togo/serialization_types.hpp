@@ -62,6 +62,19 @@ struct SerCollection {
 	value_type& ref;
 };
 
+/// Serial configuration for a string.
+template<class S, class T, bool C = false>
+struct SerString {
+	static_assert(
+		is_unsigned<S>::value,
+		"size type (S) must be an unsigned integral type"
+	);
+
+	using value_type = type_if<C, T const, T>;
+
+	value_type& ref;
+};
+
 /**
 	@addtogroup serializer
 	@{

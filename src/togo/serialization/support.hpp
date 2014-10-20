@@ -115,6 +115,16 @@ make_ser_collection(T& value) {
 	return {value};
 }
 
+/// Make serial string configuration.
+///
+/// S is used as the serial form of the size of the collection.
+/// S must be an unsigned integral.
+template<class S, class T>
+inline SerString<S, T, is_const<T>::value>
+make_ser_string(T& value) {
+	return {value};
+}
+
 /** @cond INTERNAL */
 
 // NB: Binary-serializable sequences are handled specially in the
