@@ -70,7 +70,7 @@ struct enable_binary_serialization : false_type {};
 template<class T>
 using is_binary_serializable_explicitly = enable_binary_serialization<remove_cv<T>>;
 
-/// Boolean constant of true if T is a arithmetic or explicitly
+/// Boolean constant of true if T is arithmetic or explicitly
 /// binary serializable.
 template<class T>
 using is_binary_serializable = constant_type<
@@ -110,7 +110,7 @@ make_ser_sequence(T* const ptr, unsigned const size) {
 /// S is used as the serial form of the size of the collection.
 /// S must be an unsigned integral.
 template<class S, class T>
-inline SerCollection<S, T, is_const<T>::value>
+inline SerCollection<S, remove_cv<T>, is_const<T>::value>
 make_ser_collection(T& value) {
 	return {value};
 }
@@ -120,7 +120,7 @@ make_ser_collection(T& value) {
 /// S is used as the serial form of the size of the collection.
 /// S must be an unsigned integral.
 template<class S, class T>
-inline SerString<S, T, is_const<T>::value>
+inline SerString<S, remove_cv<T>, is_const<T>::value>
 make_ser_string(T& value) {
 	return {value};
 }
