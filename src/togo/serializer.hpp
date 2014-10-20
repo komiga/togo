@@ -47,7 +47,7 @@ namespace {
 template<class Ser, class T>
 struct has_serializer_serialize {
 	using ser_type = remove_cvr<Ser>;
-	using unimpl_capture_lvalue = is_same<
+	using unimpl_capture = is_same<
 		detail::unimplemented,
 		decltype(serialize(
 			serializer_tag{},
@@ -55,18 +55,7 @@ struct has_serializer_serialize {
 			std::declval<T&>()
 		))
 	>;
-	using unimpl_capture_rvalue = is_same<
-		detail::unimplemented,
-		decltype(serialize(
-			serializer_tag{},
-			std::declval<ser_type&>(),
-			std::declval<T&&>()
-		))
-	>;
-	static constexpr bool const value =
-		!unimpl_capture_lvalue::value ||
-		!unimpl_capture_rvalue::value
-	;
+	static constexpr bool const value = !unimpl_capture::value;
 };
 
 template<class Ser, class T>
