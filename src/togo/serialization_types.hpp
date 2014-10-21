@@ -14,6 +14,8 @@
 #include <togo/types.hpp>
 #include <togo/traits.hpp>
 
+#include <type_traits>
+
 namespace togo {
 
 /**
@@ -35,6 +37,22 @@ struct SerBuffer {
 
 	value_type ptr;
 	unsigned size;
+};
+
+/// Serial configuration for an arithmetic or enum value.
+template<class S, class T>
+struct SerProxy {
+	static_assert(
+		is_arithmetic<S>::value,
+		"serial type (S) must be an arithmetic type"
+	);
+	static_assert(
+		is_arithmetic<T>::value ||
+		std::is_enum<T>::value,
+		"value type (T) must be an arithmetic or enum type"
+	);
+
+	T& ref;
 };
 
 /// Serial configuration for a sequence.

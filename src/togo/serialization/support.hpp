@@ -98,6 +98,16 @@ make_ser_buffer(T* const ptr, unsigned const size) {
 	return {ptr, size};
 }
 
+/// Make serial proxy configuration.
+///
+/// S is used as the serial form of the value.
+/// S must be an arithmetic value.
+template<class S, class T>
+inline SerProxy<S, T>
+make_ser_proxy(T& value) {
+	return {value};
+}
+
 /// Make serial sequence configuration.
 template<class T>
 inline SerSequence<T>
@@ -126,6 +136,30 @@ make_ser_string(T& value) {
 }
 
 /** @cond INTERNAL */
+
+// SerProxy
+
+template<class Ser, class S, class T>
+inline void read(serializer_tag, Ser& ser, SerProxy<S, T>&& value) {
+	S serial{};
+	ser % serial;
+	value.ref = static_cast<T>(serial);
+}
+
+template<class Ser, class S, class T>
+inline void write(serializer_tag, Ser& ser, SerProxy<S, T> const& value) {
+	ser % static_cast<S>(value.ref);
+}
+
+template<class Ser, class T>
+inline enable_if<std::is_enum<T>::value, void>
+serialize(serializer_tag, Ser& ser, T& value_unsafe) {
+	using base_type = typename std::underlying_type<remove_cv<T>>::type;
+	auto& value = serializer_cast_safe<Ser>(value_unsafe);
+	ser % make_ser_proxy<base_type>(value);
+}
+
+// SerSequence
 
 // NB: Binary-serializable sequences are handled specially in the
 // serializer
