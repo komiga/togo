@@ -31,7 +31,7 @@ signed main() {
 	BinaryOutputSerializer oser{stream};
 	BinaryInputSerializer iser{stream};
 
-	// Primitives
+	// Arithmetic
 	{
 		u64 const basis = rng_next(rng);
 		oser % basis;
@@ -51,6 +51,35 @@ signed main() {
 
 		u64 value = 0;
 		iser % make_ser_buffer(&value, sizeof(u64));
+		TOGO_ASSERTE(value == basis);
+	}
+	stream.clear();
+
+	// Proxy
+	{
+		IntUDist<u32> udist{0, static_cast<u32>(~0)};
+		u64 const basis = rng_next_udist(rng, udist);
+		oser % make_ser_proxy<u32>(basis);
+		io::seek_to(stream, 0);
+
+		u64 value = 0;
+		iser % make_ser_proxy<u32>(value);
+		TOGO_ASSERTE(value == basis);
+	}
+	stream.clear();
+
+	// Enum (implicit proxy)
+	{
+		enum class E : u32 {
+			I = 0,
+			V = 0xCF9ABE2E,
+		};
+		E const basis = E::V;
+		oser % basis;
+		io::seek_to(stream, 0);
+
+		E value = E::I;
+		iser % value;
 		TOGO_ASSERTE(value == basis);
 	}
 	stream.clear();
