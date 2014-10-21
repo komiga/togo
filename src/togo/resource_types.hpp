@@ -91,6 +91,12 @@ enum : ResourceNameHash {
 	RES_NAME_NULL = ""_resource_name,
 };
 
+/// Resource package names.
+enum : ResourcePackageNameHash {
+	/// Null name.
+	PKG_NAME_NULL = ""_resource_package_name,
+};
+
 /// Resource path parts.
 struct ResourcePathParts {
 	struct Tag {
