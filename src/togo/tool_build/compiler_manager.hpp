@@ -77,6 +77,14 @@ void clear_packages(
 	CompilerManager& cm
 );
 
+/// Find lookup node by resource name.
+bool get_node(
+	CompilerManager& cm,
+	ResourceNameHash name_hash,
+	PackageCompiler*& package,
+	PackageCompiler::LookupNode*& node
+);
+
 /** @} */ // end of doc-group tool_build_compiler_manager
 
 } // namespace compiler_manager

@@ -116,5 +116,29 @@ void compiler_manager::clear_packages(
 	array::clear(cm._packages);
 }
 
+bool compiler_manager::get_node(
+	CompilerManager& cm,
+	ResourceNameHash name_hash,
+	PackageCompiler*& package,
+	PackageCompiler::LookupNode*& node
+) {
+	PackageCompiler::LookupNode* it_node;
+	for (
+		auto* it_pkg = array::end(cm._packages) - 1;
+		it_pkg >= array::begin(cm._packages);
+		--it_pkg
+	) {
+		it_node = package_compiler::get_node(**it_pkg, name_hash);
+		if (it_node) {
+			package = *it_pkg;
+			node = it_node;
+			return true;
+		}
+	}
+	package = nullptr;
+	node = nullptr;
+	return false;
+}
+
 } // namespace tool_build
 } // namespace togo
