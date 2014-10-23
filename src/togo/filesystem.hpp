@@ -55,6 +55,12 @@ bool is_file(StringRef const& path);
 /// Check if a path is a directory.
 bool is_directory(StringRef const& path);
 
+/// Get the last-modified time in seconds since the POSIX epoch.
+///
+/// Returns 0 on error. Only time-travelers would have a legitimate
+/// reason for such a timestamp, and they are not welcome here.
+u64 time_last_modified(StringRef const& path);
+
 /// Create a file.
 ///
 /// If the file already exists, this will fail.

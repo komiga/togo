@@ -75,7 +75,7 @@ bool filesystem::set_working_dir(StringRef const& path) {
 	return true;
 }
 
-inline static bool is_type_wrapper(
+inline static bool stat_wrapper(
 	StringRef const& path,
 	struct ::stat& stat_buf
 ) {
@@ -83,7 +83,7 @@ inline static bool is_type_wrapper(
 	if (err != 0) {
 		if (errno != ENOENT) {
 			TOGO_LOG_DEBUGF(
-				"is_type_wrapper: errno = %d, %s\n",
+				"stat_wrapper: errno = %d, %s\n",
 				errno, std::strerror(errno)
 			);
 		}
@@ -94,7 +94,7 @@ inline static bool is_type_wrapper(
 
 bool filesystem::is_file(StringRef const& path) {
 	struct ::stat stat_buf{};
-	if (!is_type_wrapper(path, stat_buf)) {
+	if (!stat_wrapper(path, stat_buf)) {
 		return false;
 	}
 	return S_ISREG(stat_buf.st_mode);
@@ -102,10 +102,18 @@ bool filesystem::is_file(StringRef const& path) {
 
 bool filesystem::is_directory(StringRef const& path) {
 	struct ::stat stat_buf{};
-	if (!is_type_wrapper(path, stat_buf)) {
+	if (!stat_wrapper(path, stat_buf)) {
 		return false;
 	}
 	return S_ISDIR(stat_buf.st_mode);
+}
+
+u64 filesystem::time_last_modified(StringRef const& path) {
+	struct ::stat stat_buf{};
+	if (!stat_wrapper(path, stat_buf)) {
+		return 0;
+	}
+	return static_cast<u64>(stat_buf.st_ctime);
 }
 
 bool filesystem::create_file(StringRef const& path) {
