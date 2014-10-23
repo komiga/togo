@@ -151,7 +151,7 @@ signed main() {
 	}
 
 	{
-		KVS v{null_tag{}};
+		KVS v{};
 		// kvs::find() short-circuits when KVS is non-collection
 		TOGO_ASSERTE(kvs::find(v, "x") == nullptr);
 	}
