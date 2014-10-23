@@ -74,7 +74,7 @@ bool parse_args(
 		} else if (k_current == &k_options) {
 			// Command reached; switch to parse leading options
 			k_current = &k_command_options;
-			kvs::set_name(k_command, StringRef{str, unsigned_cast(pos)} );
+			kvs::set_name(k_command, StringRef{str, unsigned_cast(pos)});
 		} else {
 			// Undashed argument to command
 			k_current = &k_command;

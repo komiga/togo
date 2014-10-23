@@ -145,7 +145,7 @@ void* resource_manager::load_resource(
 		}
 		StringRef const pkg_root_ref{resource_package::root(*pkg)};
 		StringRef const rpath_ref{node->value.path, node->value.path_size};
-		IReader* stream = resource_package::open_resource_stream(
+		IReader* const stream = resource_package::open_resource_stream(
 			*pkg, node
 		);
 		if (!stream) {

@@ -10,7 +10,7 @@
 #include <togo/external/dlmalloc_import.hpp>
 
 #include <new>
-#include <cstdio>
+// #include <cstdio>
 
 // TODO: ScratchAllocator: circular buffer temp allocator backed
 // by default_allocator
