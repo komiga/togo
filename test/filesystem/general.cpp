@@ -3,6 +3,7 @@
 #include <togo/log.hpp>
 #include <togo/fixed_array.hpp>
 #include <togo/string.hpp>
+#include <togo/system.hpp>
 #include <togo/filesystem.hpp>
 
 using namespace togo;
@@ -49,12 +50,20 @@ signed main() {
 	TOGO_ASSERTE(filesystem::create_directory(TEST_DIR));
 	TOGO_ASSERTE(filesystem::is_directory(TEST_DIR));
 	TOGO_ASSERTE(!filesystem::create_directory(TEST_DIR));
+	TOGO_ASSERTE(
+		filesystem::time_last_modified(TEST_DIR) >
+		system::secs_since_epoch() - 2
+	);
 
 	// File creation
 	TOGO_ASSERTE(!filesystem::is_file(TEST_FILE));
 	TOGO_ASSERTE(filesystem::create_file(TEST_FILE));
 	TOGO_ASSERTE(filesystem::is_file(TEST_FILE));
 	TOGO_ASSERTE(!filesystem::create_file(TEST_FILE));
+	TOGO_ASSERTE(
+		filesystem::time_last_modified(TEST_FILE) >
+		system::secs_since_epoch() - 2
+	);
 
 	// File removal
 	TOGO_ASSERTE(filesystem::remove_file(TEST_FILE));
