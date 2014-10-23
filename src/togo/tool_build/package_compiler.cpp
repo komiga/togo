@@ -16,6 +16,7 @@
 #include <togo/serializer.hpp>
 #include <togo/serialization/support.hpp>
 #include <togo/serialization/string.hpp>
+#include <togo/serialization/array.hpp>
 #include <togo/binary_serializer.hpp>
 #include <togo/kvs.hpp>
 #include <togo/resource.hpp>
@@ -27,6 +28,41 @@ namespace tool_build {
 enum : u32 {
 	PKG_MANIFEST_FORMAT_VERSION = 1u,
 };
+
+template<class Ser>
+inline void read(serializer_tag, Ser& ser, ResourceMetadata& value) {
+	ser % value.type;
+	fixed_array::clear(value.path);
+	if (value.type != RES_TYPE_NULL) {
+		ser
+			% value.format_version
+			% value.name_hash
+			% value.last_compiled
+			% value.tags_collated
+			% make_ser_string<u8>(value.path)
+		;
+	} else {
+		// Empty slot
+		value.format_version = 0;
+		value.name_hash = RES_NAME_NULL;
+		value.last_compiled = 0;
+		value.tags_collated = hash::IDENTITY64;
+	}
+}
+
+template<class Ser>
+inline void write(serializer_tag, Ser& ser, ResourceMetadata const& value) {
+	ser % value.type;
+	if (value.type != RES_TYPE_NULL) {
+		ser
+			% value.format_version
+			% value.name_hash
+			% value.last_compiled
+			% value.tags_collated
+			% make_ser_string<u8>(value.path)
+		;
+	}
+}
 
 PackageCompiler::PackageCompiler(
 	StringRef const& path,
@@ -106,9 +142,8 @@ bool package_compiler::create_stub(
 	}
 	BinaryOutputSerializer ser{stream};
 	ser
-		// format_version
 		% u32{PKG_MANIFEST_FORMAT_VERSION}
-		// num_entries
+		// number of entries
 		% u32{0u}
 	;
 	stream.close();
@@ -174,34 +209,18 @@ void package_compiler::read(
 		path.size, path.data, format_version
 	);
 
-	u32 num_entries = 0;
-	ser % num_entries;
-	array::resize(pkg._metadata, num_entries);
-
-	for (u32 id = 1; id <= num_entries; ++id) {
-		ResourceMetadata& rmd = pkg._metadata[id - 1];
-		ser % rmd.type;
-		if (rmd.type == RES_TYPE_NULL) {
-			// Empty slot
-			rmd.id = 0;
-			rmd.format_version = 0;
-			rmd.name_hash = RES_NAME_NULL;
-			rmd.last_compiled = 0;
-			rmd.tags_collated = hash::IDENTITY64;
-			fixed_array::clear(rmd.path);
-			continue;
-		}
-
-		rmd.id = id;
-		ser
-			% rmd.format_version
-			% rmd.name_hash
-			% rmd.last_compiled
-			% rmd.tags_collated
-			% make_ser_string<u8>(rmd.path)
-		;
-	}
+	ser % make_ser_collection<u32>(pkg._metadata);
 	stream.close();
+
+	for (u32 i = 0; i < array::size(pkg._metadata); ++i) {
+		ResourceMetadata& rmd = pkg._metadata[i];
+		if (rmd.type != RES_TYPE_NULL) {
+			rmd.id = i + 1;
+			hash_map::push(pkg._lookup, rmd.name_hash, rmd.id);
+		} else {
+			rmd.id = 0;
+		}
+	}
 	}
 }
 
