@@ -39,11 +39,18 @@ inline ResourcePackageNameHash name_hash(
 	return pkg._name_hash;
 }
 
-/// Get name hash.
+/// Get name.
 inline StringRef name(
 	PackageCompiler const& pkg
 ) {
 	return {pkg._name};
+}
+
+/// Get path.
+inline StringRef path(
+	PackageCompiler const& pkg
+) {
+	return {pkg._path};
 }
 
 /// Find lookup node by resource name.
