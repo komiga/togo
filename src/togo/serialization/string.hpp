@@ -31,8 +31,8 @@ template<class Ser, class S, unsigned N>
 inline void
 read(serializer_tag, Ser& ser, SerString<S, FixedArray<char, N>>&& value) {
 	static_assert(
-		std::numeric_limits<S>::max() >= N,
-		"S is smaller than the fixed capacity of this collection"
+		std::numeric_limits<S>::max() >= N - 1,
+		"S is smaller than the fixed capacity of this string"
 	);
 
 	auto& str = value.ref;
@@ -52,8 +52,8 @@ template<class Ser, class S, unsigned N, bool C>
 inline void
 write(serializer_tag, Ser& ser, SerString<S, FixedArray<char, N>, C> const& value) {
 	static_assert(
-		std::numeric_limits<S>::max() >= N,
-		"S is smaller than the fixed capacity of this collection"
+		std::numeric_limits<S>::max() >= N - 1,
+		"S is smaller than the fixed capacity of this string"
 	);
 
 	auto const& str = value.ref;
@@ -74,8 +74,8 @@ template<class Ser, class S, unsigned N>
 inline void
 read(serializer_tag, Ser& ser, SerString<S, char[N]>&& value) {
 	static_assert(
-		std::numeric_limits<S>::max() >= N,
-		"S is smaller than the fixed capacity of this collection"
+		std::numeric_limits<S>::max() >= N - 1,
+		"S is smaller than the fixed capacity of this string"
 	);
 
 	auto& str = value.ref;
@@ -92,8 +92,8 @@ template<class Ser, class S, unsigned N, bool C>
 inline void
 write(serializer_tag, Ser& ser, SerString<S, char[N], C> const& value) {
 	static_assert(
-		std::numeric_limits<S>::max() >= N,
-		"S is smaller than the fixed capacity of this collection"
+		std::numeric_limits<S>::max() >= N - 1,
+		"S is smaller than the fixed capacity of this string"
 	);
 
 	auto const& str = value.ref;

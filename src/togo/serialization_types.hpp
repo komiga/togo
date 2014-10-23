@@ -81,6 +81,9 @@ struct SerCollection {
 };
 
 /// Serial configuration for a string.
+///
+/// This assumes string data is NUL-terminated. The max value of S
+/// can be one less than the capacity of the string.
 template<class S, class T, bool C = false>
 struct SerString {
 	static_assert(
