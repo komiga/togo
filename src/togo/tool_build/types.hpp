@@ -56,7 +56,7 @@ struct ResourceMetadata {
 /// Resource compiler.
 struct ResourceCompiler {
 	/// Compile a resource.
-	using compile_func_type = void (
+	using compile_func_type = bool (
 		CompilerManager& /*manager*/,
 		PackageCompiler& /*package*/,
 		ResourceMetadata const& /*metadata*/,
