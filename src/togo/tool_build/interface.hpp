@@ -69,8 +69,8 @@ void write_project(
 /// Run tool with main() arguments.
 bool run(
 	Interface& interface,
-	KVS const& k_command,
-	KVS const& k_command_options
+	KVS const& k_command_options,
+	KVS const& k_command
 );
 
 /// Run help command.
@@ -119,8 +119,8 @@ bool command_create(
 /// Specification: `create <name>`.
 bool command_create(
 	Interface& interface,
-	KVS const& k_command,
-	KVS const& k_command_options
+	KVS const& k_command_options,
+	KVS const& k_command
 );
 
 /** @} */ // end of doc-group tool_build_interface
