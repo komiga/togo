@@ -100,14 +100,14 @@ enum : ResourcePackageNameHash {
 /// Resource path parts.
 struct ResourcePathParts {
 	struct Tag {
-		StringRef name{null_tag{}};
+		StringRef name{};
 		hash32 hash;
 	};
 
 	ResourceType type_hash;
 	ResourceNameHash name_hash;
-	StringRef type{null_tag{}};
-	StringRef name{null_tag{}};
+	StringRef type{};
+	StringRef name{};
 	FixedArray<Tag, 8> tags;
 };
 

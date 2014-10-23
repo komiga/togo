@@ -24,7 +24,7 @@ signed main() {
 
 	{
 		FixedArray<char, 1> const fa_2;
-		StringRef const null_r_2{null_tag{}};
+		StringRef const null_r_2{};
 		StringRef const lit_r_2{""};
 		StringRef const cstr_r_2{"", cstr_tag{}};
 		StringRef const fa_r_2{fa_2};
@@ -50,7 +50,7 @@ signed main() {
 			TOGO_ASSERTE(fixed_array::size(dest__) == value__.size + 1); \
 			TOGO_ASSERTE(string::compare_equal(dest__, value__))
 
-		StringRef const empty1{null_tag{}};
+		StringRef const empty1{};
 		StringRef const empty2{""};
 		StringRef const value1{"abc"};
 

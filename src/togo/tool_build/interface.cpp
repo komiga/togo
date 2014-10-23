@@ -219,7 +219,7 @@ bool interface::command_help(
 	KVS const& /*k_command_options*/,
 	KVS const& k_command
 ) {
-	StringRef name{null_tag{}};
+	StringRef name{};
 	if (kvs::any(k_command)) {
 		TOGO_ASSERTE(kvs::is_string(k_command[0]));
 		name = kvs::string_ref(k_command[0]);

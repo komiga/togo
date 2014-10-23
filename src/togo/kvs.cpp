@@ -91,12 +91,12 @@ KVS const* kvs::find(KVS const& kvs, StringRef const& name) {
 
 KVS* kvs::find(KVS& kvs, KVSNameHash const name_hash) {
 	return const_cast<KVS*>(
-		kvs::find_impl(kvs, StringRef{null_tag{}}, name_hash)
+		kvs::find_impl(kvs, StringRef{}, name_hash)
 	);
 }
 
 KVS const* kvs::find(KVS const& kvs, KVSNameHash const name_hash) {
-	return kvs::find_impl(kvs, StringRef{null_tag{}}, name_hash);
+	return kvs::find_impl(kvs, StringRef{}, name_hash);
 }
 
 bool kvs::set_type(KVS& kvs, KVSType const type) {

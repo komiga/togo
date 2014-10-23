@@ -151,7 +151,7 @@ inline unsigned trim_trailing_slashes(FixedArray<char, N>& string) {
 } // namespace string
 
 /// Construct to null/empty.
-inline StringRef::StringRef(null_tag)
+inline StringRef::StringRef()
 	: data(nullptr)
 	, size(0)
 {}

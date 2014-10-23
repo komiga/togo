@@ -31,8 +31,8 @@ bool resource::parse_path(
 
 	pp.type_hash = RES_TYPE_NULL;
 	pp.name_hash = RES_NAME_NULL;
-	pp.type = StringRef{null_tag{}};
-	pp.name = StringRef{null_tag{}};
+	pp.type = StringRef{};
+	pp.name = StringRef{};
 	fixed_array::clear(pp.tags);
 
 	unsigned ext_i = NOT_FOUND;

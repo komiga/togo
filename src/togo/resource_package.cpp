@@ -67,8 +67,8 @@ void resource_package::load_manifest(
 
 	FixedArray<char, array_extent(&ResourcePackage::Entry::path)> full_path;
 	ResourcePathParts pparts;
-	StringRef rpath_ref{null_tag{}};
-	StringRef full_path_ref{null_tag{}};
+	StringRef rpath_ref{};
+	StringRef full_path_ref{};
 	bool parse_path_success;
 	string::copy(full_path, pkg._root);
 	fixed_array::back(full_path) = '/';

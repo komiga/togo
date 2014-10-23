@@ -31,14 +31,13 @@ struct StringRef {
 	/// String size (not including terminating NUL if there is one).
 	unsigned size;
 
-	StringRef() = delete;
 
 	StringRef(StringRef const&) = default;
 	StringRef& operator=(StringRef const&) = default;
 	StringRef(StringRef&&) = default;
 	StringRef& operator=(StringRef&&) = default;
 
-	StringRef(null_tag);
+	StringRef();
 	StringRef(char const* const cstr, cstr_tag);
 	constexpr StringRef(char const* const data, unsigned const size);
 	template<unsigned N>
