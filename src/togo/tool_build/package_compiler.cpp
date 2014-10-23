@@ -224,5 +224,47 @@ void package_compiler::read(
 	}
 }
 
+bool package_compiler::write(
+	PackageCompiler& pkg
+) {
+	StringRef const path{pkg._path};
+	TOGO_ASSERTF(
+		filesystem::is_directory(path),
+		"'%.*s': package path does not exist",
+		path.size, path.data
+	);
+	WorkingDirScope dir_scope{path};
+
+	{// Write properties
+	KVS k_properties{KVSType::node};
+	kvs::push_back(k_properties, KVS{"name", pkg._name});
+	if (!kvs::write_file(k_properties, ".package/properties")) {
+		TOGO_LOG_ERRORF(
+			"failed to write properties for package at '%.*s'\n",
+			path.size, path.data
+		);
+		return false;
+	}}
+
+	{// Write manifest
+	FileWriter stream{};
+	if (!stream.open(".package/manifest", false)) {
+		TOGO_LOG_ERRORF(
+			"failed to open manifest for package at '%.*s'\n",
+			path.size, path.data
+		);
+		return false;
+	}
+
+	BinaryOutputSerializer ser{stream};
+	ser
+		% u32{PKG_MANIFEST_FORMAT_VERSION}
+		% make_ser_collection<u32>(pkg._metadata);
+	;
+	stream.close();
+	}
+	return true;
+}
+
 } // namespace tool_build
 } // namespace togo

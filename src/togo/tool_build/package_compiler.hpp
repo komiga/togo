@@ -64,6 +64,11 @@ void read(
 	PackageCompiler& pkg
 );
 
+/// Write package data.
+bool write(
+	PackageCompiler& pkg
+);
+
 /** @} */ // end of doc-group tool_build_package_compiler
 
 } // namespace package_compiler
