@@ -14,6 +14,10 @@
 #include <togo/filesystem.hpp>
 #include <togo/io.hpp>
 #include <togo/file_io.hpp>
+#include <togo/serializer.hpp>
+#include <togo/serialization/support.hpp>
+#include <togo/serialization/string.hpp>
+#include <togo/binary_serializer.hpp>
 #include <togo/kvs.hpp>
 #include <togo/resource.hpp>
 #include <togo/tool_build/package_compiler.hpp>
@@ -93,10 +97,13 @@ bool package_compiler::create_stub(
 		);
 		return false;
 	}
-	TOGO_ASSERTE(
-		io::write_value(stream, u32{PKG_MANIFEST_FORMAT_VERSION}) &&
-		io::write_value(stream, u32{0u})
-	);
+	BinaryOutputSerializer ser{stream};
+	ser
+		// format_version
+		% u32{PKG_MANIFEST_FORMAT_VERSION}
+		// num_entries
+		% u32{0u}
+	;
 	stream.close();
 	}
 	return true;
@@ -144,22 +151,22 @@ void package_compiler::read(
 		path.size, path.data
 	);
 
+	BinaryInputSerializer ser{stream};
 	u32 format_version = 0;
-	u32 num_entries = 0;
-	TOGO_ASSERTE(io::read_value(stream, format_version));
+	ser % format_version;
 	TOGO_ASSERTF(
 		format_version == PKG_MANIFEST_FORMAT_VERSION,
 		"'%.*s': manifest version %u unsupported",
 		path.size, path.data, format_version
 	);
 
-	TOGO_ASSERTE(io::read_value(stream, num_entries));
+	u32 num_entries = 0;
+	ser % num_entries;
 	array::resize(pkg._metadata, num_entries);
 
-	u8 path_size = 0;
 	for (u32 id = 1; id <= num_entries; ++id) {
 		ResourceMetadata& rmd = pkg._metadata[id - 1];
-		TOGO_ASSERTE(io::read_value(stream, rmd.type));
+		ser % rmd.type;
 		if (rmd.type == RES_TYPE_NULL) {
 			// Empty slot
 			rmd.id = 0;
@@ -172,16 +179,13 @@ void package_compiler::read(
 		}
 
 		rmd.id = id;
-		TOGO_ASSERTE(
-			io::read_value(stream, rmd.format_version) &&
-			io::read_value(stream, rmd.name_hash) &&
-			io::read_value(stream, rmd.last_compiled) &&
-			io::read_value(stream, rmd.tags_collated) &&
-			io::read_value(stream, path_size)
-		);
-		fixed_array::resize(rmd.path, path_size + 1);
-		TOGO_ASSERTE(io::read(stream, fixed_array::begin(rmd.path), path_size));
-		fixed_array::back(rmd.path) = '\0';
+		ser
+			% rmd.format_version
+			% rmd.name_hash
+			% rmd.last_compiled
+			% rmd.tags_collated
+			% make_ser_string<u8>(rmd.path)
+		;
 	}
 	stream.close();
 	}
