@@ -49,9 +49,21 @@ bool has_compiler(
 	ResourceType type
 );
 
+/// Get resource compiler.
+ResourceCompiler const* get_compiler(
+	CompilerManager const& cm,
+	ResourceType type
+);
+
 /// Check if package exists.
 bool has_package(
 	CompilerManager const& cm,
+	ResourcePackageNameHash name_hash
+);
+
+/// Get package.
+PackageCompiler* get_package(
+	CompilerManager& cm,
 	ResourcePackageNameHash name_hash
 );
 

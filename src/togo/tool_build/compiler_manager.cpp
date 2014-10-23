@@ -56,6 +56,13 @@ bool compiler_manager::has_compiler(
 	return hash_map::has(cm._compilers, type);
 }
 
+ResourceCompiler const* compiler_manager::get_compiler(
+	CompilerManager const& cm,
+	ResourceType const type
+) {
+	return hash_map::get(cm._compilers, type);
+}
+
 bool compiler_manager::has_package(
 	CompilerManager const& cm,
 	ResourcePackageNameHash const name_hash
@@ -66,6 +73,18 @@ bool compiler_manager::has_package(
 		}
 	}
 	return false;
+}
+
+PackageCompiler* compiler_manager::get_package(
+	CompilerManager& cm,
+	ResourcePackageNameHash const name_hash
+) {
+	for (auto* pkg : cm._packages) {
+		if (pkg->_name_hash == name_hash) {
+			return pkg;
+		}
+	}
+	return nullptr;
 }
 
 ResourcePackageNameHash compiler_manager::add_package(
