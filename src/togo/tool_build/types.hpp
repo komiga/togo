@@ -78,6 +78,8 @@ struct ResourceCompiler {
 
 /// Package compiler.
 struct PackageCompiler {
+	using LookupNode = HashMapNode<ResourceNameHash, u32>;
+
 	// TODO: Dependency tracking
 	ResourcePackageNameHash _name_hash;
 	HashMap<ResourceNameHash, u32> _lookup;
