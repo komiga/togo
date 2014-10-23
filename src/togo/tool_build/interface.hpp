@@ -92,14 +92,17 @@ bool command_help(
 
 /// Run list command.
 ///
-/// Lists packages in the project.
+/// Lists packages in the project or resources in packages.
 bool command_list(
-	Interface const& interface
+	Interface const& interface,
+	bool list_resources,
+	StringRef const* package_names,
+	unsigned num_package_names
 );
 
 /// Run list command with KVS.
 ///
-/// Specification: `list`.
+/// Specification: `list [-r|--resources || [<package_name> ...]]`.
 bool command_list(
 	Interface const& interface,
 	KVS const& k_command_options,
