@@ -45,17 +45,39 @@ namespace togo {
 namespace {
 
 template<class Ser, class T>
-struct has_serializer_serialize {
+struct has_serializer_serialize_lvalue {
 	using ser_type = remove_cvr<Ser>;
 	using unimpl_capture = is_same<
 		detail::unimplemented,
 		decltype(serialize(
 			serializer_tag{},
 			std::declval<ser_type&>(),
-			std::declval<T&>()
+			std::declval<remove_cvr<T>&>()
 		))
 	>;
 	static constexpr bool const value = !unimpl_capture::value;
+};
+
+template<class Ser, class T>
+struct has_serializer_serialize_rvalue {
+	using ser_type = remove_cvr<Ser>;
+	using unimpl_capture = is_same<
+		detail::unimplemented,
+		decltype(serialize(
+			serializer_tag{},
+			std::declval<ser_type&>(),
+			std::declval<T&&>()
+		))
+	>;
+	static constexpr bool const value = !unimpl_capture::value;
+};
+
+template<class Ser, class T>
+struct has_serializer_serialize {
+	static constexpr bool const value =
+		has_serializer_serialize_lvalue<Ser, T>::value ||
+		has_serializer_serialize_rvalue<Ser, T>::value
+	;
 };
 
 template<class Ser, class T>
@@ -130,7 +152,13 @@ read(Ser& ser, T&& value) {
 }
 
 template<class Ser, class T>
-inline enable_if<has_serializer_serialize<Ser, T>::value, void>
+inline enable_if<has_serializer_serialize_rvalue<Ser, T>::value, void>
+write(Ser& ser, T&& value) {
+	serialize(serializer_tag{}, ser, std::forward<T>(value));
+}
+
+template<class Ser, class T>
+inline enable_if<has_serializer_serialize_lvalue<Ser, T>::value, void>
 write(Ser& ser, T const& value) {
 	serialize(serializer_tag{}, ser, const_cast<remove_cvr<T>&>(value));
 }
@@ -189,9 +217,9 @@ template<class Impl, class T>
 inline enable_if<serializer_write_num_defined<Impl, T>() == 1, Impl&>
 operator%(
 	OutputSerializer<Impl>& ser,
-	T const& value
+	T&& value
 ) {
-	serializer::write(ser.impl(), value);
+	serializer::write(ser.impl(), std::forward<T>(value));
 	return ser.impl();
 }
 
@@ -200,7 +228,7 @@ template<class Impl, class T>
 inline enable_if<serializer_write_num_defined<Impl, T>() != 1, Impl&>
 operator%(
 	OutputSerializer<Impl>& /*ser*/,
-	T const& /*value*/
+	T&& /*value*/
 ) {
 	static_assert(
 		serializer_write_num_defined<Impl, T>() != 0,

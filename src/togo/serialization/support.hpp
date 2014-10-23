@@ -166,7 +166,7 @@ serialize(serializer_tag, Ser& ser, T& value_unsafe) {
 
 template<class Ser, class T>
 inline enable_if<!is_binary_serializable<T>::value, void>
-serialize(serializer_tag, Ser& ser, SerSequence<T>& value_unsafe) {
+serialize(serializer_tag, Ser& ser, SerSequence<T>&& value_unsafe) {
 	auto& value = serializer_cast_safe<Ser>(value_unsafe);
 	auto* const end = value.ptr + value.size;
 	for (auto* it = value.ptr; it != end; ++it) {
