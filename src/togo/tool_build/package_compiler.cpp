@@ -76,6 +76,14 @@ bool package_compiler::create_stub(
 		return false;
 	}
 
+	if (!filesystem::create_directory(".compiled")) {
+		TOGO_LOG_ERRORF(
+			"create_stub: failed to create .compiled directory in '%.*s'\n",
+			path.size, path.data
+		);
+		return false;
+	}
+
 	{// Create properties
 	KVS k_properties{KVSType::node};
 	kvs::push_back(k_properties, KVS{"name", name});
