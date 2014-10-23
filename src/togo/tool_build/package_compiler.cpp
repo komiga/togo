@@ -12,7 +12,6 @@
 #include <togo/hash_map.hpp>
 #include <togo/string.hpp>
 #include <togo/filesystem.hpp>
-#include <togo/io.hpp>
 #include <togo/file_io.hpp>
 #include <togo/serializer.hpp>
 #include <togo/serialization/support.hpp>
@@ -107,6 +106,13 @@ bool package_compiler::create_stub(
 	stream.close();
 	}
 	return true;
+}
+
+PackageCompiler::LookupNode* package_compiler::get_node(
+	PackageCompiler& pkg,
+	ResourceNameHash const name_hash
+) {
+	return hash_map::get_node(pkg._lookup, name_hash);
 }
 
 void package_compiler::read(

@@ -46,6 +46,12 @@ inline StringRef name(
 	return {pkg._name};
 }
 
+/// Find lookup node by resource name.
+PackageCompiler::LookupNode* get_node(
+	PackageCompiler& pkg,
+	ResourceNameHash name_hash
+);
+
 /// Read package data.
 void read(
 	PackageCompiler& pkg
