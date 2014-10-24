@@ -12,8 +12,16 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/traits.hpp>
+#include <togo/utility.hpp>
 #include <togo/collection_types.hpp>
 #include <togo/string_types.hpp>
+
+#if defined(TOGO_PLATFORM_IS_POSIX)
+	#include <togo/impl/filesystem/directory_reader/posix.hpp>
+#else
+	#error "missing DirectoryReader implementation for target platform"
+#endif
 
 namespace togo {
 
@@ -38,6 +46,38 @@ struct WorkingDirScope {
 	~WorkingDirScope();
 	WorkingDirScope(StringRef const& path);
 };
+
+/// Directory entry.
+struct DirectoryEntry {
+	enum class Type {
+		file = 1 << 0,
+		dir  = 1 << 1,
+
+		all = file | dir,
+	};
+
+	Type type;
+	StringRef path;
+};
+
+/// Directory reader.
+struct DirectoryReader {
+	u32 _options;
+	DirectoryReaderImpl _impl;
+
+	DirectoryReader(DirectoryReader&&) = delete;
+	DirectoryReader(DirectoryReader const&) = delete;
+	DirectoryReader& operator=(DirectoryReader&&) = delete;
+	DirectoryReader& operator=(DirectoryReader const&) = delete;
+
+	DirectoryReader();
+	~DirectoryReader();
+};
+
+/** @cond INTERNAL */
+template<>
+struct enable_enum_bitwise_ops<DirectoryEntry::Type> : true_type {};
+/** @endcond */ // INTERNAL
 
 /** @} */ // end of doc-group filesystem
 
