@@ -30,10 +30,10 @@ struct WorkingDirScope {
 	FixedArray<char, 256> _prev_path;
 
 	WorkingDirScope() = delete;
-	WorkingDirScope(WorkingDirScope const&) = delete;
-	WorkingDirScope& operator=(WorkingDirScope const&) = delete;
 	WorkingDirScope(WorkingDirScope&&) = delete;
+	WorkingDirScope(WorkingDirScope const&) = delete;
 	WorkingDirScope& operator=(WorkingDirScope&&) = delete;
+	WorkingDirScope& operator=(WorkingDirScope const&) = delete;
 
 	~WorkingDirScope();
 	WorkingDirScope(StringRef const& path);

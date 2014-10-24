@@ -75,8 +75,8 @@ struct FixedArray {
 	~FixedArray() = default;
 
 	FixedArray(FixedArray<T, N> const&) = delete;
-	FixedArray& operator=(FixedArray<T, N> const&) = delete;
 	FixedArray(FixedArray<T, N>&&) = delete;
+	FixedArray& operator=(FixedArray<T, N> const&) = delete;
 	FixedArray& operator=(FixedArray<T, N>&&) = delete;
 
 	FixedArray();
