@@ -96,7 +96,7 @@ bool directory_reader::read(
 	}
 
 	auto const* node = &fixed_array::back(impl.nodes);
-	struct ::dirent const* ent{};
+	struct ::dirent const* ent;
 	DIR* recurse_handle;
 	while (node) {
 		ent = ::readdir(node->handle);
@@ -137,18 +137,16 @@ bool directory_reader::read(
 			fixed_array::back(impl.path) = '/';
 			fixed_array::push_back(impl.path, '\0');
 
-			recurse_handle
-				= directory_reader::option_recursive(reader)
-				? ::opendir(fixed_array::begin(impl.path))
-				: nullptr
-			;
-			if (recurse_handle) {
+			// Path is corrected to node level if descent is skipped
+			if (!directory_reader::option_recursive(reader)) {
+				// Skip descent
+			} else if ((recurse_handle = ::opendir(fixed_array::begin(impl.path)))) {
 				node = &fixed_array::push_back(
 					impl.nodes, {recurse_handle, impl.current_size}
 				);
 				impl.current_size = string::size(impl.path);
-			} else if (!directory_reader::option_recursive(reader)) {
-				// Skip descent (path will be corrected on next call)
+			} else {
+				// Skip descent
 				TOGO_LOG_DEBUGF(
 					"directory_reader::read: opendir() failed; ignoring entry;"
 					" errno = %d, %s\n",
