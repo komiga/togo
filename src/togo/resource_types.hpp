@@ -106,6 +106,7 @@ struct ResourcePathParts {
 
 	ResourceType type_hash;
 	ResourceNameHash name_hash;
+	hash64 tags_collated;
 	StringRef type{};
 	StringRef name{};
 	FixedArray<Tag, 8> tags;
