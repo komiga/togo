@@ -89,6 +89,11 @@ void clear_packages(
 	CompilerManager& cm
 );
 
+/// Write all packages that are modified.
+bool write_packages(
+	CompilerManager& cm
+);
+
 /// Find lookup node by resource name.
 bool get_node(
 	CompilerManager& cm,

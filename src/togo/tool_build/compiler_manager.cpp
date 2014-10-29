@@ -135,6 +135,21 @@ void compiler_manager::clear_packages(
 	array::clear(cm._packages);
 }
 
+bool compiler_manager::write_packages(
+	CompilerManager& cm
+) {
+	for (auto* pkg : cm._packages) {
+		if (!package_compiler::modified(*pkg)) {
+			continue;
+		}
+		if (!package_compiler::write(*pkg)) {
+			return false;
+		}
+		package_compiler::set_modified(*pkg, false);
+	}
+	return true;
+}
+
 bool compiler_manager::get_node(
 	CompilerManager& cm,
 	ResourceNameHash name_hash,
