@@ -90,6 +90,21 @@ u32 find_resource_id(
 	ResourcePathParts const& path_parts
 );
 
+/// Add resource.
+u32 add_resource(
+	PackageCompiler& pkg,
+	StringRef const& path,
+	ResourcePathParts const& path_parts
+);
+
+/// Remove resource by ID.
+///
+/// This assumes the working directory is already at the package.
+void remove_resource(
+	PackageCompiler& pkg,
+	u32 id
+);
+
 /// Read package data.
 void read(
 	PackageCompiler& pkg

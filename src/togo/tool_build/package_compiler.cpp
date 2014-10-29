@@ -20,6 +20,7 @@
 #include <togo/binary_serializer.hpp>
 #include <togo/kvs.hpp>
 #include <togo/resource.hpp>
+#include <togo/tool_build/resource_metadata.hpp>
 #include <togo/tool_build/package_compiler.hpp>
 
 namespace togo {
@@ -174,6 +175,84 @@ u32 package_compiler::find_resource_id(
 		}
 	}
 	return 0;
+}
+
+u32 package_compiler::add_resource(
+	PackageCompiler& pkg,
+	StringRef const& path,
+	ResourcePathParts const& path_parts
+) {
+	TOGO_ASSERT(
+		package_compiler::find_resource_id(pkg, path_parts) == 0,
+		"resource already exists in package"
+	);
+
+	array::resize(pkg._metadata, array::size(pkg._metadata) + 1);
+	auto& metadata = array::back(pkg._metadata);
+	metadata.id = array::size(pkg._metadata);
+	metadata.type = path_parts.type_hash;
+	metadata.format_version = 0;
+	metadata.name_hash = path_parts.name_hash;
+	metadata.last_compiled = 0;
+	metadata.tags_collated = path_parts.tags_collated;
+	fixed_array::clear(metadata.path);
+	string::copy(metadata.path, path);
+	hash_map::push(pkg._lookup, metadata.name_hash, metadata.id);
+
+	package_compiler::set_modified(pkg, true);
+	return metadata.id;
+}
+
+void package_compiler::remove_resource(
+	PackageCompiler& pkg,
+	u32 const id
+) {
+	TOGO_ASSERTE(id > 0 && id <= array::size(pkg._metadata));
+	auto& metadata = pkg._metadata[id - 1];
+	TOGO_ASSERT(
+		metadata.id != 0,
+		"resource slot already removed"
+	);
+
+	{// Remove lookup node
+	auto const* node = hash_map::get_node(pkg._lookup, metadata.name_hash);
+	for (; node; node = hash_map::get_next(pkg._lookup, node)) {
+		if (node->value == id) {
+			break;
+		}
+	}
+	TOGO_ASSERT(
+		node != nullptr,
+		"no lookup node found for the resource ID"
+	);
+	hash_map::remove(pkg._lookup, node);
+	}
+
+	if (metadata.last_compiled != 0) {
+		FixedArray<char, 24> output_path{};
+		resource_metadata::output_path(metadata, output_path);
+		if (
+			filesystem::is_file(output_path) &&
+			!filesystem::remove_file(output_path)
+		) {
+			TOGO_LOG_ERRORF(
+				"failed to remove compiled resource file: '%.*s'\n",
+				string::size(output_path),
+				fixed_array::begin(output_path)
+			);
+		}
+	}
+
+	// Leave hole at ID
+	metadata.id = 0;
+	metadata.type = RES_TYPE_NULL;
+	metadata.format_version = 0;
+	metadata.name_hash = 0;
+	metadata.last_compiled = 0;
+	metadata.tags_collated = 0;
+	fixed_array::clear(metadata.path);
+
+	package_compiler::set_modified(pkg, true);
 }
 
 void package_compiler::read(
