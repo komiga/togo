@@ -150,28 +150,25 @@ bool compiler_manager::write_packages(
 	return true;
 }
 
-bool compiler_manager::get_node(
+PackageCompiler::LookupNode* compiler_manager::get_node(
 	CompilerManager& cm,
 	ResourceNameHash name_hash,
-	PackageCompiler*& package,
-	PackageCompiler::LookupNode*& node
+	PackageCompiler*& package
 ) {
-	PackageCompiler::LookupNode* it_node;
+	PackageCompiler::LookupNode* node;
 	for (
 		auto* it_pkg = array::end(cm._packages) - 1;
 		it_pkg >= array::begin(cm._packages);
 		--it_pkg
 	) {
-		it_node = package_compiler::get_node(**it_pkg, name_hash);
-		if (it_node) {
+		node = package_compiler::get_node(**it_pkg, name_hash);
+		if (node) {
 			package = *it_pkg;
-			node = it_node;
-			return true;
+			return node;
 		}
 	}
 	package = nullptr;
-	node = nullptr;
-	return false;
+	return nullptr;
 }
 
 } // namespace tool_build

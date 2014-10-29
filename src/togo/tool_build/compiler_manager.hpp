@@ -95,11 +95,10 @@ bool write_packages(
 );
 
 /// Find lookup node by resource name.
-bool get_node(
+PackageCompiler::LookupNode* get_node(
 	CompilerManager& cm,
 	ResourceNameHash name_hash,
-	PackageCompiler*& package,
-	PackageCompiler::LookupNode*& node
+	PackageCompiler*& package
 );
 
 /** @} */ // end of doc-group tool_build_compiler_manager
