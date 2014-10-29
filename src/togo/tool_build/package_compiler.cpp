@@ -68,7 +68,8 @@ PackageCompiler::PackageCompiler(
 	StringRef const& path,
 	Allocator& allocator
 )
-	: _name_hash(""_resource_package_name)
+	: _modified(false)
+	, _name_hash(""_resource_package_name)
 	, _lookup(allocator)
 	, _metadata(allocator)
 	, _name()
@@ -263,6 +264,8 @@ bool package_compiler::write(
 	;
 	stream.close();
 	}
+
+	package_compiler::set_modified(pkg, false);
 	return true;
 }
 

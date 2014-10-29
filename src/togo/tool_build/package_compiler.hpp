@@ -53,6 +53,21 @@ inline StringRef path(
 	return {pkg._path};
 }
 
+/// Check if the package is marked as modified.
+inline bool modified(
+	PackageCompiler const& pkg
+) {
+	return pkg._modified;
+}
+
+/// Mark the package as modified or unmodified.
+inline void set_modified(
+	PackageCompiler& pkg,
+	bool const value
+) {
+	pkg._modified = value;
+}
+
 /// Find lookup node by resource name.
 PackageCompiler::LookupNode* get_node(
 	PackageCompiler& pkg,
