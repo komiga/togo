@@ -53,6 +53,13 @@ inline StringRef path(
 	return {pkg._path};
 }
 
+/// Get resource metadata.
+inline Array<ResourceMetadata> const& metadata(
+	PackageCompiler const& pkg
+) {
+	return pkg._metadata;
+}
+
 /// Check if the package is marked as modified.
 inline bool modified(
 	PackageCompiler const& pkg
