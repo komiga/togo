@@ -12,7 +12,7 @@ static void print_package(
 ) {
 	auto const pkg_name = package_compiler::name(pkg);
 	TOGO_LOGF(
-		"[%08x] '%.*s'\n",
+		"[%08x] %.*s\n",
 		package_compiler::name_hash(pkg),
 		pkg_name.size, pkg_name.data
 	);
@@ -24,7 +24,7 @@ static void print_package(
 	}
 	for (auto const& metadata : pkg._metadata) {
 		TOGO_LOGF(
-			"  %c [%08x %016lx] '%.*s'\n",
+			"  %c [%08x %016lx] %.*s\n",
 			metadata.last_compiled == 0 ? ' ' : 'C',
 			metadata.type, metadata.name_hash,
 			string::size(metadata.path),
