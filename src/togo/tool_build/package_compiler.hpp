@@ -12,6 +12,7 @@
 #include <togo/tool_build/config.hpp>
 #include <togo/string_types.hpp>
 #include <togo/string.hpp>
+#include <togo/resource_types.hpp>
 #include <togo/tool_build/types.hpp>
 
 namespace togo {
@@ -79,6 +80,14 @@ inline void set_modified(
 PackageCompiler::LookupNode* get_node(
 	PackageCompiler& pkg,
 	ResourceNameHash name_hash
+);
+
+/// Find resource ID by path parts.
+///
+/// If this returns 0, the resource was not found.
+u32 find_resource_id(
+	PackageCompiler const& pkg,
+	ResourcePathParts const& path_parts
 );
 
 /// Read package data.

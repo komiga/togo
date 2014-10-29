@@ -159,6 +159,23 @@ PackageCompiler::LookupNode* package_compiler::get_node(
 	return hash_map::get_node(pkg._lookup, name_hash);
 }
 
+u32 package_compiler::find_resource_id(
+	PackageCompiler const& pkg,
+	ResourcePathParts const& path_parts
+) {
+	auto const* node = hash_map::get_node(pkg._lookup, path_parts.name_hash);
+	for (; node; node = hash_map::get_next(pkg._lookup, node)) {
+		auto const& metadata = pkg._metadata[node->value - 1];
+		if (
+			path_parts.type_hash == metadata.type &&
+			path_parts.tags_collated == metadata.tags_collated
+		) {
+			return metadata.id;
+		}
+	}
+	return 0;
+}
+
 void package_compiler::read(
 	PackageCompiler& pkg
 ) {
