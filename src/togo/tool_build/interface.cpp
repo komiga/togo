@@ -202,7 +202,9 @@ bool interface::run(
 
 	if (success) {
 		interface::write_project(interface);
+		TOGO_ASSERTE(compiler_manager::write_packages(interface._manager));
 	}
+
 	return success;
 }
 
