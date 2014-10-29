@@ -126,6 +126,50 @@ bool command_create(
 	KVS const& k_command
 );
 
+/// Run sync command.
+///
+/// Updates package manifests to match filesystem.
+/// If no packages are specified, all packages are synced.
+bool command_sync(
+	Interface& interface,
+	StringRef const* package_names,
+	unsigned num_package_names
+);
+
+/// Run sync command with KVS.
+///
+/// Specification: `build sync [<package_name> ...]`.
+bool command_sync(
+	Interface& interface,
+	KVS const& k_command_options,
+	KVS const& k_command
+);
+
+/// Run compile command.
+///
+/// Builds resources.
+/// If a package is specified, only resources within that package can
+/// be selected.
+/// If no resources are specified, all unbuilt resources are compiled.
+/// If force is true, all selected resources are built regardless of
+/// their source-compilation parity.
+bool command_compile(
+	Interface& interface,
+	bool const force,
+	StringRef const& from_package_name,
+	StringRef const* paths,
+	unsigned num_paths
+);
+
+/// Run compile command with KVS.
+///
+/// Specification: `compile [-f|--force] [--from=<package_name>] [<resource_path> ...]`.
+bool command_compile(
+	Interface& interface,
+	KVS const& k_command_options,
+	KVS const& k_command
+);
+
 /** @} */ // end of doc-group tool_build_interface
 
 } // namespace interface

@@ -6,15 +6,19 @@
 #include <togo/tool_build/config.hpp>
 #include <togo/tool_build/types.hpp>
 #include <togo/assert.hpp>
+#include <togo/utility.hpp>
 #include <togo/log.hpp>
 #include <togo/memory.hpp>
 #include <togo/fixed_array.hpp>
 #include <togo/array.hpp>
+#include <togo/hash_map.hpp>
 #include <togo/string.hpp>
 #include <togo/system.hpp>
 #include <togo/filesystem.hpp>
+#include <togo/directory_reader.hpp>
 #include <togo/kvs.hpp>
 #include <togo/resource.hpp>
+#include <togo/tool_build/resource_metadata.hpp>
 #include <togo/tool_build/package_compiler.hpp>
 #include <togo/tool_build/compiler_manager.hpp>
 #include <togo/tool_build/interface.hpp>
@@ -190,6 +194,8 @@ bool interface::run(
 		CMD_CASE(help);
 		CMD_CASE(list);
 		CMD_CASE(create);
+		CMD_CASE(sync);
+		CMD_CASE(compile);
 
 	default:
 		TOGO_LOG_ERRORF(
@@ -215,3 +221,5 @@ bool interface::run(
 #include <togo/tool_build/interface/command_help.ipp>
 #include <togo/tool_build/interface/command_list.ipp>
 #include <togo/tool_build/interface/command_create.ipp>
+#include <togo/tool_build/interface/command_sync.ipp>
+#include <togo/tool_build/interface/command_compile.ipp>
