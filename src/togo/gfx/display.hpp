@@ -11,9 +11,9 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/utility.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/gfx/types.hpp>
-#include <togo/memory.hpp>
+#include <togo/memory/memory.hpp>
 
 namespace togo {
 namespace gfx {

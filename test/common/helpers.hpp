@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <togo/memory.hpp>
+#include <togo/memory/memory.hpp>
 
 #if !defined(TOGO_TEST_SCRATCH_SIZE)
 	#define TOGO_TEST_SCRATCH_SIZE togo::memory::SCRATCH_SIZE_DEFAULT

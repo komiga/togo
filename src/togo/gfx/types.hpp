@@ -12,8 +12,8 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/traits.hpp>
-#include <togo/utility.hpp>
+#include <togo/utility/traits.hpp>
+#include <togo/utility/utility.hpp>
 
 #include <initializer_list>
 

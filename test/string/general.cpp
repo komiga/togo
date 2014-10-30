@@ -1,8 +1,8 @@
 
-#include <togo/assert.hpp>
-#include <togo/utility.hpp>
-#include <togo/fixed_array.hpp>
-#include <togo/string.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
+#include <togo/collection/fixed_array.hpp>
+#include <togo/string/string.hpp>
 
 #include <cstring>
 

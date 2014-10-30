@@ -1,7 +1,7 @@
 
 #include <togo/types.hpp>
-#include <togo/assert.hpp>
-#include <togo/utility.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
 
 using namespace togo;
 

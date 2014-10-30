@@ -5,13 +5,13 @@
 
 #include <togo/config.hpp>
 #include <togo/gfx/init.hpp>
-#include <togo/impl/gfx/common.hpp>
-#include <togo/impl/gfx/init/private.hpp>
+#include <togo/gfx/gfx/common.hpp>
+#include <togo/gfx/init/private.hpp>
 
 #if (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_SDL)
-	#include <togo/impl/gfx/init/sdl.ipp>
+	#include <togo/gfx/init/sdl.ipp>
 #elif (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_GLFW)
-	#include <togo/impl/gfx/init/glfw.ipp>
+	#include <togo/gfx/init/glfw.ipp>
 #endif
 
 namespace togo {

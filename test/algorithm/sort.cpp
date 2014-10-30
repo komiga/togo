@@ -1,8 +1,8 @@
 
-#include <togo/log.hpp>
-#include <togo/memory.hpp>
-#include <togo/array.hpp>
-#include <togo/algorithm.hpp>
+#include <togo/log/log.hpp>
+#include <togo/memory/memory.hpp>
+#include <togo/collection/array.hpp>
+#include <togo/algorithm/sort.hpp>
 
 #include "../common/helpers.hpp"
 

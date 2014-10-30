@@ -1,8 +1,8 @@
 
 #include <togo/types.hpp>
-#include <togo/assert.hpp>
-#include <togo/memory.hpp>
-#include <togo/object_buffer.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/memory/memory.hpp>
+#include <togo/io/object_buffer.hpp>
 
 #include "../common/helpers.hpp"
 

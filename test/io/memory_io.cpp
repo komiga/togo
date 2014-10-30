@@ -1,9 +1,9 @@
 
-#include <togo/assert.hpp>
-#include <togo/memory.hpp>
-#include <togo/io.hpp>
-#include <togo/array.hpp>
-#include <togo/memory_io.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/memory/memory.hpp>
+#include <togo/io/io.hpp>
+#include <togo/collection/array.hpp>
+#include <togo/io/memory_stream.hpp>
 
 #include "../common/helpers.hpp"
 #include "./common.hpp"

@@ -1,20 +1,20 @@
 
-#include <togo/assert.hpp>
-#include <togo/utility.hpp>
-#include <togo/log.hpp>
-#include <togo/fixed_array.hpp>
-#include <togo/array.hpp>
-#include <togo/string.hpp>
-#include <togo/system.hpp>
-#include <togo/random.hpp>
-#include <togo/io.hpp>
-#include <togo/memory_io.hpp>
-#include <togo/serializer.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
+#include <togo/log/log.hpp>
+#include <togo/collection/fixed_array.hpp>
+#include <togo/collection/array.hpp>
+#include <togo/string/string.hpp>
+#include <togo/system/system.hpp>
+#include <togo/random/random.hpp>
+#include <togo/io/io.hpp>
+#include <togo/io/memory_stream.hpp>
+#include <togo/serialization/serializer.hpp>
 #include <togo/serialization/support.hpp>
 #include <togo/serialization/fixed_array.hpp>
 #include <togo/serialization/array.hpp>
 #include <togo/serialization/string.hpp>
-#include <togo/binary_serializer.hpp>
+#include <togo/serialization/binary_serializer.hpp>
 
 #include "../common/helpers.hpp"
 

@@ -11,12 +11,12 @@
 
 #include <togo/tool_build/config.hpp>
 #include <togo/types.hpp>
-#include <togo/memory_types.hpp>
-#include <togo/collection_types.hpp>
-#include <togo/string_types.hpp>
-#include <togo/hash.hpp>
-#include <togo/io_types.hpp>
-#include <togo/resource_types.hpp>
+#include <togo/memory/types.hpp>
+#include <togo/collection/types.hpp>
+#include <togo/string/types.hpp>
+#include <togo/hash/hash.hpp>
+#include <togo/io/types.hpp>
+#include <togo/resource/types.hpp>
 
 namespace togo {
 namespace tool_build {

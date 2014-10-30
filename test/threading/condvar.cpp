@@ -1,9 +1,9 @@
 
-#include <togo/assert.hpp>
-#include <togo/log.hpp>
-#include <togo/thread.hpp>
-#include <togo/mutex.hpp>
-#include <togo/condvar.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/log/log.hpp>
+#include <togo/threading/thread.hpp>
+#include <togo/threading/mutex.hpp>
+#include <togo/threading/condvar.hpp>
 
 #include "../common/helpers.hpp"
 

@@ -1,8 +1,8 @@
 
-#include <togo/assert.hpp>
-#include <togo/log.hpp>
-#include <togo/input.hpp>
-#include <togo/app.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/log/log.hpp>
+#include <togo/input/input.hpp>
+#include <togo/app/app.hpp>
 
 #include "../common/helpers.hpp"
 

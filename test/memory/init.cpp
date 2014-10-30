@@ -1,5 +1,5 @@
 
-#include <togo/memory.hpp>
+#include <togo/memory/memory.hpp>
 
 using namespace togo;
 

@@ -1,11 +1,11 @@
 
 #pragma once
 
-#include <togo/utility.hpp>
-#include <togo/assert.hpp>
-#include <togo/io_types.hpp>
-#include <togo/io_proto.hpp>
-#include <togo/io.hpp>
+#include <togo/utility/utility.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/io/types.hpp>
+#include <togo/io/proto.hpp>
+#include <togo/io/io.hpp>
 
 #include <cstring>
 

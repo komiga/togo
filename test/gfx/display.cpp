@@ -1,11 +1,11 @@
 
-#include <togo/assert.hpp>
-#include <togo/log.hpp>
-#include <togo/system.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/log/log.hpp>
+#include <togo/system/system.hpp>
 #include <togo/gfx/init.hpp>
 #include <togo/gfx/display.hpp>
-#include <togo/input_buffer.hpp>
-#include <togo/input.hpp>
+#include <togo/input/input_buffer.hpp>
+#include <togo/input/input.hpp>
 
 #include "../common/helpers.hpp"
 

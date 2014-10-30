@@ -1,10 +1,10 @@
 
-#include <togo/assert.hpp>
-#include <togo/log.hpp>
-#include <togo/fixed_array.hpp>
-#include <togo/string.hpp>
-#include <togo/system.hpp>
-#include <togo/filesystem.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/log/log.hpp>
+#include <togo/collection/fixed_array.hpp>
+#include <togo/string/string.hpp>
+#include <togo/system/system.hpp>
+#include <togo/filesystem/filesystem.hpp>
 
 using namespace togo;
 

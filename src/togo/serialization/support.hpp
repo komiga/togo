@@ -10,8 +10,8 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/traits.hpp>
-#include <togo/serialization_types.hpp>
+#include <togo/utility/traits.hpp>
+#include <togo/serialization/types.hpp>
 
 #include <type_traits>
 

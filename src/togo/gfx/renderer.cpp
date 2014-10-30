@@ -5,10 +5,10 @@
 
 #include <togo/config.hpp>
 #include <togo/gfx/renderer.hpp>
-#include <togo/impl/gfx/renderer/types.hpp>
-#include <togo/impl/gfx/renderer/private.hpp>
-#include <togo/impl/gfx/renderer/private.ipp>
+#include <togo/gfx/renderer/types.hpp>
+#include <togo/gfx/renderer/private.hpp>
+#include <togo/gfx/renderer/private.ipp>
 
 #if (TOGO_CONFIG_RENDERER == TOGO_RENDERER_OPENGL)
-	#include <togo/impl/gfx/renderer/opengl.ipp>
+	#include <togo/gfx/renderer/opengl.ipp>
 #endif

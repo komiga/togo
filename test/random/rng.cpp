@@ -1,8 +1,8 @@
 
-#include <togo/log.hpp>
-#include <togo/system.hpp>
-#include <togo/random.hpp>
-#include <togo/array.hpp>
+#include <togo/log/log.hpp>
+#include <togo/system/system.hpp>
+#include <togo/random/random.hpp>
+#include <togo/collection/array.hpp>
 
 #include <limits>
 #include <cmath>

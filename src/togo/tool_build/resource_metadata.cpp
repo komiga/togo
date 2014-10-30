@@ -5,8 +5,8 @@
 
 #include <togo/tool_build/config.hpp>
 #include <togo/tool_build/types.hpp>
-#include <togo/fixed_array.hpp>
-#include <togo/string.hpp>
+#include <togo/collection/fixed_array.hpp>
+#include <togo/string/string.hpp>
 #include <togo/tool_build/resource_metadata.hpp>
 
 #include <cstdio>

@@ -1,15 +1,15 @@
 
 #include <togo/types.hpp>
-#include <togo/assert.hpp>
-#include <togo/utility.hpp>
-#include <togo/log.hpp>
-#include <togo/hash.hpp>
-#include <togo/memory.hpp>
-#include <togo/io_types.hpp>
-#include <togo/io.hpp>
-#include <togo/resource_types.hpp>
-#include <togo/resource.hpp>
-#include <togo/resource_manager.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
+#include <togo/log/log.hpp>
+#include <togo/hash/hash.hpp>
+#include <togo/memory/memory.hpp>
+#include <togo/io/types.hpp>
+#include <togo/io/io.hpp>
+#include <togo/resource/types.hpp>
+#include <togo/resource/resource.hpp>
+#include <togo/resource/resource_manager.hpp>
 
 #include "../common/helpers.hpp"
 

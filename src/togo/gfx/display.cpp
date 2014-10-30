@@ -4,16 +4,16 @@
 */
 
 #include <togo/config.hpp>
-#include <togo/assert.hpp>
+#include <togo/error/assert.hpp>
 #include <togo/gfx/display.hpp>
-#include <togo/impl/gfx/display/types.hpp>
-#include <togo/impl/gfx/display/private.hpp>
-#include <togo/input_buffer.hpp>
+#include <togo/gfx/display/types.hpp>
+#include <togo/gfx/display/private.hpp>
+#include <togo/input/input_buffer.hpp>
 
 #if (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_SDL)
-	#include <togo/impl/gfx/display/sdl.ipp>
+	#include <togo/gfx/display/sdl.ipp>
 #elif (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_GLFW)
-	#include <togo/impl/gfx/display/glfw.ipp>
+	#include <togo/gfx/display/glfw.ipp>
 #endif
 
 namespace togo {

@@ -1,7 +1,7 @@
 
-#include <togo/assert.hpp>
-#include <togo/log.hpp>
-#include <togo/thread.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/log/log.hpp>
+#include <togo/threading/thread.hpp>
 
 #include "../common/helpers.hpp"
 

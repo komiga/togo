@@ -1,11 +1,11 @@
 
-#include <togo/assert.hpp>
-#include <togo/utility.hpp>
-#include <togo/string.hpp>
-#include <togo/log.hpp>
-#include <togo/hash.hpp>
-#include <togo/fixed_array.hpp>
-#include <togo/resource.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
+#include <togo/string/string.hpp>
+#include <togo/log/log.hpp>
+#include <togo/hash/hash.hpp>
+#include <togo/collection/fixed_array.hpp>
+#include <togo/resource/resource.hpp>
 
 #include <initializer_list>
 

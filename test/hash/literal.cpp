@@ -1,7 +1,7 @@
 
-#include <togo/assert.hpp>
-#include <togo/log.hpp>
-#include <togo/hash.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/log/log.hpp>
+#include <togo/hash/hash.hpp>
 
 using namespace togo;
 

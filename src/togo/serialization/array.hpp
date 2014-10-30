@@ -10,9 +10,9 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/assert.hpp>
+#include <togo/error/assert.hpp>
 #include <togo/serialization/support.hpp>
-#include <togo/array.hpp>
+#include <togo/collection/array.hpp>
 
 #include <limits>
 

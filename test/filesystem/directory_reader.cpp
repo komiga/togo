@@ -1,8 +1,8 @@
 
-#include <togo/assert.hpp>
-#include <togo/string.hpp>
-#include <togo/filesystem.hpp>
-#include <togo/directory_reader.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/string/string.hpp>
+#include <togo/filesystem/filesystem.hpp>
+#include <togo/filesystem/directory_reader.hpp>
 
 using namespace togo;
 

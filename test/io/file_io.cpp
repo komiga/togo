@@ -1,6 +1,6 @@
 
-#include <togo/string.hpp>
-#include <togo/file_io.hpp>
+#include <togo/string/string.hpp>
+#include <togo/io/file_stream.hpp>
 
 #include "./common.hpp"
 

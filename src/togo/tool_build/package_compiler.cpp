@@ -5,21 +5,21 @@
 
 #include <togo/tool_build/config.hpp>
 #include <togo/tool_build/types.hpp>
-#include <togo/assert.hpp>
-#include <togo/log.hpp>
-#include <togo/fixed_array.hpp>
-#include <togo/array.hpp>
-#include <togo/hash_map.hpp>
-#include <togo/string.hpp>
-#include <togo/filesystem.hpp>
-#include <togo/file_io.hpp>
-#include <togo/serializer.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/log/log.hpp>
+#include <togo/collection/fixed_array.hpp>
+#include <togo/collection/array.hpp>
+#include <togo/collection/hash_map.hpp>
+#include <togo/string/string.hpp>
+#include <togo/filesystem/filesystem.hpp>
+#include <togo/io/file_stream.hpp>
+#include <togo/serialization/serializer.hpp>
 #include <togo/serialization/support.hpp>
 #include <togo/serialization/string.hpp>
 #include <togo/serialization/array.hpp>
-#include <togo/binary_serializer.hpp>
-#include <togo/kvs.hpp>
-#include <togo/resource.hpp>
+#include <togo/serialization/binary_serializer.hpp>
+#include <togo/kvs/kvs.hpp>
+#include <togo/resource/resource.hpp>
 #include <togo/tool_build/resource_metadata.hpp>
 #include <togo/tool_build/package_compiler.hpp>
 

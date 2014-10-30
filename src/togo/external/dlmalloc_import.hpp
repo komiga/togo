@@ -8,7 +8,7 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/assert.hpp>
+#include <togo/error/assert.hpp>
 
 #include <cstddef>
 

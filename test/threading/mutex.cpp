@@ -1,6 +1,6 @@
 
-#include <togo/assert.hpp>
-#include <togo/mutex.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/threading/mutex.hpp>
 
 using namespace togo;
 

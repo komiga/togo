@@ -49,7 +49,7 @@ precore.make_solution(
 
 include("algorithm")
 include("app")
-include("collections")
+include("collection")
 include("filesystem")
 include("general")
 include("gfx")

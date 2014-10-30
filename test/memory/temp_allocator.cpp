@@ -1,7 +1,7 @@
 
-#include <togo/log.hpp>
-#include <togo/memory.hpp>
-#include <togo/temp_allocator.hpp>
+#include <togo/log/log.hpp>
+#include <togo/memory/memory.hpp>
+#include <togo/memory/temp_allocator.hpp>
 
 #include "../common/helpers.hpp"
 

@@ -1,11 +1,11 @@
 
-#include <togo/assert.hpp>
-#include <togo/log.hpp>
-#include <togo/memory.hpp>
-#include <togo/priority_queue.hpp>
-#include <togo/mutex.hpp>
-#include <togo/thread.hpp>
-#include <togo/task_manager.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/log/log.hpp>
+#include <togo/memory/memory.hpp>
+#include <togo/collection/priority_queue.hpp>
+#include <togo/threading/mutex.hpp>
+#include <togo/threading/thread.hpp>
+#include <togo/threading/task_manager.hpp>
 
 #include "../common/helpers.hpp"
 

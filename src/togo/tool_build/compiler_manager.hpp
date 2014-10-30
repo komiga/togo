@@ -10,7 +10,7 @@
 #pragma once
 
 #include <togo/tool_build/config.hpp>
-#include <togo/string_types.hpp>
+#include <togo/string/types.hpp>
 #include <togo/tool_build/types.hpp>
 
 namespace togo {
