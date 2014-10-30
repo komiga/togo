@@ -115,26 +115,26 @@ struct Layer {
 	hash32 dst;
 	Order order;
 	FixedArray<gfx::GeneratorUnit, TOGO_GFX_LAYER_NUM_GENERATORS> layout;
-	char name[32];
+	FixedArray<char, 32> name;
 };
 
 struct Pipe {
 	hash32 name_hash;
 	FixedArray<gfx::Layer, TOGO_GFX_PIPE_NUM_LAYERS> layers;
-	char name[32];
+	FixedArray<char, 32> name;
 };
 
 struct Viewport {
-	// resources
+	// TODO: resources
 	hash32 name_hash;
 	u32 pipe;
 	hash32 output_rt;
 	hash32 output_dst;
-	char name[32];
+	FixedArray<char, 32> name;
 };
 
 struct RenderConfig {
-	// shared_resources
+	// TODO: shared_resources
 	FixedArray<gfx::Viewport, TOGO_GFX_CONFIG_NUM_VIEWPORTS> viewports;
 	FixedArray<gfx::Pipe, TOGO_GFX_CONFIG_NUM_PIPES> pipes;
 };
