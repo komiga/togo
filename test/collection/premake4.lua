@@ -1,6 +1,6 @@
 
 make_tests(
-	"collections", {
+	"collection", {
 	["array"] = {nil, nil},
 	["fixed_array"] = {nil, nil},
 	["hash_map"] = {nil, nil},
