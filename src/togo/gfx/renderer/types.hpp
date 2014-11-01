@@ -98,9 +98,6 @@ using generator_func_type = void (
 struct GeneratorUnit {
 	// TODO: Block for generator-defined configuration. KVS?
 	hash32 name_hash;
-	hash32 shader;
-	hash32 input;
-	hash32 output;
 	generator_func_type* func;
 };
 
