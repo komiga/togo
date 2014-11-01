@@ -119,7 +119,7 @@ bool command_create(
 
 /// Run create command with KVS.
 ///
-/// Specification: `create <name>`.
+/// Specification: `create <package_name>`.
 bool command_create(
 	Interface& interface,
 	KVS const& k_command_options,
