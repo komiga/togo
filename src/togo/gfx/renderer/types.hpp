@@ -105,9 +105,9 @@ struct GeneratorUnit {
 };
 
 struct Layer {
-	enum class Order : unsigned {
-		front_back,
+	enum class Order : u32 {
 		back_front,
+		front_back,
 	};
 
 	hash32 name_hash;
