@@ -10,7 +10,60 @@ bool interface::command_help(
 	Interface const& /*interface*/,
 	StringRef const& command_name
 ) {
-	TOGO_LOGF("help: '%.*s'\n", command_name.size, command_name.data);
+	#define CASE_DESCRIBE_COMMAND(cmd, args, desc)				\
+		case cmd ## _hash32:									\
+		TOGO_LOG(cmd " " args "\n" desc);						\
+		if (!do_all) {											\
+			break;												\
+		} else {												\
+			TOGO_LOG("\n");										\
+		}
+
+	bool do_all = false;
+	switch (hash::calc32(command_name)) {
+		case ""_hash32:
+			do_all = true;
+			TOGO_LOG("tool_build 0.00\n\n");
+
+		CASE_DESCRIBE_COMMAND(
+			"help", "[command_name]",
+			"  prints tool_build help\n"
+		);
+		CASE_DESCRIBE_COMMAND(
+			"list", "[-r|--resources || [<package_name> ...]]",
+			"  lists packages and resources in the project\n"
+			"\n"
+			"  -r|--resources: print resources in all packages\n"
+			"  [<package_name> ...]: print resources in selected packages (implicit -r)\n"
+		);
+		CASE_DESCRIBE_COMMAND(
+			"create", "<package_name>",
+			"  create package\n"
+		);
+		CASE_DESCRIBE_COMMAND(
+			"sync", "[<package_name> ...]",
+			"  sync packages with the filesystem\n"
+			"  if no packages are specified, all packages are synced\n"
+		);
+		CASE_DESCRIBE_COMMAND(
+			"compile", "[-f|--force] [--from=<package_name>] [<resource_path> ...]",
+			"  compile resources\n"
+			"  if no resources are specified, all are selected from the constraint\n"
+			"\n"
+			"  -f|--force: force building of selected resources that are already compiled\n"
+			"  --from=<package_name>: only allow selection from the specified package;\n"
+		);
+
+	default:
+		if (!do_all) {
+			TOGO_LOGF(
+				"help: command '%.*s' not recognized\n",
+				command_name.size, command_name.data
+			);
+			return false;
+		}
+	}
+	#undef CASE_DESCRIBE_COMMAND
 	return true;
 }
 
@@ -19,12 +72,14 @@ bool interface::command_help(
 	KVS const& /*k_command_options*/,
 	KVS const& k_command
 ) {
-	StringRef name{};
-	if (kvs::any(k_command)) {
-		TOGO_ASSERTE(kvs::is_string(k_command[0]));
-		name = kvs::string_ref(k_command[0]);
+	if (kvs::empty(k_command)) {
+		return command_help(interface, "");
+	} else if (kvs::is_string(kvs::back(k_command))) {
+		return command_help(interface, kvs::string_ref(kvs::back(k_command)));
+	} else {
+		TOGO_LOG_ERROR("help: argument must be a string\n");
+		return false;
 	}
-	return command_help(interface, name);
 }
 
 } // namespace tool_build
