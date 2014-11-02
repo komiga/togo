@@ -24,9 +24,9 @@ bool interface::command_help(
 		case ""_hash32:
 			do_all = true;
 			TOGO_LOG(
-				"tool_build 0.00\n"
+				TOGO_TOOL_BUILD_INFO_TEXT "\n"
 				"\n"
-				"usage: build [options] <command> [command_arguments]\n"
+				TOGO_TOOL_BUILD_USAGE_TEXT "\n"
 				"  --project-path=<path>: specify project path\n"
 				"  if this is not defined, the TOGO_PROJECT environment variable will be used\n"
 				"\n"

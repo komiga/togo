@@ -202,7 +202,7 @@ bool interface::run(
 			TOGO_LOG_ERROR("expected command\n\n");
 		}
 		TOGO_LOG(
-			"usage: build [options] <command> [command_arguments]\n"
+			TOGO_TOOL_BUILD_USAGE_TEXT "\n"
 			"use \"build help [command_name]\" for help\n"
 		);
 		success = false;
