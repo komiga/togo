@@ -23,7 +23,14 @@ bool interface::command_help(
 	switch (hash::calc32(command_name)) {
 		case ""_hash32:
 			do_all = true;
-			TOGO_LOG("tool_build 0.00\n\n");
+			TOGO_LOG(
+				"tool_build 0.00\n"
+				"\n"
+				"usage: build [options] <command> [command_arguments]\n"
+				"  --project-path=<path>: specify project path\n"
+				"  if this is not defined, the TOGO_PROJECT environment variable will be used\n"
+				"\n"
+			);
 
 		CASE_DESCRIBE_COMMAND(
 			"help", "[command_name]",
