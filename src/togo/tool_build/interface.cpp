@@ -177,11 +177,6 @@ bool interface::run(
 	);
 	interface::check_project_path(interface);
 
-	if (!kvs::is_named(k_command)) {
-		TOGO_LOG_ERROR("expected command\n");
-		return false;
-	}
-
 	#define CMD_CASE(cmd)										\
 		case #cmd ## _kvs_name:									\
 		success = interface::command_ ## cmd(					\
@@ -198,9 +193,17 @@ bool interface::run(
 		CMD_CASE(compile);
 
 	default:
-		TOGO_LOG_ERRORF(
-			"command '%.*s' not recognized\n",
-			kvs::name_size(k_command), kvs::name(k_command)
+		if (kvs::is_named(k_command)) {
+			TOGO_LOG_ERRORF(
+				"command '%.*s' not recognized\n\n",
+				kvs::name_size(k_command), kvs::name(k_command)
+			);
+		} else {
+			TOGO_LOG_ERROR("expected command\n\n");
+		}
+		TOGO_LOG(
+			"usage: build [options] <command> [command_arguments]\n"
+			"use \"build help [command_name]\" for help\n"
 		);
 		success = false;
 		break;
