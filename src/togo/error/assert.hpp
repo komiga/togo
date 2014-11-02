@@ -30,10 +30,10 @@ error_abort(
 #if !defined(TOGO_DISABLE_ASSERTIONS) && !defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
 	#define TOGO_ASSERT(expr, msg) \
 		do { if (!(expr)) { ::togo::error_abort(__LINE__, __FILE__, \
-		"Assertion failed: `" #expr "`:\n" msg "\n"); } } while (false)
+		"Assertion failed: `" #expr "`\nAssertion message: " msg "\n"); } } while (false)
 	#define TOGO_ASSERTF(expr, msg, ...) \
 		do { if (!(expr)) { ::togo::error_abort(__LINE__, __FILE__, \
-		"Assertion failed: `" #expr "`:\n" msg "\n", __VA_ARGS__); } } while (false)
+		"Assertion failed: `" #expr "`\nAssertion message: " msg "\n", __VA_ARGS__); } } while (false)
 	#define TOGO_ASSERTE(expr) \
 		do { if (!(expr)) { ::togo::error_abort(__LINE__, __FILE__, \
 		"Assertion failed: `" #expr "`\n"); } } while (false)
