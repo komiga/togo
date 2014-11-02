@@ -64,7 +64,7 @@ bool interface::command_help(
 	default:
 		if (!do_all) {
 			TOGO_LOGF(
-				"help: command '%.*s' not recognized\n",
+				"error: command '%.*s' not recognized\n",
 				command_name.size, command_name.data
 			);
 			return false;
@@ -84,7 +84,7 @@ bool interface::command_help(
 	} else if (kvs::is_string(kvs::back(k_command))) {
 		return command_help(interface, kvs::string_ref(kvs::back(k_command)));
 	} else {
-		TOGO_LOG_ERROR("help: argument must be a string\n");
+		TOGO_LOG("error: argument must be a string\n");
 		return false;
 	}
 }

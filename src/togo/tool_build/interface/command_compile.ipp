@@ -284,7 +284,7 @@ bool interface::command_compile(
 		case "-f"_kvs_name: // fall-through
 		case "--force"_kvs_name:
 			if (!kvs::is_boolean(k_opt)) {
-				TOGO_LOG_ERROR("compile: --force: expected boolean value\n");
+				TOGO_LOG("error: --force: expected boolean value\n");
 				return false;
 			}
 			force = kvs::boolean(k_opt);
@@ -292,15 +292,15 @@ bool interface::command_compile(
 
 		case "--from"_kvs_name:
 			if (!kvs::is_string(k_opt)) {
-				TOGO_LOG_ERROR("compile: --from: expected string value\n");
+				TOGO_LOG("error: --from: expected string value\n");
 				return false;
 			}
 			from_package_name = kvs::string_ref(k_opt);
 			break;
 
 		default:
-			TOGO_LOG_ERRORF(
-				"compile: option '%.*s' not recognized\n",
+			TOGO_LOGF(
+				"error: option '%.*s' not recognized\n",
 				kvs::name_size(k_opt), kvs::name(k_opt)
 			);
 			return false;
@@ -310,7 +310,7 @@ bool interface::command_compile(
 	FixedArray<StringRef, 16> paths{};
 	for (KVS const& k_res : k_command) {
 		if (!kvs::is_string(k_res) || kvs::string_size(k_res) == 0) {
-			TOGO_LOG_ERROR("compile: expected non-empty string argument\n");
+			TOGO_LOG("error: expected non-empty string argument\n");
 			return false;
 		}
 		fixed_array::push_back(paths, kvs::string_ref(k_res));

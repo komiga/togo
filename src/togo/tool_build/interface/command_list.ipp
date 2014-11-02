@@ -80,15 +80,15 @@ bool interface::command_list(
 		case "-r"_kvs_name: // fall-through
 		case "--resources"_kvs_name:
 			if (!kvs::is_boolean(k_opt)) {
-				TOGO_LOG_ERROR("list: --resources: expected boolean value\n");
+				TOGO_LOG("error: --resources: expected boolean value\n");
 				return false;
 			}
 			opt_resources = kvs::boolean(k_opt);
 			break;
 
 		default:
-			TOGO_LOG_ERRORF(
-				"list: option '%.*s' not recognized\n",
+			TOGO_LOGF(
+				"error: option '%.*s' not recognized\n",
 				kvs::name_size(k_opt), kvs::name(k_opt)
 			);
 			return false;
@@ -96,14 +96,14 @@ bool interface::command_list(
 	}
 	if (opt_resources) {
 		if (kvs::any(k_command)) {
-			TOGO_LOG("list: NB: takes no arguments with --resources\n");
+			TOGO_LOG("NB: takes no arguments with --resources\n");
 		}
 		return interface::command_list(interface, true, nullptr, 0);
 	} else {
 		FixedArray<StringRef, 32> package_names{};
 		for (KVS const& k_pkg_name : k_command) {
 			if (!kvs::is_string(k_pkg_name) || kvs::string_size(k_pkg_name) == 0) {
-				TOGO_LOG_ERROR("list: expected non-empty string argument\n");
+				TOGO_LOG("error: expected non-empty string argument\n");
 				return false;
 			}
 			fixed_array::push_back(package_names, kvs::string_ref(k_pkg_name));

@@ -41,13 +41,13 @@ bool interface::command_create(
 	KVS const& k_command
 ) {
 	if (kvs::any(k_command_options)) {
-		TOGO_LOG_ERROR("create: options unexpected\n");
+		TOGO_LOG("error: options unexpected\n");
 		return false;
 	} else if (kvs::empty(k_command)) {
-		TOGO_LOG_ERROR("create: <name> expected\n");
+		TOGO_LOG("error: <name> expected\n");
 		return false;
 	} else if (kvs::size(k_command) > 1) {
-		TOGO_LOG_ERROR("create: too many arguments\n");
+		TOGO_LOG("error: too many arguments\n");
 		return false;
 	}
 

@@ -136,13 +136,13 @@ bool interface::command_sync(
 	KVS const& k_command
 ) {
 	if (kvs::any(k_command_options)) {
-		TOGO_LOG_ERROR("sync: options unexpected\n");
+		TOGO_LOG("error: options unexpected\n");
 		return false;
 	}
 	FixedArray<StringRef, 32> package_names{};
 	for (KVS const& k_pkg_name : k_command) {
 		if (!kvs::is_string(k_pkg_name) || kvs::string_size(k_pkg_name) == 0) {
-			TOGO_LOG_ERROR("sync: expected non-empty string argument\n");
+			TOGO_LOG("error: expected non-empty string argument\n");
 			return false;
 		}
 		fixed_array::push_back(package_names, kvs::string_ref(k_pkg_name));
