@@ -77,10 +77,9 @@ bool interface::command_list(
 	bool opt_resources = false;
 	for (KVS const& k_opt : k_command_options) {
 		switch (kvs::name_hash(k_opt)) {
-		case "-r"_kvs_name: // fall-through
-		case "--resources"_kvs_name:
+		case "-r"_kvs_name:
 			if (!kvs::is_boolean(k_opt)) {
-				TOGO_LOG("error: --resources: expected boolean value\n");
+				TOGO_LOG("error: -r: expected boolean value\n");
 				return false;
 			}
 			opt_resources = kvs::boolean(k_opt);
@@ -96,7 +95,7 @@ bool interface::command_list(
 	}
 	if (opt_resources) {
 		if (kvs::any(k_command)) {
-			TOGO_LOG("NB: takes no arguments with --resources\n");
+			TOGO_LOG("NB: takes no arguments with -r\n");
 		}
 		return interface::command_list(interface, true, nullptr, 0);
 	} else {

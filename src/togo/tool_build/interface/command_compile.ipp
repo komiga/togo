@@ -281,10 +281,9 @@ bool interface::command_compile(
 	StringRef from_package_name{};
 	for (KVS const& k_opt : k_command_options) {
 		switch (kvs::name_hash(k_opt)) {
-		case "-f"_kvs_name: // fall-through
-		case "--force"_kvs_name:
+		case "-f"_kvs_name:
 			if (!kvs::is_boolean(k_opt)) {
-				TOGO_LOG("error: --force: expected boolean value\n");
+				TOGO_LOG("error: -f: expected boolean value\n");
 				return false;
 			}
 			force = kvs::boolean(k_opt);

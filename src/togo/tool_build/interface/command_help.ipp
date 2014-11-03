@@ -37,10 +37,10 @@ bool interface::command_help(
 			"  prints tool_build help\n"
 		);
 		CASE_DESCRIBE_COMMAND(
-			"list", "[-r|--resources || [<package_name> ...]]",
+			"list", "[-r || [<package_name> ...]]",
 			"  lists packages and resources in the project\n"
 			"\n"
-			"  -r|--resources: print resources in all packages\n"
+			"  -r: print resources in all packages\n"
 			"  [<package_name> ...]: print resources in selected packages (implicit -r)\n"
 		);
 		CASE_DESCRIBE_COMMAND(
@@ -53,11 +53,11 @@ bool interface::command_help(
 			"  if no packages are specified, all packages are synced\n"
 		);
 		CASE_DESCRIBE_COMMAND(
-			"compile", "[-f|--force] [--from=<package_name>] [<resource_path> ...]",
+			"compile", "[-f] [--from=<package_name>] [<resource_path> ...]",
 			"  compile resources\n"
 			"  if no resources are specified, all are selected from the constraint\n"
 			"\n"
-			"  -f|--force: force building of selected resources that are already compiled\n"
+			"  -f: force building of selected resources that are already compiled\n"
 			"  --from=<package_name>: only allow selection from the specified package;\n"
 		);
 

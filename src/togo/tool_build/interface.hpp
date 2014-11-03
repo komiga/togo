@@ -102,7 +102,7 @@ bool command_list(
 
 /// Run list command with KVS.
 ///
-/// Specification: `list [-r|--resources || [<package_name> ...]]`.
+/// Specification: `list [-r || [<package_name> ...]]`.
 bool command_list(
 	Interface const& interface,
 	KVS const& k_command_options,
@@ -163,7 +163,7 @@ bool command_compile(
 
 /// Run compile command with KVS.
 ///
-/// Specification: `compile [-f|--force] [--from=<package_name>] [<resource_path> ...]`.
+/// Specification: `compile [-f] [--from=<package_name>] [<resource_path> ...]`.
 bool command_compile(
 	Interface& interface,
 	KVS const& k_command_options,
