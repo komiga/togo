@@ -138,7 +138,7 @@ bool interface::command_compile(
 	StringRef const* paths,
 	unsigned num_paths
 ) {
-	TOGO_ASSERTE(paths || num_paths > 0);
+	TOGO_ASSERTE(paths || num_paths == 0);
 
 	auto* const from_package = compiler_manager::get_package(
 		interface._manager,
