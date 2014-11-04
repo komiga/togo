@@ -261,7 +261,9 @@ bool interface::command_compile(
 			goto l_exit;
 		}
 	}
-		TOGO_LOG("\n");
+		if (&node + 1 != hash_map::end(groups)) {
+			TOGO_LOG("\n");
+		}
 	}}
 
 l_exit:
