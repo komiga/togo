@@ -139,13 +139,9 @@ bool compiler_manager::write_packages(
 	CompilerManager& cm
 ) {
 	for (auto* pkg : cm._packages) {
-		if (!package_compiler::modified(*pkg)) {
-			continue;
-		}
 		if (!package_compiler::write(*pkg)) {
 			return false;
 		}
-		package_compiler::set_modified(*pkg, false);
 	}
 	return true;
 }

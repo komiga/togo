@@ -61,19 +61,34 @@ inline Array<ResourceMetadata> const& metadata(
 	return pkg._metadata;
 }
 
-/// Check if the package is marked as modified.
-inline bool modified(
+/// Check if the package properties are marked as modified.
+inline bool properties_modified(
 	PackageCompiler const& pkg
 ) {
-	return pkg._modified;
+	return pkg._properties_modified;
 }
 
-/// Mark the package as modified or unmodified.
-inline void set_modified(
+/// Mark the package properties as modified or unmodified.
+inline void set_properties_modified(
 	PackageCompiler& pkg,
 	bool const value
 ) {
-	pkg._modified = value;
+	pkg._properties_modified = value;
+}
+
+/// Check if the package manifest is marked as modified.
+inline bool manifest_modified(
+	PackageCompiler const& pkg
+) {
+	return pkg._manifest_modified;
+}
+
+/// Mark the package manifest as modified or unmodified.
+inline void set_manifest_modified(
+	PackageCompiler& pkg,
+	bool const value
+) {
+	pkg._manifest_modified = value;
 }
 
 /// Find lookup node by resource name.
@@ -110,8 +125,18 @@ void read(
 	PackageCompiler& pkg
 );
 
-/// Write package data.
+/// Write modified package data and mark it as not modified.
 bool write(
+	PackageCompiler& pkg
+);
+
+/// Write package properties.
+bool write_properties(
+	PackageCompiler& pkg
+);
+
+/// Write package manifest.
+bool write_manifest(
 	PackageCompiler& pkg
 );
 

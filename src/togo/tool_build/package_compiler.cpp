@@ -69,7 +69,8 @@ PackageCompiler::PackageCompiler(
 	StringRef const& path,
 	Allocator& allocator
 )
-	: _modified(false)
+	: _properties_modified(false)
+	, _manifest_modified(false)
 	, _name_hash(""_resource_package_name)
 	, _lookup(allocator)
 	, _metadata(allocator)
@@ -96,7 +97,7 @@ bool package_compiler::create_stub(
 		return false;
 	}
 
-	WorkingDirScope dir_scope{path};
+	WorkingDirScope wd_scope{path};
 
 	if (path_already_exists && filesystem::is_directory(".package")) {
 		TOGO_LOG_ERRORF(
@@ -199,7 +200,7 @@ u32 package_compiler::add_resource(
 	string::copy(metadata.path, path);
 	hash_map::push(pkg._lookup, metadata.name_hash, metadata.id);
 
-	package_compiler::set_modified(pkg, true);
+	package_compiler::set_manifest_modified(pkg, true);
 	return metadata.id;
 }
 
@@ -252,7 +253,7 @@ void package_compiler::remove_resource(
 	metadata.tags_collated = 0;
 	fixed_array::clear(metadata.path);
 
-	package_compiler::set_modified(pkg, true);
+	package_compiler::set_manifest_modified(pkg, true);
 }
 
 void package_compiler::read(
@@ -269,7 +270,7 @@ void package_compiler::read(
 		"'%.*s': package path does not exist",
 		path.size, path.data
 	);
-	WorkingDirScope dir_scope{path};
+	WorkingDirScope wd_scope{path};
 
 	{// Read properties
 	KVS k_root{};
@@ -324,13 +325,32 @@ void package_compiler::read(
 bool package_compiler::write(
 	PackageCompiler& pkg
 ) {
+	if (
+		package_compiler::properties_modified(pkg) &&
+		!package_compiler::write_properties(pkg)
+	) {
+		return false;
+	}
+
+	if (
+		package_compiler::manifest_modified(pkg) &&
+		!package_compiler::write_manifest(pkg)
+	) {
+		return false;
+	}
+	return true;
+}
+
+bool package_compiler::write_properties(
+	PackageCompiler& pkg
+) {
 	StringRef const path{pkg._path};
 	TOGO_ASSERTF(
 		filesystem::is_directory(path),
 		"'%.*s': package path does not exist",
 		path.size, path.data
 	);
-	WorkingDirScope dir_scope{path};
+	WorkingDirScope wd_scope{path};
 
 	{// Write properties
 	KVS k_properties{KVSType::node};
@@ -342,6 +362,21 @@ bool package_compiler::write(
 		);
 		return false;
 	}}
+
+	package_compiler::set_properties_modified(pkg, false);
+	return true;
+}
+
+bool package_compiler::write_manifest(
+	PackageCompiler& pkg
+) {
+	StringRef const path{pkg._path};
+	TOGO_ASSERTF(
+		filesystem::is_directory(path),
+		"'%.*s': package path does not exist",
+		path.size, path.data
+	);
+	WorkingDirScope wd_scope{path};
 
 	{// Write manifest
 	FileWriter stream{};
@@ -361,7 +396,7 @@ bool package_compiler::write(
 	stream.close();
 	}
 
-	package_compiler::set_modified(pkg, false);
+	package_compiler::set_manifest_modified(pkg, false);
 	return true;
 }
 

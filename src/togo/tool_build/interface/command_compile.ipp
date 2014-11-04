@@ -56,7 +56,7 @@ static bool compile_resource(
 		return false;
 	}}
 
-	package_compiler::set_modified(pkg, true);
+	package_compiler::set_manifest_modified(pkg, true);
 	return true;
 }
 

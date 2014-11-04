@@ -81,7 +81,8 @@ struct PackageCompiler {
 	using LookupNode = HashMapNode<ResourceNameHash, u32>;
 
 	// TODO: Dependency tracking
-	bool _modified;
+	bool _properties_modified;
+	bool _manifest_modified;
 	ResourcePackageNameHash _name_hash;
 	HashMap<ResourceNameHash, u32> _lookup;
 	Array<ResourceMetadata> _metadata;
