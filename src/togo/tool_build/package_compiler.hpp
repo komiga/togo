@@ -89,6 +89,16 @@ inline void set_manifest_modified(
 	bool const value
 ) {
 	pkg._manifest_modified = value;
+	if (pkg._manifest_modified) {
+		pkg._build_parity = false;
+	}
+}
+
+/// Check if the package needs to be built.
+inline bool needs_build(
+	PackageCompiler const& pkg
+) {
+	return !pkg._build_parity;
 }
 
 /// Find lookup node by resource name.

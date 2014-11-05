@@ -89,6 +89,7 @@ struct PackageCompiler {
 	// TODO: Dependency tracking
 	bool _properties_modified;
 	bool _manifest_modified;
+	bool _build_parity;
 	ResourcePackageNameHash _name_hash;
 	HashMap<ResourceNameHash, u32> _lookup;
 	Array<ResourceCompilerMetadata> _metadata;

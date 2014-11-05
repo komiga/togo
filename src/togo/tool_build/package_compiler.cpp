@@ -50,6 +50,7 @@ PackageCompiler::PackageCompiler(
 )
 	: _properties_modified(false)
 	, _manifest_modified(false)
+	, _build_parity(false)
 	, _name_hash(""_resource_package_name)
 	, _lookup(allocator)
 	, _metadata(allocator)
@@ -105,6 +106,7 @@ bool package_compiler::create_stub(
 	{// Create properties
 	KVS k_properties{KVSType::node};
 	kvs::push_back(k_properties, KVS{"name", name});
+	kvs::push_back(k_properties, KVS{"build_parity", false});
 	if (!kvs::write_file(k_properties, ".package/properties")) {
 		TOGO_LOG_ERRORF(
 			"failed to create properties for package at '%.*s'\n",
@@ -271,7 +273,17 @@ void package_compiler::read(
 	);
 	string::copy(pkg._name, kvs::string_ref(*k_name));
 	pkg._name_hash = resource::hash_package_name(pkg._name);
-	}
+
+	KVS const* const k_build_parity = kvs::find(k_root, "build_parity");
+	if (k_build_parity && kvs::is_boolean(*k_build_parity)) {
+		pkg._build_parity = kvs::boolean(*k_build_parity);
+	} else {
+		pkg._build_parity = false;
+		TOGO_LOGF(
+			"'%.*s': warning: expected boolean 'build_parity' property\n",
+			path.size, path.data
+		);
+	}}
 
 	{// Read manifest
 	FileReader stream{};
@@ -338,6 +350,7 @@ bool package_compiler::write_properties(
 	{// Write properties
 	KVS k_properties{KVSType::node};
 	kvs::push_back(k_properties, KVS{"name", pkg._name});
+	kvs::push_back(k_properties, KVS{"build_parity", pkg._build_parity, bool_tag{}});
 	if (!kvs::write_file(k_properties, ".package/properties")) {
 		TOGO_LOG_ERRORF(
 			"failed to write properties for package at '%.*s'\n",
