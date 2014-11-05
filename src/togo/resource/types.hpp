@@ -112,6 +112,19 @@ struct ResourcePathParts {
 	FixedArray<Tag, 8> tags;
 };
 
+// Resource metadata.
+struct ResourceMetadata {
+	u32 id;
+
+	// Serial
+	ResourceNameHash name_hash;
+	hash64 tags_collated;
+	ResourceType type;
+	u32 data_format_version;
+	u32 data_offset;
+	u32 data_size;
+};
+
 // Forward declarations
 struct ResourcePackage;
 struct ResourceHandler;

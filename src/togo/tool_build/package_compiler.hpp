@@ -55,7 +55,7 @@ inline StringRef path(
 }
 
 /// Get resource metadata.
-inline Array<ResourceMetadata> const& metadata(
+inline Array<ResourceCompilerMetadata> const& metadata(
 	PackageCompiler const& pkg
 ) {
 	return pkg._metadata;

@@ -9,10 +9,10 @@ namespace tool_build {
 static bool compile_resource(
 	Interface& interface,
 	PackageCompiler& pkg,
-	ResourceMetadata& metadata
+	ResourceCompilerMetadata& metadata
 ) {
 	FixedArray<char, 24> output_path{};
-	resource_metadata::output_path(metadata, output_path);
+	resource_metadata::compiled_path(metadata, output_path);
 
 	// Open streams
 	FileReader in_stream{};
@@ -47,10 +47,10 @@ static bool compile_resource(
 	in_stream.close();
 	out_stream.close();
 	if (success) {
-		metadata.format_version = compiler->format_version;
+		metadata.data_format_version = compiler->format_version;
 		metadata.last_compiled = filesystem::time_last_modified(output_path);
 	} else {
-		metadata.format_version = 0;
+		metadata.data_format_version = 0;
 		metadata.last_compiled = 0;
 		TOGO_LOG_ERROR("failed to compile\n");
 		return false;

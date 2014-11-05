@@ -22,28 +22,34 @@ namespace togo {
 namespace tool_build {
 
 // Forward declarations
-struct ResourceMetadata;
-struct ResourceCompiler;
 struct PackageCompiler;
 struct CompilerManager;
-struct Interface;
 
 /**
 	@addtogroup tool_build_types
 	@{
 */
 
-/// Resource metadata.
-struct ResourceMetadata {
+/// Resource compiler metadata.
+struct ResourceCompilerMetadata {
+	// Embedded ResourceMetadata
 	u32 id;
-
-	// Serial
-	ResourceType type;
-	u32 format_version;
 	ResourceNameHash name_hash;
-	u64 last_compiled;
 	hash64 tags_collated;
+	ResourceType type;
+	u32 data_format_version;
+	u32 data_offset;
+	u32 data_size;
+
+	u64 last_compiled;
 	FixedArray<char, 256> path;
+
+	operator ResourceMetadata&() {
+		return reinterpret_cast<ResourceMetadata&>(*this);
+	}
+	operator ResourceMetadata const&() const {
+		return reinterpret_cast<ResourceMetadata const&>(*this);
+	}
 };
 
 /** @} */ // end of doc-group tool_build_types
@@ -59,7 +65,7 @@ struct ResourceCompiler {
 	using compile_func_type = bool (
 		CompilerManager& /*manager*/,
 		PackageCompiler& /*package*/,
-		ResourceMetadata const& /*metadata*/,
+		ResourceCompilerMetadata const& /*metadata*/,
 		IReader& /*in_stream*/,
 		IWriter& /*out_stream*/
 	);
@@ -85,7 +91,7 @@ struct PackageCompiler {
 	bool _manifest_modified;
 	ResourcePackageNameHash _name_hash;
 	HashMap<ResourceNameHash, u32> _lookup;
-	Array<ResourceMetadata> _metadata;
+	Array<ResourceCompilerMetadata> _metadata;
 	FixedArray<char, 48> _name;
 	FixedArray<char, 256> _path;
 

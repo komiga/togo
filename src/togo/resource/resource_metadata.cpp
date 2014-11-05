@@ -1,20 +1,19 @@
-#line 2 "togo/tool_build/resource_metadata.cpp"
+#line 2 "togo/resource/resource_metadata.cpp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
-#include <togo/tool_build/config.hpp>
-#include <togo/tool_build/types.hpp>
+#include <togo/config.hpp>
 #include <togo/collection/fixed_array.hpp>
 #include <togo/string/string.hpp>
-#include <togo/tool_build/resource_metadata.hpp>
+#include <togo/resource/types.hpp>
+#include <togo/resource/resource_metadata.hpp>
 
 #include <cstdio>
 
 namespace togo {
-namespace tool_build {
 
-void resource_metadata::output_path(
+void resource_metadata::compiled_path(
 	ResourceMetadata const& metadata,
 	FixedArray<char, 24>& str
 ) {
@@ -32,5 +31,4 @@ void resource_metadata::output_path(
 	fixed_array::back(str) = '\0';
 }
 
-} // namespace tool_build
 } // namespace togo

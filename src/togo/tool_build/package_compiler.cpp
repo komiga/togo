@@ -18,51 +18,30 @@
 #include <togo/serialization/string.hpp>
 #include <togo/serialization/array.hpp>
 #include <togo/serialization/binary_serializer.hpp>
+#include <togo/serialization/resource/resource_metadata.hpp>
 #include <togo/kvs/kvs.hpp>
 #include <togo/resource/resource.hpp>
-#include <togo/tool_build/resource_metadata.hpp>
+#include <togo/resource/resource_metadata.hpp>
 #include <togo/tool_build/package_compiler.hpp>
 
 namespace togo {
 namespace tool_build {
 
 enum : u32 {
-	PKG_MANIFEST_FORMAT_VERSION = 1u,
+	PKG_MANIFEST_FORMAT_VERSION = 2u,
 };
 
 template<class Ser>
-inline void read(serializer_tag, Ser& ser, ResourceMetadata& value) {
-	ser % value.type;
-	fixed_array::clear(value.path);
-	if (value.type != RES_TYPE_NULL) {
-		ser
-			% value.format_version
-			% value.name_hash
-			% value.last_compiled
-			% value.tags_collated
-			% make_ser_string<u8>(value.path)
-		;
-	} else {
-		// Empty slot
-		value.format_version = 0;
-		value.name_hash = RES_NAME_NULL;
-		value.last_compiled = 0;
-		value.tags_collated = hash::IDENTITY64;
-	}
-}
-
-template<class Ser>
-inline void write(serializer_tag, Ser& ser, ResourceMetadata const& value) {
-	ser % value.type;
-	if (value.type != RES_TYPE_NULL) {
-		ser
-			% value.format_version
-			% value.name_hash
-			% value.last_compiled
-			% value.tags_collated
-			% make_ser_string<u8>(value.path)
-		;
-	}
+inline void
+serialize(serializer_tag, Ser& ser, ResourceCompilerMetadata& value_unsafe) {
+	auto& value = serializer_cast_safe<Ser>(value_unsafe);
+	ser
+		% serializer_cast_safe<Ser>(
+			static_cast<ResourceMetadata&>(value_unsafe)
+		)
+		% value.last_compiled
+		% make_ser_string<u8>(value.path)
+	;
 }
 
 PackageCompiler::PackageCompiler(
@@ -191,11 +170,13 @@ u32 package_compiler::add_resource(
 	array::resize(pkg._metadata, array::size(pkg._metadata) + 1);
 	auto& metadata = array::back(pkg._metadata);
 	metadata.id = array::size(pkg._metadata);
-	metadata.type = path_parts.type_hash;
-	metadata.format_version = 0;
 	metadata.name_hash = path_parts.name_hash;
-	metadata.last_compiled = 0;
 	metadata.tags_collated = path_parts.tags_collated;
+	metadata.type = path_parts.type_hash;
+	metadata.data_format_version = 0;
+	metadata.data_offset = 0;
+	metadata.data_size = 0;
+	metadata.last_compiled = 0;
 	fixed_array::clear(metadata.path);
 	string::copy(metadata.path, path);
 	hash_map::push(pkg._lookup, metadata.name_hash, metadata.id);
@@ -231,7 +212,7 @@ void package_compiler::remove_resource(
 
 	if (metadata.last_compiled != 0) {
 		FixedArray<char, 24> output_path{};
-		resource_metadata::output_path(metadata, output_path);
+		resource_metadata::compiled_path(metadata, output_path);
 		if (
 			filesystem::is_file(output_path) &&
 			!filesystem::remove_file(output_path)
@@ -246,11 +227,13 @@ void package_compiler::remove_resource(
 
 	// Leave hole at ID
 	metadata.id = 0;
-	metadata.type = RES_TYPE_NULL;
-	metadata.format_version = 0;
 	metadata.name_hash = 0;
-	metadata.last_compiled = 0;
 	metadata.tags_collated = 0;
+	metadata.type = RES_TYPE_NULL;
+	metadata.data_format_version = 0;
+	metadata.data_offset = 0;
+	metadata.data_size = 0;
+	metadata.last_compiled = 0;
 	fixed_array::clear(metadata.path);
 
 	package_compiler::set_manifest_modified(pkg, true);
@@ -311,7 +294,7 @@ void package_compiler::read(
 	stream.close();
 
 	for (u32 i = 0; i < array::size(pkg._metadata); ++i) {
-		ResourceMetadata& rmd = pkg._metadata[i];
+		auto& rmd = pkg._metadata[i];
 		if (rmd.type != RES_TYPE_NULL) {
 			rmd.id = i + 1;
 			hash_map::push(pkg._lookup, rmd.name_hash, rmd.id);

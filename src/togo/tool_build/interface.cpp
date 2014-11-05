@@ -18,7 +18,7 @@
 #include <togo/filesystem/directory_reader.hpp>
 #include <togo/kvs/kvs.hpp>
 #include <togo/resource/resource.hpp>
-#include <togo/tool_build/resource_metadata.hpp>
+#include <togo/resource/resource_metadata.hpp>
 #include <togo/tool_build/package_compiler.hpp>
 #include <togo/tool_build/compiler_manager.hpp>
 #include <togo/tool_build/interface.hpp>
