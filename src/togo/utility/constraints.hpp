@@ -22,7 +22,7 @@
 
 	#define TOGO_CONSTRAIN_POD(T)									\
 		static_assert(												\
-			std::is_standard_layout<T>::value,						\
+			std::is_trivially_copyable<T>::value,					\
 			"T is not a POD type"									\
 		)
 
