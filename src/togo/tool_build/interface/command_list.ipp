@@ -19,7 +19,7 @@ static void print_package(
 	if (!list_resources) {
 		return;
 	} else if (array::empty(package_compiler::manifest(pkg))) {
-		TOGO_LOG("  no resources\n\n");
+		TOGO_LOG("  no resources\n");
 		return;
 	}
 	for (auto const& metadata : package_compiler::manifest(pkg)) {
@@ -31,7 +31,6 @@ static void print_package(
 			fixed_array::begin(metadata.path)
 		);
 	}
-	TOGO_LOG("\n");
 }
 
 bool interface::command_list(
@@ -52,6 +51,9 @@ bool interface::command_list(
 			);
 			if (pkg) {
 				print_package(*pkg, true);
+				if (list_resources && i + 1 < num_package_names) {
+					TOGO_LOG("\n");
+				}
 			} else {
 				TOGO_LOGF(
 					"package not found: '%.*s'\n",
@@ -60,8 +62,12 @@ bool interface::command_list(
 			}
 		}
 	} else if (array::any(packages)) {
-		for (auto const* pkg : packages) {
+		for (unsigned i = 0; i < array::size(packages); ++i) {
+			auto const* pkg = packages[i];
 			print_package(*pkg, list_resources);
+			if (list_resources && i + 1 < array::size(packages)) {
+				TOGO_LOG("\n");
+			}
 		}
 	} else {
 		TOGO_LOG("no packages\n");
