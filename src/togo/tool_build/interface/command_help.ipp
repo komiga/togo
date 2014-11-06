@@ -60,6 +60,13 @@ bool interface::command_help(
 			"  -f: force building of selected resources that are already compiled\n"
 			"  --from=<package_name>: only allow selection from the specified package;\n"
 		);
+		CASE_DESCRIBE_COMMAND(
+			"pack", "[-f] [<package_name> ...]",
+			"  build packages\n"
+			"  if no packages are specified, all are selected\n"
+			"\n"
+			"  -f: force build selected packages and all of their resources\n"
+		);
 
 	default:
 		if (!do_all) {

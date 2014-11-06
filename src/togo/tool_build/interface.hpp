@@ -170,6 +170,28 @@ bool command_compile(
 	KVS const& k_command
 );
 
+/// Run pack command.
+///
+/// Builds packages.
+/// If no packages are specified, all packages are selected.
+/// If force is true, all selected packages are built regardless of
+/// their source-compilation parity.
+bool command_pack(
+	Interface& interface,
+	bool const force,
+	StringRef const* package_names,
+	unsigned num_package_names
+);
+
+/// Run pack command with KVS.
+///
+/// Specification: `build pack [-f] [<package_name> ...]`.
+bool command_pack(
+	Interface& interface,
+	KVS const& k_command_options,
+	KVS const& k_command
+);
+
 /** @} */ // end of doc-group tool_build_interface
 
 } // namespace interface
