@@ -31,25 +31,11 @@ struct CompilerManager;
 */
 
 /// Resource compiler metadata.
-struct ResourceCompilerMetadata {
-	// Embedded ResourceMetadata
-	u32 id;
-	ResourceNameHash name_hash;
-	hash64 tags_collated;
-	ResourceType type;
-	u32 data_format_version;
-	u32 data_offset;
-	u32 data_size;
-
+struct ResourceCompilerMetadata
+	: ResourceMetadata
+{
 	u64 last_compiled;
 	FixedArray<char, 256> path;
-
-	operator ResourceMetadata&() {
-		return reinterpret_cast<ResourceMetadata&>(*this);
-	}
-	operator ResourceMetadata const&() const {
-		return reinterpret_cast<ResourceMetadata const&>(*this);
-	}
 };
 
 /** @} */ // end of doc-group tool_build_types
