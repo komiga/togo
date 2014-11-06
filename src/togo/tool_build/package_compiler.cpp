@@ -6,6 +6,7 @@
 #include <togo/tool_build/config.hpp>
 #include <togo/tool_build/types.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/traits.hpp>
 #include <togo/log/log.hpp>
 #include <togo/collection/fixed_array.hpp>
 #include <togo/collection/array.hpp>
@@ -28,17 +29,45 @@ namespace togo {
 namespace tool_build {
 
 enum : u32 {
-	PKG_MANIFEST_FORMAT_VERSION = 2u,
+	PKG_MANIFEST_FORMAT_VERSION = 3u,
 };
 
+namespace {
+	template<class T, bool C>
+	struct ManifestAuxiliary {
+		using value_type = type_if<C, T const, T>;
+
+		value_type& value;
+	};
+
+	template<class T>
+	inline ManifestAuxiliary<remove_cv<T>, is_const<T>::value>
+	make_manifest_auxiliary(T& value) {
+		return {value};
+	}
+} // anonymous namespace
+
+// Resource metadata
 template<class Ser>
 inline void
 serialize(serializer_tag, Ser& ser, ResourceCompilerMetadata& value_unsafe) {
-	auto& value = serializer_cast_safe<Ser>(value_unsafe);
 	ser
 		% serializer_cast_safe<Ser>(
 			static_cast<ResourceMetadata&>(value_unsafe)
 		)
+	;
+}
+
+// Compiler metadata
+template<class Ser, bool C>
+inline void
+serialize(
+	serializer_tag,
+	Ser& ser,
+	ManifestAuxiliary<ResourceCompilerMetadata, C>&& value_unsafe
+) {
+	auto& value = serializer_cast_safe<Ser>(value_unsafe.value);
+	ser
 		% value.last_compiled
 		% make_ser_string<u8>(value.path)
 	;
@@ -303,10 +332,9 @@ void package_compiler::read(
 	);
 
 	ser % make_ser_collection<u32>(pkg._manifest);
-	stream.close();
-
 	for (u32 i = 0; i < array::size(pkg._manifest); ++i) {
 		auto& rmd = pkg._manifest[i];
+		ser % make_manifest_auxiliary(rmd);
 		if (rmd.type != RES_TYPE_NULL) {
 			rmd.id = i + 1;
 			hash_map::push(pkg._lookup, rmd.name_hash, rmd.id);
@@ -314,6 +342,7 @@ void package_compiler::read(
 			rmd.id = 0;
 		}
 	}
+	stream.close();
 	}
 }
 
@@ -389,6 +418,9 @@ bool package_compiler::write_manifest(
 		% u32{PKG_MANIFEST_FORMAT_VERSION}
 		% make_ser_collection<u32>(pkg._manifest);
 	;
+	for (auto const& rmd : pkg._manifest) {
+		ser % make_manifest_auxiliary(rmd);
+	}
 	stream.close();
 	}
 
