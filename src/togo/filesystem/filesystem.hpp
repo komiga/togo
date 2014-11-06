@@ -61,6 +61,11 @@ bool is_directory(StringRef const& path);
 /// reason for such a timestamp, and they are not welcome here.
 u64 time_last_modified(StringRef const& path);
 
+/// Get file size in bytes.
+///
+/// Returns 0 on error.
+u64 file_size(StringRef const& path);
+
 /// Create a file.
 ///
 /// If the file already exists, this will fail.

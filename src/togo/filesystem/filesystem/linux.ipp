@@ -116,6 +116,15 @@ u64 filesystem::time_last_modified(StringRef const& path) {
 	return static_cast<u64>(stat_buf.st_ctime);
 }
 
+u64 filesystem::file_size(StringRef const& path) {
+	struct ::stat stat_buf{};
+	if (!stat_wrapper(path, stat_buf) || !S_ISREG(stat_buf.st_mode)) {
+		return 0;
+	}
+	TOGO_ASSERTE(stat_buf.st_size >= 0);
+	return static_cast<u64>(stat_buf.st_size);
+}
+
 bool filesystem::create_file(StringRef const& path) {
 	signed const fd = ::open(
 		path.data,
