@@ -15,6 +15,7 @@
 #include <togo/resource/types.hpp>
 
 namespace togo {
+
 namespace resource {
 
 /**
@@ -46,7 +47,31 @@ bool parse_path(
 	ResourcePathParts& pp
 );
 
+/// Get compiled path.
+void compiled_path(
+	ResourceCompiledPath& path,
+	u32 id
+);
+
 /** @} */ // end of doc-group resource
 
 } // namespace resource
+
+inline ResourceCompiledPath::ResourceCompiledPath()
+	: id(0)
+	, _data()
+{}
+
+inline u32 ResourceCompiledPath::size() const {
+	return id == 0 ? 0 : string::size(_data);
+}
+
+inline char const* ResourceCompiledPath::data() const {
+	return fixed_array::begin(_data);
+}
+
+inline ResourceCompiledPath::operator StringRef() const {
+	return {data(), size()};
+}
+
 } // namespace togo

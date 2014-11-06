@@ -118,6 +118,26 @@ struct ResourcePathParts {
 	FixedArray<Tag, 8> tags;
 };
 
+/// Path to compiled resource.
+struct ResourceCompiledPath {
+	u32 id;
+	FixedArray<char, 24> _data{};
+
+	~ResourceCompiledPath() = default;
+
+	ResourceCompiledPath(ResourceCompiledPath const&) = delete;
+	ResourceCompiledPath(ResourceCompiledPath&&) = delete;
+	ResourceCompiledPath& operator=(ResourceCompiledPath const&) = delete;
+	ResourceCompiledPath& operator=(ResourceCompiledPath&&) = delete;
+
+	ResourceCompiledPath();
+
+	operator StringRef() const;
+
+	u32 size() const;
+	char const* data() const;
+};
+
 // Resource metadata.
 struct ResourceMetadata {
 	u32 id;

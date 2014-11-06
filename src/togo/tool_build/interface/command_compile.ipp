@@ -11,8 +11,8 @@ static bool compile_resource(
 	PackageCompiler& pkg,
 	ResourceCompilerMetadata& metadata
 ) {
-	FixedArray<char, 24> output_path{};
-	resource_metadata::compiled_path(metadata, output_path);
+	ResourceCompiledPath compiled_path{};
+	resource::compiled_path(compiled_path, metadata.id);
 
 	// Open streams
 	FileReader in_stream{};
@@ -21,10 +21,10 @@ static bool compile_resource(
 		TOGO_LOG_ERROR("failed to open source file\n");
 		return false;
 	}
-	if (!out_stream.open(output_path, false)) {
+	if (!out_stream.open(compiled_path, false)) {
 		TOGO_LOG_ERRORF(
 			"failed to open output file: '%.*s'\n",
-			string::size(output_path), fixed_array::begin(output_path)
+			compiled_path.size(), compiled_path.data()
 		);
 		in_stream.close();
 		return false;
@@ -48,7 +48,7 @@ static bool compile_resource(
 	out_stream.close();
 	if (success) {
 		metadata.data_format_version = compiler->format_version;
-		metadata.last_compiled = filesystem::time_last_modified(output_path);
+		metadata.last_compiled = filesystem::time_last_modified(compiled_path);
 	} else {
 		metadata.data_format_version = 0;
 		metadata.last_compiled = 0;

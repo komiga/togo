@@ -96,4 +96,25 @@ bool resource::parse_path(
 	return true;
 }
 
+void resource::compiled_path(
+	ResourceCompiledPath& path,
+	u32 const id
+) {
+	if (path.id == 0) {
+		string::copy(path._data, ".compiled/");
+	}
+	path.id = id;
+	unsigned const size = string::size(".compiled/");
+	// TODO: string::append_integer()
+	signed const id_size = std::snprintf(
+		fixed_array::begin(path._data) + size,
+		fixed_array::capacity(path._data) - size,
+		"%u", id
+	);
+	TOGO_ASSERTE(id_size > 0);
+	fixed_array::resize(path._data, size + id_size + 1);
+	// Don't Trust the Standard Library: A Pessimist's Guide
+	fixed_array::back(path._data) = '\0';
+}
+
 } // namespace togo

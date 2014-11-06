@@ -22,7 +22,6 @@
 #include <togo/serialization/resource/resource_metadata.hpp>
 #include <togo/kvs/kvs.hpp>
 #include <togo/resource/resource.hpp>
-#include <togo/resource/resource_metadata.hpp>
 #include <togo/tool_build/package_compiler.hpp>
 
 namespace togo {
@@ -254,16 +253,15 @@ void package_compiler::remove_resource(
 	}
 
 	if (metadata.last_compiled != 0) {
-		FixedArray<char, 24> output_path{};
-		resource_metadata::compiled_path(metadata, output_path);
+		ResourceCompiledPath compiled_path{};
+		resource::compiled_path(compiled_path, metadata.id);
 		if (
-			filesystem::is_file(output_path) &&
-			!filesystem::remove_file(output_path)
+			filesystem::is_file(compiled_path) &&
+			!filesystem::remove_file(compiled_path)
 		) {
 			TOGO_LOG_ERRORF(
 				"failed to remove compiled resource file: '%.*s'\n",
-				string::size(output_path),
-				fixed_array::begin(output_path)
+				compiled_path.size(), compiled_path.data()
 			);
 		}
 	}
