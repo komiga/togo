@@ -13,6 +13,7 @@
 #include <togo/collection/hash_map.hpp>
 #include <togo/string/string.hpp>
 #include <togo/filesystem/filesystem.hpp>
+#include <togo/io/io.hpp>
 #include <togo/io/file_stream.hpp>
 #include <togo/serialization/serializer.hpp>
 #include <togo/serialization/support.hpp>
@@ -475,6 +476,110 @@ bool package_compiler::write_manifest(
 	}
 
 	package_compiler::set_manifest_modified(pkg, false);
+	return true;
+}
+
+bool package_compiler::build(
+	PackageCompiler& pkg,
+	StringRef const& output_path
+) {
+	StringRef const path{pkg._path};
+	TOGO_ASSERTF(
+		filesystem::is_directory(path),
+		"'%.*s': package path does not exist",
+		path.size, path.data
+	);
+
+	FileWriter stream{};
+	if (!stream.open(output_path, false)) {
+		TOGO_LOG_ERRORF(
+			"failed to open output package file: '%.*s'\n",
+			output_path.size, output_path.data
+		);
+		return false;
+	}
+
+	WorkingDirScope wd_scope{path};
+
+	ResourceCompiledPath compiled_path{};
+	u32 const offset_basis
+		= 4 + 4
+		// manifest
+		+ (32 * array::size(pkg._manifest))
+	;
+
+	{// Calculate data offsets and sizes
+	u32 size;
+	u32 offset = offset_basis;
+	for (auto& rmd : pkg._manifest) {
+		if (rmd.id == 0) {
+			rmd.data_offset = 0;
+			rmd.data_size = 0;
+			continue;
+		}
+
+		resource::compiled_path(compiled_path, rmd.id);
+		TOGO_ASSERTE(filesystem::is_file(compiled_path));
+		size = static_cast<u32>(filesystem::file_size(compiled_path));
+		rmd.data_offset = offset;
+		rmd.data_size = size;
+		offset += size;
+	}}
+
+	{// Serialize
+	// Serial form:
+	//    FORMAT_VERSION
+	//    manifest
+	//    <resource data>
+	BinaryOutputSerializer ser{stream};
+	ser
+		% u32{SER_FORMAT_VERSION_PKG_MANIFEST}
+		% make_ser_collection<u32>(pkg._manifest)
+	;
+	TOGO_ASSERTE(offset_basis == io::position(stream));
+
+	enum : u32 {
+		tmp_buffer_size = 1 * 1024 * 1024,
+	};
+	StringRef rpath{};
+	FileReader compiled_stream{};
+	unsigned read_size;
+	void* const tmp_buffer = memory::scratch_allocator().allocate(tmp_buffer_size);
+	for (auto const& rmd : pkg._manifest) {
+		if (rmd.id == 0) {
+			continue;
+		}
+
+		resource::compiled_path(compiled_path, rmd.id);
+		rpath = rmd.path;
+		if (!compiled_stream.open(compiled_path)) {
+			TOGO_LOG_ERRORF(
+				"failed to open compiled resource file for '%.*s': '%.*s'\n",
+				rpath.size, rpath.data,
+				compiled_path.size(), compiled_path.data()
+			);
+			memory::scratch_allocator().deallocate(tmp_buffer);
+			return false;
+		}
+
+		TOGO_ASSERTE(rmd.data_offset == io::position(stream));
+		do {
+			TOGO_ASSERTE(!io::read(
+				compiled_stream,
+				tmp_buffer, tmp_buffer_size,
+				&read_size
+			).fail());
+			TOGO_ASSERTE(io::write(stream, tmp_buffer, read_size));
+		} while (io::status(compiled_stream));
+		TOGO_ASSERTE(rmd.data_size == io::position(compiled_stream));
+		compiled_stream.close();
+	}
+	memory::scratch_allocator().deallocate(tmp_buffer);
+	}
+	stream.close();
+
+	package_compiler::set_properties_modified(pkg, pkg._build_parity != true);
+	pkg._build_parity = true;
 	return true;
 }
 
