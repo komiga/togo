@@ -135,7 +135,7 @@ bool package_compiler::create_stub(
 	{// Create properties
 	KVS k_properties{KVSType::node};
 	kvs::push_back(k_properties, KVS{"name", name});
-	kvs::push_back(k_properties, KVS{"build_parity", false});
+	kvs::push_back(k_properties, KVS{"build_parity", false, bool_tag{}});
 	if (!kvs::write_file(k_properties, ".package/properties")) {
 		TOGO_LOG_ERRORF(
 			"failed to create properties for package at '%.*s'\n",
