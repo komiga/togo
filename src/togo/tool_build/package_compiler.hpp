@@ -90,6 +90,7 @@ inline void set_manifest_modified(
 ) {
 	pkg._manifest_modified = value;
 	if (pkg._manifest_modified) {
+		package_compiler::set_properties_modified(pkg, pkg._build_parity != false || true);
 		pkg._build_parity = false;
 	}
 }
