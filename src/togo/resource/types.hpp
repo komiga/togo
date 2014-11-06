@@ -27,6 +27,12 @@ namespace togo {
 	@{
 */
 
+/// Format versions.
+enum : u32 {
+	/// ResourcePackage manifest format version.
+	SER_FORMAT_VERSION_PKG_MANIFEST = 3,
+};
+
 /// Resource type.
 using ResourceType = hash32;
 

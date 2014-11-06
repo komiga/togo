@@ -28,21 +28,17 @@
 namespace togo {
 namespace tool_build {
 
-enum : u32 {
-	PKG_MANIFEST_FORMAT_VERSION = 3u,
-};
-
 namespace {
 	template<class T, bool C>
-	struct ManifestAuxiliary {
+	struct SerialAuxiliary {
 		using value_type = type_if<C, T const, T>;
 
 		value_type& value;
 	};
 
 	template<class T>
-	inline ManifestAuxiliary<remove_cv<T>, is_const<T>::value>
-	make_manifest_auxiliary(T& value) {
+	inline SerialAuxiliary<remove_cv<T>, is_const<T>::value>
+	make_serial_auxiliary(T& value) {
 		return {value};
 	}
 } // anonymous namespace
@@ -64,7 +60,7 @@ inline void
 serialize(
 	serializer_tag,
 	Ser& ser,
-	ManifestAuxiliary<ResourceCompilerMetadata, C>&& value_unsafe
+	SerialAuxiliary<ResourceCompilerMetadata, C>&& value_unsafe
 ) {
 	auto& value = serializer_cast_safe<Ser>(value_unsafe.value);
 	ser
@@ -155,9 +151,25 @@ bool package_compiler::create_stub(
 	}
 	BinaryOutputSerializer ser{stream};
 	ser
-		% u32{PKG_MANIFEST_FORMAT_VERSION}
+		% u32{SER_FORMAT_VERSION_PKG_MANIFEST}
 		// number of entries
 		% u32{0u}
+	;
+	stream.close();
+	}
+
+	{// Create compiler_metadata
+	FileWriter stream{};
+	if (!stream.open(".package/compiler_metadata", false)) {
+		TOGO_LOG_ERRORF(
+			"failed to create compiler_metadata for package at '%.*s'\n",
+			path.size, path.data
+		);
+		return false;
+	}
+	BinaryOutputSerializer ser{stream};
+	ser
+		% u32{SER_FORMAT_VERSION_PKG_COMPILER_METADATA}
 	;
 	stream.close();
 	}
@@ -326,23 +338,46 @@ void package_compiler::read(
 	u32 format_version = 0;
 	ser % format_version;
 	TOGO_ASSERTF(
-		format_version == PKG_MANIFEST_FORMAT_VERSION,
+		format_version == SER_FORMAT_VERSION_PKG_MANIFEST,
 		"'%.*s': manifest version %u unsupported",
 		path.size, path.data, format_version
 	);
 
 	ser % make_ser_collection<u32>(pkg._manifest);
+	stream.close();
+	}
+
+	{// Read compiler_metadata
+	FileReader stream{};
+	TOGO_ASSERTF(
+		stream.open(".package/compiler_metadata"),
+		"'%.*s': failed to open compiler_metadata for reading",
+		path.size, path.data
+	);
+
+	BinaryInputSerializer ser{stream};
+	u32 format_version = 0;
+	ser % format_version;
+	TOGO_ASSERTF(
+		format_version == SER_FORMAT_VERSION_PKG_COMPILER_METADATA,
+		"'%.*s': compiler_metadata version %u unsupported",
+		path.size, path.data, format_version
+	);
+
+	for (auto& rmd : pkg._manifest) {
+		ser % make_serial_auxiliary(rmd);
+	}
+	stream.close();
+	}
+
 	for (u32 i = 0; i < array::size(pkg._manifest); ++i) {
 		auto& rmd = pkg._manifest[i];
-		ser % make_manifest_auxiliary(rmd);
 		if (rmd.type != RES_TYPE_NULL) {
 			rmd.id = i + 1;
 			hash_map::push(pkg._lookup, rmd.name_hash, rmd.id);
 		} else {
 			rmd.id = 0;
 		}
-	}
-	stream.close();
 	}
 }
 
@@ -415,11 +450,28 @@ bool package_compiler::write_manifest(
 
 	BinaryOutputSerializer ser{stream};
 	ser
-		% u32{PKG_MANIFEST_FORMAT_VERSION}
+		% u32{SER_FORMAT_VERSION_PKG_MANIFEST}
 		% make_ser_collection<u32>(pkg._manifest);
 	;
+	stream.close();
+	}
+
+	{// Write compiler_metadata
+	FileWriter stream{};
+	if (!stream.open(".package/compiler_metadata", false)) {
+		TOGO_LOG_ERRORF(
+			"failed to open compiler_metadata for package at '%.*s'\n",
+			path.size, path.data
+		);
+		return false;
+	}
+
+	BinaryOutputSerializer ser{stream};
+	ser
+		% u32{SER_FORMAT_VERSION_PKG_COMPILER_METADATA}
+	;
 	for (auto const& rmd : pkg._manifest) {
-		ser % make_manifest_auxiliary(rmd);
+		ser % make_serial_auxiliary(rmd);
 	}
 	stream.close();
 	}

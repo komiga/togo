@@ -30,6 +30,12 @@ struct CompilerManager;
 	@{
 */
 
+/// Format versions.
+enum : u32 {
+	/// PackageCompiler compiler_metadata format version.
+	SER_FORMAT_VERSION_PKG_COMPILER_METADATA = 1,
+};
+
 /// Resource compiler metadata.
 struct ResourceCompilerMetadata
 	: ResourceMetadata
