@@ -92,7 +92,7 @@ struct PackageCompiler {
 	bool _build_parity;
 	ResourcePackageNameHash _name_hash;
 	HashMap<ResourceNameHash, u32> _lookup;
-	Array<ResourceCompilerMetadata> _metadata;
+	Array<ResourceCompilerMetadata> _manifest;
 	FixedArray<char, 48> _name;
 	FixedArray<char, 256> _path;
 

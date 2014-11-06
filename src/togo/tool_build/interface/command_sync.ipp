@@ -33,7 +33,7 @@ static bool sync_package(
 
 	{// Remove resources that have been deleted
 	StringRef path;
-	for (auto const& metadata : package_compiler::metadata(pkg)) {
+	for (auto const& metadata : package_compiler::manifest(pkg)) {
 		if (metadata.id == 0) {
 			// Skip holes
 			continue;

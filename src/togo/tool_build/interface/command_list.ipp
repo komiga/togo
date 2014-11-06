@@ -18,11 +18,11 @@ static void print_package(
 	);
 	if (!list_resources) {
 		return;
-	} else if (array::empty(pkg._metadata)) {
+	} else if (array::empty(package_compiler::manifest(pkg))) {
 		TOGO_LOG("  no resources\n\n");
 		return;
 	}
-	for (auto const& metadata : pkg._metadata) {
+	for (auto const& metadata : package_compiler::manifest(pkg)) {
 		TOGO_LOGF(
 			"  %c [%08x %016lx] %.*s\n",
 			metadata.last_compiled == 0 ? ' ' : 'C',

@@ -54,11 +54,11 @@ inline StringRef path(
 	return {pkg._path};
 }
 
-/// Get resource metadata.
-inline Array<ResourceCompilerMetadata> const& metadata(
+/// Get manifest.
+inline Array<ResourceCompilerMetadata> const& manifest(
 	PackageCompiler const& pkg
 ) {
-	return pkg._metadata;
+	return pkg._manifest;
 }
 
 /// Check if the package properties are marked as modified.

@@ -53,7 +53,7 @@ PackageCompiler::PackageCompiler(
 	, _build_parity(false)
 	, _name_hash(""_resource_package_name)
 	, _lookup(allocator)
-	, _metadata(allocator)
+	, _manifest(allocator)
 	, _name()
 	, _path()
 {
@@ -148,7 +148,7 @@ u32 package_compiler::find_resource_id(
 ) {
 	auto const* node = hash_map::get_node(pkg._lookup, path_parts.name_hash);
 	for (; node; node = hash_map::get_next(pkg._lookup, node)) {
-		auto const& metadata = pkg._metadata[node->value - 1];
+		auto const& metadata = pkg._manifest[node->value - 1];
 		if (
 			path_parts.type_hash == metadata.type &&
 			path_parts.tags_collated == metadata.tags_collated
@@ -169,9 +169,9 @@ u32 package_compiler::add_resource(
 		"resource already exists in package"
 	);
 
-	array::resize(pkg._metadata, array::size(pkg._metadata) + 1);
-	auto& metadata = array::back(pkg._metadata);
-	metadata.id = array::size(pkg._metadata);
+	array::resize(pkg._manifest, array::size(pkg._manifest) + 1);
+	auto& metadata = array::back(pkg._manifest);
+	metadata.id = array::size(pkg._manifest);
 	metadata.name_hash = path_parts.name_hash;
 	metadata.tags_collated = path_parts.tags_collated;
 	metadata.type = path_parts.type_hash;
@@ -191,8 +191,8 @@ void package_compiler::remove_resource(
 	PackageCompiler& pkg,
 	u32 const id
 ) {
-	TOGO_ASSERTE(id > 0 && id <= array::size(pkg._metadata));
-	auto& metadata = pkg._metadata[id - 1];
+	TOGO_ASSERTE(id > 0 && id <= array::size(pkg._manifest));
+	auto& metadata = pkg._manifest[id - 1];
 	TOGO_ASSERT(
 		metadata.id != 0,
 		"resource slot already removed"
@@ -247,7 +247,7 @@ void package_compiler::read(
 	pkg._name_hash = ""_resource_package_name;
 	string::copy(pkg._name, "");
 	hash_map::clear(pkg._lookup);
-	array::clear(pkg._metadata);
+	array::clear(pkg._manifest);
 
 	StringRef const path{pkg._path};
 	TOGO_ASSERTF(
@@ -302,11 +302,11 @@ void package_compiler::read(
 		path.size, path.data, format_version
 	);
 
-	ser % make_ser_collection<u32>(pkg._metadata);
+	ser % make_ser_collection<u32>(pkg._manifest);
 	stream.close();
 
-	for (u32 i = 0; i < array::size(pkg._metadata); ++i) {
-		auto& rmd = pkg._metadata[i];
+	for (u32 i = 0; i < array::size(pkg._manifest); ++i) {
+		auto& rmd = pkg._manifest[i];
 		if (rmd.type != RES_TYPE_NULL) {
 			rmd.id = i + 1;
 			hash_map::push(pkg._lookup, rmd.name_hash, rmd.id);
@@ -387,7 +387,7 @@ bool package_compiler::write_manifest(
 	BinaryOutputSerializer ser{stream};
 	ser
 		% u32{PKG_MANIFEST_FORMAT_VERSION}
-		% make_ser_collection<u32>(pkg._metadata);
+		% make_ser_collection<u32>(pkg._manifest);
 	;
 	stream.close();
 	}

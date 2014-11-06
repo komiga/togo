@@ -72,7 +72,7 @@ static bool add_resource(
 		return false;
 	}
 
-	auto const& metadata = pkg->_metadata[id - 1];
+	auto const& metadata = pkg->_manifest[id - 1];
 	StringRef const pkg_name{package_compiler::name(*pkg)};
 	StringRef const path{metadata.path};
 	u64 const modified = filesystem::time_last_modified(path);
@@ -117,7 +117,7 @@ static void add_node(
 	StringRef const pkg_name = package_compiler::name(*pkg);
 	for (; node != nullptr; node = hash_map::get_next(pkg->_lookup, node)) {
 		if (!add_resource(groups, pkg, node->value, force)) {
-			StringRef const path{pkg->_metadata[node->value - 1].path};
+			StringRef const path{pkg->_manifest[node->value - 1].path};
 			TOGO_LOGF(
 				" N  %.*s / %.*s\n",
 				pkg_name.size, pkg_name.data,
@@ -217,14 +217,14 @@ bool interface::command_compile(
 		}
 	} else if (from_package) {
 		WorkingDirScope wd_scope{package_compiler::path(*from_package)};
-		for (auto const& metadata : package_compiler::metadata(*from_package)) {
+		for (auto const& metadata : package_compiler::manifest(*from_package)) {
 			add_resource(groups, from_package, metadata.id, force);
 		}
 	} else {
 		// All resources
 		for (auto const* pkg : compiler_manager::packages(interface._manager)) {
 			WorkingDirScope wd_scope{package_compiler::path(*pkg)};
-		for (auto const& metadata : package_compiler::metadata(*pkg)) {
+		for (auto const& metadata : package_compiler::manifest(*pkg)) {
 			add_resource(groups, pkg, metadata.id, force);
 		}}
 	}}
@@ -249,7 +249,7 @@ bool interface::command_compile(
 		pkg_name = package_compiler::name(*pkg);
 		WorkingDirScope wd_scope{package_compiler::path(*pkg)};
 	for (u32 id : *res_list) {
-		auto& metadata = pkg->_metadata[id - 1];
+		auto& metadata = pkg->_manifest[id - 1];
 		path = StringRef{metadata.path};
 		TOGO_LOGF(
 			"  C %.*s / %.*s\n",
