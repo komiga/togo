@@ -33,7 +33,7 @@ void test(
 	ResourceManager& rm,
 	ResourceNameHash const name_hash,
 	bool const expect_success,
-	u32 const x
+	s64 const x
 ) {
 	TOGO_ASSERTE(!resource_manager::get_resource(
 		rm, RES_TYPE_TEST, name_hash
