@@ -1,5 +1,5 @@
 
 resources = [
-	"1.dummy"
-	"3.dummy"
+	"1.test"
+	"3.test"
 ]
