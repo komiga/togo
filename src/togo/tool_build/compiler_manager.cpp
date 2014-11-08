@@ -12,6 +12,7 @@
 #include <togo/collection/hash_map.hpp>
 #include <togo/tool_build/package_compiler.hpp>
 #include <togo/tool_build/compiler_manager.hpp>
+#include <togo/tool_build/resource_compiler.hpp>
 
 namespace togo {
 namespace tool_build {
@@ -44,9 +45,9 @@ void compiler_manager::register_compiler(
 }
 
 void compiler_manager::register_standard_compilers(
-	CompilerManager& /*cm*/
+	CompilerManager& cm
 ) {
-	// TODO
+	resource_compiler::register_test_resource(cm);
 }
 
 bool compiler_manager::has_compiler(
