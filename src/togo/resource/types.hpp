@@ -87,6 +87,9 @@ enum : ResourceType {
 	/// Non-type.
 	RES_TYPE_NULL = ""_resource_type,
 
+	/// TestResource.
+	RES_TYPE_TEST = "test"_resource_type,
+
 	/// gfx::RenderConfig.
 	RES_TYPE_RENDER_CONFIG = "render_config"_resource_type,
 };
@@ -149,6 +152,11 @@ struct ResourceMetadata {
 	u32 data_format_version;
 	u32 data_offset;
 	u32 data_size;
+};
+
+/// Test resource.
+struct TestResource {
+	u32 x;
 };
 
 // Forward declarations
