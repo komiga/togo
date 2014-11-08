@@ -29,6 +29,9 @@ namespace togo {
 
 /// Format versions.
 enum : u32 {
+	/// TestResource format version.
+	SER_FORMAT_VERSION_TEST_RESOURCE = 1,
+
 	/// ResourcePackage manifest format version.
 	SER_FORMAT_VERSION_PKG_MANIFEST = 3,
 };
@@ -141,7 +144,7 @@ struct ResourceCompiledPath {
 	char const* data() const;
 };
 
-// Resource metadata.
+/// Resource metadata.
 struct ResourceMetadata {
 	u32 id;
 
