@@ -156,7 +156,7 @@ struct ResourceMetadata {
 
 /// Test resource.
 struct TestResource {
-	u32 x;
+	s64 x;
 };
 
 // Forward declarations

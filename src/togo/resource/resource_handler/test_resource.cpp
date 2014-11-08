@@ -5,10 +5,12 @@
 
 #include <togo/config.hpp>
 #include <togo/memory/memory.hpp>
-#include <togo/io/io.hpp>
 #include <togo/resource/types.hpp>
 #include <togo/resource/resource_handler.hpp>
 #include <togo/resource/resource_manager.hpp>
+#include <togo/serialization/serializer.hpp>
+#include <togo/serialization/resource/test_resource.hpp>
+#include <togo/serialization/binary_serializer.hpp>
 
 namespace togo {
 
@@ -25,7 +27,11 @@ static void* load(
 	TestResource* const test_resource = TOGO_CONSTRUCT(
 		memory::default_allocator(), TestResource, {0}
 	);
-	io::read_value(stream, test_resource->x);
+
+	{// Deserialize resource
+	BinaryInputSerializer ser{stream};
+	ser % *test_resource;
+	}
 	return test_resource;
 }
 
