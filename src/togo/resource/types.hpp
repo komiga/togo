@@ -163,9 +163,41 @@ struct TestResource {
 };
 
 // Forward declarations
-struct ResourcePackage;
 struct ResourceHandler;
+struct ResourcePackage;
 struct ResourceManager;
+
+/**
+	@addtogroup resource_handler
+	@{
+*/
+
+/// Resource handler.
+struct ResourceHandler {
+	/// Load a resource.
+	///
+	/// Returns pointer to resource, or nullptr on error.
+	using load_func_type = void* (
+		void* /*type_data*/,
+		ResourceManager& /*manager*/,
+		ResourceNameHash /*name_hash*/,
+		IReader& /*stream*/
+	);
+
+	/// Unload a resource.
+	using unload_func_type = void (
+		void* /*type_data*/,
+		ResourceManager& /*manager*/,
+		ResourceNameHash /*name_hash*/,
+		void* /*resource*/
+	);
+
+	ResourceType type;
+	load_func_type* func_load;
+	unload_func_type* func_unload;
+};
+
+/** @} */ // end of doc-group resource_handler
 
 /**
 	@addtogroup resource_package
@@ -202,38 +234,6 @@ struct ResourcePackage {
 };
 
 /** @} */ // end of doc-group resource_package
-
-/**
-	@addtogroup resource_handler
-	@{
-*/
-
-/// Resource handler.
-struct ResourceHandler {
-	/// Load a resource.
-	///
-	/// Returns pointer to resource, or nullptr on error.
-	using load_func_type = void* (
-		void* /*type_data*/,
-		ResourceManager& /*manager*/,
-		ResourceNameHash /*name_hash*/,
-		IReader& /*stream*/
-	);
-
-	/// Unload a resource.
-	using unload_func_type = void (
-		void* /*type_data*/,
-		ResourceManager& /*manager*/,
-		ResourceNameHash /*name_hash*/,
-		void* /*resource*/
-	);
-
-	ResourceType type;
-	load_func_type* func_load;
-	unload_func_type* func_unload;
-};
-
-/** @} */ // end of doc-group resource_handler
 
 /**
 	@addtogroup resource_manager
