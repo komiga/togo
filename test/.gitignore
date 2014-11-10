@@ -6,3 +6,5 @@ out/
 *.elf
 
 data/file_stream.bin
+data/project/package/*/.compiled/
+data/project/package/*/.package/
