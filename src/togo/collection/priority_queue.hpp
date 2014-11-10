@@ -4,7 +4,7 @@
 
 @file
 @brief PriorityQueue interface.
-@ingroup collections
+@ingroup collection
 @ingroup priority_queue
 */
 

@@ -1,7 +1,7 @@
 
 /**
 
-@defgroup collections Collections
+@defgroup collection Collections
 @details
 
 @warning None of these types are thread-safe.

@@ -4,7 +4,7 @@
 
 @file
 @brief Array interface.
-@ingroup collections
+@ingroup collection
 @ingroup array
 */
 

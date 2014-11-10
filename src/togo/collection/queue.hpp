@@ -4,7 +4,7 @@
 
 @file
 @brief Queue interface.
-@ingroup collections
+@ingroup collection
 @ingroup queue
 */
 

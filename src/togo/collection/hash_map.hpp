@@ -4,7 +4,7 @@
 
 @file
 @brief HashMap interface.
-@ingroup collections
+@ingroup collection
 @ingroup hash_map
 */
 

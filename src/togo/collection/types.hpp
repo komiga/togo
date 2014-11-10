@@ -5,7 +5,7 @@
 @file
 @brief Collection types.
 @ingroup types
-@ingroup collections
+@ingroup collection
 */
 
 #pragma once
@@ -19,7 +19,7 @@
 namespace togo {
 
 /**
-	@addtogroup collections
+	@addtogroup collection
 	@{
 */
 
@@ -193,6 +193,6 @@ struct HashMap {
 
 /** @} */ // end of doc-group hash_map
 
-/** @} */ // end of doc-group collections
+/** @} */ // end of doc-group collection
 
 } // namespace togo

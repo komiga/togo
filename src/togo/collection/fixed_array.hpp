@@ -4,7 +4,7 @@
 
 @file
 @brief FixedArray interface.
-@ingroup collections
+@ingroup collection
 @ingroup fixed_array
 */
 
