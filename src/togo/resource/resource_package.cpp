@@ -9,148 +9,119 @@
 #include <togo/log/log.hpp>
 #include <togo/hash/hash.hpp>
 #include <togo/collection/hash_map.hpp>
-#include <togo/collection/fixed_array.hpp>
+#include <togo/io/io.hpp>
 #include <togo/io/file_stream.hpp>
-#include <togo/kvs/kvs.hpp>
 #include <togo/resource/types.hpp>
 #include <togo/resource/resource.hpp>
 #include <togo/resource/resource_package.hpp>
 #include <togo/resource/resource_manager.hpp>
+#include <togo/serialization/serializer.hpp>
+#include <togo/serialization/support.hpp>
+#include <togo/serialization/binary_serializer.hpp>
+#include <togo/serialization/array.hpp>
+#include <togo/serialization/resource/resource_metadata.hpp>
 
 namespace togo {
 
 ResourcePackage::ResourcePackage(
-	StringRef const& root,
+	StringRef const& name,
+	StringRef const& path,
 	Allocator& allocator
 )
-	: _root_hash(hash::calc64(root))
-	, _data_stream()
-	, _entries(allocator)
-	, _root()
+	: _name_hash(resource::hash_package_name(name))
+	, _open_resource_id(0)
+	, _stream()
+	, _lookup(allocator)
+	, _manifest(allocator)
+	, _name()
+	, _path()
 {
-	string::copy(_root, root);
-	string::trim_trailing_slashes(_root);
+	string::copy(_name, name);
+	string::copy(_path, path);
 }
 
-void resource_package::load_manifest(
+void resource_package::open(
 	ResourcePackage& pkg,
 	ResourceManager const& rm
 ) {
-	FixedArray<char, 128> mpath;
-	string::copy(mpath, pkg._root);
-	string::append(mpath, "/manifest");
-	StringRef const mpath_ref{mpath};
+	TOGO_ASSERT(!pkg._stream.is_open(), "package is already open");
 
-	FileReader stream;
-	KVS manifest_root{};
-	ParserInfo pinfo;
+	StringRef const name{pkg._name};
+	StringRef const path{pkg._path};
 	TOGO_ASSERTF(
-		stream.open(mpath_ref),
-		"failed to open package manifest '%.*s'",
-		mpath_ref.size, mpath_ref.data
-	);
-	bool const success = kvs::read(manifest_root, stream, pinfo);
-	stream.close();
-	TOGO_ASSERTF(
-		success,
-		"failed to read package manifest '%.*s': [%2u,%2u]: %s",
-		mpath_ref.size, mpath_ref.data,
-		pinfo.line, pinfo.column, pinfo.message
+		pkg._stream.open(path),
+		"failed to open package '%.*s' at '%.*s'",
+		name.size, name.data,
+		path.size, path.data
 	);
 
-	KVS const* const manifest_resources = kvs::find(manifest_root, "resources");
+	BinaryInputSerializer ser{pkg._stream};
+	u32 format_version = 0;
+	ser % format_version;
 	TOGO_ASSERTF(
-		manifest_resources != nullptr && kvs::is_array(*manifest_resources),
-		"malformed package manifest '%.*s'",
-		mpath_ref.size, mpath_ref.data
+		format_version == SER_FORMAT_VERSION_PKG_MANIFEST,
+		"manifest version %u unsupported from package '%.*s' at '%.*s'",
+		format_version,
+		name.size, name.data,
+		path.size, path.data
 	);
 
-	FixedArray<char, array_extent(&ResourcePackage::Entry::path)> full_path;
-	ResourcePathParts pparts;
-	StringRef rpath_ref{};
-	StringRef full_path_ref{};
-	bool parse_path_success;
-	string::copy(full_path, pkg._root);
-	fixed_array::back(full_path) = '/';
-	fixed_array::push_back(full_path, '\0');
-	unsigned const base_size = string::size(full_path);
-	hash_map::reserve(pkg._entries, kvs::size(*manifest_resources));
-	for (auto const& kvs_rp : *manifest_resources) {
-		TOGO_ASSERTF(
-			kvs::is_string(kvs_rp),
-			"malformed package manifest '%.*s'",
-			mpath_ref.size, mpath_ref.data
-		);
-		rpath_ref = kvs::string_ref(kvs_rp);
-		if (rpath_ref.size == 0) {
-			TOGO_LOG_ERRORF(
-				"invalid resource path"
-				" in package manifest '%.*s': ''\n",
-				mpath_ref.size, mpath_ref.data
-			);
+	ser % make_ser_collection<u32>(pkg._manifest);
+	for (u32 i = 0; i < array::size(pkg._manifest); ++i) {
+		auto& metadata = pkg._manifest[i];
+		if (metadata.type == RES_TYPE_NULL) {
+			metadata.id = 0;
 			continue;
 		}
-		// Retain root path, replace inner path part
-		fixed_array::resize(full_path, base_size);
-		string::append(full_path, rpath_ref);
-		full_path_ref = full_path;
-		parse_path_success = resource::parse_path(rpath_ref, pparts);
-		if (!parse_path_success) {
-			TOGO_LOG_ERRORF(
-				"invalid resource path"
-				" in package manifest '%.*s': '%.*s'\n",
-				mpath_ref.size, mpath_ref.data,
-				rpath_ref.size, rpath_ref.data
-			);
-		} else if (!resource_manager::has_handler(rm, pparts.type_hash)) {
-			TOGO_LOG_ERRORF(
-				"resource type not recognized"
-				" in package manifest '%.*s': '%.*s', of resource '%.*s'\n",
-				mpath_ref.size, mpath_ref.data,
-				pparts.type.size, pparts.type.data,
-				rpath_ref.size, rpath_ref.data
-			);
-		} else if (hash_map::has(pkg._entries, pparts.name_hash)) {
-			TOGO_LOG_ERRORF(
-				"duplicate resource name"
-				" in package manifest '%.*s': '%.*s'\n",
-				mpath_ref.size, mpath_ref.data,
-				rpath_ref.size, rpath_ref.data
-			);
-		} else {
-			auto& entry = hash_map::push(pkg._entries, pparts.name_hash, {});
-			entry.type = pparts.type_hash;
-			string::copy(entry.path, full_path_ref);
-			entry.path_size = static_cast<u8>(full_path_ref.size);
-		}
+		metadata.id = i + 1;
+		hash_map::push(pkg._lookup, metadata.name_hash, metadata.id);
+		TOGO_ASSERTF(
+			resource_manager::has_handler(rm, metadata.type),
+			"no handler registered for resource %16lx's type %08x",
+			metadata.name_hash, metadata.type
+		);
 	}
 }
 
-ResourcePackage::EntryNode* resource_package::find_resource(
+void resource_package::close(
+	ResourcePackage& pkg
+) {
+	TOGO_ASSERT(pkg._stream.is_open(), "package is already closed");
+	pkg._stream.close();
+}
+
+ResourcePackage::LookupNode* resource_package::find_resource(
 	ResourcePackage& pkg,
 	ResourceType const type,
 	ResourceNameHash const name_hash
 ) {
-	auto* const node = hash_map::get_node(pkg._entries, name_hash);
-	return (node && node->value.type == type) ? node : nullptr;
+	auto* const node = hash_map::get_node(pkg._lookup, name_hash);
+	return (node && pkg._manifest[node->value - 1].type == type) ? node : nullptr;
 }
 
 IReader* resource_package::open_resource_stream(
 	ResourcePackage& pkg,
-	ResourcePackage::EntryNode* const node
+	ResourcePackage::LookupNode* const node
 ) {
 	TOGO_ASSERTE(node != nullptr);
-	TOGO_ASSERTE(!pkg._data_stream.is_open());
-	auto const& entry = node->value;
-	StringRef const path_ref{entry.path, entry.path_size};
-	return pkg._data_stream.open(path_ref) ? &pkg._data_stream : nullptr;
+	TOGO_ASSERTE(pkg._open_resource_id == 0);
+	auto const& metadata = pkg._manifest[node->value - 1];
+	TOGO_ASSERTE(io::seek_to(pkg._stream, metadata.data_offset));
+	pkg._open_resource_id = node->value;
+	return &pkg._stream;
 }
 
 void resource_package::close_resource_stream(
 	ResourcePackage& pkg
 ) {
-	TOGO_ASSERTE(pkg._data_stream.is_open());
-	pkg._data_stream.close();
+	TOGO_ASSERTE(pkg._open_resource_id != 0);
+	auto const& metadata = pkg._manifest[pkg._open_resource_id - 1];
+	auto const stream_pos = io::position(pkg._stream);
+	TOGO_DEBUG_ASSERTE(
+		stream_pos >= metadata.data_offset &&
+		stream_pos <= metadata.data_offset + metadata.data_size
+	);
+	pkg._open_resource_id = 0;
 }
 
 } // namespace togo

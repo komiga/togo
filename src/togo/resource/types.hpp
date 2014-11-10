@@ -206,18 +206,15 @@ struct ResourceHandler {
 
 /// Resource package.
 struct ResourcePackage {
-	struct Entry {
-		ResourceType type;
-		u8 path_size;
-		char path[256];
-	};
+	using LookupNode = HashMapNode<ResourceNameHash, u32>;
 
-	using EntryNode = HashMapNode<ResourceNameHash, Entry>;
-
-	hash64 _root_hash;
-	FileReader _data_stream;
-	HashMap<ResourceNameHash, Entry> _entries;
-	FixedArray<char, 128> _root;
+	ResourcePackageNameHash _name_hash;
+	u32 _open_resource_id;
+	FileReader _stream;
+	HashMap<ResourceNameHash, u32> _lookup;
+	Array<ResourceMetadata> _manifest;
+	FixedArray<char, 48> _name;
+	FixedArray<char, 256> _path;
 
 	ResourcePackage() = delete;
 	ResourcePackage(ResourcePackage const&) = delete;
@@ -228,7 +225,8 @@ struct ResourcePackage {
 	~ResourcePackage() = default;
 
 	ResourcePackage(
-		StringRef const& root,
+		StringRef const& name,
+		StringRef const& path,
 		Allocator& allocator
 	);
 };
@@ -255,6 +253,7 @@ struct ResourceManager {
 	HashMap<ResourceType, BoundHandler> _handlers;
 	HashMap<ResourceNameHash, TypedResource> _resources;
 	Array<ResourcePackage*> _packages;
+	FixedArray<char, 128> _base_path;
 
 	ResourceManager() = delete;
 	ResourceManager(ResourceManager const&) = delete;
@@ -263,7 +262,10 @@ struct ResourceManager {
 	ResourceManager& operator=(ResourceManager&&) = delete;
 
 	~ResourceManager();
-	ResourceManager(Allocator& allocator);
+	ResourceManager(
+		StringRef const base_path,
+		Allocator& allocator
+	);
 };
 
 /** @} */ // end of doc-group resource_manager

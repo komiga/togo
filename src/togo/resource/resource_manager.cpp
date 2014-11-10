@@ -10,6 +10,7 @@
 #include <togo/collection/hash_map.hpp>
 #include <togo/log/log.hpp>
 #include <togo/resource/types.hpp>
+#include <togo/resource/resource.hpp>
 #include <togo/resource/resource_package.hpp>
 #include <togo/resource/resource_manager.hpp>
 
@@ -22,10 +23,10 @@ static bool find_resource(
 	ResourceType const type,
 	ResourceNameHash const name_hash,
 	ResourcePackage*& package,
-	ResourcePackage::EntryNode*& node
+	ResourcePackage::LookupNode*& node
 ) {
 	// TODO: Tag filter
-	ResourcePackage::EntryNode* it_node;
+	ResourcePackage::LookupNode* it_node;
 	for (
 		auto* it = array::end(rm._packages) - 1;
 		it >= array::begin(rm._packages);
@@ -47,12 +48,18 @@ ResourceManager::~ResourceManager() {
 	resource_manager::clear_packages(*this);
 }
 
-ResourceManager::ResourceManager(Allocator& allocator)
+ResourceManager::ResourceManager(
+	StringRef const base_path,
+	Allocator& allocator
+)
 	: _handlers(allocator)
 	, _resources(allocator)
 	, _packages(allocator)
+	, _base_path()
 {
 	hash_map::reserve(_handlers, 16);
+	string::copy(_base_path, base_path);
+	string::ensure_trailing_slash(_base_path);
 }
 
 void resource_manager::register_handler(
@@ -78,36 +85,55 @@ bool resource_manager::has_handler(
 	return hash_map::has(rm._handlers, type);
 }
 
-hash64 resource_manager::add_package(
+ResourcePackageNameHash resource_manager::add_package(
 	ResourceManager& rm,
-	StringRef const& root
+	StringRef const& name
 ) {
-	// NB: ResourcePackage ctor does modify root
-	Allocator& allocator = *rm._packages._allocator;
-	ResourcePackage* const pkg = TOGO_CONSTRUCT(allocator,
-		ResourcePackage, root, allocator
-	);
+	FixedArray<char, 256> path{};
+	string::copy(path, rm._base_path);
+	string::append(path, name);
+	string::append(path, ".package");
+
+	return resource_manager::add_package(rm, name, path);
+}
+
+ResourcePackageNameHash resource_manager::add_package(
+	ResourceManager& rm,
+	StringRef const& name,
+	StringRef const& path
+) {
+	auto const name_hash = resource::hash_package_name(name);
 	for (auto const* it_pkg : rm._packages) {
 		TOGO_ASSERTF(
-			it_pkg->_root_hash != pkg->_root_hash,
-			"package at '%.*s' has already been added",
-			root.size, root.data
+			name_hash != it_pkg->_name_hash,
+			"package '%.*s' already exists",
+			name.size, name.data
+		);
+		TOGO_ASSERTF(
+			!string::compare_equal(path, resource_package::path(*it_pkg)),
+			"package at '%.*s' already exists",
+			path.size, path.data
 		);
 	}
+	Allocator& allocator = *rm._packages._allocator;
+	ResourcePackage* const pkg = TOGO_CONSTRUCT(allocator,
+		ResourcePackage, name, path, allocator
+	);
 	array::push_back(rm._packages, pkg);
-	resource_package::load_manifest(*pkg, rm);
-	return resource_package::root_hash(*pkg);
+	resource_package::open(*pkg, rm);
+	return resource_package::name_hash(*pkg);
 }
 
 void resource_manager::remove_package(
 	ResourceManager& rm,
-	hash64 const root_hash
+	ResourcePackageNameHash const name_hash
 ) {
 	Allocator& allocator = *rm._packages._allocator;
 	for (unsigned i = 0; i < array::size(rm._packages); ++i) {
 		auto* const pkg = rm._packages[i];
-		if (root_hash == pkg->_root_hash) {
+		if (name_hash == resource_package::name_hash(*pkg)) {
 			// TODO: Unload active resources from the package
+			resource_package::close(*pkg);
 			TOGO_DESTROY(allocator, pkg);
 			array::remove(rm._packages, i);
 			return;
@@ -120,6 +146,7 @@ void resource_manager::clear_packages(ResourceManager& rm) {
 	Allocator& allocator = *rm._packages._allocator;
 	// TODO: Unload all active resources
 	for (auto* pkg : rm._packages) {
+		resource_package::close(*pkg);
 		TOGO_DESTROY(allocator, pkg);
 	}
 	array::clear(rm._packages);
@@ -135,24 +162,23 @@ void* resource_manager::load_resource(
 	if (!tr) {
 		auto const* const handler = hash_map::get(rm._handlers, type);
 		ResourcePackage* pkg = nullptr;
-		ResourcePackage::EntryNode* node = nullptr;
+		ResourcePackage::LookupNode* node = nullptr;
 		if (!find_resource(rm, type, name_hash, pkg, node)) {
 			TOGO_LOG_ERRORF(
-				"resource not found: %08x %016lx\n",
+				"resource not found: [%08x %016lx]\n",
 				type, name_hash
 			);
 			return nullptr;
 		}
-		StringRef const pkg_root_ref{resource_package::root(*pkg)};
-		StringRef const rpath_ref{node->value.path, node->value.path_size};
+		StringRef const pkg_name{resource_package::name(*pkg)};
 		IReader* const stream = resource_package::open_resource_stream(
 			*pkg, node
 		);
 		if (!stream) {
 			TOGO_LOG_ERRORF(
-				"failed to open resource stream from package '%.*s': '%.*s'\n",
-				pkg_root_ref.size, pkg_root_ref.data,
-				rpath_ref.size, rpath_ref.data
+				"failed to open resource stream from package '%.*s': [%08x %016lx]\n",
+				pkg_name.size, pkg_name.data,
+				type, name_hash
 			);
 			return nullptr;
 		}
@@ -162,9 +188,9 @@ void* resource_manager::load_resource(
 		resource_package::close_resource_stream(*pkg);
 		if (!load_value) {
 			TOGO_LOG_ERRORF(
-				"failed to load resource from package '%.*s': '%.*s'\n",
-				pkg_root_ref.size, pkg_root_ref.data,
-				rpath_ref.size, rpath_ref.data
+				"failed to load resource from package '%.*s': [%08x %016lx]\n",
+				pkg_name.size, pkg_name.data,
+				type, name_hash
 			);
 			return nullptr;
 		}

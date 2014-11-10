@@ -22,7 +22,14 @@ namespace resource_manager {
 	@{
 */
 
-/// Package collection.
+/// Get base path.
+inline StringRef base_path(
+	ResourceManager const& rm
+) {
+	return rm._base_path;
+}
+
+/// Get package collection.
 inline Array<ResourcePackage*> const& packages(
 	ResourceManager const& rm
 ) {
@@ -45,18 +52,27 @@ bool has_handler(
 	ResourceType type
 );
 
-/// Add package.
+/// Add package by name and base path.
 ///
-/// Returns package hash.
-hash64 add_package(
+/// Returns package name hash.
+ResourcePackageNameHash add_package(
 	ResourceManager& rm,
-	StringRef const& root
+	StringRef const& name
+);
+
+/// Add package by name and path.
+///
+/// Returns package name hash.
+ResourcePackageNameHash add_package(
+	ResourceManager& rm,
+	StringRef const& name,
+	StringRef const& path
 );
 
 /// Remove package.
 void remove_package(
 	ResourceManager& rm,
-	hash64 root_hash
+	ResourcePackageNameHash name_hash
 );
 
 /// Remove all packages.

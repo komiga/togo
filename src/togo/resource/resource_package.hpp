@@ -22,24 +22,34 @@ namespace resource_package {
 	@{
 */
 
-/// Root path.
-inline StringRef root(ResourcePackage const& pkg) {
-	return pkg._root;
+/// Get name hash (cached).
+inline ResourcePackageNameHash name_hash(ResourcePackage const& pkg) {
+	return pkg._name_hash;
 }
 
-/// Hash of root path (cached).
-inline hash64 root_hash(ResourcePackage const& pkg) {
-	return pkg._root_hash;
+/// Get name.
+inline StringRef name(ResourcePackage const& pkg) {
+	return pkg._name;
 }
 
-/// Load package manifest.
-void load_manifest(
+/// Get path.
+inline StringRef path(ResourcePackage const& pkg) {
+	return pkg._path;
+}
+
+/// Open package.
+void open(
 	ResourcePackage& pkg,
 	ResourceManager const& rm
 );
 
+/// Close package.
+void close(
+	ResourcePackage& pkg
+);
+
 /// Find resource.
-ResourcePackage::EntryNode* find_resource(
+ResourcePackage::LookupNode* find_resource(
 	ResourcePackage& pkg,
 	ResourceType type,
 	ResourceNameHash name_hash
@@ -52,7 +62,7 @@ ResourcePackage::EntryNode* find_resource(
 /// An assertion will fail if there is already an open stream.
 IReader* open_resource_stream(
 	ResourcePackage& pkg,
-	ResourcePackage::EntryNode* node
+	ResourcePackage::LookupNode* node
 );
 
 /// Close resource stream.
