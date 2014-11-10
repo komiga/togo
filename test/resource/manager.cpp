@@ -17,10 +17,9 @@
 using namespace togo;
 
 enum : ResourceNameHash {
-	RES_TEST_NON_MANIFEST = "non_manifest"_resource_name,
+	PKG1_TEST_NON_EXISTENT = "non_existent"_resource_name,
 
 	// data/pkg/test1
-	PKG1_TEST_NON_EXISTENT = "non_existent"_resource_name,
 	PKG1_TEST_1 = "1"_resource_name,
 	PKG1_TEST_2 = "subdir/2"_resource_name,
 
@@ -58,12 +57,9 @@ void test(
 signed main() {
 	memory_init();
 
-	ResourceManager rm{memory::default_allocator()};
+	ResourceManager rm{"data/pkg/", memory::default_allocator()};
 	resource_handler::register_test_resource(rm);
-	resource_manager::add_package(rm, "data/pkg/test1");
-
-	// Non-existent, non-manifested
-	test(rm, RES_TEST_NON_MANIFEST, false, 0);
+	resource_manager::add_package(rm, "test1");
 
 	// Non-existent, manifested
 	test(rm, PKG1_TEST_NON_EXISTENT, false, 0);
@@ -73,7 +69,7 @@ signed main() {
 	test(rm, PKG1_TEST_2, true, 2);
 
 	// Additional package
-	resource_manager::add_package(rm, "data/pkg/test2");
+	resource_manager::add_package(rm, "test2");
 
 	// test2/1.test overlaps test1/1.test due to package order
 	test(rm, PKG2_TEST_1, true, 42);
