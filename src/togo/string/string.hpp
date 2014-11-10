@@ -146,6 +146,34 @@ inline unsigned trim_trailing_slashes(FixedArray<char, N>& string) {
 	return new_size;
 }
 
+/// Ensure string has a trailing slash by appending if necessary.
+///
+/// str will be NUL terminated if it is modified.
+/// If str is modified, its capacity must be at least size + 2.
+/// Returns new size of str (not including NUL terminator).
+unsigned ensure_trailing_slash(
+	char* str,
+	unsigned capacity,
+	unsigned size
+);
+
+/// Ensure string has a trailing slash by appending if necessary.
+///
+/// Returns new size of the string (not including NUL terminator).
+template<unsigned N>
+inline unsigned ensure_trailing_slash(FixedArray<char, N>& string) {
+	unsigned const size = string::size(string);
+	unsigned const new_size = ensure_trailing_slash(
+		fixed_array::begin(string),
+		fixed_array::capacity(string),
+		size
+	);
+	if (new_size < size) {
+		fixed_array::resize(string, new_size + 1);
+	}
+	return new_size;
+}
+
 /** @} */ // end of doc-group string
 
 } // namespace string

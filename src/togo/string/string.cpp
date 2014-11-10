@@ -49,4 +49,17 @@ unsigned string::trim_trailing_slashes(char* const string, unsigned const size) 
 	return new_size;
 }
 
+unsigned string::ensure_trailing_slash(
+	char* str,
+	unsigned capacity,
+	unsigned size
+) {
+	if (size == 0 || (str[size - 1] != '/' && str[size - 1] != '\\')) {
+		TOGO_ASSERT(capacity > size + 2, "str not large enough to store slash and NUL");
+		str[size++] = '/';
+		str[size] = '\0';
+	}
+	return size;
+}
+
 } // namespace togo
