@@ -70,6 +70,38 @@ TOGO_CONSTRAIN_SAME(hash64, am::detail::hash::fnv_hash_type<hash::LENGTH64>);
 
 } // namespace hash
 
+/**
+	@addtogroup hash_combiner
+	@{
+*/
+
+/// H-bit hash combiner.
+template<class H>
+struct HashCombiner {
+	static_assert(
+		is_same<H, hash32>::value ||
+		is_same<H, hash64>::value,
+		"H must be a hash value type"
+	);
+
+	am::hash::fnv1a_combiner<hash::traits<H>::length> _impl;
+
+	~HashCombiner() = default;
+	HashCombiner() = default;
+	HashCombiner(HashCombiner const&) = default;
+	HashCombiner(HashCombiner&&) = default;
+	HashCombiner& operator=(HashCombiner const&) = default;
+	HashCombiner& operator=(HashCombiner&&) = default;
+};
+
+/// 32-bit hash combiner.
+using HashCombiner32 = HashCombiner<hash32>;
+
+/// 64-bit hash combiner.
+using HashCombiner64 = HashCombiner<hash64>;
+
+/** @} */ // end of doc-group hash_combiner
+
 /** @} */ // end of doc-group hash
 
 } // namespace togo
