@@ -128,6 +128,12 @@ enum : ResourceNameHash {
 	RES_NAME_NULL = ""_resource_name,
 };
 
+/// Combined resource tags.
+enum : ResourceTagsHash {
+	/// Null name.
+	RES_TAGS_NULL = ""_resource_tags,
+};
+
 /// Resource package names.
 enum : ResourcePackageNameHash {
 	/// Null name.
