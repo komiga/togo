@@ -42,6 +42,9 @@ using ResourceType = hash32;
 /// Resource name hash.
 using ResourceNameHash = hash64;
 
+/// Combined resource tags hash.
+using ResourceTagsHash = hash64;
+
 /// Package name hash.
 using ResourcePackageNameHash = hash32;
 
@@ -54,6 +57,11 @@ static_assert(
 static_assert(
 	is_same<ResourceNameHash, hash64>::value,
 	"changed ResourceNameHash type breaks binary formats,"
+	" hash functions, and likely other things"
+);
+static_assert(
+	is_same<ResourceTagsHash, hash64>::value,
+	"changed ResourceTagsHash type breaks binary formats,"
 	" hash functions, and likely other things"
 );
 /** @endcond */ // INTERNAL
@@ -118,7 +126,7 @@ struct ResourcePathParts {
 
 	ResourceType type_hash;
 	ResourceNameHash name_hash;
-	hash64 tags_collated;
+	ResourceTagsHash tags_hash;
 	StringRef type{};
 	StringRef name{};
 	FixedArray<Tag, 8> tags;
@@ -150,7 +158,7 @@ struct ResourceMetadata {
 
 	// Serial
 	ResourceNameHash name_hash;
-	hash64 tags_collated;
+	ResourceTagsHash tags_hash;
 	ResourceType type;
 	u32 data_format_version;
 	u32 data_offset;

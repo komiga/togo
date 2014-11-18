@@ -192,7 +192,7 @@ u32 package_compiler::find_resource_id(
 		auto const& metadata = pkg._manifest[node->value - 1];
 		if (
 			path_parts.type_hash == metadata.type &&
-			path_parts.tags_collated == metadata.tags_collated
+			path_parts.tags_hash == metadata.tags_hash
 		) {
 			return metadata.id;
 		}
@@ -214,7 +214,7 @@ u32 package_compiler::add_resource(
 	auto& metadata = array::back(pkg._manifest);
 	metadata.id = array::size(pkg._manifest);
 	metadata.name_hash = path_parts.name_hash;
-	metadata.tags_collated = path_parts.tags_collated;
+	metadata.tags_hash = path_parts.tags_hash;
 	metadata.type = path_parts.type_hash;
 	metadata.data_format_version = 0;
 	metadata.data_offset = 0;
@@ -270,7 +270,7 @@ void package_compiler::remove_resource(
 	// Leave hole at ID
 	metadata.id = 0;
 	metadata.name_hash = 0;
-	metadata.tags_collated = 0;
+	metadata.tags_hash = 0;
 	metadata.type = RES_TYPE_NULL;
 	metadata.data_format_version = 0;
 	metadata.data_offset = 0;

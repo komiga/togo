@@ -92,7 +92,7 @@ bool resource::parse_path(
 	}
 	sort_insertion(begin(pp.tags), end(pp.tags), TagLessThan{});
 	// TODO: Calculate cumulative hash of tags
-	pp.tags_collated = 0;
+	pp.tags_hash = 0;
 	return true;
 }
 
