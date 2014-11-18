@@ -130,7 +130,7 @@ enum : ResourceNameHash {
 
 /// Combined resource tags.
 enum : ResourceTagsHash {
-	/// Null name.
+	/// Null tags.
 	RES_TAGS_NULL = ""_resource_tags,
 };
 
