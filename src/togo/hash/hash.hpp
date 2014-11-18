@@ -3,71 +3,30 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
 @file
-@brief Hashing utilities.
+@brief Hash interface.
 @ingroup hash
 */
 
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/utility/constraints.hpp>
 #include <togo/types.hpp>
+#include <togo/hash/types.hpp>
 #include <togo/string/string.hpp>
 
 #include <am/hash/fnv.hpp>
 
+// TODO: Build constexpr version of MurmurHash2 or MurmurHash3
+// (both lengths) and use it instead of FNV-1a
+
 namespace togo {
+
 namespace hash {
 
 /**
 	@addtogroup hash
 	@{
 */
-
-// TODO: Build constexpr version of MurmurHash2 (both lengths) and
-// use it instead of FNV-1a
-
-/// 32-bit hash identity (hash of nothing).
-static constexpr hash32 const
-IDENTITY32{0};
-
-/// 64-bit hash identity (hash of nothing).
-static constexpr hash64 const
-IDENTITY64{0};
-
-// TODO: Replace with variable template
-template<class H>
-struct identity_generic;
-
-template<> struct identity_generic<hash32> {
-	static constexpr auto const value = hash::IDENTITY32;
-};
-
-template<> struct identity_generic<hash64> {
-	static constexpr auto const value = hash::IDENTITY64;
-};
-
-namespace {
-	static constexpr am::hash::HashLength const
-	hash32_length = am::hash::HashLength::HL32,
-	hash64_length = am::hash::HashLength::HL64;
-
-	template<class H>
-	struct hash_type_length;
-
-	template<> struct hash_type_length<hash32> {
-		static constexpr auto const value = hash32_length;
-	};
-
-	template<> struct hash_type_length<hash64> {
-		static constexpr auto const value = hash64_length;
-	};
-} // anonymous namespace
-
-/** @cond INTERNAL */
-TOGO_CONSTRAIN_SAME(hash32, am::detail::hash::fnv_hash_type<hash32_length>);
-TOGO_CONSTRAIN_SAME(hash64, am::detail::hash::fnv_hash_type<hash64_length>);
-/** @endcond */
 
 /// Calculate H-bit hash.
 template<class H>
@@ -77,8 +36,8 @@ inline H calc_generic(
 ) {
 	return
 		size != 0
-		? am::hash::fnv1a<hash_type_length<H>::value>(data, size)
-		: identity_generic<H>::value
+		? am::hash::calc<typename hash::traits<H>::impl>(data, size)
+		: hash::traits<H>::identity
 	;
 }
 
@@ -96,8 +55,8 @@ inline constexpr H calc_generic_ce(
 ) {
 	return
 		size != 0
-		? am::hash::fnv1a_c<hash_type_length<H>::value>(data, size)
-		: identity_generic<H>::value
+		? am::hash::calc_ce<typename hash::traits<H>::impl>(data, size)
+		: hash::traits<H>::identity
 	;
 }
 
