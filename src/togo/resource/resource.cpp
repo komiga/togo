@@ -91,8 +91,10 @@ bool resource::parse_path(
 		fixed_array::push_back(pp.tags, tag);
 	}
 	sort_insertion(begin(pp.tags), end(pp.tags), TagLessThan{});
-	// TODO: Calculate cumulative hash of tags
-	pp.tags_hash = 0;
+	pp.tags_hash = resource::hash_tags(
+		begin(pp.tags),
+		fixed_array::size(pp.tags)
+	);
 	return true;
 }
 
