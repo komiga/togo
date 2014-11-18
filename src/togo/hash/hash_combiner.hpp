@@ -24,6 +24,24 @@ namespace hash_combiner {
 	@{
 */
 
+/// Number of bytes combined.
+template<class H>
+inline unsigned size(HashCombiner<H> const& combiner) {
+	return combiner._impl.size();
+}
+
+/// Returns true if any bytes have been combined.
+template<class H>
+inline bool any(HashCombiner<H> const& combiner) {
+	return hash_combiner::size(combiner) != 0;
+}
+
+/// Returns true if no bytes have been combined.
+template<class H>
+inline bool empty(HashCombiner<H> const& combiner) {
+	return hash_combiner::size(combiner) == 0;
+}
+
 /// Initialize.
 ///
 /// This will return the combiner to its initial state.
@@ -60,7 +78,11 @@ inline void add(
 /// This does not affect the state of the combiner.
 template<class H>
 inline H value(HashCombiner<H> const& combiner) {
-	return combiner._impl.value();
+	return
+		hash_combiner::empty(combiner)
+		? hash::traits<H>::identity
+		: combiner._impl.value()
+	;
 }
 
 /** @} */ // end of doc-group hash_combiner
