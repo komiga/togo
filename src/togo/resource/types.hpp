@@ -14,6 +14,7 @@
 #include <togo/types.hpp>
 #include <togo/utility/traits.hpp>
 #include <togo/string/types.hpp>
+#include <togo/hash/types.hpp>
 #include <togo/hash/hash.hpp>
 #include <togo/memory/types.hpp>
 #include <togo/collection/types.hpp>
@@ -44,6 +45,9 @@ using ResourceNameHash = hash64;
 
 /// Combined resource tags hash.
 using ResourceTagsHash = hash64;
+
+/// Combined resource tags hash combiner.
+using ResourceTagsHashCombiner = HashCombiner64;
 
 /// Package name hash.
 using ResourcePackageNameHash = hash32;
@@ -78,6 +82,19 @@ operator"" _resource_type(
 /// Resource name hash literal.
 inline constexpr ResourceNameHash
 operator"" _resource_name(
+	char const* const data,
+	std::size_t const size
+) {
+	return hash::calc64_ce(data, size);
+}
+
+/// Combined resource tags hash literal.
+///
+/// Note that this only takes a single string. Tags should be sorted
+/// and separator-less for the return value of this literal to be
+/// compatible with the runtime combiner-based hash function.
+inline constexpr ResourceTagsHash
+operator"" _resource_tags(
 	char const* const data,
 	std::size_t const size
 ) {

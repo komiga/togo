@@ -12,6 +12,7 @@
 #include <togo/config.hpp>
 #include <togo/string/types.hpp>
 #include <togo/hash/hash.hpp>
+#include <togo/hash/hash_combiner.hpp>
 #include <togo/resource/types.hpp>
 
 namespace togo {
@@ -31,6 +32,30 @@ inline ResourceType hash_type(StringRef const& type) {
 /// Calculate hash of resource name.
 inline ResourceNameHash hash_name(StringRef const& name) {
 	return hash::calc64(name);
+}
+
+/// Calculate hash of resource tags.
+inline ResourceTagsHash hash_tags(
+	StringRef const* const tags,
+	unsigned const num_tags
+) {
+	ResourceTagsHashCombiner combiner{};
+	for (unsigned i = 0; i < num_tags; ++i) {
+		hash_combiner::add(combiner, tags[i]);
+	}
+	return hash_combiner::value(combiner);
+}
+
+/// Calculate hash of resource tags.
+inline ResourceTagsHash hash_tags(
+	togo::ResourcePathParts::Tag const* const tags,
+	unsigned const num_tags
+) {
+	ResourceTagsHashCombiner combiner{};
+	for (unsigned i = 0; i < num_tags; ++i) {
+		hash_combiner::add(combiner, tags[i].name);
+	}
+	return hash_combiner::value(combiner);
 }
 
 /// Calculate hash of resource package name.
