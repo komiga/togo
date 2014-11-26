@@ -54,10 +54,11 @@ void resource_handler::register_test_resource(
 ) {
 	ResourceHandler const handler{
 		RES_TYPE_TEST,
+		nullptr,
 		resource_handler::test_resource::load,
 		resource_handler::test_resource::unload
 	};
-	resource_manager::register_handler(rm, handler, nullptr);
+	resource_manager::register_handler(rm, handler);
 }
 
 } // namespace togo

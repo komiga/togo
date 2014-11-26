@@ -64,8 +64,7 @@ ResourceManager::ResourceManager(
 
 void resource_manager::register_handler(
 	ResourceManager& rm,
-	ResourceHandler const& handler,
-	void* type_data
+	ResourceHandler const& handler
 ) {
 	TOGO_ASSERT(
 		handler.func_load && handler.func_unload,
@@ -75,7 +74,7 @@ void resource_manager::register_handler(
 		!hash_map::has(rm._handlers, handler.type),
 		"type has already been registered"
 	);
-	hash_map::push(rm._handlers, handler.type, {handler, type_data});
+	hash_map::push(rm._handlers, handler.type, handler);
 }
 
 bool resource_manager::has_handler(
@@ -182,7 +181,7 @@ void* resource_manager::load_resource(
 			);
 			return nullptr;
 		}
-		void* const load_value = handler->handler.func_load(
+		void* const load_value = handler->func_load(
 			handler->type_data, rm, name_hash, *stream
 		);
 		resource_package::close_resource_stream(*pkg);
@@ -212,7 +211,7 @@ void resource_manager::unload_resource(
 		return;
 	}
 	auto const* const handler = hash_map::get(rm._handlers, type);
-	handler->handler.func_unload(
+	handler->func_unload(
 		handler->type_data, rm, name_hash, node->value.value
 	);
 	hash_map::remove(rm._resources, node);

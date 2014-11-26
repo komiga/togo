@@ -224,6 +224,7 @@ struct ResourceHandler {
 	);
 
 	ResourceType type;
+	void* type_data;
 	load_func_type* func_load;
 	unload_func_type* func_unload;
 };
@@ -271,17 +272,12 @@ struct ResourcePackage {
 
 /// Resource manager.
 struct ResourceManager {
-	struct BoundHandler {
-		ResourceHandler handler;
-		void* type_data;
-	};
-
 	struct TypedResource {
 		void* value;
 		ResourceType type;
 	};
 
-	HashMap<ResourceType, BoundHandler> _handlers;
+	HashMap<ResourceType, ResourceHandler> _handlers;
 	HashMap<ResourceNameHash, TypedResource> _resources;
 	Array<ResourcePackage*> _packages;
 	FixedArray<char, 128> _base_path;

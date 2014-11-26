@@ -42,8 +42,7 @@ inline Array<ResourcePackage*> const& packages(
 /// been registered.
 void register_handler(
 	ResourceManager& rm,
-	ResourceHandler const& handler,
-	void* type_data
+	ResourceHandler const& handler
 );
 
 /// Check if there is a handler for type registered.
