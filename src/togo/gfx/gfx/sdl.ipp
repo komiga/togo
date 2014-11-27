@@ -1,4 +1,4 @@
-#line 2 "togo/gfx/init/sdl.ipp"
+#line 2 "togo/gfx/gfx/sdl.ipp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
@@ -7,9 +7,9 @@
 #include <togo/utility/utility.hpp>
 #include <togo/error/assert.hpp>
 #include <togo/log/log.hpp>
-#include <togo/gfx/init.hpp>
+#include <togo/gfx/gfx.hpp>
 #include <togo/gfx/gfx/sdl_common.hpp>
-#include <togo/gfx/init/private.hpp>
+#include <togo/gfx/gfx/private.hpp>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_error.h>

@@ -8,7 +8,7 @@
 #include <togo/log/log.hpp>
 #include <togo/system/system.hpp>
 #include <togo/memory/memory.hpp>
-#include <togo/gfx/init.hpp>
+#include <togo/gfx/gfx.hpp>
 #include <togo/gfx/display.hpp>
 #include <togo/gfx/renderer.hpp>
 #include <togo/input/input_buffer.hpp>

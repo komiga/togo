@@ -1,9 +1,9 @@
-#line 2 "togo/gfx/init.hpp"
+#line 2 "togo/gfx/gfx.hpp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
 @file
-@brief Graphics display interface.
+@brief Graphics interface.
 @ingroup gfx
 */
 

@@ -1,17 +1,17 @@
-#line 2 "togo/gfx/init.cpp"
+#line 2 "togo/gfx/gfx.cpp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
 #include <togo/config.hpp>
-#include <togo/gfx/init.hpp>
+#include <togo/gfx/gfx.hpp>
 #include <togo/gfx/gfx/common.hpp>
-#include <togo/gfx/init/private.hpp>
+#include <togo/gfx/gfx/private.hpp>
 
 #if (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_SDL)
-	#include <togo/gfx/init/sdl.ipp>
+	#include <togo/gfx/gfx/sdl.ipp>
 #elif (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_GLFW)
-	#include <togo/gfx/init/glfw.ipp>
+	#include <togo/gfx/gfx/glfw.ipp>
 #endif
 
 namespace togo {

@@ -2,7 +2,7 @@
 #include <togo/error/assert.hpp>
 #include <togo/log/log.hpp>
 #include <togo/system/system.hpp>
-#include <togo/gfx/init.hpp>
+#include <togo/gfx/gfx.hpp>
 #include <togo/gfx/display.hpp>
 #include <togo/input/input_buffer.hpp>
 #include <togo/input/input.hpp>
