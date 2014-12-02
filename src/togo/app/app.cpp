@@ -18,10 +18,10 @@ namespace togo {
 AppBase::~AppBase() {}
 
 AppBase::AppBase(
-	init_func_type func_init,
-	shutdown_func_type func_shutdown,
-	update_func_type func_update,
-	render_func_type func_render,
+	init_func_type& func_init,
+	shutdown_func_type& func_shutdown,
+	update_func_type& func_update,
+	render_func_type& func_render,
 	unsigned num_args,
 	char const* const args[],
 	float update_freq

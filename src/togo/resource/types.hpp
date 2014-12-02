@@ -209,18 +209,18 @@ struct ResourceHandler {
 	///
 	/// Returns pointer to resource, or nullptr on error.
 	using load_func_type = void* (
-		void* /*type_data*/,
-		ResourceManager& /*manager*/,
-		ResourceNameHash /*name_hash*/,
-		IReader& /*stream*/
+		void* type_data,
+		ResourceManager& manager,
+		ResourceNameHash name_hash,
+		IReader& stream
 	);
 
 	/// Unload a resource.
 	using unload_func_type = void (
-		void* /*type_data*/,
-		ResourceManager& /*manager*/,
-		ResourceNameHash /*name_hash*/,
-		void* /*resource*/
+		void* type_data,
+		ResourceManager& manager,
+		ResourceNameHash name_hash,
+		void* resource
 	);
 
 	ResourceType type;

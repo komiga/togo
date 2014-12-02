@@ -55,11 +55,11 @@ struct ResourceCompilerMetadata
 struct ResourceCompiler {
 	/// Compile a resource.
 	using compile_func_type = bool (
-		CompilerManager& /*manager*/,
-		PackageCompiler& /*package*/,
-		ResourceCompilerMetadata const& /*metadata*/,
-		IReader& /*in_stream*/,
-		IWriter& /*out_stream*/
+		CompilerManager& manager,
+		PackageCompiler& package,
+		ResourceCompilerMetadata const& metadata,
+		IReader& in_stream,
+		IWriter& out_stream
 	);
 
 	ResourceType type;

@@ -25,10 +25,10 @@ inline App<Data>::App(
 	Data&& data
 )
 	: AppBase(
-		reinterpret_cast<AppBase::init_func_type>(AppModel<Data>::init),
-		reinterpret_cast<AppBase::shutdown_func_type>(AppModel<Data>::shutdown),
-		reinterpret_cast<AppBase::update_func_type>(AppModel<Data>::update),
-		reinterpret_cast<AppBase::render_func_type>(AppModel<Data>::render),
+		reinterpret_cast<AppBase::init_func_type&>(AppModel<Data>::init),
+		reinterpret_cast<AppBase::shutdown_func_type&>(AppModel<Data>::shutdown),
+		reinterpret_cast<AppBase::update_func_type&>(AppModel<Data>::update),
+		reinterpret_cast<AppBase::render_func_type&>(AppModel<Data>::render),
 		num_args,
 		args,
 		update_freq

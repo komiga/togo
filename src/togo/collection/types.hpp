@@ -128,7 +128,11 @@ template<class T>
 struct PriorityQueue {
 	TOGO_CONSTRAIN_POD(T);
 
-	using less_func_type = bool (T const&, T const&);
+	/// Less-than comparison function type.
+	using less_func_type = bool (
+		T const& x,
+		T const& y
+	);
 
 	Array<T> _data;
 	less_func_type* _less_func;

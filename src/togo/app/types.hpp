@@ -36,15 +36,15 @@ struct AppModel {
 
 /// Base application class.
 struct AppBase {
-	using init_func_type = void (&)(AppBase&);
-	using shutdown_func_type = void (&)(AppBase&);
-	using update_func_type = void (&)(AppBase&, float);
-	using render_func_type = void (&)(AppBase&);
+	using init_func_type = void (AppBase& app_base);
+	using shutdown_func_type = void (AppBase& app_base);
+	using update_func_type = void (AppBase& app_base, float dt);
+	using render_func_type = void (AppBase& app_base);
 
-	init_func_type _func_init;
-	shutdown_func_type _func_shutdown;
-	update_func_type _func_update;
-	render_func_type _func_render;
+	init_func_type& _func_init;
+	shutdown_func_type& _func_shutdown;
+	update_func_type& _func_update;
+	render_func_type& _func_render;
 
 	unsigned _num_args;
 	char const* const* _args;
@@ -65,10 +65,10 @@ struct AppBase {
 
 	~AppBase();
 	AppBase(
-		init_func_type func_init,
-		shutdown_func_type func_shutdown,
-		update_func_type func_update,
-		render_func_type func_render,
+		init_func_type& func_init,
+		shutdown_func_type& func_shutdown,
+		update_func_type& func_update,
+		render_func_type& func_render,
 		unsigned num_args,
 		char const* const args[],
 		float update_freq

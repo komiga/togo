@@ -114,10 +114,13 @@ struct TaskID {
 };
 
 struct TaskWork {
-	using func_type = void(*)(TaskID, void*);
+	using func_type = void (
+		TaskID task_id,
+		void* data
+	);
 
 	void* data;
-	func_type func;
+	func_type* func;
 };
 
 struct Task {
