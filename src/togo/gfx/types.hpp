@@ -12,8 +12,10 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/hash/hash.hpp>
 #include <togo/utility/traits.hpp>
 #include <togo/utility/utility.hpp>
+#include <togo/serialization/types.hpp>
 
 #include <initializer_list>
 
@@ -128,11 +130,69 @@ enum class BufferDataBinding : unsigned {
 	NUM
 };
 
+struct GeneratorDef;
+struct GeneratorUnit;
+
+/// Render object.
+struct RenderObject; // TODO
+
 /// Render node.
 struct RenderNode;
 
 /// Renderer.
 struct Renderer;
+
+/// Generator name hash.
+using GeneratorNameHash = hash32;
+
+/// Generator name hash literal.
+inline constexpr GeneratorNameHash
+operator"" _generator_name(
+	char const* const data,
+	std::size_t const size
+) {
+	return hash::calc32_ce(data, size);
+}
+
+/// Generator names.
+enum : GeneratorNameHash {
+	/// Null name.
+	GEN_NAME_NULL = ""_generator_name,
+};
+
+/// GeneratorUnit exec() function.
+///
+/// objects_begin and objects_end are nullptr for
+/// non-Process Generators.
+using generator_exec_func_type = void (
+	gfx::GeneratorUnit const& unit,
+	gfx::RenderNode& node,
+	unsigned layer_index,
+	unsigned generator_index,
+	gfx::RenderObject const* objects_begin,
+	gfx::RenderObject const* objects_end
+);
+
+/// Configured generator.
+struct GeneratorUnit {
+	gfx::GeneratorNameHash name_hash;
+	void* data;
+	gfx::generator_exec_func_type* func_exec;
+};
+
+/// GeneratorUnit read() function.
+using generator_read_func_type = void (
+	gfx::GeneratorDef& def,
+	BinaryInputSerializer& ser,
+	gfx::GeneratorUnit& unit
+);
+
+/// Generator definition.
+struct GeneratorDef {
+	gfx::GeneratorNameHash name_hash;
+	void* data;
+	gfx::generator_read_func_type* func_read;
+};
 
 /// Vertex attribute data type.
 enum class VertexAttribType : unsigned {

@@ -83,24 +83,6 @@ struct ResourceArray {
 	}
 };
 
-struct RenderObject {
-	// TODO
-};
-
-using generator_func_type = void (
-	gfx::RenderNode& /*node*/,
-	unsigned /*layer_index*/,
-	unsigned /*generator_index*/,
-	gfx::RenderObject const* /*objects_begin*/,
-	gfx::RenderObject const* /*objects_end*/
-);
-
-struct GeneratorUnit {
-	// TODO: Block for generator-defined configuration. KVS?
-	hash32 name_hash;
-	generator_func_type* func;
-};
-
 struct Layer {
 	enum class Order : u32 {
 		back_front,
@@ -170,7 +152,7 @@ struct Renderer {
 
 	Renderer(
 		Allocator& allocator,
-		RendererImpl&& impl
+		gfx::RendererImpl&& impl
 	)
 		: _allocator(&allocator)
 		, _impl(impl)
