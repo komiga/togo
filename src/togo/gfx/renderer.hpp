@@ -34,6 +34,21 @@ gfx::Renderer* create(
 /// Destroy renderer.
 void destroy(gfx::Renderer* renderer);
 
+/// Register generator definition.
+///
+/// An assertion will fail if the generator definition is malformed
+/// or is already registered.
+void register_generator_def(
+	gfx::Renderer* renderer,
+	gfx::GeneratorDef const& def
+);
+
+/// Get generator definition by name.
+gfx::GeneratorDef const* get_generator_def(
+	gfx::Renderer const* renderer,
+	gfx::GeneratorNameHash name_hash
+);
+
 /// Create vertex buffer.
 ///
 /// An assertion will fail if the vertex buffer could not be created.

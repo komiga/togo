@@ -131,6 +131,7 @@ struct RenderNode {
 struct Renderer {
 	Allocator* _allocator;
 
+	HashMap<gfx::GeneratorNameHash, gfx::GeneratorDef> _generators;
 	gfx::RendererImpl _impl;
 	gfx::RenderConfig _config;
 
@@ -155,6 +156,7 @@ struct Renderer {
 		gfx::RendererImpl&& impl
 	)
 		: _allocator(&allocator)
+		, _generators(allocator)
 		, _impl(impl)
 		, _config()
 		, _vertex_buffers()
