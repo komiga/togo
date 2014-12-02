@@ -10,6 +10,8 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/string/types.hpp>
+#include <togo/hash/hash.hpp>
 #include <togo/gfx/types.hpp>
 
 namespace togo {
@@ -19,6 +21,11 @@ namespace gfx {
 	@addtogroup gfx
 	@{
 */
+
+/// Calculate hash of generator name.
+inline gfx::GeneratorNameHash hash_generator_name(StringRef const& name) {
+	return hash::calc32(name);
+}
 
 /// Initialize the graphics backend.
 ///
