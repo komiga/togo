@@ -21,8 +21,8 @@ namespace resource_handler {
 	@{
 */
 
-/// Register TestResource resource handler.
-void register_test_resource(
+/// Register test (TestResource) resource handler.
+void register_test(
 	ResourceManager& rm
 );
 

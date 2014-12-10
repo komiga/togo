@@ -50,7 +50,7 @@ static void unload(
 } // namespace test_resource
 } // namespace resource_handler
 
-void resource_handler::register_test_resource(
+void resource_handler::register_test(
 	ResourceManager& rm
 ) {
 	ResourceHandler const handler{
