@@ -182,7 +182,7 @@ void set_capacity(Array<T>& a, u32_fast const new_capacity) {
 	a._capacity = new_capacity;
 }
 
-/// Grow the array with a doubling factor.
+/// Grow the array capacity with a doubling factor.
 ///
 /// Cost of insertion should be amortized O(1), assuming no aggressive
 /// shrinking. Grows to at least min_capacity if it is non-zero.
@@ -212,6 +212,12 @@ inline void resize(Array<T>& a, u32_fast const new_size) {
 		grow(a, new_size);
 	}
 	a._size = new_size;
+}
+
+/// Increase size.
+template<class T>
+inline void increase_size(Array<T>& a, u32_fast const num_items) {
+	resize(a, size(a) + num_items);
 }
 
 /// Reserve at least new_capacity.
