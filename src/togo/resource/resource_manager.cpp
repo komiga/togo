@@ -151,7 +151,7 @@ void resource_manager::clear_packages(ResourceManager& rm) {
 	array::clear(rm._packages);
 }
 
-void* resource_manager::load_resource(
+ResourceValue resource_manager::load_resource(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash
@@ -170,22 +170,11 @@ void* resource_manager::load_resource(
 			return nullptr;
 		}
 		StringRef const pkg_name{resource_package::name(*pkg)};
-		IReader* const stream = resource_package::open_resource_stream(
-			*pkg, node
+		ResourceValue const load_value = handler->func_load(
+			handler->type_data, rm, *pkg,
+			resource_package::resource_metadata(*pkg, node->value)
 		);
-		if (!stream) {
-			TOGO_LOG_ERRORF(
-				"failed to open resource stream from package '%.*s': [%08x %016lx]\n",
-				pkg_name.size, pkg_name.data,
-				type, name_hash
-			);
-			return nullptr;
-		}
-		void* const load_value = handler->func_load(
-			handler->type_data, rm, name_hash, *stream
-		);
-		resource_package::close_resource_stream(*pkg);
-		if (!load_value) {
+		if (!load_value.valid()) {
 			TOGO_LOG_ERRORF(
 				"failed to load resource from package '%.*s': [%08x %016lx]\n",
 				pkg_name.size, pkg_name.data,
@@ -212,12 +201,12 @@ void resource_manager::unload_resource(
 	}
 	auto const* const handler = hash_map::get(rm._handlers, type);
 	handler->func_unload(
-		handler->type_data, rm, name_hash, node->value.value
+		handler->type_data, rm, node->value.value
 	);
 	hash_map::remove(rm._resources, node);
 }
 
-void* resource_manager::get_resource(
+ResourceValue resource_manager::get_resource(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash

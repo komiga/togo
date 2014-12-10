@@ -10,10 +10,12 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/error/assert.hpp>
 #include <togo/string/types.hpp>
 #include <togo/hash/hash.hpp>
 #include <togo/hash/hash_combiner.hpp>
 #include <togo/resource/types.hpp>
+#include <togo/resource/resource_package.hpp>
 
 namespace togo {
 
@@ -97,6 +99,26 @@ inline char const* ResourceCompiledPath::data() const {
 
 inline ResourceCompiledPath::operator StringRef() const {
 	return {data(), size()};
+}
+
+inline ResourceStreamLock::~ResourceStreamLock() {
+	_stream = nullptr;
+	resource_package::close_resource_stream(_package);
+}
+
+inline ResourceStreamLock::ResourceStreamLock(
+	ResourcePackage& package,
+	u32 const id
+)
+	: _package(package)
+	, _stream(resource_package::open_resource_stream(_package, id))
+{
+	TOGO_ASSERT(_stream, "failed to open resource stream");
+}
+
+inline IReader& ResourceStreamLock::stream() {
+	TOGO_DEBUG_ASSERTE(_stream);
+	return *_stream;
 }
 
 } // namespace togo

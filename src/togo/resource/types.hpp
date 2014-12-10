@@ -188,6 +188,30 @@ struct ResourceMetadata {
 	u32 data_size;
 };
 
+/// Resource value.
+union ResourceValue {
+	void* pointer;
+	u32 uinteger;
+
+	~ResourceValue() = default;
+	ResourceValue() = default;
+	ResourceValue(ResourceValue const&) = default;
+	ResourceValue(ResourceValue&&) = default;
+	ResourceValue& operator=(ResourceValue const&) = default;
+	ResourceValue& operator=(ResourceValue&&) = default;
+
+	/// Construct with pointer.
+	ResourceValue(void* const pointer) : pointer(pointer) {}
+
+	/// Construct with 32-bit unsigned integer.
+	ResourceValue(u32 const uinteger) : uinteger(uinteger) {}
+
+	/// Check if pointer is valid.
+	bool valid() const {
+		return pointer != nullptr;
+	}
+};
+
 /// Test resource.
 struct TestResource {
 	s64 x;
@@ -197,6 +221,33 @@ struct TestResource {
 struct ResourceHandler;
 struct ResourcePackage;
 struct ResourceManager;
+
+/// Resource stream lock.
+///
+/// This class opens a resource stream from a package on
+/// initialization and closes it on deinitialization.
+struct ResourceStreamLock {
+	ResourcePackage& _package;
+	IReader* _stream;
+
+	ResourceStreamLock() = delete;
+	ResourceStreamLock(ResourceStreamLock const&) = delete;
+	ResourceStreamLock(ResourceStreamLock&&) = delete;
+	ResourceStreamLock& operator=(ResourceStreamLock const&) = delete;
+	ResourceStreamLock& operator=(ResourceStreamLock&&) = delete;
+
+	/// Close resource stream.
+	~ResourceStreamLock();
+
+	/// Open resource stream.
+	ResourceStreamLock(
+		ResourcePackage& package,
+		u32 id
+	);
+
+	/// Resource stream.
+	IReader& stream();
+};
 
 /**
 	@addtogroup resource_handler
@@ -208,19 +259,18 @@ struct ResourceHandler {
 	/// Load a resource.
 	///
 	/// Returns pointer to resource, or nullptr on error.
-	using load_func_type = void* (
-		void* type_data,
+	using load_func_type = ResourceValue (
+		void* const type_data,
 		ResourceManager& manager,
-		ResourceNameHash name_hash,
-		IReader& stream
+		ResourcePackage& package,
+		ResourceMetadata const& metadata
 	);
 
 	/// Unload a resource.
 	using unload_func_type = void (
-		void* type_data,
+		void* const type_data,
 		ResourceManager& manager,
-		ResourceNameHash name_hash,
-		void* resource
+		ResourceValue const resource
 	);
 
 	ResourceType type;
@@ -273,7 +323,7 @@ struct ResourcePackage {
 /// Resource manager.
 struct ResourceManager {
 	struct TypedResource {
-		void* value;
+		ResourceValue value;
 		ResourceType type;
 	};
 

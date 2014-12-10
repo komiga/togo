@@ -90,6 +90,14 @@ void resource_package::close(
 	pkg._stream.close();
 }
 
+ResourceMetadata const& resource_package::resource_metadata(
+	ResourcePackage const& pkg,
+	u32 const id
+) {
+	TOGO_ASSERTE(id > 0 && id <= array::size(pkg._manifest));
+	return pkg._manifest[id - 1];
+}
+
 ResourcePackage::LookupNode* resource_package::find_resource(
 	ResourcePackage& pkg,
 	ResourceType const type,
@@ -101,26 +109,30 @@ ResourcePackage::LookupNode* resource_package::find_resource(
 
 IReader* resource_package::open_resource_stream(
 	ResourcePackage& pkg,
-	ResourcePackage::LookupNode* const node
+	u32 const id
 ) {
-	TOGO_ASSERTE(node != nullptr);
-	TOGO_ASSERTE(pkg._open_resource_id == 0);
-	auto const& metadata = pkg._manifest[node->value - 1];
+	TOGO_ASSERT(pkg._stream.is_open(), "package is not open");
+	TOGO_ASSERT(pkg._open_resource_id == 0, "a resource stream is already open");
+	TOGO_ASSERT(id > 0 && id <= array::size(pkg._manifest), "invalid ID");
+	auto const& metadata = pkg._manifest[id - 1];
 	TOGO_ASSERTE(io::seek_to(pkg._stream, metadata.data_offset));
-	pkg._open_resource_id = node->value;
+	pkg._open_resource_id = id;
 	return &pkg._stream;
 }
 
 void resource_package::close_resource_stream(
 	ResourcePackage& pkg
 ) {
-	TOGO_ASSERTE(pkg._open_resource_id != 0);
-	auto const& metadata = pkg._manifest[pkg._open_resource_id - 1];
-	auto const stream_pos = io::position(pkg._stream);
-	TOGO_DEBUG_ASSERTE(
-		stream_pos >= metadata.data_offset &&
-		stream_pos <= metadata.data_offset + metadata.data_size
-	);
+	TOGO_ASSERT(pkg._stream.is_open(), "package is not open");
+	TOGO_ASSERT(pkg._open_resource_id != 0, "invalid ID");
+	#if defined(TOGO_DEBUG)
+		auto const& metadata = pkg._manifest[pkg._open_resource_id - 1];
+		auto const stream_pos = io::position(pkg._stream);
+		TOGO_DEBUG_ASSERTE(
+			stream_pos >= metadata.data_offset &&
+			stream_pos <= metadata.data_offset + metadata.data_size
+		);
+	#endif
 	pkg._open_resource_id = 0;
 }
 

@@ -48,6 +48,14 @@ void close(
 	ResourcePackage& pkg
 );
 
+/// Get resource metadata by ID.
+///
+/// An assertion will fail if the ID is invalid.
+ResourceMetadata const& resource_metadata(
+	ResourcePackage const& pkg,
+	u32 id
+);
+
 /// Find resource.
 ResourcePackage::LookupNode* find_resource(
 	ResourcePackage& pkg,
@@ -55,19 +63,17 @@ ResourcePackage::LookupNode* find_resource(
 	ResourceNameHash name_hash
 );
 
-/// Open resource stream.
+/// Open resource stream by ID.
 ///
-/// If the resource stream couldn't be opened, this returns nullptr.
-/// An assertion will fail if node is nullptr.
+/// An assertion will fail if resource stream couldn't be opened.
 /// An assertion will fail if there is already an open stream.
 IReader* open_resource_stream(
 	ResourcePackage& pkg,
-	ResourcePackage::LookupNode* node
+	u32 id
 );
 
-/// Close resource stream.
+/// Close current resource stream.
 ///
-/// This closes the previously-opened resource stream.
 /// An assertion will fail if there is no open stream.
 void close_resource_stream(
 	ResourcePackage& pkg

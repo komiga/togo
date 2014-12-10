@@ -6,6 +6,7 @@
 #include <togo/config.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/resource/types.hpp>
+#include <togo/resource/resource.hpp>
 #include <togo/resource/resource_handler.hpp>
 #include <togo/resource/resource_manager.hpp>
 #include <togo/serialization/serializer.hpp>
@@ -17,11 +18,11 @@ namespace togo {
 namespace resource_handler {
 namespace test_resource {
 
-static void* load(
-	void* type_data,
+static ResourceValue load(
+	void* const type_data,
 	ResourceManager& /*manager*/,
-	ResourceNameHash /*name_hash*/,
-	IReader& stream
+	ResourcePackage& package,
+	ResourceMetadata const& metadata
 ) {
 	TOGO_DEBUG_ASSERTE(type_data == nullptr);
 	TestResource* const test_resource = TOGO_CONSTRUCT(
@@ -29,20 +30,20 @@ static void* load(
 	);
 
 	{// Deserialize resource
-	BinaryInputSerializer ser{stream};
+	ResourceStreamLock lock{package, metadata.id};
+	BinaryInputSerializer ser{lock.stream()};
 	ser % *test_resource;
 	}
 	return test_resource;
 }
 
 static void unload(
-	void* type_data,
+	void* const type_data,
 	ResourceManager& /*manager*/,
-	ResourceNameHash /*name_hash*/,
-	void* resource
+	ResourceValue const resource
 ) {
 	TOGO_DEBUG_ASSERTE(type_data == nullptr);
-	auto const* test_resource = static_cast<TestResource*>(resource);
+	auto const* test_resource = static_cast<TestResource*>(resource.pointer);
 	TOGO_DESTROY(memory::default_allocator(), test_resource);
 }
 

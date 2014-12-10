@@ -45,7 +45,7 @@ void register_handler(
 	ResourceHandler const& handler
 );
 
-/// Check if there is a handler for type registered.
+/// Check if a resource handler is registered.
 bool has_handler(
 	ResourceManager const& rm,
 	ResourceType type
@@ -80,7 +80,7 @@ void clear_packages(ResourceManager& rm);
 /// Load resource.
 ///
 /// The resource is not reloaded if it is already loaded.
-void* load_resource(
+ResourceValue load_resource(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash
@@ -94,7 +94,7 @@ void unload_resource(
 );
 
 /// Get resource.
-void* get_resource(
+ResourceValue get_resource(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash
