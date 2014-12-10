@@ -21,8 +21,8 @@ namespace resource_compiler {
 	@{
 */
 
-/// Register TestResource resource compiler.
-void register_test_resource(
+/// Register test resource compiler.
+void register_test(
 	CompilerManager& cm
 );
 

@@ -6,9 +6,9 @@
 #include <togo/tool_build/config.hpp>
 #include <togo/log/log.hpp>
 #include <togo/utility/utility.hpp>
+#include <togo/collection/hash_map.hpp>
 #include <togo/string/string.hpp>
 #include <togo/hash/hash.hpp>
-#include <togo/collection/hash_map.hpp>
 #include <togo/io/io.hpp>
 #include <togo/kvs/kvs.hpp>
 #include <togo/resource/types.hpp>
@@ -66,7 +66,7 @@ static bool compile(
 } // namespace test_resource
 } // namespace resource_compiler
 
-void resource_compiler::register_test_resource(
+void resource_compiler::register_test(
 	CompilerManager& cm
 ) {
 	ResourceCompiler const compiler{
