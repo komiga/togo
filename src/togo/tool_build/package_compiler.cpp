@@ -176,6 +176,13 @@ bool package_compiler::create_stub(
 	return true;
 }
 
+bool package_compiler::has_resource(
+	PackageCompiler const& pkg,
+	ResourceNameHash const name_hash
+) {
+	return hash_map::has(pkg._lookup, name_hash);
+}
+
 PackageCompiler::LookupNode* package_compiler::get_node(
 	PackageCompiler& pkg,
 	ResourceNameHash const name_hash

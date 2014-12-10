@@ -147,9 +147,21 @@ bool compiler_manager::write_packages(
 	return true;
 }
 
+bool compiler_manager::has_resource(
+	CompilerManager const& cm,
+	ResourceNameHash const name_hash
+) {
+	for (auto const* pkg : cm._packages) {
+		if (package_compiler::has_resource(*pkg, name_hash)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 PackageCompiler::LookupNode* compiler_manager::get_node(
 	CompilerManager& cm,
-	ResourceNameHash name_hash,
+	ResourceNameHash const name_hash,
 	PackageCompiler*& package
 ) {
 	PackageCompiler::LookupNode* node;

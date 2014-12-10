@@ -102,6 +102,12 @@ inline bool needs_build(
 	return !pkg._build_parity;
 }
 
+/// Check if resource exists by name.
+bool has_resource(
+	PackageCompiler const& pkg,
+	ResourceNameHash name_hash
+);
+
 /// Find lookup node by resource name.
 PackageCompiler::LookupNode* get_node(
 	PackageCompiler& pkg,

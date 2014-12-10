@@ -94,6 +94,12 @@ bool write_packages(
 	CompilerManager& cm
 );
 
+/// Check if resource exists by name.
+bool has_resource(
+	CompilerManager const& cm,
+	ResourceNameHash name_hash
+);
+
 /// Find lookup node by resource name.
 PackageCompiler::LookupNode* get_node(
 	CompilerManager& cm,
