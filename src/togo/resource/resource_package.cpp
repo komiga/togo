@@ -115,8 +115,7 @@ IReader* resource_package::open_resource_stream(
 ) {
 	TOGO_ASSERT(pkg._stream.is_open(), "package is not open");
 	TOGO_ASSERT(pkg._open_resource_id == 0, "a resource stream is already open");
-	TOGO_ASSERT(id > 0 && id <= array::size(pkg._manifest), "invalid ID");
-	auto const& metadata = pkg._manifest[id - 1];
+	auto const& metadata = resource_package::resource_metadata(pkg, id);
 	TOGO_ASSERTE(io::seek_to(pkg._stream, metadata.data_offset));
 	pkg._open_resource_id = id;
 	return &pkg._stream;
@@ -128,7 +127,9 @@ void resource_package::close_resource_stream(
 	TOGO_ASSERT(pkg._stream.is_open(), "package is not open");
 	TOGO_ASSERT(pkg._open_resource_id != 0, "no resource stream is open");
 	#if defined(TOGO_DEBUG)
-		auto const& metadata = pkg._manifest[pkg._open_resource_id - 1];
+		auto const& metadata = resource_package::resource_metadata(
+			pkg, pkg._open_resource_id
+		);
 		auto const stream_pos = io::position(pkg._stream);
 		TOGO_DEBUG_ASSERTE(
 			stream_pos >= metadata.data_offset &&
