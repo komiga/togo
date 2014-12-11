@@ -322,13 +322,13 @@ struct ResourcePackage {
 
 /// Resource manager.
 struct ResourceManager {
-	struct TypedResource {
+	struct TypedResourceValue {
 		ResourceValue value;
 		ResourceType type;
 	};
 
 	HashMap<ResourceType, ResourceHandler> _handlers;
-	HashMap<ResourceNameHash, TypedResource> _resources;
+	HashMap<ResourceNameHash, TypedResourceValue> _resources;
 	Array<ResourcePackage*> _packages;
 	FixedArray<char, 128> _base_path;
 
