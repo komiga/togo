@@ -94,8 +94,10 @@ ResourceMetadata const& resource_package::resource_metadata(
 	ResourcePackage const& pkg,
 	u32 const id
 ) {
-	TOGO_ASSERTE(id > 0 && id <= array::size(pkg._manifest));
-	return pkg._manifest[id - 1];
+	TOGO_ASSERT(id > 0 && id <= array::size(pkg._manifest), "invalid ID");
+	auto const& metadata = pkg._manifest[id - 1];
+	TOGO_DEBUG_ASSERT(metadata.id != 0, "null entry");
+	return metadata;
 }
 
 ResourcePackage::LookupNode* resource_package::find_resource(
