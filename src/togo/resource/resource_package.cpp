@@ -100,13 +100,11 @@ ResourceMetadata const& resource_package::resource_metadata(
 	return metadata;
 }
 
-ResourcePackage::LookupNode* resource_package::find_resource(
+ResourcePackage::LookupNode* resource_package::get_node(
 	ResourcePackage& pkg,
-	ResourceType const type,
 	ResourceNameHash const name_hash
 ) {
-	auto* const node = hash_map::get_node(pkg._lookup, name_hash);
-	return (node && pkg._manifest[node->value - 1].type == type) ? node : nullptr;
+	return hash_map::get_node(pkg._lookup, name_hash);
 }
 
 IReader* resource_package::open_resource_stream(
