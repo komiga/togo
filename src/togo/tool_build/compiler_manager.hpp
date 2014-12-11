@@ -11,6 +11,7 @@
 
 #include <togo/tool_build/config.hpp>
 #include <togo/string/types.hpp>
+#include <togo/resource/types.hpp>
 #include <togo/tool_build/types.hpp>
 
 namespace togo {
@@ -94,10 +95,12 @@ bool write_packages(
 	CompilerManager& cm
 );
 
-/// Check if resource exists by name.
+/// Check if a resource exists.
 bool has_resource(
 	CompilerManager const& cm,
-	ResourceNameHash name_hash
+	ResourceType type,
+	ResourceNameHash name_hash,
+	ResourceTagsHash tags_hash = RES_TAGS_NULL
 );
 
 /// Find lookup node by resource name.

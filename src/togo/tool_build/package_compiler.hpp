@@ -102,25 +102,39 @@ inline bool needs_build(
 	return !pkg._build_parity;
 }
 
-/// Check if resource exists by name.
-bool has_resource(
-	PackageCompiler const& pkg,
-	ResourceNameHash name_hash
-);
-
-/// Find lookup node by resource name.
+/// Get lookup node by resource name.
 PackageCompiler::LookupNode* get_node(
 	PackageCompiler& pkg,
 	ResourceNameHash name_hash
 );
 
-/// Find resource ID by path parts.
+/// Find resource ID by identity.
 ///
-/// If this returns 0, the resource was not found.
+/// 0 is returned if a resource was not found.
+/// If tags_lenient is true, a tag-less entry will match if there is
+/// no resource with tags_hash exactly.
 u32 find_resource_id(
 	PackageCompiler const& pkg,
-	ResourcePathParts const& path_parts
+	ResourceType type,
+	ResourceNameHash name_hash,
+	ResourceTagsHash tags_hash,
+	bool tags_lenient
 );
+
+/// Find resource ID by path parts.
+inline u32 find_resource_id(
+	PackageCompiler const& pkg,
+	ResourcePathParts const& path_parts,
+	bool const tags_lenient
+) {
+	return find_resource_id(
+		pkg,
+		path_parts.type_hash,
+		path_parts.name_hash,
+		path_parts.tags_hash,
+		tags_lenient
+	);
+}
 
 /// Add resource.
 u32 add_resource(

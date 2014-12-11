@@ -149,10 +149,14 @@ bool compiler_manager::write_packages(
 
 bool compiler_manager::has_resource(
 	CompilerManager const& cm,
-	ResourceNameHash const name_hash
+	ResourceType const type,
+	ResourceNameHash const name_hash,
+	ResourceTagsHash const tags_hash
 ) {
 	for (auto const* pkg : cm._packages) {
-		if (package_compiler::has_resource(*pkg, name_hash)) {
+		if (package_compiler::find_resource_id(
+			*pkg, type, name_hash, tags_hash, false
+		) != 0) {
 			return true;
 		}
 	}

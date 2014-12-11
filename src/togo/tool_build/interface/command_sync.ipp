@@ -73,7 +73,7 @@ static bool sync_package(
 			TOGO_LOG_STATUS_('I', "(path parse failed)");
 		} else if (!compiler_manager::has_compiler(interface._manager, pp.type_hash)) {
 			TOGO_LOG_STATUS_('I', "(no compiler for type)");
-		} else if (!package_compiler::find_resource_id(pkg, pp)) {
+		} else if (package_compiler::find_resource_id(pkg, pp, false) == 0) {
 			TOGO_LOG_STATUS_('A', "");
 			package_compiler::add_resource(pkg, path, pp);
 		}

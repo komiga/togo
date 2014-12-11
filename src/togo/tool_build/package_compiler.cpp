@@ -176,13 +176,6 @@ bool package_compiler::create_stub(
 	return true;
 }
 
-bool package_compiler::has_resource(
-	PackageCompiler const& pkg,
-	ResourceNameHash const name_hash
-) {
-	return hash_map::has(pkg._lookup, name_hash);
-}
-
 PackageCompiler::LookupNode* package_compiler::get_node(
 	PackageCompiler& pkg,
 	ResourceNameHash const name_hash
@@ -192,19 +185,31 @@ PackageCompiler::LookupNode* package_compiler::get_node(
 
 u32 package_compiler::find_resource_id(
 	PackageCompiler const& pkg,
-	ResourcePathParts const& path_parts
+	ResourceType const type,
+	ResourceNameHash const name_hash,
+	ResourceTagsHash const tags_hash,
+	bool const tags_lenient
 ) {
-	auto const* node = hash_map::get_node(pkg._lookup, path_parts.name_hash);
+	auto const* node = hash_map::get_node(pkg._lookup, name_hash);
+	u32 id_lenient = 0;
 	for (; node; node = hash_map::get_next(pkg._lookup, node)) {
 		auto const& metadata = pkg._manifest[node->value - 1];
 		if (
-			path_parts.type_hash == metadata.type &&
-			path_parts.tags_hash == metadata.tags_hash
+			metadata.id == 0 ||
+			type != metadata.type
 		) {
+			continue;
+		}
+		if (tags_hash == metadata.tags_hash) {
 			return metadata.id;
+		} else if (
+			tags_lenient &&
+			metadata.tags_hash == RES_TAGS_NULL
+		) {
+			id_lenient = metadata.id;
 		}
 	}
-	return 0;
+	return id_lenient;
 }
 
 u32 package_compiler::add_resource(
@@ -213,11 +218,11 @@ u32 package_compiler::add_resource(
 	ResourcePathParts const& path_parts
 ) {
 	TOGO_ASSERT(
-		package_compiler::find_resource_id(pkg, path_parts) == 0,
+		package_compiler::find_resource_id(pkg, path_parts, false) == 0,
 		"resource already exists in package"
 	);
 
-	array::resize(pkg._manifest, array::size(pkg._manifest) + 1);
+	array::increase_size(pkg._manifest, 1);
 	auto& metadata = array::back(pkg._manifest);
 	metadata.id = array::size(pkg._manifest);
 	metadata.name_hash = path_parts.name_hash;
