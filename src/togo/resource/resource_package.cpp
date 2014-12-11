@@ -126,7 +126,7 @@ void resource_package::close_resource_stream(
 	ResourcePackage& pkg
 ) {
 	TOGO_ASSERT(pkg._stream.is_open(), "package is not open");
-	TOGO_ASSERT(pkg._open_resource_id != 0, "invalid ID");
+	TOGO_ASSERT(pkg._open_resource_id != 0, "no resource stream is open");
 	#if defined(TOGO_DEBUG)
 		auto const& metadata = pkg._manifest[pkg._open_resource_id - 1];
 		auto const stream_pos = io::position(pkg._stream);
