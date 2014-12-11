@@ -327,6 +327,8 @@ struct ResourceManager {
 		ResourceType type;
 	};
 
+	using ActiveNode = HashMapNode<ResourceNameHash, TypedResourceValue>;
+
 	HashMap<ResourceType, ResourceHandler> _handlers;
 	HashMap<ResourceNameHash, TypedResourceValue> _resources;
 	Array<ResourcePackage*> _packages;

@@ -18,28 +18,50 @@ namespace togo {
 
 namespace resource_manager {
 
-static bool find_resource(
+static ResourceMetadata const* resource_metadata(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash,
-	ResourcePackage*& package,
-	ResourcePackage::LookupNode*& node
+	ResourcePackage*& package
 ) {
-	// TODO: Tag filter
-	ResourcePackage::LookupNode* it_node;
+	if (array::empty(rm._packages)) {
+		return nullptr;
+	}
+	ResourcePackage::LookupNode* node;
 	for (
-		auto* it = array::end(rm._packages) - 1;
-		it >= array::begin(rm._packages);
-		--it
+		auto* it_pkg = array::end(rm._packages) - 1;
+		it_pkg >= array::begin(rm._packages);
+		--it_pkg
 	) {
-		it_node = resource_package::find_resource(**it, type, name_hash);
-		if (it_node) {
-			package = *it;
-			node = it_node;
-			return true;
+		node = resource_package::get_node(**it_pkg, name_hash);
+		if (!node) {
+			continue;
+		}
+		ResourceMetadata const& metadata = resource_package::resource_metadata(
+			**it_pkg, node->value
+		);
+		// TODO: Tag filter
+		if (metadata.type == type) {
+			package = *it_pkg;
+			return &metadata;
 		}
 	}
-	return false;
+	return nullptr;
+}
+
+static ResourceManager::ActiveNode* get_active_node(
+	ResourceManager& rm,
+	ResourceType const type,
+	ResourceNameHash const name_hash
+) {
+	TOGO_DEBUG_ASSERTE(hash_map::has(rm._handlers, type));
+	auto* node = hash_map::get_node(rm._resources, name_hash);
+	for (; node; node = hash_map::get_next(rm._resources, node)) {
+		if (node->value.type == type) {
+			return node;
+		}
+	}
+	return nullptr;
 }
 
 } // namespace resource_manager
@@ -79,7 +101,7 @@ void resource_manager::register_handler(
 
 bool resource_manager::has_handler(
 	ResourceManager const& rm,
-	ResourceType type
+	ResourceType const type
 ) {
 	return hash_map::has(rm._handlers, type);
 }
@@ -151,42 +173,57 @@ void resource_manager::clear_packages(ResourceManager& rm) {
 	array::clear(rm._packages);
 }
 
+bool resource_manager::has_resource(
+	ResourceManager& rm,
+	ResourceType const type,
+	ResourceNameHash const name_hash
+) {
+	ResourcePackage* pkg = nullptr;
+	ResourceMetadata const* metadata = resource_manager::resource_metadata(
+		rm, type, name_hash, pkg
+	);
+	return metadata != nullptr;
+}
+
 ResourceValue resource_manager::load_resource(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash
 ) {
 	TOGO_DEBUG_ASSERTE(hash_map::has(rm._handlers, type));
-	auto* tr = hash_map::get(rm._resources, name_hash);
-	if (!tr) {
-		auto const* const handler = hash_map::get(rm._handlers, type);
-		ResourcePackage* pkg = nullptr;
-		ResourcePackage::LookupNode* node = nullptr;
-		if (!find_resource(rm, type, name_hash, pkg, node)) {
-			TOGO_LOG_ERRORF(
-				"resource not found: [%08x %016lx]\n",
-				type, name_hash
-			);
-			return nullptr;
-		}
-		StringRef const pkg_name{resource_package::name(*pkg)};
-		ResourceValue const load_value = handler->func_load(
-			handler->type_data, rm, *pkg,
-			resource_package::resource_metadata(*pkg, node->value)
+	{// Lookup existing value
+	auto const existing_value = resource_manager::get_resource(rm, type, name_hash);
+	if (existing_value.valid()) {
+		return existing_value;
+	}}
+
+	// Load
+	auto const* const handler = hash_map::get(rm._handlers, type);
+	ResourcePackage* pkg = nullptr;
+	ResourceMetadata const* metadata = resource_manager::resource_metadata(
+		rm, type, name_hash, pkg
+	);
+	if (!metadata) {
+		TOGO_LOG_ERRORF(
+			"resource not found: [%08x %016lx]\n",
+			type, name_hash
 		);
-		if (!load_value.valid()) {
-			TOGO_LOG_ERRORF(
-				"failed to load resource from package '%.*s': [%08x %016lx]\n",
-				pkg_name.size, pkg_name.data,
-				type, name_hash
-			);
-			return nullptr;
-		}
-		tr = &hash_map::push(
-			rm._resources, name_hash, {load_value, type}
-		);
+		return nullptr;
 	}
-	return (tr && tr->type == type) ? tr->value : nullptr;
+	StringRef const pkg_name{resource_package::name(*pkg)};
+	ResourceValue const load_value = handler->func_load(
+		handler->type_data, rm, *pkg, *metadata
+	);
+	if (!load_value.valid()) {
+		TOGO_LOG_ERRORF(
+			"failed to load resource from package '%.*s': [%08x %016lx]\n",
+			pkg_name.size, pkg_name.data,
+			type, name_hash
+		);
+		return nullptr;
+	}
+	hash_map::push(rm._resources, name_hash, {load_value, type});
+	return load_value;
 }
 
 void resource_manager::unload_resource(
@@ -194,16 +231,12 @@ void resource_manager::unload_resource(
 	ResourceType const type,
 	ResourceNameHash const name_hash
 ) {
-	TOGO_DEBUG_ASSERTE(hash_map::has(rm._handlers, type));
-	auto* const node = hash_map::get_node(rm._resources, name_hash);
-	if (!node || node->value.type != type) {
-		return;
+	auto* const node = resource_manager::get_active_node(rm, type, name_hash);
+	if (node) {
+		auto const* const handler = hash_map::get(rm._handlers, type);
+		handler->func_unload(handler->type_data, rm, node->value.value);
+		hash_map::remove(rm._resources, node);
 	}
-	auto const* const handler = hash_map::get(rm._handlers, type);
-	handler->func_unload(
-		handler->type_data, rm, node->value.value
-	);
-	hash_map::remove(rm._resources, node);
 }
 
 ResourceValue resource_manager::get_resource(
@@ -211,9 +244,8 @@ ResourceValue resource_manager::get_resource(
 	ResourceType const type,
 	ResourceNameHash const name_hash
 ) {
-	TOGO_DEBUG_ASSERTE(hash_map::has(rm._handlers, type));
-	auto* const tr = hash_map::get(rm._resources, name_hash);
-	return (tr && tr->type == type) ? tr->value : nullptr;
+	auto const* const node = resource_manager::get_active_node(rm, type, name_hash);
+	return node ? node->value.value : nullptr;
 }
 
 } // namespace togo

@@ -77,6 +77,13 @@ void remove_package(
 /// Remove all packages.
 void clear_packages(ResourceManager& rm);
 
+/// Check if a resource exists.
+bool has_resource(
+	ResourceManager& rm,
+	ResourceType const type,
+	ResourceNameHash const name_hash
+);
+
 /// Load resource.
 ///
 /// The resource is not reloaded if it is already loaded.
