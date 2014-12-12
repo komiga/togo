@@ -21,6 +21,7 @@ template<class Data>
 inline App<Data>::App(
 	unsigned num_args,
 	char const* const args[],
+	StringRef const base_path,
 	float update_freq,
 	Data&& data
 )
@@ -31,6 +32,7 @@ inline App<Data>::App(
 		reinterpret_cast<AppBase::render_func_type&>(AppModel<Data>::render),
 		num_args,
 		args,
+		base_path,
 		update_freq
 	)
 	, _data(data)

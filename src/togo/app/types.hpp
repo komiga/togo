@@ -11,9 +11,10 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/threading/types.hpp>
+#include <togo/resource/types.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/input/types.hpp>
-#include <togo/threading/types.hpp>
 
 namespace togo {
 
@@ -50,6 +51,7 @@ struct AppBase {
 	char const* const* _args;
 
 	TaskManager _task_manager;
+	ResourceManager _resource_manager;
 	gfx::Display* _display;
 	InputBuffer _input_buffer;
 	gfx::Renderer* _renderer;
@@ -71,6 +73,7 @@ struct AppBase {
 		render_func_type& func_render,
 		unsigned num_args,
 		char const* const args[],
+		StringRef const base_path,
 		float update_freq
 	);
 };
@@ -93,6 +96,7 @@ struct App
 	App(
 		unsigned num_args,
 		char const* const args[],
+		StringRef const base_path,
 		float update_freq,
 		Data&& data
 	);

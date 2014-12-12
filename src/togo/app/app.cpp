@@ -4,14 +4,16 @@
 */
 
 #include <togo/config.hpp>
-#include <togo/app/types.hpp>
 #include <togo/log/log.hpp>
 #include <togo/system/system.hpp>
 #include <togo/memory/memory.hpp>
+#include <togo/resource/resource_manager.hpp>
+#include <togo/resource/resource_handler.hpp>
 #include <togo/gfx/gfx.hpp>
 #include <togo/gfx/display.hpp>
 #include <togo/gfx/renderer.hpp>
 #include <togo/input/input_buffer.hpp>
+#include <togo/app/types.hpp>
 
 namespace togo {
 
@@ -24,6 +26,7 @@ AppBase::AppBase(
 	render_func_type& func_render,
 	unsigned num_args,
 	char const* const args[],
+	StringRef const base_path,
 	float update_freq
 )
 	: _func_init(func_init)
@@ -34,6 +37,10 @@ AppBase::AppBase(
 	, _args(args)
 	, _task_manager(
 		system::num_cores() - 1u,
+		memory::default_allocator()
+	)
+	, _resource_manager(
+		base_path,
 		memory::default_allocator()
 	)
 	, _display(nullptr)
@@ -55,6 +62,8 @@ static void core_render(AppBase& app_base);
 
 static void core_init(AppBase& app_base) {
 	TOGO_LOG("App: initializing\n");
+
+	// Initialize graphics
 	gfx::init(3, 3);
 	gfx::DisplayConfig config{};
 	config.color_bits = {8, 8, 8, 0};
@@ -77,6 +86,10 @@ static void core_init(AppBase& app_base) {
 	app_base._renderer = gfx::renderer::create(
 		memory::default_allocator()
 	);
+
+	// Register resource handlers.
+	resource_handler::register_test(app_base._resource_manager);
+
 	app_base._quit = false;
 	app_base._func_init(app_base);
 }
@@ -84,10 +97,16 @@ static void core_init(AppBase& app_base) {
 static void core_shutdown(AppBase& app_base) {
 	TOGO_LOG("App: shutting down\n");
 	app_base._func_shutdown(app_base);
+
+	resource_manager::clear_resources(app_base._resource_manager);
 	gfx::renderer::destroy(app_base._renderer);
+	app_base._renderer = nullptr;
 	input_buffer::remove_display(app_base._input_buffer, app_base._display);
 	gfx::display::destroy(app_base._display);
+	app_base._display = nullptr;
 	gfx::shutdown();
+	resource_manager::clear_packages(app_base._resource_manager);
+	resource_manager::clear_handlers(app_base._resource_manager);
 }
 
 static void core_update(AppBase& app_base, float dt) {
