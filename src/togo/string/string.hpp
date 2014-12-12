@@ -13,6 +13,7 @@
 #include <togo/utility/tags.hpp>
 #include <togo/string/types.hpp>
 #include <togo/collection/fixed_array.hpp>
+#include <togo/collection/array.hpp>
 
 #include <cstring>
 
@@ -57,6 +58,17 @@ inline unsigned size(FixedArray<char, N> const& string) {
 	;
 }
 
+/// Get size of a string.
+///
+/// This does not include the NUL terminator if there is one.
+inline unsigned size(Array<char> const& string) {
+	return
+		!array::empty(string) && array::back(string) == '\0'
+		? array::size(string) - 1
+		: array::size(string)
+	;
+}
+
 /// Compare two strings for equality.
 ///
 /// This will short-circuit if lhs and rhs are not the same size.
@@ -88,6 +100,17 @@ inline void copy(
 ) {
 	fixed_array::resize(dst, src.size + 1);
 	copy(fixed_array::begin(dst), fixed_array::size(dst), src);
+}
+
+/// Copy string.
+///
+/// dst will be NUL-terminated.
+inline void copy(
+	Array<char>& dst,
+	StringRef const& src
+) {
+	array::resize(dst, src.size + 1);
+	copy(array::begin(dst), array::size(dst), src);
 }
 
 /// Append to string.
@@ -122,6 +145,15 @@ inline void append(FixedArray<char, N>& dst, StringRef const& str) {
 	unsigned const size = string::size(dst);
 	fixed_array::resize(dst, size + str.size + 1);
 	copy(fixed_array::begin(dst) + size, str.size + 1, str);
+}
+
+/// Append to string.
+///
+/// dst will be NUL-terminated.
+inline void append(Array<char>& dst, StringRef const& str) {
+	unsigned const size = string::size(dst);
+	array::resize(dst, size + str.size + 1);
+	copy(array::begin(dst) + size, str.size + 1, str);
 }
 
 /// Trim trailing slashes from string.
