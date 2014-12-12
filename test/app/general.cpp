@@ -43,6 +43,7 @@ signed main(signed argc, char* argv[]) {
 	App<TestAppData> app{
 		static_cast<unsigned>(max(0, argc - 1)),
 		argv,
+		"data/",
 		1.0f / 30.0f,
 		TestAppData{42}
 	};
