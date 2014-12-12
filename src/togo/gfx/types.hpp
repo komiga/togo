@@ -253,6 +253,10 @@ struct Shader;
 template<class /*R*/>
 struct ResourceID {
 	u32 _value;
+
+	bool valid() const {
+		return _value != gfx::ID_VALUE_NULL;
+	}
 };
 /** @endcond */ // INTERNAL
 
