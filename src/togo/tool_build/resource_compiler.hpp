@@ -17,7 +17,7 @@ namespace tool_build {
 namespace resource_compiler {
 
 /**
-	@addtogroup resource_compiler
+	@addtogroup tool_build_resource_compiler
 	@{
 */
 
@@ -26,7 +26,7 @@ void register_test(
 	CompilerManager& cm
 );
 
-/** @} */ // end of doc-group resource_compiler
+/** @} */ // end of doc-group tool_build_resource_compiler
 
 } // namespace resource_compiler
 } // namespace tool_build
