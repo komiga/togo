@@ -99,6 +99,11 @@ void resource_manager::register_handler(
 	hash_map::push(rm._handlers, handler.type, handler);
 }
 
+void resource_manager::clear_handlers(ResourceManager& rm) {
+	TOGO_DEBUG_ASSERTE(hash_map::empty(rm._resources));
+	hash_map::clear(rm._handlers);
+}
+
 bool resource_manager::has_handler(
 	ResourceManager const& rm,
 	ResourceType const type
@@ -165,7 +170,7 @@ void resource_manager::remove_package(
 
 void resource_manager::clear_packages(ResourceManager& rm) {
 	Allocator& allocator = *rm._packages._allocator;
-	// TODO: Unload all active resources
+	resource_manager::clear_resources(rm);
 	for (auto* pkg : rm._packages) {
 		resource_package::close(*pkg);
 		TOGO_DESTROY(allocator, pkg);
@@ -238,6 +243,23 @@ void resource_manager::unload_resource(
 		handler->func_unload(handler->type_data, rm, node->value.value);
 		hash_map::remove(rm._resources, node);
 	}
+}
+
+void resource_manager::clear_resources(ResourceManager& rm) {
+	ResourceType type = RES_TYPE_NULL;
+	ResourceHandler const* handler;
+	for (auto const& node : rm._resources) {
+		if (node.value.type != type) {
+			type = node.value.type;
+			handler = hash_map::get(rm._handlers, type);
+			TOGO_DEBUG_ASSERTE(handler);
+		}
+		// FIXME: func_unload() may make invalid requests as we aren't
+		// removing the nodes in-loop. Block get_active_node() requests
+		// during clear or remove nodes?
+		handler->func_unload(handler->type_data, rm, node.value.value);
+	}
+	hash_map::clear(rm._resources);
 }
 
 ResourceValue resource_manager::get_resource(

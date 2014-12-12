@@ -45,6 +45,9 @@ void register_handler(
 	ResourceHandler const& handler
 );
 
+/// Remove all resource handlers.
+void clear_handlers(ResourceManager& rm);
+
 /// Check if a resource handler is registered.
 bool has_handler(
 	ResourceManager const& rm,
@@ -99,6 +102,9 @@ void unload_resource(
 	ResourceType const type,
 	ResourceNameHash const name_hash
 );
+
+/// Unload all resources.
+void clear_resources(ResourceManager& rm);
 
 /// Get resource.
 ResourceValue get_resource(
