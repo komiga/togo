@@ -13,11 +13,11 @@
 namespace togo {
 namespace gfx {
 
-#define TOGO_GFX_RENDERER_TEARDOWN_RA_(ra, destroy_func)		\
+#define TOGO_GFX_RENDERER_TEARDOWN_RA_(ra, func_destroy)		\
 	if (renderer->ra._num > 0) {								\
 		for (auto const& slot : renderer->ra._slots) {			\
 			if (slot.id._value == ID_VALUE_NULL) {				\
-				renderer::destroy_func(renderer, slot.id);		\
+				renderer::func_destroy(renderer, slot.id);		\
 			}													\
 		}														\
 	}
