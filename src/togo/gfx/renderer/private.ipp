@@ -16,7 +16,7 @@ namespace gfx {
 #define TOGO_GFX_RENDERER_TEARDOWN_RA_(ra, func_destroy)		\
 	if (renderer->ra._num > 0) {								\
 		for (auto const& slot : renderer->ra._slots) {			\
-			if (slot.id._value == ID_VALUE_NULL) {				\
+			if (slot.id._value != ID_VALUE_NULL) {				\
 				renderer::func_destroy(renderer, slot.id);		\
 			}													\
 		}														\
