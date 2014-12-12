@@ -78,6 +78,7 @@ ResourceManager::ResourceManager(
 	, _packages(allocator)
 	, _base_path()
 {
+	TOGO_DEBUG_ASSERTE(base_path.any());
 	hash_map::reserve(_handlers, 16);
 	string::copy(_base_path, base_path);
 	string::ensure_trailing_slash(_base_path);
