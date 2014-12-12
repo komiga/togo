@@ -54,7 +54,6 @@ static ResourceManager::ActiveNode* get_active_node(
 	ResourceType const type,
 	ResourceNameHash const name_hash
 ) {
-	TOGO_DEBUG_ASSERTE(hash_map::has(rm._handlers, type));
 	auto* node = hash_map::get_node(rm._resources, name_hash);
 	for (; node; node = hash_map::get_next(rm._resources, node)) {
 		if (node->value.type == type) {
@@ -231,6 +230,7 @@ void resource_manager::unload_resource(
 	ResourceType const type,
 	ResourceNameHash const name_hash
 ) {
+	TOGO_DEBUG_ASSERTE(hash_map::has(rm._handlers, type));
 	auto* const node = resource_manager::get_active_node(rm, type, name_hash);
 	if (node) {
 		auto const* const handler = hash_map::get(rm._handlers, type);
