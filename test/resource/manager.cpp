@@ -58,7 +58,7 @@ signed main() {
 	memory_init();
 
 	ResourceManager rm{"data/pkg/", memory::default_allocator()};
-	resource_handler::register_test_resource(rm);
+	resource_handler::register_test(rm);
 	resource_manager::add_package(rm, "test1");
 
 	// Non-existent, manifested
