@@ -47,7 +47,7 @@ void compiler_manager::register_compiler(
 void compiler_manager::register_standard_compilers(
 	CompilerManager& cm
 ) {
-	resource_compiler::register_test_resource(cm);
+	resource_compiler::register_test(cm);
 }
 
 bool compiler_manager::has_compiler(
