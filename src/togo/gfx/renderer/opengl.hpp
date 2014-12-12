@@ -6,9 +6,9 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/gfx/types.hpp>
 #include <togo/utility/utility.hpp>
 #include <togo/log/log.hpp>
+#include <togo/gfx/types.hpp>
 
 #include <GL/glew.h>
 
@@ -40,10 +40,10 @@ static constexpr GLenum const g_gl_buffer_data_binding[]{
 	// dynamic
 	GL_DYNAMIC_DRAW,
 };
-
 static_assert(
-	array_extent(g_gl_buffer_data_binding),
-	"g_gl_buffer_data_binding is malformed"
+	array_extent(g_gl_buffer_data_binding)
+	== unsigned_cast(gfx::BufferDataBinding::NUM),
+	""
 );
 
 enum class GLBufferFlags : unsigned {
