@@ -34,6 +34,9 @@ gfx::Renderer* create(
 /// Destroy renderer.
 void destroy(gfx::Renderer* renderer);
 
+/// Renderer type.
+gfx::RendererType type(gfx::Renderer const* renderer);
+
 /// Register generator definition.
 ///
 /// An assertion will fail if the generator definition is malformed

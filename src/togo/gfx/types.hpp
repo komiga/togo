@@ -142,6 +142,15 @@ struct RenderNode;
 /// Renderer.
 struct Renderer;
 
+/// Renderer type.
+using RendererType = hash32;
+
+/// Renderer types.
+enum : RendererType {
+	/// OpenGL renderer.
+	RENDERER_TYPE_OPENGL = "opengl"_hash32,
+};
+
 /// Generator name hash.
 using GeneratorNameHash = hash32;
 

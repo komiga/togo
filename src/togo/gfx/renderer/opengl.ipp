@@ -57,7 +57,11 @@ void renderer::destroy(gfx::Renderer* const renderer) {
 	TOGO_DESTROY(allocator, renderer);
 }
 
-static gfx::GLBufferFlags gl_buffer_flags(
+gfx::RendererType renderer::type(gfx::Renderer const* /*renderer*/) {
+	return gfx::RENDERER_TYPE_OPENGL;
+}
+
+inline static gfx::GLBufferFlags gl_buffer_flags(
 	gfx::BufferDataBinding const data_binding
 ) {
 	return (data_binding == gfx::BufferDataBinding::dynamic)
