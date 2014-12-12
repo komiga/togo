@@ -139,7 +139,7 @@ struct Renderer {
 	gfx::ResourceArray<gfx::IndexBuffer, TOGO_GFX_NUM_INDEX_BUFFERS> _index_buffers;
 	gfx::ResourceArray<gfx::Texture, TOGO_GFX_NUM_TEXTURES> _textures;
 	gfx::ResourceArray<gfx::Uniform, TOGO_GFX_NUM_UNIFORMS> _uniforms;
-	gfx::ResourceArray<gfx::Shader, TOGO_GFX_NUM_PROGRAMS> _shaders;
+	gfx::ResourceArray<gfx::Shader, TOGO_GFX_NUM_SHADERS> _shaders;
 
 	gfx::RenderNode _nodes[TOGO_GFX_NUM_NODES];
 

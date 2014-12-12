@@ -117,7 +117,7 @@ struct Display;
 #define TOGO_GFX_NUM_INDEX_BUFFERS 2048
 #define TOGO_GFX_NUM_TEXTURES 2048
 #define TOGO_GFX_NUM_UNIFORMS 64
-#define TOGO_GFX_NUM_PROGRAMS 128
+#define TOGO_GFX_NUM_SHADERS 128
 #define TOGO_GFX_NUM_NODES 4
 
 /// Buffer data binding mode.
