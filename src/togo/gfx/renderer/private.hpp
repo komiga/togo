@@ -58,8 +58,8 @@ R& assign(gfx::ResourceArray<R, N>& ra, R const& res) {
 	TOGO_DEBUG_ASSERTE(ra._first_hole != nullptr);
 	gfx::ResourceSlot<R>& slot = *ra._first_hole;
 	ra._first_hole = slot.hole.next;
-	slot.res.id._value = ra._id_gen | (&slot - ra._slots);
 	slot.res = res;
+	slot.res.id._value = ra._id_gen | (&slot - ra._slots);
 	ra._id_gen = max(ra._id_gen + RA::ID_ADD, u32{RA::ID_ADD});
 	return slot.res;
 }
