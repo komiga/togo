@@ -10,7 +10,7 @@
 #include <togo/hash/hash.hpp>
 #include <togo/memory/types.hpp>
 #include <togo/gfx/types.hpp>
-#include <togo/collection/fixed_array.hpp>
+#include <togo/collection/types.hpp>
 
 #if (TOGO_CONFIG_RENDERER == TOGO_RENDERER_OPENGL)
 	#include <togo/gfx/renderer/opengl.hpp>
@@ -131,12 +131,14 @@ struct RenderNode {
 struct Renderer {
 	Allocator* _allocator;
 
-	HashMap<gfx::GeneratorNameHash, gfx::GeneratorDef> _generators;
 	gfx::RendererImpl _impl;
+
+	HashMap<gfx::GeneratorNameHash, gfx::GeneratorDef> _generators;
 	gfx::RenderConfig _config;
 
 	gfx::ResourceArray<gfx::VertexBuffer, TOGO_GFX_NUM_VERTEX_BUFFERS> _vertex_buffers;
 	gfx::ResourceArray<gfx::IndexBuffer, TOGO_GFX_NUM_INDEX_BUFFERS> _index_buffers;
+	gfx::ResourceArray<gfx::BufferBinding, TOGO_GFX_NUM_BUFFER_BINDINGS> _buffer_bindings;
 	gfx::ResourceArray<gfx::Texture, TOGO_GFX_NUM_TEXTURES> _textures;
 	gfx::ResourceArray<gfx::Uniform, TOGO_GFX_NUM_UNIFORMS> _uniforms;
 	gfx::ResourceArray<gfx::Shader, TOGO_GFX_NUM_SHADERS> _shaders;
@@ -154,18 +156,7 @@ struct Renderer {
 	Renderer(
 		Allocator& allocator,
 		gfx::RendererImpl&& impl
-	)
-		: _allocator(&allocator)
-		, _generators(allocator)
-		, _impl(impl)
-		, _config()
-		, _vertex_buffers()
-		, _index_buffers()
-		, _textures()
-		, _uniforms()
-		, _shaders()
-		, _nodes()
-	{}
+	);
 };
 
 } // namespace gfx

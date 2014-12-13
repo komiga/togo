@@ -15,6 +15,8 @@
 #include <togo/gfx/types.hpp>
 #include <togo/memory/memory.hpp>
 
+#include <initializer_list>
+
 namespace togo {
 namespace gfx {
 namespace renderer {
@@ -82,6 +84,39 @@ gfx::IndexBufferID create_index_buffer(
 void destroy_index_buffer(
 	gfx::Renderer* renderer,
 	gfx::IndexBufferID id
+);
+
+/// Create buffer binding.
+///
+/// An assertion will fail if the buffer binding could not be created.
+gfx::BufferBindingID create_buffer_binding(
+	gfx::Renderer* renderer,
+	unsigned num_vertices,
+	unsigned base_vertex,
+	gfx::IndexBinding const& index_binding,
+	unsigned num_bindings,
+	gfx::VertexBinding const* bindings
+);
+
+/// Create buffer binding by initializer list.
+inline gfx::BufferBindingID create_buffer_binding(
+	gfx::Renderer* renderer,
+	unsigned num_vertices,
+	unsigned base_vertex,
+	gfx::IndexBinding const& index_binding,
+	std::initializer_list<gfx::VertexBinding> const bindings
+) {
+	return gfx::renderer::create_buffer_binding(
+		renderer,
+		num_vertices, base_vertex, index_binding,
+		bindings.size(), bindings.begin()
+	);
+}
+
+/// Destroy buffer binding.
+void destroy_buffer_binding(
+	gfx::Renderer* renderer,
+	gfx::BufferBindingID id
 );
 
 /** @} */ // end of doc-group gfx_renderer

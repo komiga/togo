@@ -115,6 +115,7 @@ struct Display;
 
 #define TOGO_GFX_NUM_VERTEX_BUFFERS 2048
 #define TOGO_GFX_NUM_INDEX_BUFFERS 2048
+#define TOGO_GFX_NUM_BUFFER_BINDINGS 3072
 #define TOGO_GFX_NUM_TEXTURES 2048
 #define TOGO_GFX_NUM_UNIFORMS 64
 #define TOGO_GFX_NUM_SHADERS 128
@@ -138,6 +139,7 @@ enum : u32 {
 /** @cond INTERNAL */
 struct VertexBuffer;
 struct IndexBuffer;
+struct BufferBinding;
 struct Texture;
 struct Uniform;
 struct Shader;
@@ -157,6 +159,9 @@ using VertexBufferID = gfx::ResourceID<gfx::VertexBuffer>;
 
 /// Index buffer ID.
 using IndexBufferID = gfx::ResourceID<gfx::IndexBuffer>;
+
+/// Buffer binding ID.
+using BufferBindingID = gfx::ResourceID<gfx::BufferBinding>;
 
 /// Texture ID.
 using TextureID = gfx::ResourceID<gfx::Texture>;
@@ -240,6 +245,13 @@ struct GeneratorDef {
 	gfx::generator_read_func_type* func_read;
 };
 
+/// Index buffer data type.
+enum class IndexDataType : unsigned {
+	u8, u16, u32,
+
+	NUM
+};
+
 /// Vertex attribute data type.
 enum class VertexAttribType : unsigned {
 	f32, f64,
@@ -284,6 +296,19 @@ struct VertexFormat {
 			++_num_attribs;
 		}
 	}
+};
+
+/// Index binding.
+struct IndexBinding {
+	gfx::IndexBufferID id;
+	gfx::IndexDataType type;
+};
+
+/// Vertex binding.
+struct VertexBinding {
+	gfx::VertexBufferID id;
+	gfx::VertexFormat const* format;
+	u32 offset;
 };
 
 /** @} */ // end of doc-group gfx_renderer

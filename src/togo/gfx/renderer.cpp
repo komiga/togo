@@ -18,8 +18,25 @@
 namespace togo {
 namespace gfx {
 
+Renderer::Renderer(
+	Allocator& allocator,
+	gfx::RendererImpl&& impl
+)
+	: _allocator(&allocator)
+	, _impl(impl)
+	, _generators(allocator)
+	, _config()
+	, _vertex_buffers()
+	, _index_buffers()
+	, _buffer_bindings()
+	, _textures()
+	, _uniforms()
+	, _shaders()
+	, _nodes()
+{}
+
 void renderer::register_generator_def(
-	gfx::Renderer* renderer,
+	gfx::Renderer* const renderer,
 	gfx::GeneratorDef const& def
 ) {
 	TOGO_ASSERT(
@@ -35,8 +52,8 @@ void renderer::register_generator_def(
 }
 
 gfx::GeneratorDef const* renderer::get_generator_def(
-	gfx::Renderer const* renderer,
-	gfx::GeneratorNameHash name_hash
+	gfx::Renderer const* const renderer,
+	gfx::GeneratorNameHash const name_hash
 ) {
 	return hash_map::get(renderer->_generators, name_hash);
 }
