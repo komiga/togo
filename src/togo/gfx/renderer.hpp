@@ -59,7 +59,6 @@ gfx::VertexBufferID create_vertex_buffer(
 	gfx::Renderer* renderer,
 	void const* data,
 	unsigned size,
-	gfx::VertexFormat const& format,
 	gfx::BufferDataBinding data_binding = gfx::BufferDataBinding::fixed
 );
 

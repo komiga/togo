@@ -55,7 +55,6 @@ struct VertexBuffer {
 	gfx::VertexBufferID id;
 	GLuint handle;
 	gfx::GLBufferFlags flags;
-	gfx::VertexFormat const* format;
 };
 
 struct IndexBuffer {

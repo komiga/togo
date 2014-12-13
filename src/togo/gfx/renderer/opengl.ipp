@@ -74,15 +74,13 @@ gfx::VertexBufferID renderer::create_vertex_buffer(
 	gfx::Renderer* const renderer,
 	void const* const data,
 	unsigned const size,
-	gfx::VertexFormat const& format,
 	gfx::BufferDataBinding const data_binding
 ) {
 	TOGO_ASSERTE(data);
 	TOGO_ASSERTE(size > 0);
 	gfx::VertexBuffer buffer{
 		{}, BUFFER_HANDLE_NULL,
-		gl_buffer_flags(data_binding),
-		&format
+		gl_buffer_flags(data_binding)
 	};
 	TOGO_GLCE_X(glGenBuffers(1, &buffer.handle));
 	TOGO_ASSERTE(buffer.handle != BUFFER_HANDLE_NULL);
