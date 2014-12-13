@@ -89,6 +89,8 @@ static void core_init(AppBase& app_base) {
 
 	// Register resource handlers.
 	resource_handler::register_test(app_base._resource_manager);
+	resource_handler::register_shader_prelude(app_base._resource_manager, app_base._renderer);
+	resource_handler::register_shader(app_base._resource_manager, app_base._renderer);
 
 	app_base._quit = false;
 	app_base._func_init(app_base);
