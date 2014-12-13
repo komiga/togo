@@ -237,5 +237,114 @@ void renderer::destroy_buffer_binding(
 	resource_array::free(renderer->_buffer_bindings, bb);
 }
 
+gfx::ShaderID renderer::create_shader(
+	gfx::Renderer* const renderer,
+	unsigned const num_stages,
+	gfx::ShaderStage const* const stages
+) {
+	TOGO_DEBUG_ASSERTE(stages && num_stages > 0);
+	TOGO_ASSERTE(num_stages <= unsigned_cast(gfx::ShaderStage::Type::NUM));
+
+	enum { NUM_SOURCES = 24 };
+	FixedArray<GLuint, 2> shader_handles;
+	FixedArray<char const*, NUM_SOURCES> sources;
+	FixedArray<GLint, NUM_SOURCES> sources_size;
+	char info_log[1024];
+
+	{// Shared internal prefix
+	StringRef const internal_prefix{"#version 330\n"};
+	fixed_array::push_back(sources, internal_prefix.data);
+	fixed_array::push_back(sources_size, signed_cast(internal_prefix.size));
+	}
+
+	// Create GL shader handles
+	for (unsigned i = 0; i < num_stages; ++i) {
+		auto const& stage = stages[i];
+
+		// Join sources
+		fixed_array::resize(sources, 1);
+		fixed_array::resize(sources_size, 1);
+		for (StringRef const& stage_source : stage.sources) {
+			fixed_array::push_back(sources, stage_source.data);
+			fixed_array::push_back(sources_size, signed_cast(stage_source.size));
+		}
+
+		// Create GL shader
+		GLenum const type = gfx::g_gl_shader_stage_type[unsigned_cast(stage.type)];
+		if (i == 1) {
+			TOGO_ASSERT(stage.type != stages[i - 1].type, "multiple stages of the same type");
+		}
+
+		GLuint shader_handle{PROGRAM_HANDLE_NULL};
+		TOGO_GLCE_X(shader_handle = glCreateShader(type));
+		TOGO_ASSERTE(shader_handle != PROGRAM_HANDLE_NULL);
+		TOGO_GLCE_X(glShaderSource(
+			shader_handle,
+			fixed_array::size(sources),
+			fixed_array::begin(sources),
+			fixed_array::begin(sources_size)
+		));
+		TOGO_GLCE_X(glCompileShader(shader_handle));
+
+		{// Check log
+		GLsizei log_size{0};
+		info_log[0] = '\0';
+		glGetShaderInfoLog(shader_handle, array_extent(info_log), &log_size, info_log);
+		if (log_size > 0) {
+			TOGO_LOGF("GL shader log:\n%.*s\n", log_size, info_log);
+		}}
+
+		{// Check compilation status
+		GLint status{GL_FALSE};
+		TOGO_GLCE_X(glGetShaderiv(shader_handle, GL_COMPILE_STATUS, &status));
+		TOGO_ASSERTE(status != GL_FALSE);
+		}
+
+		fixed_array::push_back(shader_handles, shader_handle);
+	}
+
+	// Create GL program
+	gfx::Shader shader{{}, PROGRAM_HANDLE_NULL};
+	TOGO_GLCE_X(shader.handle = glCreateProgram());
+	TOGO_GLCE_X(glBindFragDataLocation(shader.handle, 0, "RESULT0"));
+
+	// Attach GL shaders and link
+	for (auto const shader_handle : shader_handles) {
+		TOGO_GLCE_X(glAttachShader(shader.handle, shader_handle));
+	}
+	TOGO_GLCE_X(glLinkProgram(shader.handle));
+
+	{// Check log
+	GLsizei log_size{0};
+	info_log[0] = '\0';
+	glGetProgramInfoLog(shader.handle, array_extent(info_log), &log_size, info_log);
+	if (log_size > 0) {
+		TOGO_LOGF("GL program log:\n%.*s\n", log_size, info_log);
+	}}
+
+	{// Check link status
+	GLint status{GL_FALSE};
+	TOGO_GLCE_X(glGetProgramiv(shader.handle, GL_LINK_STATUS, &status));
+	TOGO_ASSERTE(status != GL_FALSE);
+	}
+
+	// Destroy GL shaders
+	for (auto const shader_handle : shader_handles) {
+		TOGO_GLCE_X(glDetachShader(shader.handle, shader_handle));
+		TOGO_GLCE_X(glDeleteShader(shader_handle));
+	}
+	return resource_array::assign(renderer->_shaders, shader).id;
+}
+
+void renderer::destroy_shader(
+	gfx::Renderer* const renderer,
+	gfx::ShaderID const id
+) {
+	auto& shader = resource_array::get(renderer->_shaders, id);
+	TOGO_ASSERT(shader.id == id, "invalid shader ID");
+	TOGO_GLCE_X(glDeleteProgram(shader.handle));
+	resource_array::free(renderer->_shaders, shader);
+}
+
 } // namespace gfx
 } // namespace togo
