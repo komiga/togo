@@ -26,6 +26,7 @@ char const* gl_get_error();
 
 enum : GLuint {
 	BUFFER_HANDLE_NULL = 0,
+	VERTEX_ARRAY_HANDLE_NULL = 0,
 	TEXTURE_HANDLE_NULL = 0,
 	PROGRAM_HANDLE_NULL = 0,
 };
@@ -46,6 +47,44 @@ static_assert(
 	""
 );
 
+static constexpr GLenum const g_gl_vertex_attrib_type[]{
+	GL_FLOAT, GL_DOUBLE,
+	GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, GL_UNSIGNED_INT,
+};
+static_assert(
+	array_extent(g_gl_vertex_attrib_type)
+	== unsigned_cast(gfx::VertexAttribType::NUM),
+	""
+);
+
+static constexpr GLenum const g_gl_index_data_type[]{
+	GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, GL_UNSIGNED_INT,
+};
+static_assert(
+	array_extent(g_gl_index_data_type)
+	== unsigned_cast(gfx::IndexDataType::NUM),
+	""
+);
+
+static constexpr unsigned const g_gl_index_data_size[]{
+	1, 2, 4
+};
+static_assert(
+	array_extent(g_gl_index_data_size)
+	== unsigned_cast(gfx::IndexDataType::NUM),
+	""
+);
+
+static constexpr GLenum const g_gl_shader_stage_type[]{
+	GL_VERTEX_SHADER,
+	GL_FRAGMENT_SHADER,
+};
+static_assert(
+	array_extent(g_gl_shader_stage_type)
+	== unsigned_cast(gfx::ShaderStage::Type::NUM),
+	""
+);
+
 enum class GLBufferFlags : unsigned {
 	none = 0,
 	dynamic = 1 << 0,
@@ -61,6 +100,22 @@ struct IndexBuffer {
 	gfx::IndexBufferID id;
 	GLuint handle;
 	gfx::GLBufferFlags flags;
+};
+
+struct BufferBinding {
+	enum : u32 {
+		F_NONE = 0,
+		F_INDEXED = 1 << 0,
+
+		// 3 bits (IndexDataType currently takes 2 at most)
+		F_SHIFT_INDEX_TYPE = 29,
+	};
+
+	gfx::BufferBindingID id;
+	GLuint va_handle;
+	u32 base_vertex;
+	u32 num_vertices;
+	u32 flags;
 };
 
 struct Texture {
