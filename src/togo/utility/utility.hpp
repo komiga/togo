@@ -189,6 +189,37 @@ inline constexpr FlagT& operator&=(FlagT& x, FlagT const& y) noexcept {
 
 /// @}
 
+/** @name Collection utilities */ /// @{
+
+/// Array reference.
+template<class T>
+struct ArrayRef {
+	T* _begin;
+	T* _end;
+};
+
+/// Make reference to array.
+template<class T>
+inline ArrayRef<T> array_ref(unsigned const size, T* const data) {
+	return ArrayRef<T>{data, data + size};
+}
+
+/** @cond INTERNAL */
+template<class T>
+inline T* begin(ArrayRef<T> const& ar) { return ar._begin; }
+
+template<class T>
+inline T const* cbegin(ArrayRef<T> const& ar) { return ar._begin; }
+
+template<class T>
+inline T* end(ArrayRef<T> const& ar) { return ar._end; }
+
+template<class T>
+inline T const* cend(ArrayRef<T> const& ar) { return ar._end; }
+/** @endcond */ // INTERNAL
+
+/// @}
+
 /** @} */ // end of doc-group utility
 
 } // namespace togo
