@@ -11,6 +11,7 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/error/assert.hpp>
 #include <togo/resource/types.hpp>
 #include <togo/resource/resource_manager.hpp>
 #include <togo/gfx/types.hpp>
@@ -44,4 +45,30 @@ void register_shader(
 /** @} */ // end of doc-group resource_handler
 
 } // namespace resource_handler
+
+namespace resource {
+
+/**
+	@addtogroup resource
+	@{
+*/
+
+/// Load a shader.
+///
+/// An assertion will fail if the shader failed to load.
+inline gfx::ShaderID load_shader(
+	ResourceManager& rm,
+	ResourceNameHash const name_hash
+) {
+	gfx::ShaderID const id{
+		resource_manager::load_resource(rm, RES_TYPE_SHADER, name_hash).uinteger
+	};
+	TOGO_ASSERT(id.valid(), "failed to load shader");
+	return id;
+}
+
+/** @} */ // end of doc-group resource
+
+} // namespace resource
+
 } // namespace togo
