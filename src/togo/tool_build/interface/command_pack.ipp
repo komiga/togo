@@ -42,7 +42,7 @@ bool interface::command_pack(
 	}
 
 	if (array::empty(packages)) {
-		TOGO_LOG("no packages to build\n");
+		TOGO_LOG("(no packages to build)\n");
 		return true;
 	}
 

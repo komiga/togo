@@ -232,7 +232,7 @@ bool interface::command_compile(
 	if (!success) {
 		goto l_exit;
 	} else if (hash_map::empty(groups)) {
-		TOGO_LOG("no resources to build\n");
+		TOGO_LOG("(no resources to build)\n");
 		goto l_exit;
 	}
 
