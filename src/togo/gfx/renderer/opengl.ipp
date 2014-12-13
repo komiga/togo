@@ -46,14 +46,14 @@ namespace {
 inline static void bind_buffer(
 	gfx::Renderer* const renderer,
 	gfx::BufferID const id,
-	GLenum const type
+	GLenum const target
 ) {
 	if (id.valid()) {
 		auto const& buffer = resource_array::get(renderer->_buffers, id);
 		TOGO_ASSERT(buffer.id == id, "invalid buffer ID");
-		TOGO_GLCE_X(glBindBuffer(type, buffer.handle));
+		TOGO_GLCE_X(glBindBuffer(target, buffer.handle));
 	} else {
-		TOGO_GLCE_X(glBindBuffer(type, BUFFER_HANDLE_NULL));
+		TOGO_GLCE_X(glBindBuffer(target, BUFFER_HANDLE_NULL));
 	}
 }
 
@@ -105,7 +105,7 @@ gfx::BufferID renderer::create_buffer(
 	TOGO_GLCE_X(glBindBuffer(GL_ARRAY_BUFFER, buffer.handle));
 	TOGO_GLCE_X(glBufferData(
 		GL_ARRAY_BUFFER,
-		size, data, g_gl_buffer_data_binding[unsigned_cast(data_binding)]
+		size, data, gfx::g_gl_buffer_data_binding[unsigned_cast(data_binding)]
 	));
 	return resource_array::assign(renderer->_buffers, buffer).id;
 }
