@@ -118,6 +118,12 @@ enum : ResourceType {
 	/// TestResource.
 	RES_TYPE_TEST = "test"_resource_type,
 
+	/// gfx::ShaderDef.
+	RES_TYPE_SHADER_PRELUDE = "shader_prelude"_resource_type,
+
+	/// gfx::ShaderID.
+	RES_TYPE_SHADER = "shader"_resource_type,
+
 	/// gfx::RenderConfig.
 	RES_TYPE_RENDER_CONFIG = "render_config"_resource_type,
 };
