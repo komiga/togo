@@ -41,35 +41,23 @@ char const* gl_get_error() {
 	}
 }
 
-namespace renderer_opengl {
+namespace {
 
-inline static void bind_vertex_buffer(
+inline static void bind_buffer(
 	gfx::Renderer* const renderer,
-	gfx::VertexBufferID const id
+	gfx::BufferID const id,
+	GLenum const type
 ) {
 	if (id.valid()) {
-		auto const& buffer = resource_array::get(renderer->_vertex_buffers, id);
-		TOGO_ASSERT(buffer.id == id, "invalid vertex buffer ID");
-		TOGO_GLCE_X(glBindBuffer(GL_ARRAY_BUFFER, buffer.handle));
+		auto const& buffer = resource_array::get(renderer->_buffers, id);
+		TOGO_ASSERT(buffer.id == id, "invalid buffer ID");
+		TOGO_GLCE_X(glBindBuffer(type, buffer.handle));
 	} else {
-		TOGO_GLCE_X(glBindBuffer(GL_ARRAY_BUFFER, BUFFER_HANDLE_NULL));
+		TOGO_GLCE_X(glBindBuffer(type, BUFFER_HANDLE_NULL));
 	}
 }
 
-inline static void bind_index_buffer(
-	gfx::Renderer* const renderer,
-	gfx::IndexBufferID const id
-) {
-	if (id.valid()) {
-		auto const& buffer = resource_array::get(renderer->_index_buffers, id);
-		TOGO_ASSERT(buffer.id == id, "invalid index buffer ID");
-		TOGO_GLCE_X(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.handle));
-	} else {
-		TOGO_GLCE_X(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, BUFFER_HANDLE_NULL));
-	}
-}
-
-} // namespace renderer_opengl
+} // anonymous namespace
 
 gfx::Renderer* renderer::create(
 	Allocator& allocator
@@ -101,15 +89,14 @@ inline static gfx::GLBufferFlags gl_buffer_flags(
 	;
 }
 
-gfx::VertexBufferID renderer::create_vertex_buffer(
+gfx::BufferID renderer::create_buffer(
 	gfx::Renderer* const renderer,
-	void const* const data,
 	unsigned const size,
+	void const* const data,
 	gfx::BufferDataBinding const data_binding
 ) {
-	TOGO_ASSERTE(data);
 	TOGO_ASSERTE(size > 0);
-	gfx::VertexBuffer buffer{
+	gfx::Buffer buffer{
 		{}, BUFFER_HANDLE_NULL,
 		gl_buffer_flags(data_binding)
 	};
@@ -120,49 +107,34 @@ gfx::VertexBufferID renderer::create_vertex_buffer(
 		GL_ARRAY_BUFFER,
 		size, data, g_gl_buffer_data_binding[unsigned_cast(data_binding)]
 	));
-	return resource_array::assign(renderer->_vertex_buffers, buffer).id;
+	return resource_array::assign(renderer->_buffers, buffer).id;
 }
 
-void renderer::destroy_vertex_buffer(
+void renderer::destroy_buffer(
 	gfx::Renderer* const renderer,
-	gfx::VertexBufferID const id
+	gfx::BufferID const id
 ) {
-	auto& buffer = resource_array::get(renderer->_vertex_buffers, id);
-	TOGO_ASSERT(buffer.id == id, "invalid vertex buffer ID");
+	auto& buffer = resource_array::get(renderer->_buffers, id);
+	TOGO_ASSERT(buffer.id == id, "invalid buffer ID");
 	TOGO_GLCE_X(glDeleteBuffers(1, &buffer.handle));
-	resource_array::free(renderer->_vertex_buffers, buffer);
+	resource_array::free(renderer->_buffers, buffer);
 }
 
-gfx::IndexBufferID renderer::create_index_buffer(
+void renderer::map_buffer(
 	gfx::Renderer* const renderer,
-	void const* const data,
+	gfx::BufferID const id,
+	unsigned const offset,
 	unsigned const size,
-	gfx::BufferDataBinding const data_binding
+	void const* const data
 ) {
-	TOGO_ASSERTE(data);
-	TOGO_ASSERTE(size > 0);
-	gfx::IndexBuffer buffer{
-		{}, BUFFER_HANDLE_NULL,
-		gl_buffer_flags(data_binding)
-	};
-	TOGO_GLCE_X(glGenBuffers(1, &buffer.handle));
-	TOGO_ASSERTE(buffer.handle != BUFFER_HANDLE_NULL);
-	TOGO_GLCE_X(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.handle));
-	TOGO_GLCE_X(glBufferData(
-		GL_ELEMENT_ARRAY_BUFFER,
-		size, data, g_gl_buffer_data_binding[unsigned_cast(data_binding)]
-	));
-	return resource_array::assign(renderer->_index_buffers, buffer).id;
-}
-
-void renderer::destroy_index_buffer(
-	gfx::Renderer* const renderer,
-	gfx::IndexBufferID const id
-) {
-	auto& buffer = resource_array::get(renderer->_index_buffers, id);
-	TOGO_ASSERT(buffer.id == id, "invalid index buffer ID");
-	TOGO_GLCE_X(glDeleteBuffers(1, &buffer.handle));
-	resource_array::free(renderer->_index_buffers, buffer);
+	TOGO_ASSERTE(
+		size > 0 &&
+		data
+	);
+	auto const& buffer = resource_array::get(renderer->_buffers, id);
+	TOGO_ASSERT(buffer.id == id, "invalid buffer ID");
+	TOGO_GLCE_X(glBindBuffer(GL_ARRAY_BUFFER, buffer.handle));
+	TOGO_GLCE_X(glBufferSubData(GL_ARRAY_BUFFER, offset, size, data));
 }
 
 gfx::BufferBindingID renderer::create_buffer_binding(
@@ -190,7 +162,7 @@ gfx::BufferBindingID renderer::create_buffer_binding(
 	TOGO_GLCE_X(glGenVertexArrays(1, &bb.va_handle));
 	TOGO_ASSERTE(bb.va_handle != VERTEX_ARRAY_HANDLE_NULL);
 	TOGO_GLCE_X(glBindVertexArray(bb.va_handle));
-	gfx::renderer_opengl::bind_index_buffer(renderer, index_binding.id);
+	bind_buffer(renderer, index_binding.id, GL_ELEMENT_ARRAY_BUFFER);
 	if (index_binding.id.valid()) {
 		bb.flags
 			= gfx::BufferBinding::F_INDEXED
@@ -203,7 +175,7 @@ gfx::BufferBindingID renderer::create_buffer_binding(
 	GLenum attrib_type;
 	for (auto const& vertex_binding : array_ref(num_bindings, bindings)) {
 		TOGO_ASSERTE(vertex_binding.id.valid());
-		gfx::renderer_opengl::bind_vertex_buffer(renderer, vertex_binding.id);
+		bind_buffer(renderer, vertex_binding.id, GL_ARRAY_BUFFER);
 		TOGO_DEBUG_ASSERTE(vertex_binding.format);
 		auto const& format = *vertex_binding.format;
 		for (unsigned i = 0; i < format._num_attribs; ++i) {

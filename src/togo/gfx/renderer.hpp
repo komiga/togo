@@ -54,36 +54,30 @@ gfx::GeneratorDef const* get_generator_def(
 	gfx::GeneratorNameHash name_hash
 );
 
-/// Create vertex buffer.
+/// Create buffer.
 ///
-/// An assertion will fail if the vertex buffer could not be created.
-gfx::VertexBufferID create_vertex_buffer(
+/// If data is nullptr, map_buffer() must be used to fill the buffer.
+/// An assertion will fail if the buffer could not be created.
+gfx::BufferID create_buffer(
 	gfx::Renderer* renderer,
-	void const* data,
 	unsigned size,
+	void const* data = nullptr,
 	gfx::BufferDataBinding data_binding = gfx::BufferDataBinding::fixed
 );
 
-/// Destroy vertex buffer.
-void destroy_vertex_buffer(
+/// Destroy buffer.
+void destroy_buffer(
 	gfx::Renderer* renderer,
-	gfx::VertexBufferID id
+	gfx::BufferID id
 );
 
-/// Create index buffer.
-///
-/// An assertion will fail if the index buffer could not be created.
-gfx::IndexBufferID create_index_buffer(
+/// Map data to buffer.
+void map_buffer(
 	gfx::Renderer* renderer,
-	void const* data,
+	gfx::BufferID id,
+	unsigned offset,
 	unsigned size,
-	gfx::BufferDataBinding data_binding = gfx::BufferDataBinding::fixed
-);
-
-/// Destroy index buffer.
-void destroy_index_buffer(
-	gfx::Renderer* renderer,
-	gfx::IndexBufferID id
+	void const* data
 );
 
 /// Create buffer binding.

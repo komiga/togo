@@ -90,14 +90,8 @@ enum class GLBufferFlags : unsigned {
 	dynamic = 1 << 0,
 };
 
-struct VertexBuffer {
-	gfx::VertexBufferID id;
-	GLuint handle;
-	gfx::GLBufferFlags flags;
-};
-
-struct IndexBuffer {
-	gfx::IndexBufferID id;
+struct Buffer {
+	gfx::BufferID id;
 	GLuint handle;
 	gfx::GLBufferFlags flags;
 };

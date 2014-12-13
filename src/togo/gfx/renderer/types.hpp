@@ -137,8 +137,7 @@ struct Renderer {
 	HashMap<gfx::GeneratorNameHash, gfx::GeneratorDef> _generators;
 	gfx::RenderConfig _config;
 
-	gfx::ResourceArray<gfx::VertexBuffer, TOGO_GFX_NUM_VERTEX_BUFFERS> _vertex_buffers;
-	gfx::ResourceArray<gfx::IndexBuffer, TOGO_GFX_NUM_INDEX_BUFFERS> _index_buffers;
+	gfx::ResourceArray<gfx::Buffer, TOGO_GFX_NUM_VERTEX_BUFFERS> _buffers;
 	gfx::ResourceArray<gfx::BufferBinding, TOGO_GFX_NUM_BUFFER_BINDINGS> _buffer_bindings;
 	gfx::ResourceArray<gfx::Texture, TOGO_GFX_NUM_TEXTURES> _textures;
 	gfx::ResourceArray<gfx::Uniform, TOGO_GFX_NUM_UNIFORMS> _uniforms;
