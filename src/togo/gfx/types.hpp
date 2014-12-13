@@ -130,6 +130,43 @@ enum class BufferDataBinding : unsigned {
 	NUM
 };
 
+enum : u32 {
+	/// Null resource ID.
+	ID_VALUE_NULL = 0,
+};
+
+/** @cond INTERNAL */
+struct VertexBuffer;
+struct IndexBuffer;
+struct Texture;
+struct Uniform;
+struct Shader;
+
+template<class /*R*/>
+struct ResourceID {
+	u32 _value;
+
+	bool valid() const {
+		return _value != gfx::ID_VALUE_NULL;
+	}
+};
+/** @endcond */ // INTERNAL
+
+/// Vertex buffer ID.
+using VertexBufferID = gfx::ResourceID<gfx::VertexBuffer>;
+
+/// Index buffer ID.
+using IndexBufferID = gfx::ResourceID<gfx::IndexBuffer>;
+
+/// Texture ID.
+using TextureID = gfx::ResourceID<gfx::Texture>;
+
+/// Uniform ID.
+using UniformID = gfx::ResourceID<gfx::Uniform>;
+
+/// Shader ID.
+using ShaderID = gfx::ResourceID<gfx::Shader>;
+
 struct GeneratorDef;
 struct GeneratorUnit;
 
@@ -246,43 +283,6 @@ struct VertexFormat {
 		}
 	}
 };
-
-enum : u32 {
-	/// Null resource ID.
-	ID_VALUE_NULL = 0,
-};
-
-/** @cond INTERNAL */
-struct VertexBuffer;
-struct IndexBuffer;
-struct Texture;
-struct Uniform;
-struct Shader;
-
-template<class /*R*/>
-struct ResourceID {
-	u32 _value;
-
-	bool valid() const {
-		return _value != gfx::ID_VALUE_NULL;
-	}
-};
-/** @endcond */ // INTERNAL
-
-/// Vertex buffer ID.
-using VertexBufferID = ResourceID<VertexBuffer>;
-
-/// Index buffer ID.
-using IndexBufferID = ResourceID<IndexBuffer>;
-
-/// Texture ID.
-using TextureID = ResourceID<Texture>;
-
-/// Uniform ID.
-using UniformID = ResourceID<Uniform>;
-
-/// Shader ID.
-using ShaderID = ResourceID<Shader>;
 
 /** @} */ // end of doc-group gfx_renderer
 
