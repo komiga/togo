@@ -26,6 +26,16 @@ void register_test(
 	CompilerManager& cm
 );
 
+/// Register shader_prelude resource compiler.
+void register_shader_prelude(
+	CompilerManager& cm
+);
+
+/// Register shader resource compiler.
+void register_shader(
+	CompilerManager& cm
+);
+
 /** @} */ // end of doc-group tool_build_resource_compiler
 
 } // namespace resource_compiler
