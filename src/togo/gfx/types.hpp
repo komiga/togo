@@ -244,6 +244,8 @@ struct GeneratorDef {
 enum class VertexAttribType : unsigned {
 	f32, f64,
 	u8, u16, u32,
+
+	NUM
 };
 
 /// Unpacked vertex attribute.
