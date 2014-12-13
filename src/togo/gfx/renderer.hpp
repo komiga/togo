@@ -119,6 +119,21 @@ void destroy_buffer_binding(
 	gfx::BufferBindingID id
 );
 
+/// Create shader.
+///
+/// An assertion will fail if the shader could not be created.
+gfx::ShaderID create_shader(
+	gfx::Renderer* renderer,
+	unsigned num_stages,
+	gfx::ShaderStage const* stages
+);
+
+/// Destroy shader.
+void destroy_shader(
+	gfx::Renderer* renderer,
+	gfx::ShaderID id
+);
+
 /** @} */ // end of doc-group gfx_renderer
 
 } // namespace renderer

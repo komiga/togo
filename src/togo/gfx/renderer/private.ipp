@@ -28,7 +28,7 @@ void renderer::teardown_base(gfx::Renderer* const renderer) {
 	TOGO_GFX_RENDERER_TEARDOWN_RA_(_buffer_bindings, destroy_buffer_binding);
 	//TOGO_GFX_RENDERER_TEARDOWN_RA_(_textures, destroy_texture);
 	//TOGO_GFX_RENDERER_TEARDOWN_RA_(_uniforms, destroy_uniform);
-	//TOGO_GFX_RENDERER_TEARDOWN_RA_(_shaders, destroy_shader);
+	TOGO_GFX_RENDERER_TEARDOWN_RA_(_shaders, destroy_shader);
 }
 
 } // namespace gfx

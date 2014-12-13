@@ -12,10 +12,12 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/collection/types.hpp>
 #include <togo/hash/hash.hpp>
 #include <togo/utility/traits.hpp>
 #include <togo/utility/utility.hpp>
 #include <togo/serialization/types.hpp>
+#include <togo/resource/types.hpp>
 
 #include <initializer_list>
 
@@ -309,6 +311,59 @@ struct VertexBinding {
 	gfx::VertexBufferID id;
 	gfx::VertexFormat const* format;
 	u32 offset;
+};
+
+/// Shader definition.
+struct ShaderDef {
+	/// Properties.
+	enum : u32 {
+		TYPE_MASK = 0x0F,
+		TYPE_PRELUDE = 1 << 0,
+		TYPE_UNIT = 1 << 1,
+
+		LANG_MASK = 0xF0,
+		LANG_GLSL = 1 << 4,
+	};
+
+	u32 properties;
+	u32 vertex_index;
+	u32 fragment_index;
+	// String blob containing all source data in sequence.
+	// Shared source starts at 0. fragment and vertex source are
+	// indexed by members.
+	Array<char> data;
+	FixedArray<ResourceNameHash, 8> prelude;
+
+	ShaderDef() = delete;
+	ShaderDef(ShaderDef const&) = delete;
+	ShaderDef& operator=(ShaderDef const&) = delete;
+
+	~ShaderDef() = default;
+	ShaderDef(ShaderDef&&) = default;
+	ShaderDef& operator=(ShaderDef&&) = default;
+
+	ShaderDef(
+		Allocator& allocator
+	)
+		: properties(0)
+		, vertex_index(0)
+		, fragment_index(0)
+		, data(allocator)
+		, prelude()
+	{}
+};
+
+/// Shader stage.
+struct ShaderStage {
+	enum class Type : u32 {
+		vertex = 0,
+		fragment,
+
+		NUM
+	};
+
+	Type type;
+	FixedArray<StringRef, 16> sources;
 };
 
 /** @} */ // end of doc-group gfx_renderer
