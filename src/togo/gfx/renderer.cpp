@@ -24,6 +24,7 @@ Renderer::Renderer(
 )
 	: _allocator(&allocator)
 	, _impl(impl)
+	, _shader_stage(allocator)
 	, _generators(allocator)
 	, _config()
 	, _vertex_buffers()

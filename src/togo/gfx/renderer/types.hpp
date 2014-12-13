@@ -133,6 +133,7 @@ struct Renderer {
 
 	gfx::RendererImpl _impl;
 
+	gfx::ShaderDef _shader_stage;
 	HashMap<gfx::GeneratorNameHash, gfx::GeneratorDef> _generators;
 	gfx::RenderConfig _config;
 
