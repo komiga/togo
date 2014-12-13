@@ -145,13 +145,13 @@ struct Renderer {
 
 	gfx::RenderNode _nodes[TOGO_GFX_NUM_NODES];
 
-	~Renderer() = default;
-	Renderer(Renderer&&) = default;
-	Renderer& operator=(Renderer&&) = default;
-
 	Renderer() = delete;
 	Renderer(Renderer const&) = delete;
 	Renderer& operator=(Renderer const&) = delete;
+
+	~Renderer() = default;
+	Renderer(Renderer&&) = default;
+	Renderer& operator=(Renderer&&) = default;
 
 	Renderer(
 		Allocator& allocator,
