@@ -96,7 +96,7 @@ void renderer::destroy_vertex_buffer(
 	gfx::Renderer* const renderer,
 	gfx::VertexBufferID const id
 ) {
-	gfx::VertexBuffer& buffer = resource_array::get(renderer->_vertex_buffers, id);
+	auto& buffer = resource_array::get(renderer->_vertex_buffers, id);
 	TOGO_ASSERT(buffer.id == id, "invalid vertex buffer ID");
 	TOGO_GLCE_X(glDeleteBuffers(1, &buffer.handle));
 	resource_array::free(renderer->_vertex_buffers, buffer);
@@ -128,7 +128,7 @@ void renderer::destroy_index_buffer(
 	gfx::Renderer* const renderer,
 	gfx::IndexBufferID const id
 ) {
-	gfx::IndexBuffer& buffer = resource_array::get(renderer->_index_buffers, id);
+	auto& buffer = resource_array::get(renderer->_index_buffers, id);
 	TOGO_ASSERT(buffer.id == id, "invalid index buffer ID");
 	TOGO_GLCE_X(glDeleteBuffers(1, &buffer.handle));
 	resource_array::free(renderer->_index_buffers, buffer);
