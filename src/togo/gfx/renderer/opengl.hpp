@@ -47,31 +47,23 @@ static_assert(
 	""
 );
 
-static constexpr GLenum const g_gl_vertex_attrib_type[]{
+static constexpr GLenum const g_gl_primitive_type[]{
+	GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, GL_UNSIGNED_INT,
 	GL_FLOAT, GL_DOUBLE,
-	GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, GL_UNSIGNED_INT,
 };
 static_assert(
-	array_extent(g_gl_vertex_attrib_type)
-	== unsigned_cast(gfx::VertexAttribType::NUM),
+	array_extent(g_gl_primitive_type)
+	== unsigned_cast(gfx::Primitive::NUM),
 	""
 );
 
-static constexpr GLenum const g_gl_index_data_type[]{
-	GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, GL_UNSIGNED_INT,
+static constexpr unsigned const g_gl_primitive_size[]{
+	1, 2, 4, // u8, u16, u32
+	4, 8,    // f32, f64
 };
 static_assert(
-	array_extent(g_gl_index_data_type)
-	== unsigned_cast(gfx::IndexDataType::NUM),
-	""
-);
-
-static constexpr unsigned const g_gl_index_data_size[]{
-	1, 2, 4
-};
-static_assert(
-	array_extent(g_gl_index_data_size)
-	== unsigned_cast(gfx::IndexDataType::NUM),
+	array_extent(g_gl_primitive_size)
+	== unsigned_cast(gfx::Primitive::NUM),
 	""
 );
 

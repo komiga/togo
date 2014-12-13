@@ -242,16 +242,16 @@ struct GeneratorDef {
 	gfx::generator_read_func_type* func_read;
 };
 
-/// Index buffer data type.
-enum class IndexDataType : unsigned {
+/// Primitive data type.
+enum class Primitive : unsigned {
 	u8, u16, u32,
+	f32, f64,
 
 	NUM
 };
 
-/// Vertex attribute data type.
-enum class VertexAttribType : unsigned {
-	f32, f64,
+/// Integral primitive data type.
+enum class IntegerPrimitive : unsigned {
 	u8, u16, u32,
 
 	NUM
@@ -259,7 +259,7 @@ enum class VertexAttribType : unsigned {
 
 /// Unpacked vertex attribute.
 struct VertexAttrib {
-	gfx::VertexAttribType type;
+	gfx::Primitive type;
 	unsigned num_components;
 	bool normalize_fixed;
 };
@@ -283,8 +283,8 @@ struct VertexFormat {
 	{
 		static constexpr unsigned const
 		attrib_type_size[]{
+			sizeof(u8), sizeof(u16), sizeof(u32),
 			sizeof(f32), sizeof(f64),
-			sizeof(u8), sizeof(u16), sizeof(u32)
 		};
 		for (auto const& attrib : ilist) {
 			_attribs[_num_attribs] = attrib;
@@ -298,7 +298,7 @@ struct VertexFormat {
 /// Index binding.
 struct IndexBinding {
 	gfx::BufferID id;
-	gfx::IndexDataType type;
+	gfx::IntegerPrimitive type;
 };
 
 /// Vertex binding.

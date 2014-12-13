@@ -172,7 +172,6 @@ gfx::BufferBindingID renderer::create_buffer_binding(
 
 	{// Attach vertex bindings
 	unsigned attrib_index = 0;
-	GLenum attrib_type;
 	for (auto const& vertex_binding : array_ref(num_bindings, bindings)) {
 		TOGO_ASSERTE(vertex_binding.id.valid());
 		bind_buffer(renderer, vertex_binding.id, GL_ARRAY_BUFFER);
@@ -180,12 +179,13 @@ gfx::BufferBindingID renderer::create_buffer_binding(
 		auto const& format = *vertex_binding.format;
 		for (unsigned i = 0; i < format._num_attribs; ++i) {
 			auto const& attrib = format._attribs[i];
-			attrib_type = gfx::g_gl_vertex_attrib_type[unsigned_cast(attrib.type)];
 			// TODO: ... Does glVertexAttribIPointer() have to be used
 			// for integral types?
 			TOGO_GLCE_X(glVertexAttribPointer(
 				attrib_index,
-				attrib.num_components, attrib_type, attrib.normalize_fixed,
+				attrib.num_components,
+				gfx::g_gl_primitive_type[unsigned_cast(attrib.type)],
+				attrib.normalize_fixed,
 				format._stride,
 				reinterpret_cast<void const*>(
 					vertex_binding.offset + format._offsets[i]
