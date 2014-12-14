@@ -80,6 +80,17 @@ void map_buffer(
 	void const* data
 );
 
+/// Map data to buffer by parameter block binding.
+inline void map_buffer(
+	gfx::Renderer* renderer,
+	ParamBlockBinding const& binding,
+	void const* data
+) {
+	renderer::map_buffer(
+		renderer, binding.id, binding.offset, binding.size, data
+	);
+}
+
 /// Create buffer binding.
 ///
 /// An assertion will fail if the buffer binding could not be created.
