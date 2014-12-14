@@ -308,6 +308,13 @@ struct VertexBinding {
 	u32 offset;
 };
 
+/// Parameter block binding.
+struct ParamBlockBinding {
+	gfx::BufferID id;
+	u32 offset;
+	u32 size;
+};
+
 /// Shader definition.
 struct ShaderDef {
 	/// Properties.
