@@ -34,6 +34,11 @@ using complete_func_type = bool (
 	gfx::ShaderDef& def
 );
 
+using read_unit_func_type = bool (
+	gfx::ShaderDef& def,
+	KVS const& k_def
+);
+
 static bool read_prelude(
 	gfx::ShaderDef& def,
 	KVS const& k_def,
@@ -159,7 +164,7 @@ static bool compile(
 ) {
 	gfx::ShaderDef def{memory::scratch_allocator()};
 	KVS k_root{};
-	KVS const* k_def;
+	KVS const* k_type;
 
 	{// Read source
 	ParserInfo pinfo;
@@ -173,16 +178,27 @@ static bool compile(
 	}}
 
 	// Fetch and validate structure
-	k_def = kvs::find(k_root, "glsl");
-	if (!k_def || !kvs::is_node(*k_def)) {
-		TOGO_LOG_ERROR("malformed shader_def: no shader unit defined\n");
+	k_type = kvs::find(k_root, "type");
+	if (!k_type || !kvs::is_string(*k_type)) {
+		TOGO_LOG_ERROR("malformed shader_def: type not specified\n");
+		return false;
+	}
+
+	read_unit_func_type* func_read_unit;
+	switch (hash::calc32(kvs::string_ref(*k_type))) {
+	case "glsl"_hash32: func_read_unit = read_glsl_unit; break;
+	default:
+		TOGO_LOG_ERRORF(
+			"malformed shader_def: unknown type '%.*s'\n",
+			kvs::string_size(*k_type), kvs::string(*k_type)
+		);
 		return false;
 	}
 
 	// Read
 	if (
-		!read_prelude(def, *k_def, manager, metadata) ||
-		!read_glsl_unit(def, *k_def) ||
+		!read_prelude(def, k_root, manager, metadata) ||
+		!func_read_unit(def, k_root) ||
 		!func_complete(def)
 	) {
 		return false;
