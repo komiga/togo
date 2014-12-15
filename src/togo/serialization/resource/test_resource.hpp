@@ -22,6 +22,10 @@ namespace togo {
 
 /** @cond INTERNAL */
 
+enum : u32 {
+	SER_FORMAT_VERSION_TEST_RESOURCE = 1,
+};
+
 template<class Ser>
 inline void
 serialize(serializer_tag, Ser& ser, TestResource& value_unsafe) {

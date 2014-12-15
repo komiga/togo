@@ -81,6 +81,7 @@ void resource_handler::register_shader_prelude(
 	TOGO_DEBUG_ASSERTE(renderer);
 	ResourceHandler const handler{
 		RES_TYPE_SHADER_PRELUDE,
+		SER_FORMAT_VERSION_SHADER_DEF,
 		renderer,
 		resource_handler::shader_prelude::load,
 		resource_handler::shader_prelude::unload

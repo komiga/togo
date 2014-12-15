@@ -30,9 +30,6 @@ namespace togo {
 
 /// Format versions.
 enum : u32 {
-	/// TestResource format version.
-	SER_FORMAT_VERSION_TEST_RESOURCE = 1,
-
 	/// ResourcePackage manifest format version.
 	SER_FORMAT_VERSION_PKG_MANIFEST = 3,
 };
@@ -283,6 +280,7 @@ struct ResourceHandler {
 	);
 
 	ResourceType type;
+	u32 format_version;
 	void* type_data;
 	load_func_type* func_load;
 	unload_func_type* func_unload;

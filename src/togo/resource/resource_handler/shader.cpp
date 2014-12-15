@@ -152,6 +152,7 @@ void resource_handler::register_shader(
 	TOGO_DEBUG_ASSERTE(renderer);
 	ResourceHandler const handler{
 		RES_TYPE_SHADER,
+		SER_FORMAT_VERSION_SHADER_DEF,
 		renderer,
 		resource_handler::shader::load,
 		resource_handler::shader::unload

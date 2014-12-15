@@ -55,6 +55,7 @@ void resource_handler::register_test(
 ) {
 	ResourceHandler const handler{
 		RES_TYPE_TEST,
+		SER_FORMAT_VERSION_TEST_RESOURCE,
 		nullptr,
 		resource_handler::test_resource::load,
 		resource_handler::test_resource::unload

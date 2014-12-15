@@ -215,6 +215,12 @@ ResourceValue resource_manager::load_resource(
 		);
 		return nullptr;
 	}
+	if (handler->format_version != metadata->data_format_version) {
+		TOGO_LOG_ERRORF(
+			"resource handler format version mismatch against [%08x %016lx]: %u != %u\n",
+			type, name_hash, handler->format_version, metadata->data_format_version
+		);
+	}
 	StringRef const pkg_name{resource_package::name(*pkg)};
 	ResourceValue const load_value = handler->func_load(
 		handler->type_data, rm, *pkg, *metadata

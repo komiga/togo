@@ -28,7 +28,6 @@ enum : u32 {
 	SER_FORMAT_VERSION_SHADER_DEF = 2,
 };
 
-
 template<class Ser>
 inline void
 serialize(serializer_tag, Ser& ser, gfx::ParamBlockDef& value_unsafe) {
