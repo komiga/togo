@@ -26,7 +26,8 @@ namespace shader {
 
 namespace {
 
-static void push_sources(
+static void push_def(
+	gfx::ShaderSpec& spec,
 	gfx::ShaderStage& stage,
 	gfx::ShaderDef const& def,
 	ResourceManager& manager
@@ -36,28 +37,37 @@ static void push_sources(
 			resource_manager::get_resource(manager, RES_TYPE_SHADER_PRELUDE, dep_name).pointer
 		);
 		TOGO_DEBUG_ASSERTE(dep_def);
-		push_sources(stage, *dep_def, manager);
+		push_def(spec, stage, *dep_def, manager);
 	}
+
+	// Push sources
 	StringRef source = gfx::shader_def::shared_source(def);
 	if (source.any()) {
 		fixed_array::push_back(stage.sources, source);
 	}
-	source
-		= gfx::ShaderStage::Type::vertex == stage.type
-		? gfx::shader_def::vertex_source(def)
-		: gfx::shader_def::fragment_source(def)
-	;
+	source = gfx::shader_def::stage_source(def, stage.type);
 	if (source.any()) {
 		fixed_array::push_back(stage.sources, source);
 	}
+
+	// Push param blocks
+	for (auto const& pb_def : def.fixed_param_blocks) {
+		fixed_array::push_back(spec.fixed_param_blocks, pb_def);
+	}
+	for (auto const& pb_def : def.draw_param_blocks) {
+		fixed_array::push_back(spec.draw_param_blocks, pb_def);
+	}
 }
 
-static void setup_stage(
-	gfx::ShaderStage& stage,
+static void add_stage(
+	gfx::ShaderSpec& spec,
 	gfx::ShaderStage::Type const type,
 	gfx::ShaderDef const& def,
 	ResourceManager& manager
 ) {
+	fixed_array::increase_size(spec.stages, 1);
+	gfx::ShaderStage& stage = fixed_array::back(spec.stages);
+
 	stage.type = type;
 	fixed_array::clear(stage.sources);
 
@@ -71,12 +81,12 @@ static void setup_stage(
 			).pointer
 		);
 		if (shader_config_def) {
-			push_sources(stage, *shader_config_def, manager);
+			push_def(spec, stage, *shader_config_def, manager);
 		}
 	}
 
-	// Push main sources
-	push_sources(stage, def, manager);
+	// Push graph
+	push_def(spec, stage, def, manager);
 }
 
 } // anonymous namespace
@@ -95,6 +105,7 @@ static ResourceValue load(
 	BinaryInputSerializer ser{lock.stream()};
 	ser % def;
 	}
+	gfx::shader_def::patch_param_block_names(def);
 
 	// Validate
 	TOGO_DEBUG_ASSERTE(gfx::shader_def::type(def) == gfx::ShaderDef::TYPE_UNIT);
@@ -113,10 +124,10 @@ static ResourceValue load(
 	}
 
 	// Create shader
-	gfx::ShaderStage stages[2];
-	setup_stage(stages[0], gfx::ShaderStage::Type::vertex, def, manager);
-	setup_stage(stages[1], gfx::ShaderStage::Type::fragment, def, manager);
-	gfx::ShaderID const id = gfx::renderer::create_shader(renderer, 2, stages);
+	gfx::ShaderSpec spec;
+	add_stage(spec, gfx::ShaderStage::Type::vertex, def, manager);
+	add_stage(spec, gfx::ShaderStage::Type::fragment, def, manager);
+	gfx::ShaderID const id = gfx::renderer::create_shader(renderer, spec);
 	TOGO_DEBUG_ASSERTE(id.valid());
 	return id._value;
 }

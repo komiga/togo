@@ -25,8 +25,19 @@ namespace togo {
 /** @cond INTERNAL */
 
 enum : u32 {
-	SER_FORMAT_VERSION_SHADER_DEF = 1,
+	SER_FORMAT_VERSION_SHADER_DEF = 2,
 };
+
+
+template<class Ser>
+inline void
+serialize(serializer_tag, Ser& ser, gfx::ParamBlockDef& value_unsafe) {
+	auto& value = serializer_cast_safe<Ser>(value_unsafe);
+	ser
+		% value.index
+		% value.name_hash
+	;
+}
 
 template<class Ser>
 inline void
@@ -34,10 +45,11 @@ serialize(serializer_tag, Ser& ser, gfx::ShaderDef& value_unsafe) {
 	auto& value = serializer_cast_safe<Ser>(value_unsafe);
 	ser
 		% value.properties
-		% value.vertex_index
-		% value.fragment_index
-		// Less misleading when looking at binary form
+		// Clearer binary form when data comes last
 		% make_ser_collection<u8>(value.prelude)
+		% make_ser_collection<u8>(value.data_indices)
+		% make_ser_collection<u8>(value.fixed_param_blocks)
+		% make_ser_collection<u8>(value.draw_param_blocks)
 		% make_ser_collection<u32>(value.data)
 	;
 }

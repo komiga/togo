@@ -89,68 +89,87 @@ static bool read_prelude(
 	return true;
 }
 
+inline static bool check_source(
+	KVS const* k_source
+) {
+	if (!k_source || !kvs::is_string(*k_source)) {
+		TOGO_LOG_ERRORF(
+			"malformed shader_def: '%.*s' not defined or not a string\n",
+			kvs::name_size(*k_source), kvs::name(*k_source)
+		);
+		return false;
+	} else if (kvs::string_size(*k_source) == 0) {
+		TOGO_LOG_ERRORF(
+			"malformed shader_def: '%.*s' is empty\n",
+			kvs::name_size(*k_source), kvs::name(*k_source)
+		);
+		return false;
+	}
+	return true;
+}
+
 static bool read_glsl_unit(
 	gfx::ShaderDef& def,
 	KVS const& k_def
 ) {
-	KVS const* k_shared_source;
-	KVS const* k_vertex_source;
-	KVS const* k_fragment_source;
+	constexpr static StringRef const source_names[]{
+		"shared_source",
+		"vertex_source",
+		"fragment_source",
+	};
+	enum : unsigned { NUM_SOURCES = 1 + unsigned_cast(gfx::ShaderStage::Type::NUM) };
+	KVS const* k_sources[NUM_SOURCES];
 
 	// Fetch and validate structure
-	k_shared_source = kvs::find(k_def, "shared_source");
-	if (k_shared_source && !kvs::is_string(*k_shared_source)) {
-		TOGO_LOG_ERROR("malformed shader_def: shared_source must be a string\n");
-		return false;
-	} else if (k_shared_source && kvs::string_size(*k_shared_source) == 0) {
-		TOGO_LOG_ERROR("malformed shader_def: shared_source is empty\n");
-		return false;
+	for (unsigned index = 0; index < array_extent(k_sources); ++index) {
+		k_sources[index] = kvs::find(k_def, source_names[index]);
 	}
-
-	k_vertex_source = kvs::find(k_def, "vertex_source");
-	if (!k_vertex_source || !kvs::is_string(*k_vertex_source)) {
-		TOGO_LOG_ERROR("malformed shader_def: vertex_source not defined or not a string\n");
-		return false;
-	} else if (kvs::string_size(*k_vertex_source) == 0) {
-		TOGO_LOG_ERROR("malformed shader_def: vertex_source is empty\n");
-		return false;
-	}
-
-	k_fragment_source = kvs::find(k_def, "fragment_source");
-	if (!k_fragment_source || !kvs::is_string(*k_fragment_source)) {
-		TOGO_LOG_ERROR("malformed shader_def: fragment_source not defined or not a string\n");
-		return false;
-	} else if (kvs::string_size(*k_fragment_source) == 0) {
-		TOGO_LOG_ERROR("malformed shader_def: fragment_source is empty\n");
+	if (
+		!check_source(k_sources[1 + unsigned_cast(gfx::ShaderStage::Type::vertex)]) ||
+		!check_source(k_sources[1 + unsigned_cast(gfx::ShaderStage::Type::fragment)])
+	) {
 		return false;
 	}
 
 	// Read
+	u32 capacity = 0;
 	def.properties |= gfx::ShaderDef::LANG_GLSL;
 
-	u32 const capacity
-		= (k_shared_source ? (kvs::string_size(*k_shared_source) + 1) : 0)
-		+ kvs::string_size(*k_vertex_source) + 1
-		+ kvs::string_size(*k_fragment_source) + 1
-	;
-	array::clear(def.data);
-	array::reserve(def.data, capacity);
-
-	// Join sources
-	if (k_shared_source) {
-		string::append(def.data, kvs::string_ref(*k_shared_source));
-		array::back(def.data) = '\n';
+	// Source capacity
+	for (KVS const* k_source : k_sources) {
+		if (k_source) {
+			capacity += kvs::string_size(*k_source) + 1;
+		}
 	}
 
-	def.vertex_index = array::size(def.data);
-	string::append(def.data, kvs::string_ref(*k_vertex_source));
-	array::back(def.data) = '\n';
+	// Param block names capacity
+	// TODO
 
-	def.fragment_index = array::size(def.data);
-	string::append(def.data, kvs::string_ref(*k_fragment_source));
-	array::back(def.data) = '\n';
+	array::clear(def.data);
+	array::reserve(def.data, capacity);
+	fixed_array::clear(def.data_indices);
+
+	// Push sources
+	for (unsigned index = 0; index < NUM_SOURCES; ++index) {
+		KVS const* const k_source = k_sources[index];
+		if (index != 0) {
+			fixed_array::push_back(def.data_indices, static_cast<u32>(array::size(def.data)));
+		}
+		if (k_source) {
+			string::append(def.data, kvs::string_ref(*k_source));
+			array::back(def.data) = '\n';
+		}
+	}
+
+	// Push param block names
+	// TODO
+	fixed_array::clear(def.fixed_param_blocks);
+	fixed_array::clear(def.draw_param_blocks);
 
 	TOGO_ASSERTE(array::size(def.data) == capacity);
+
+	// Endcap
+	fixed_array::push_back(def.data_indices, static_cast<u32>(array::size(def.data)));
 	return true;
 }
 

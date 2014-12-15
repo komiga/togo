@@ -117,6 +117,7 @@ struct Uniform {
 struct Shader {
 	gfx::ShaderID id;
 	GLuint handle;
+	u32 num_draw_param_blocks;
 };
 
 struct OpenGLRendererImpl {};

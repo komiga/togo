@@ -25,6 +25,8 @@ Renderer::Renderer(
 	: _allocator(&allocator)
 	, _impl(impl)
 	, _shader_stage(allocator)
+	, _num_active_draw_param_blocks(0)
+	, _fixed_param_blocks()
 	, _generators(allocator)
 	, _config()
 	, _buffers()

@@ -129,8 +129,7 @@ void destroy_buffer_binding(
 /// An assertion will fail if the shader could not be created.
 gfx::ShaderID create_shader(
 	gfx::Renderer* renderer,
-	unsigned num_stages,
-	gfx::ShaderStage const* stages
+	ShaderSpec const& spec
 );
 
 /// Destroy shader.

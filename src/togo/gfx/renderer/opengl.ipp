@@ -38,6 +38,12 @@ char const* gl_get_error() {
 
 namespace {
 
+enum : unsigned {
+	// First non-fixed param block buffer index.
+	BASE_PB_INDEX = TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND,
+};
+
+// null ID unbinds the target
 inline static void bind_buffer(
 	gfx::Renderer* const renderer,
 	gfx::BufferID const id,
@@ -49,6 +55,42 @@ inline static void bind_buffer(
 		TOGO_GLCE_X(glBindBuffer(target, buffer.handle));
 	} else {
 		TOGO_GLCE_X(glBindBuffer(target, BUFFER_HANDLE_NULL));
+	}
+}
+
+inline static void bind_param_block(
+	gfx::Renderer* const renderer,
+	gfx::BufferID const id,
+	unsigned const index,
+	unsigned const offset,
+	unsigned const size
+) {
+	TOGO_ASSERTE(id.valid());
+	auto const& buffer = resource_array::get(renderer->_buffers, id);
+	TOGO_ASSERT(buffer.id == id, "invalid buffer ID");
+	TOGO_GLCE_X(glBindBufferRange(
+		GL_UNIFORM_BUFFER, index, buffer.handle, offset, size
+	));
+}
+
+inline static void unbind_param_block(
+	gfx::Renderer* const /*renderer*/,
+	unsigned const index
+) {
+	TOGO_GLCE_X(glBindBufferBase(GL_UNIFORM_BUFFER, index, BUFFER_HANDLE_NULL));
+}
+
+inline static void setup_param_block_bindings(
+	gfx::Shader const& shader,
+	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND> const& param_blocks,
+	unsigned buffer_index
+) {
+	GLuint block_index{GL_INVALID_INDEX};
+	for (auto const& pb_def : param_blocks) {
+		TOGO_GLCE_X(block_index = glGetUniformBlockIndex(shader.handle, pb_def.name.data));
+		TOGO_ASSERTE(block_index != GL_INVALID_INDEX);
+		TOGO_GLCE_X(glUniformBlockBinding(shader.handle, block_index, buffer_index));
+		++buffer_index;
 	}
 }
 
@@ -160,7 +202,7 @@ gfx::BufferBindingID renderer::create_buffer_binding(
 	bind_buffer(renderer, index_binding.id, GL_ELEMENT_ARRAY_BUFFER);
 	if (index_binding.id.valid()) {
 		bb.flags
-			= gfx::BufferBinding::F_INDEXED
+			|= gfx::BufferBinding::F_INDEXED
 			| (unsigned_cast(index_binding.type) << gfx::BufferBinding::F_SHIFT_INDEX_TYPE)
 		;
 	}
@@ -206,11 +248,9 @@ void renderer::destroy_buffer_binding(
 
 gfx::ShaderID renderer::create_shader(
 	gfx::Renderer* const renderer,
-	unsigned const num_stages,
-	gfx::ShaderStage const* const stages
+	ShaderSpec const& spec
 ) {
-	TOGO_DEBUG_ASSERTE(stages && num_stages > 0);
-	TOGO_ASSERTE(num_stages <= unsigned_cast(gfx::ShaderStage::Type::NUM));
+	TOGO_DEBUG_ASSERTE(fixed_array::any(spec.stages));
 
 	enum { NUM_SOURCES = 24 };
 	FixedArray<GLuint, 2> shader_handles;
@@ -225,8 +265,8 @@ gfx::ShaderID renderer::create_shader(
 	}
 
 	// Create GL shader handles
-	for (unsigned i = 0; i < num_stages; ++i) {
-		auto const& stage = stages[i];
+	for (unsigned index = 0; index < fixed_array::size(spec.stages); ++index) {
+		auto const& stage = spec.stages[index];
 
 		// Join sources
 		fixed_array::resize(sources, 1);
@@ -238,8 +278,11 @@ gfx::ShaderID renderer::create_shader(
 
 		// Create GL shader
 		GLenum const type = gfx::g_gl_shader_stage_type[unsigned_cast(stage.type)];
-		if (i == 1) {
-			TOGO_ASSERT(stage.type != stages[i - 1].type, "multiple stages of the same type");
+		if (index == 1) {
+			TOGO_ASSERT(
+				stage.type != spec.stages[index - 1].type,
+				"multiple stages of the same type"
+			);
 		}
 
 		GLuint shader_handle{PROGRAM_HANDLE_NULL};
@@ -271,7 +314,7 @@ gfx::ShaderID renderer::create_shader(
 	}
 
 	// Create GL program
-	gfx::Shader shader{{}, PROGRAM_HANDLE_NULL};
+	gfx::Shader shader{{}, PROGRAM_HANDLE_NULL, 0};
 	TOGO_GLCE_X(shader.handle = glCreateProgram());
 	TOGO_GLCE_X(glBindFragDataLocation(shader.handle, 0, "RESULT0"));
 
@@ -300,6 +343,15 @@ gfx::ShaderID renderer::create_shader(
 		TOGO_GLCE_X(glDetachShader(shader.handle, shader_handle));
 		TOGO_GLCE_X(glDeleteShader(shader_handle));
 	}
+
+	// Setup param block bindings
+	// TODO: Only do this if needed: 4.2 context || GL_ARB_shading_language_420pack.
+	// shader-config is responsible for attaching them via
+	// _PARAM_BLOCK() based on this criteria.
+	setup_param_block_bindings(shader, spec.fixed_param_blocks, 0);
+	setup_param_block_bindings(shader, spec.draw_param_blocks, BASE_PB_INDEX);
+	shader.num_draw_param_blocks = fixed_array::size(spec.draw_param_blocks);
+
 	return resource_array::assign(renderer->_shaders, shader).id;
 }
 

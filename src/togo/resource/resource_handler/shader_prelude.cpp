@@ -41,6 +41,7 @@ static ResourceValue load(
 	BinaryInputSerializer ser{lock.stream()};
 	ser % def;
 	}
+	gfx::shader_def::patch_param_block_names(def);
 
 	// Validate
 	TOGO_DEBUG_ASSERTE(gfx::shader_def::type(def) == gfx::ShaderDef::TYPE_PRELUDE);

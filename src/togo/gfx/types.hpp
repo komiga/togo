@@ -106,6 +106,7 @@ struct Display;
 
 // TODO: Documentation & configuration
 #define TOGO_GFX_VERTEXFORMAT_NUM_ATTRIBS 16
+#define TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND 16
 
 #define TOGO_GFX_NODE_NUM_COMMANDS 1024
 #define TOGO_GFX_NODE_BUFFER_SIZE 8192
@@ -315,7 +316,34 @@ struct ParamBlockBinding {
 	u32 size;
 };
 
-/// Shader definition.
+/// Parameter block definition.
+struct ParamBlockDef {
+	u32 index;
+	hash32 name_hash;
+	StringRef name;
+};
+
+/// Shader stage.
+struct ShaderStage {
+	enum class Type : u32 {
+		vertex = 0,
+		fragment,
+
+		NUM
+	};
+
+	Type type;
+	FixedArray<StringRef, 24> sources;
+};
+
+/// Shader specification (creation).
+struct ShaderSpec {
+	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND> fixed_param_blocks;
+	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND> draw_param_blocks;
+	FixedArray<gfx::ShaderStage, unsigned_cast(gfx::ShaderStage::Type::NUM)> stages;
+};
+
+/// Shader definition (resource).
 struct ShaderDef {
 	/// Properties.
 	enum : u32 {
@@ -325,16 +353,26 @@ struct ShaderDef {
 
 		LANG_MASK = 0xF0,
 		LANG_GLSL = 1 << 4,
+
+		// stage sources indices + param block names + size of data
+		NUM_INDICES
+			= unsigned_cast(gfx::ShaderStage::Type::NUM)
+			+ 32
+			+ 1
+		,
+		IDX_PARAM_NAMES = unsigned_cast(gfx::ShaderStage::Type::NUM),
 	};
 
 	u32 properties;
-	u32 vertex_index;
-	u32 fragment_index;
-	// String blob containing all source data in sequence.
-	// Shared source starts at 0. fragment and vertex source are
+	// String blob containing all sources in sequence and all param
+	// block names. Shared source starts at 0. fragment and vertex source are
 	// indexed by members.
 	Array<char> data;
 	FixedArray<ResourceNameHash, 8> prelude;
+	FixedArray<u32, NUM_INDICES> data_indices;
+	// gfx::ParamBlockDef::name is patched to .data during serialization
+	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND> fixed_param_blocks;
+	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND> draw_param_blocks;
 
 	ShaderDef() = delete;
 	ShaderDef(ShaderDef const&) = delete;
@@ -348,24 +386,12 @@ struct ShaderDef {
 		Allocator& allocator
 	)
 		: properties(0)
-		, vertex_index(0)
-		, fragment_index(0)
 		, data(allocator)
 		, prelude()
+		, data_indices()
+		, fixed_param_blocks()
+		, draw_param_blocks()
 	{}
-};
-
-/// Shader stage.
-struct ShaderStage {
-	enum class Type : u32 {
-		vertex = 0,
-		fragment,
-
-		NUM
-	};
-
-	Type type;
-	FixedArray<StringRef, 16> sources;
 };
 
 /** @} */ // end of doc-group gfx_renderer
