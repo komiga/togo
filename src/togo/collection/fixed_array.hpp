@@ -125,6 +125,14 @@ inline void resize(FixedArray<T, N>& a, u32_fast const new_size) {
 	a._size = new_size;
 }
 
+/// Increase size.
+///
+/// An assertion will fail if new_size is larger than the capacity.
+template<class T, unsigned N>
+inline void increase_size(FixedArray<T, N>& a, u32_fast const num_items) {
+	resize(a, size(a) + num_items);
+}
+
 /// Remove all items.
 template<class T, unsigned N>
 inline void clear(FixedArray<T, N>& a) {
