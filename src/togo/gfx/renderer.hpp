@@ -165,6 +165,13 @@ void unset_fixed_param_block(
 	unsigned index
 );
 
+/// Set viewport size.
+void set_viewport_size(
+	gfx::Renderer* renderer,
+	unsigned width,
+	unsigned height
+);
+
 /// Clear the backbuffer.
 void clear_backbuffer(
 	gfx::Renderer* renderer

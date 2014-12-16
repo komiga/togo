@@ -469,6 +469,14 @@ void renderer::unset_fixed_param_block(
 	renderer->_fixed_param_blocks[index] = PB_NAME_NULL;
 }
 
+void renderer::set_viewport_size(
+	gfx::Renderer* const /*renderer*/,
+	unsigned const width,
+	unsigned const height
+) {
+	TOGO_GLCE_X(glViewport(0, 0, width, height));
+}
+
 void renderer::clear_backbuffer(
 	gfx::Renderer* const /*renderer*/
 ) {
