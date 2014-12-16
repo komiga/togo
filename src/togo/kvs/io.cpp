@@ -152,9 +152,9 @@ static bool parser_error(
 
 inline static bool parser_is_identifier_lead(Parser const& p) {
 	return
-		 p.c == '_' ||
+		(p.c >= 'a' && p.c <= 'z') ||
 		(p.c >= 'A' && p.c <= 'Z') ||
-		(p.c >= 'a' && p.c <= 'z')
+		 p.c == '_'
 	;
 }
 
