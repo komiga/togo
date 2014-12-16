@@ -9,6 +9,7 @@
 #include <togo/log/log.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/collection/fixed_array.hpp>
+#include <togo/gfx/gfx/opengl_common.hpp>
 #include <togo/gfx/renderer.hpp>
 #include <togo/gfx/renderer/types.hpp>
 #include <togo/gfx/renderer/opengl.hpp>
