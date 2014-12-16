@@ -370,5 +370,28 @@ void renderer::destroy_shader(
 	resource_array::free(renderer->_shaders, shader);
 }
 
+void renderer::set_fixed_param_block(
+	gfx::Renderer* const renderer,
+	unsigned const index,
+	gfx::ParamBlockNameHash const name_hash,
+	gfx::ParamBlockBinding const& binding
+) {
+	TOGO_ASSERTE(
+		index < BASE_DRAW_PB_INDEX &&
+		name_hash != gfx::PB_NAME_NULL
+	);
+	bind_param_block(renderer, binding.id, index, binding.offset, binding.size);
+	renderer->_fixed_param_blocks[index] = name_hash;
+}
+
+void renderer::unset_fixed_param_block(
+	gfx::Renderer* const renderer,
+	unsigned const index
+) {
+	TOGO_ASSERTE(index < BASE_DRAW_PB_INDEX);
+	unbind_param_block(renderer, index);
+	renderer->_fixed_param_blocks[index] = PB_NAME_NULL;
+}
+
 } // namespace gfx
 } // namespace togo

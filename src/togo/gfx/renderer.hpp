@@ -138,6 +138,23 @@ void destroy_shader(
 	gfx::ShaderID id
 );
 
+/// Set a fixed parameter block by index.
+///
+/// An assertion will fail if name_hash is PB_NAME_NULL.
+/// index must be in [0, 15].
+void set_fixed_param_block(
+	gfx::Renderer* renderer,
+	unsigned index,
+	gfx::ParamBlockNameHash name_hash,
+	gfx::ParamBlockBinding const& binding
+);
+
+/// Unset a fixed parameter block by index.
+void unset_fixed_param_block(
+	gfx::Renderer* renderer,
+	unsigned index
+);
+
 /** @} */ // end of doc-group gfx_renderer
 
 } // namespace renderer
