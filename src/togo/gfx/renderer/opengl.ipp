@@ -65,8 +65,10 @@ static void query_parameters(
 	);
 
 	TOGO_LOGF(
-		"GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT = %u\n",
-		renderer->_impl.p_uniform_buffer_offset_alignment
+		"GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT = %u\n"
+		"GL_MAX_UNIFORM_BLOCK_SIZE = %u\n"
+		, renderer->_impl.p_uniform_buffer_offset_alignment
+		, renderer->_impl.p_max_uniform_block_size
 	);
 
 	#undef TOGO_GET_INTEGER
