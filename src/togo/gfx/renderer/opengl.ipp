@@ -83,14 +83,15 @@ inline static void unbind_param_block(
 inline static void setup_param_block_bindings(
 	gfx::Shader const& shader,
 	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND> const& param_blocks,
-	unsigned buffer_index
+	unsigned const base_buffer_index
 ) {
 	GLuint block_index{GL_INVALID_INDEX};
 	for (auto const& pb_def : param_blocks) {
 		TOGO_GLCE_X(block_index = glGetUniformBlockIndex(shader.handle, pb_def.name.data));
 		TOGO_ASSERTE(block_index != GL_INVALID_INDEX);
-		TOGO_GLCE_X(glUniformBlockBinding(shader.handle, block_index, buffer_index));
-		++buffer_index;
+		TOGO_GLCE_X(glUniformBlockBinding(
+			shader.handle, block_index, base_buffer_index + pb_def.index
+		));
 	}
 }
 
