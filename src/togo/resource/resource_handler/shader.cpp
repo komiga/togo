@@ -124,10 +124,10 @@ static void check_conflicting_param_blocks(
 		);
 		TOGO_ASSERTF(
 			!pb_def_b,
-			"conflicting param blocks (%.*s): {%.*s, %u} with {%.*s, %u}",
+			"conflicting param blocks (%.*s): {%.*s (%08x), %u} with {%.*s (%08x), %u}",
 			desc.size, desc.data,
-			pb_def_a->name.size, pb_def_a->name.data, pb_def_a->index,
-			pb_def_b->name.size, pb_def_b->name.data, pb_def_b->index
+			pb_def_a->name.size, pb_def_a->name.data, pb_def_a->name_hash, pb_def_a->index,
+			pb_def_b->name.size, pb_def_b->name.data, pb_def_b->name_hash, pb_def_b->index
 		);
 	}
 }
