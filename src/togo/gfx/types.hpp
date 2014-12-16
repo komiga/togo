@@ -369,7 +369,7 @@ struct ShaderDef {
 	// indexed by members.
 	Array<char> data;
 	FixedArray<ResourceNameHash, 8> prelude;
-	FixedArray<u32, NUM_INDICES> data_indices;
+	FixedArray<u32, NUM_INDICES> data_offsets;
 	// gfx::ParamBlockDef::name is patched to .data during serialization
 	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND> fixed_param_blocks;
 	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND> draw_param_blocks;
@@ -388,7 +388,7 @@ struct ShaderDef {
 		: properties(0)
 		, data(allocator)
 		, prelude()
-		, data_indices()
+		, data_offsets()
 		, fixed_param_blocks()
 		, draw_param_blocks()
 	{}

@@ -46,7 +46,7 @@ serialize(serializer_tag, Ser& ser, gfx::ShaderDef& value_unsafe) {
 		% value.properties
 		// Clearer binary form when data comes last
 		% make_ser_collection<u8>(value.prelude)
-		% make_ser_collection<u8>(value.data_indices)
+		% make_ser_collection<u8>(value.data_offsets)
 		% make_ser_collection<u8>(value.fixed_param_blocks)
 		% make_ser_collection<u8>(value.draw_param_blocks)
 		% make_ser_collection<u32>(value.data)

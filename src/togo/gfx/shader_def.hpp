@@ -37,7 +37,7 @@ inline u32 language(gfx::ShaderDef const& def) {
 
 /// Shared source.
 inline StringRef shared_source(gfx::ShaderDef const& def) {
-	return StringRef{array::begin(def.data), def.data_indices[0]};
+	return StringRef{array::begin(def.data), def.data_offsets[0]};
 }
 
 /// Source by stage.
@@ -45,23 +45,23 @@ inline StringRef stage_source(
 	gfx::ShaderDef const& def,
 	gfx::ShaderStage::Type const stage_type
 ) {
-	auto const data_index = def.data_indices[unsigned_cast(stage_type)];
+	auto const offset = def.data_offsets[unsigned_cast(stage_type)];
 	return StringRef{
-		array::begin(def.data) + data_index,
-		def.data_indices[unsigned_cast(stage_type) + 1] - data_index
+		array::begin(def.data) + offset,
+		def.data_offsets[unsigned_cast(stage_type) + 1] - offset
 	};
 }
 
 /// Param block name from data buffer by index.
 inline StringRef param_block_name(
 	gfx::ShaderDef const& def,
-	unsigned name_index
+	unsigned index
 ) {
-	name_index += gfx::ShaderDef::IDX_PARAM_NAMES;
-	auto const data_index = def.data_indices[name_index];
+	index += gfx::ShaderDef::IDX_PARAM_NAMES;
+	auto const offset = def.data_offsets[index];
 	return StringRef{
-		array::begin(def.data) + data_index,
-		def.data_indices[name_index + 1] - data_index
+		array::begin(def.data) + offset,
+		def.data_offsets[index + 1] - offset
 	};
 }
 
@@ -69,14 +69,14 @@ inline StringRef param_block_name(
 ///
 /// This is used to patch param block definitions after deserialization.
 inline void patch_param_block_names(gfx::ShaderDef& def) {
-	unsigned offset = 0;
+	unsigned index = 0;
 	for (auto& pb_def : def.fixed_param_blocks) {
-		pb_def.name = gfx::shader_def::param_block_name(def, offset);
-		++offset;
+		pb_def.name = gfx::shader_def::param_block_name(def, index);
+		++index;
 	}
 	for (auto& pb_def : def.draw_param_blocks) {
-		pb_def.name = gfx::shader_def::param_block_name(def, offset);
-		++offset;
+		pb_def.name = gfx::shader_def::param_block_name(def, index);
+		++index;
 	}
 }
 
