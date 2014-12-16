@@ -40,7 +40,7 @@ namespace {
 
 enum : unsigned {
 	// First non-fixed param block buffer index.
-	BASE_PB_INDEX = TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND,
+	BASE_DRAW_PB_INDEX = TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND,
 };
 
 // null ID unbinds the target
@@ -253,7 +253,7 @@ gfx::ShaderID renderer::create_shader(
 	TOGO_DEBUG_ASSERTE(fixed_array::any(spec.stages));
 
 	enum { NUM_SOURCES = 24 };
-	FixedArray<GLuint, 2> shader_handles;
+	FixedArray<GLuint, unsigned_cast(gfx::ShaderStage::Type::NUM)> shader_handles;
 	FixedArray<char const*, NUM_SOURCES> sources;
 	FixedArray<GLint, NUM_SOURCES> sources_size;
 	char info_log[1024];
@@ -345,11 +345,15 @@ gfx::ShaderID renderer::create_shader(
 	}
 
 	// Setup param block bindings
-	// TODO: Only do this if needed: 4.2 context || GL_ARB_shading_language_420pack.
+	// TODO: Only do this for fixed param blocks
+	// if context < 4.2 && !GL_ARB_shading_language_420pack.
 	// shader-config is responsible for attaching them via
-	// _PARAM_BLOCK() based on this criteria.
+	// PARAM_BLOCK_*() based on this criteria.
+	// Once the shader resource handler/compiler can rewrite
+	// param block definitions, this can be extended to draw
+	// param blocks as they will also be attached in the shader.
 	setup_param_block_bindings(shader, spec.fixed_param_blocks, 0);
-	setup_param_block_bindings(shader, spec.draw_param_blocks, BASE_PB_INDEX);
+	setup_param_block_bindings(shader, spec.draw_param_blocks, BASE_DRAW_PB_INDEX);
 	shader.num_draw_param_blocks = fixed_array::size(spec.draw_param_blocks);
 
 	return resource_array::assign(renderer->_shaders, shader).id;
