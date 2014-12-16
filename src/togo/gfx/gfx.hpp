@@ -27,6 +27,11 @@ inline gfx::GeneratorNameHash hash_generator_name(StringRef const& name) {
 	return hash::calc32(name);
 }
 
+/// Calculate hash of parameter block name.
+inline gfx::ParamBlockNameHash hash_param_block_name(StringRef const& name) {
+	return hash::calc32(name);
+}
+
 /// Initialize the graphics backend.
 ///
 /// context_major and context_minor are OpenGL context version numbers.

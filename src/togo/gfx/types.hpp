@@ -185,14 +185,20 @@ struct Renderer;
 /// Renderer type.
 using RendererType = hash32;
 
-/// Renderer types.
-enum : RendererType {
-	/// OpenGL renderer.
-	RENDERER_TYPE_OPENGL = "opengl"_hash32,
-};
+/// Parameter block name hash.
+using ParamBlockNameHash = hash32;
 
 /// Generator name hash.
 using GeneratorNameHash = hash32;
+
+/// Parameter block name hash literal.
+inline constexpr ParamBlockNameHash
+operator"" _param_block_name(
+	char const* const data,
+	std::size_t const size
+) {
+	return hash::calc32_ce(data, size);
+}
 
 /// Generator name hash literal.
 inline constexpr GeneratorNameHash
@@ -202,6 +208,18 @@ operator"" _generator_name(
 ) {
 	return hash::calc32_ce(data, size);
 }
+
+/// Renderer types.
+enum : RendererType {
+	/// OpenGL renderer.
+	RENDERER_TYPE_OPENGL = "opengl"_hash32,
+};
+
+/// Parameter block names.
+enum : ParamBlockNameHash {
+	/// Null name.
+	PB_NAME_NULL = ""_param_block_name,
+};
 
 /// Generator names.
 enum : GeneratorNameHash {
@@ -319,7 +337,7 @@ struct ParamBlockBinding {
 /// Parameter block definition.
 struct ParamBlockDef {
 	u32 index;
-	hash32 name_hash;
+	ParamBlockNameHash name_hash;
 	StringRef name;
 };
 
