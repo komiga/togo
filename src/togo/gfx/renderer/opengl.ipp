@@ -95,6 +95,29 @@ inline static void setup_param_block_bindings(
 	}
 }
 
+// Validate against current state
+static void validate_shader(
+	gfx::Renderer* const renderer,
+	gfx::Shader const& shader,
+	unsigned const num_draw_param_blocks
+) {
+	TOGO_ASSERTF(
+		num_draw_param_blocks == shader.num_draw_param_blocks(),
+		"number of supplied parameter blocks does not match the shader (%u != %u)",
+		num_draw_param_blocks, shader.num_draw_param_blocks()
+	);
+	// Ensure fixed param blocks are supplied
+	for (unsigned index = 0; index < BASE_DRAW_PB_INDEX; ++index) {
+		if ((shader.param_block_bits >> index) & 1) {
+			TOGO_ASSERTF(
+				renderer->_fixed_param_blocks[index] != PB_NAME_NULL,
+				"fixed parameter block required by shader is not set: index = %u",
+				index
+			);
+		}
+	}
+}
+
 } // anonymous namespace
 
 gfx::Renderer* renderer::create(
@@ -315,7 +338,7 @@ gfx::ShaderID renderer::create_shader(
 	}
 
 	// Create GL program
-	gfx::Shader shader{{}, PROGRAM_HANDLE_NULL, 0};
+	gfx::Shader shader{{}, PROGRAM_HANDLE_NULL, 0, 0};
 	TOGO_GLCE_X(shader.handle = glCreateProgram());
 	TOGO_GLCE_X(glBindFragDataLocation(shader.handle, 0, "RESULT0"));
 
@@ -355,7 +378,14 @@ gfx::ShaderID renderer::create_shader(
 	// param blocks as they will also be attached in the shader.
 	setup_param_block_bindings(shader, spec.fixed_param_blocks, 0);
 	setup_param_block_bindings(shader, spec.draw_param_blocks, BASE_DRAW_PB_INDEX);
-	shader.num_draw_param_blocks = fixed_array::size(spec.draw_param_blocks);
+
+	shader.properties
+		|= (gfx::Shader::SHIFT_NUM_PB_FIXED << fixed_array::size(spec.fixed_param_blocks))
+		|  (gfx::Shader::SHIFT_NUM_PB_DRAW << fixed_array::size(spec.draw_param_blocks))
+	;
+	for (auto const& pb_def : spec.fixed_param_blocks) {
+		shader.param_block_bits |= 1 << pb_def.index;
+	}
 
 	return resource_array::assign(renderer->_shaders, shader).id;
 }

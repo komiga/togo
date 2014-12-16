@@ -114,10 +114,35 @@ struct Uniform {
 	GLint handle;
 };
 
+// TODO: Add param block names for validation
 struct Shader {
+	enum : u32 {
+		// .... .... .... .... NDRA NFIX FFFF FFFF
+		// FFFF = flags
+		// NFIX = number of fixed param blocks
+		// NDRA = number of draw param blocks
+
+		// Whether the shader has been validated
+		F_VALIDATED = 1 << 0,
+
+		SHIFT_NUM_PB_FIXED = 8,
+		SHIFT_NUM_PB_DRAW = 8 + 4,
+		MASK_NUM_PB = 0x0F,
+	};
+
 	gfx::ShaderID id;
 	GLuint handle;
-	u32 num_draw_param_blocks;
+	u32 properties;
+	// NB: Currently only bits in [0, 15] are used to track fixed
+	// param block use
+	u32 param_block_bits;
+
+	unsigned num_fixed_param_blocks() const {
+		return (properties >> SHIFT_NUM_PB_FIXED) & MASK_NUM_PB;
+	}
+	unsigned num_draw_param_blocks() const {
+		return (properties >> SHIFT_NUM_PB_DRAW) & MASK_NUM_PB;
+	}
 };
 
 struct OpenGLRendererImpl {};
