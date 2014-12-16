@@ -146,6 +146,22 @@ static void validate_shader(
 			);
 		}
 	}
+
+	{// GL validation
+	GLsizei log_size{0};
+	char info_log[512];
+	info_log[0] = '\0';
+	GLint status{GL_FALSE};
+	TOGO_GLCE_X(glValidateProgram(shader.handle));
+	TOGO_GLCE_X(glGetProgramiv(shader.handle, GL_VALIDATE_STATUS, &status));
+	TOGO_GLCE_X(glGetProgramInfoLog(shader.handle, array_extent(info_log), &log_size, info_log));
+
+	// Status log is fluff when it succeeds
+	if (status == GL_FALSE && log_size > 0) {
+		TOGO_LOGF("shader validation log:\n%.*s\n", log_size, info_log);
+	}
+	TOGO_ASSERTE(status != GL_FALSE);
+	}
 }
 
 } // anonymous namespace
