@@ -469,5 +469,11 @@ void renderer::unset_fixed_param_block(
 	renderer->_fixed_param_blocks[index] = PB_NAME_NULL;
 }
 
+void renderer::clear_backbuffer(
+	gfx::Renderer* const /*renderer*/
+) {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
 } // namespace gfx
 } // namespace togo

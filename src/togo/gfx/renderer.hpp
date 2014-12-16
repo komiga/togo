@@ -165,6 +165,11 @@ void unset_fixed_param_block(
 	unsigned index
 );
 
+/// Clear the backbuffer.
+void clear_backbuffer(
+	gfx::Renderer* renderer
+);
+
 /** @} */ // end of doc-group gfx_renderer
 
 } // namespace renderer
