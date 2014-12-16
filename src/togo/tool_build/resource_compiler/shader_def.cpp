@@ -19,6 +19,7 @@
 #include <togo/serialization/gfx/shader_def.hpp>
 #include <togo/serialization/binary_serializer.hpp>
 #include <togo/gfx/types.hpp>
+#include <togo/gfx/gfx.hpp>
 #include <togo/gfx/shader_def.hpp>
 #include <togo/tool_build/types.hpp>
 #include <togo/tool_build/resource_compiler.hpp>
@@ -151,16 +152,19 @@ static bool read_param_blocks(
 			return false;
 		}
 
-		// Read
+		{// Read
+		StringRef const name = kvs::string_ref(*k_name);
 		fixed_array::push_back(
 			param_blocks,
 			{
 				indexed
 				? static_cast<unsigned>(kvs::integer(*k_index))
 				: local_index,
-				kvs::name_hash(*k_name), kvs::string_ref(*k_name)
+				gfx::hash_param_block_name(name),
+				name
 			}
 		);
+		}
 		++local_index;
 	}}
 	return true;
