@@ -136,7 +136,10 @@ struct Shader {
 	}
 };
 
-struct OpenGLRendererImpl {};
+struct OpenGLRendererImpl {
+	unsigned p_uniform_buffer_offset_alignment;
+	unsigned p_max_uniform_block_size;
+};
 
 using RendererImpl = OpenGLRendererImpl;
 

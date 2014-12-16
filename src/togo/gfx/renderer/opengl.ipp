@@ -44,6 +44,34 @@ enum : unsigned {
 	BASE_DRAW_PB_INDEX = TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND,
 };
 
+static void query_parameters(
+	gfx::Renderer* const renderer
+) {
+	GLint gl_integer;
+	#define TOGO_GET_INTEGER(pname_, min_, value_)								\
+		TOGO_GLCE_X(glGetIntegerv(												\
+			pname_,																\
+			&gl_integer															\
+		));																		\
+		renderer->_impl.value_ = max(min_, static_cast<unsigned>(gl_integer))
+
+	TOGO_GET_INTEGER(
+		GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT,
+		1u, p_uniform_buffer_offset_alignment
+	);
+	TOGO_GET_INTEGER(
+		GL_MAX_UNIFORM_BLOCK_SIZE,
+		16384u, p_max_uniform_block_size
+	);
+
+	TOGO_LOGF(
+		"GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT = %u\n",
+		renderer->_impl.p_uniform_buffer_offset_alignment
+	);
+
+	#undef TOGO_GET_INTEGER
+}
+
 // null ID unbinds the target
 inline static void bind_buffer(
 	gfx::Renderer* const renderer,
@@ -129,6 +157,7 @@ gfx::Renderer* renderer::create(
 		allocator,
 		OpenGLRendererImpl{}
 	);
+	query_parameters(renderer);
 	return renderer;
 }
 
