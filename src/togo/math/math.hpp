@@ -41,7 +41,9 @@ using am::linear::determinant;
 using am::linear::inverse;
 
 /** Mathematical constant π (pi). */
-static constexpr float const MC_PI  = 3.1415926535897932384626f;
+static constexpr float const MC_PI = 3.1415926535897932384626f;
+/** Mathematical constant π/2 (pi/2). */
+static constexpr float const MC_PI_HALF = 1.5707963267948966192313f;
 /** Mathematical constant τ (tau, 2 * MC_PI). */
 static constexpr float const MC_TAU = 6.2831853071795864769252f;
 
