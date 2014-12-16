@@ -130,6 +130,7 @@ static void validate_shader(
 	gfx::Shader const& shader,
 	unsigned const num_draw_param_blocks
 ) {
+	// Parameter block sanity checks
 	TOGO_ASSERTF(
 		num_draw_param_blocks == shader.num_draw_param_blocks(),
 		"number of supplied parameter blocks does not match the shader (%u != %u)",
@@ -369,7 +370,7 @@ gfx::ShaderID renderer::create_shader(
 		{// Check log
 		GLsizei log_size{0};
 		info_log[0] = '\0';
-		glGetShaderInfoLog(shader_handle, array_extent(info_log), &log_size, info_log);
+		TOGO_GLCE_X(glGetShaderInfoLog(shader_handle, array_extent(info_log), &log_size, info_log));
 		if (log_size > 0) {
 			TOGO_LOGF("GL shader log:\n%.*s\n", log_size, info_log);
 		}}
@@ -397,7 +398,7 @@ gfx::ShaderID renderer::create_shader(
 	{// Check log
 	GLsizei log_size{0};
 	info_log[0] = '\0';
-	glGetProgramInfoLog(shader.handle, array_extent(info_log), &log_size, info_log);
+	TOGO_GLCE_X(glGetProgramInfoLog(shader.handle, array_extent(info_log), &log_size, info_log));
 	if (log_size > 0) {
 		TOGO_LOGF("GL program log:\n%.*s\n", log_size, info_log);
 	}}
