@@ -116,11 +116,24 @@ static void core_update(AppBase& app_base, float dt) {
 	InputEvent const* event = nullptr;
 	input_buffer::update(app_base._input_buffer);
 	while (input_buffer::poll(app_base._input_buffer, event_type, event)) {
-		if (
-			event_type == InputEventType::display_close_request &&
-			event->display == app_base._display
-		) {
+		if (event->display != app_base._display) {
+			continue;
+		}
+		switch (event_type) {
+		case InputEventType::display_close_request:
 			app::core_quit(app_base);
+			break;
+
+		case InputEventType::display_resize:
+			gfx::renderer::set_viewport_size(
+				app_base._renderer,
+				event->display_resize.new_width,
+				event->display_resize.new_height
+			);
+			break;
+
+		default:
+			break;
 		}
 	}
 	app_base._func_update(app_base, dt);
