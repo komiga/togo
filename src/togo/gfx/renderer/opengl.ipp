@@ -228,6 +228,22 @@ void renderer::map_buffer(
 	TOGO_GLCE_X(glBufferSubData(GL_ARRAY_BUFFER, offset, size, data));
 }
 
+ParamBlockBinding renderer::make_param_block_binding(
+	gfx::Renderer const* const renderer,
+	gfx::BufferID const id,
+	u32 offset,
+	u32 const size
+) {
+	u32 const align = renderer->_impl.p_uniform_buffer_offset_alignment;
+	if (align > 1) {
+		u32 const m = offset % align;
+		if (m > 0) {
+			offset += align - m;
+		}
+	}
+	return {id, offset, size};
+}
+
 gfx::BufferBindingID renderer::create_buffer_binding(
 	gfx::Renderer* const renderer,
 	unsigned const num_vertices,

@@ -91,6 +91,16 @@ inline void map_buffer(
 	);
 }
 
+/// Make a parameter block binding.
+///
+/// Offset may be aligned.
+ParamBlockBinding make_param_block_binding(
+	gfx::Renderer const* renderer,
+	gfx::BufferID id,
+	u32 offset,
+	u32 size
+);
+
 /// Create buffer binding.
 ///
 /// An assertion will fail if the buffer binding could not be created.
