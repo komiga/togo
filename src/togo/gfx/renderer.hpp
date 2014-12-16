@@ -177,6 +177,19 @@ void clear_backbuffer(
 	gfx::Renderer* renderer
 );
 
+/// Render objects by buffer bindings.
+///
+/// num_param_blocks must match the number of non-fixed parameter
+/// blocks in the shader.
+void render_objects(
+	gfx::Renderer* renderer,
+	gfx::ShaderID shader_id,
+	unsigned num_draw_param_blocks,
+	gfx::ParamBlockBinding const* draw_param_blocks,
+	unsigned num_objects,
+	gfx::BufferBindingID const* objects
+);
+
 /** @} */ // end of doc-group gfx_renderer
 
 } // namespace renderer

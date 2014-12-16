@@ -502,5 +502,65 @@ void renderer::clear_backbuffer(
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void renderer::render_objects(
+	gfx::Renderer* const renderer,
+	gfx::ShaderID const shader_id,
+	unsigned const num_draw_param_blocks,
+	gfx::ParamBlockBinding const* const draw_param_blocks,
+	unsigned const num_objects,
+	gfx::BufferBindingID const* const objects
+) {
+	TOGO_DEBUG_ASSERTE(
+		(num_draw_param_blocks == 0 || draw_param_blocks) &&
+		num_objects > 0 && objects
+	);
+
+	{// Bind shader and validate supplied parameter blocks
+	auto& shader = gfx::resource_array::get(renderer->_shaders, shader_id);
+	TOGO_ASSERT(shader.id == shader_id, "invalid shader ID");
+	TOGO_GLCE_X(glUseProgram(shader.handle));
+	// One-time validation
+	if (~shader.properties & gfx::Shader::F_VALIDATED) {
+		validate_shader(renderer, shader, num_draw_param_blocks);
+		shader.properties |= gfx::Shader::F_VALIDATED;
+	}}
+
+	{// Bind parameter blocks
+	unsigned index = BASE_DRAW_PB_INDEX;
+	for (auto const& pb_binding : array_ref(num_draw_param_blocks, draw_param_blocks)) {
+		bind_param_block(
+			renderer, pb_binding.id, index, pb_binding.offset, pb_binding.size
+		);
+		++index;
+	}
+	// Unbind unused indices
+	unsigned const num_unbind = renderer->_num_active_draw_param_blocks;
+	renderer->_num_active_draw_param_blocks = index - BASE_DRAW_PB_INDEX;
+	for (; num_unbind > index; ++index) {
+		unbind_param_block(renderer, index);
+	}}
+
+	{// Render!
+	unsigned index_data_type;
+	for (auto const id : array_ref(num_objects, objects)) {
+		auto const& bb = resource_array::get(renderer->_buffer_bindings, id);
+		TOGO_ASSERT(bb.id == id, "invalid buffer binding ID");
+		TOGO_GLCE_X(glBindVertexArray(bb.va_handle));
+		if (bb.flags & gfx::BufferBinding::F_INDEXED) {
+			index_data_type = bb.flags >> gfx::BufferBinding::F_SHIFT_INDEX_TYPE;
+			glDrawElements(
+				GL_TRIANGLES,
+				bb.num_vertices,
+				gfx::g_gl_primitive_type[index_data_type],
+				reinterpret_cast<void const*>(
+					bb.base_vertex * gfx::g_gl_primitive_size[index_data_type]
+				)
+			);
+		} else {
+			glDrawArrays(GL_TRIANGLES, bb.base_vertex, bb.num_vertices);
+		}
+	}}
+}
+
 } // namespace gfx
 } // namespace togo
