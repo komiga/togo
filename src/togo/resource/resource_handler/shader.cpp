@@ -30,14 +30,15 @@ static void push_def(
 	gfx::ShaderSpec& spec,
 	gfx::ShaderStage& stage,
 	gfx::ShaderDef const& def,
-	ResourceManager& manager
+	ResourceManager& manager,
+	bool const push_param_blocks
 ) {
 	for (auto const dep_name : def.prelude) {
 		auto const* const dep_def = static_cast<gfx::ShaderDef const*>(
 			resource_manager::get_resource(manager, RES_TYPE_SHADER_PRELUDE, dep_name).pointer
 		);
 		TOGO_DEBUG_ASSERTE(dep_def);
-		push_def(spec, stage, *dep_def, manager);
+		push_def(spec, stage, *dep_def, manager, push_param_blocks);
 	}
 
 	// Push sources
@@ -50,12 +51,13 @@ static void push_def(
 		fixed_array::push_back(stage.sources, source);
 	}
 
-	// Push param blocks
-	for (auto const& pb_def : def.fixed_param_blocks) {
-		fixed_array::push_back(spec.fixed_param_blocks, pb_def);
-	}
-	for (auto const& pb_def : def.draw_param_blocks) {
-		fixed_array::push_back(spec.draw_param_blocks, pb_def);
+	if (push_param_blocks) {
+		for (auto const& pb_def : def.fixed_param_blocks) {
+			fixed_array::push_back(spec.fixed_param_blocks, pb_def);
+		}
+		for (auto const& pb_def : def.draw_param_blocks) {
+			fixed_array::push_back(spec.draw_param_blocks, pb_def);
+		}
 	}
 }
 
@@ -63,7 +65,8 @@ static void add_stage(
 	gfx::ShaderSpec& spec,
 	gfx::ShaderStage::Type const type,
 	gfx::ShaderDef const& def,
-	ResourceManager& manager
+	ResourceManager& manager,
+	bool const push_param_blocks
 ) {
 	fixed_array::increase_size(spec.stages, 1);
 	gfx::ShaderStage& stage = fixed_array::back(spec.stages);
@@ -81,12 +84,52 @@ static void add_stage(
 			).pointer
 		);
 		if (shader_config_def) {
-			push_def(spec, stage, *shader_config_def, manager);
+			push_def(spec, stage, *shader_config_def, manager, push_param_blocks);
 		}
 	}
 
 	// Push graph
-	push_def(spec, stage, def, manager);
+	push_def(spec, stage, def, manager, push_param_blocks);
+}
+
+static gfx::ParamBlockDef const* find_conflicting_param_block(
+	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND> const& param_blocks,
+	gfx::ParamBlockDef const& pb_def,
+	unsigned const from_index,
+	bool const index_conflicts
+) {
+	for (unsigned index = from_index; index < fixed_array::size(param_blocks); ++index) {
+		auto const& pb_def_it = param_blocks[index];
+		if (
+			pb_def.name_hash == pb_def_it.name_hash ||
+			(index_conflicts && pb_def.index == pb_def_it.index)
+		) {
+			return &pb_def_it;
+		}
+	}
+	return nullptr;
+}
+
+static void check_conflicting_param_blocks(
+	StringRef const desc,
+	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND> const& param_blocks_a,
+	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND> const& param_blocks_b,
+	bool const index_conflicts
+) {
+	bool const same = &param_blocks_a == &param_blocks_b;
+	for (unsigned index = 0; index < fixed_array::size(param_blocks_a); ++index) {
+		auto const* const pb_def_a = &param_blocks_a[index];
+		auto const* const pb_def_b = find_conflicting_param_block(
+			param_blocks_b, *pb_def_a, same ? (index + 1) : 0, index_conflicts
+		);
+		TOGO_ASSERTF(
+			!pb_def_b,
+			"conflicting param blocks (%.*s): {%.*s, %u} with {%.*s, %u}",
+			desc.size, desc.data,
+			pb_def_a->name.size, pb_def_a->name.data, pb_def_a->index,
+			pb_def_b->name.size, pb_def_b->name.data, pb_def_b->index
+		);
+	}
 }
 
 } // anonymous namespace
@@ -123,10 +166,23 @@ static ResourceValue load(
 		);
 	}
 
-	// Create shader
+	// Build specification
 	gfx::ShaderSpec spec;
-	add_stage(spec, gfx::ShaderStage::Type::vertex, def, manager);
-	add_stage(spec, gfx::ShaderStage::Type::fragment, def, manager);
+	add_stage(spec, gfx::ShaderStage::Type::vertex, def, manager, true);
+	add_stage(spec, gfx::ShaderStage::Type::fragment, def, manager, false);
+
+	// Validate param blocks
+	check_conflicting_param_blocks("fixed", spec.fixed_param_blocks, spec.fixed_param_blocks, true);
+	check_conflicting_param_blocks("fixed -> draw", spec.fixed_param_blocks, spec.draw_param_blocks, false);
+	check_conflicting_param_blocks("draw", spec.draw_param_blocks, spec.draw_param_blocks, false);
+
+	{// Reindexed draw param blocks
+	unsigned index = 0;
+	for (auto& pb_def : spec.draw_param_blocks) {
+		pb_def.index = index++;
+	}}
+
+	// Create shader
 	gfx::ShaderID const id = gfx::renderer::create_shader(renderer, spec);
 	TOGO_DEBUG_ASSERTE(id.valid());
 	return id._value;
