@@ -28,6 +28,10 @@ void renderer::teardown_base(gfx::Renderer* const renderer) {
 	//TOGO_GFX_RENDERER_TEARDOWN_RA_(_textures, destroy_texture);
 	//TOGO_GFX_RENDERER_TEARDOWN_RA_(_uniforms, destroy_uniform);
 	TOGO_GFX_RENDERER_TEARDOWN_RA_(_shaders, destroy_shader);
+	for (auto& pb_name_hash : renderer->_fixed_param_blocks) {
+		pb_name_hash = gfx::PB_NAME_NULL;
+	}
+	renderer->_num_active_draw_param_blocks = 0;
 }
 
 } // namespace gfx

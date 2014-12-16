@@ -135,7 +135,7 @@ struct Renderer {
 
 	gfx::ShaderDef _shader_stage;
 	unsigned _num_active_draw_param_blocks;
-	FixedArray<gfx::ParamBlockBinding, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND> _fixed_param_blocks;
+	gfx::ParamBlockNameHash _fixed_param_blocks[TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND];
 	HashMap<gfx::GeneratorNameHash, gfx::GeneratorDef> _generators;
 	gfx::RenderConfig _config;
 
