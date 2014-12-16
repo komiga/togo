@@ -114,6 +114,7 @@ static void core_shutdown(AppBase& app_base) {
 static void core_update(AppBase& app_base, float dt) {
 	InputEventType event_type{};
 	InputEvent const* event = nullptr;
+	input_buffer::update(app_base._input_buffer);
 	while (input_buffer::poll(app_base._input_buffer, event_type, event)) {
 		if (
 			event_type == InputEventType::display_close_request &&
