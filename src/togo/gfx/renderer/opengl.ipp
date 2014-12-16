@@ -381,8 +381,8 @@ gfx::ShaderID renderer::create_shader(
 	setup_param_block_bindings(shader, spec.draw_param_blocks, BASE_DRAW_PB_INDEX);
 
 	shader.properties
-		|= (gfx::Shader::SHIFT_NUM_PB_FIXED << fixed_array::size(spec.fixed_param_blocks))
-		|  (gfx::Shader::SHIFT_NUM_PB_DRAW << fixed_array::size(spec.draw_param_blocks))
+		|= (fixed_array::size(spec.fixed_param_blocks) << gfx::Shader::SHIFT_NUM_PB_FIXED)
+		|  (fixed_array::size(spec.draw_param_blocks) << gfx::Shader::SHIFT_NUM_PB_DRAW)
 	;
 	for (auto const& pb_def : spec.fixed_param_blocks) {
 		shader.param_block_bits |= 1 << pb_def.index;
