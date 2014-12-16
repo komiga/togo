@@ -1,0 +1,56 @@
+
+type = glsl
+prelude = []
+
+/*
+Parameter block definitions:
+
+	PARAM_BLOCK_DRAW(name)
+	PARAM_BLOCK_FIXED(name, index)
+
+There can only be 16 definitions of each type (to total 32).
+Fixed param blocks can be indexed non-sequentially in [0, 15].
+The renderer pre-defines fixed param blocks in [14, 15].
+*/
+shared_source = ```
+	#extension GL_ARB_shading_language_420pack : enable
+
+	layout(std140) uniform;
+	#define s32 int
+	#define u32 uint
+	#define f32 float
+	#define f64 double
+	#define Vec1 vec1
+	#define Vec2 vec2
+	#define Vec3 vec3
+	#define Vec4 vec4
+
+	#define MC_PI 3.1415926535897932384626f
+	#define MAIN void main()
+
+	#if (__VERSION__ >= 420) || defined(GL_ARB_shading_language_420pack)
+		#define PARAM_BLOCK_FIXED(_a_name, _a_buffer_index) layout(binding = _a_buffer_index) uniform _a_name
+	#else
+		#define PARAM_BLOCK_FIXED(_a_name, _a_buffer_index) uniform _a_name
+	#endif
+	#define PARAM_BLOCK_DRAW(_a_name) uniform _a_name
+```
+
+/*
+Location of vertex attributes must be sequential from 0, following
+the data format in the vertex attribute buffer.
+*/
+vertex_source = ```
+	#define VERT_ATTR(_a_loc) layout(location = _a_loc) in
+	#define FRAG_ATTR out
+	#define RESULT gl_Position
+```
+
+/*
+Location of fragment results must be sequential from 0, following
+the target buffers.
+*/
+fragment_source = ```
+	#define FRAG_ATTR in
+	#define FRAG_RESULT(_a_loc) layout(location = _a_loc) out
+```
