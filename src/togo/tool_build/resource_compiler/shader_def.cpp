@@ -147,13 +147,13 @@ static bool read_glsl_unit(
 
 	array::clear(def.data);
 	array::reserve(def.data, capacity);
-	fixed_array::clear(def.data_indices);
+	fixed_array::clear(def.data_offsets);
 
 	// Push sources
 	for (unsigned index = 0; index < NUM_SOURCES; ++index) {
 		KVS const* const k_source = k_sources[index];
 		if (index != 0) {
-			fixed_array::push_back(def.data_indices, static_cast<u32>(array::size(def.data)));
+			fixed_array::push_back(def.data_offsets, static_cast<u32>(array::size(def.data)));
 		}
 		if (k_source) {
 			string::append(def.data, kvs::string_ref(*k_source));
@@ -166,10 +166,10 @@ static bool read_glsl_unit(
 	fixed_array::clear(def.fixed_param_blocks);
 	fixed_array::clear(def.draw_param_blocks);
 
+	// Endcap
+	fixed_array::push_back(def.data_offsets, static_cast<u32>(array::size(def.data)));
 	TOGO_ASSERTE(array::size(def.data) == capacity);
 
-	// Endcap
-	fixed_array::push_back(def.data_indices, static_cast<u32>(array::size(def.data)));
 	return true;
 }
 
