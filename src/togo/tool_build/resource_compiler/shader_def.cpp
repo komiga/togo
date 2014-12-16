@@ -19,6 +19,7 @@
 #include <togo/serialization/gfx/shader_def.hpp>
 #include <togo/serialization/binary_serializer.hpp>
 #include <togo/gfx/types.hpp>
+#include <togo/gfx/shader_def.hpp>
 #include <togo/tool_build/types.hpp>
 #include <togo/tool_build/resource_compiler.hpp>
 #include <togo/tool_build/compiler_manager.hpp>
@@ -89,6 +90,103 @@ static bool read_prelude(
 	return true;
 }
 
+static bool read_param_blocks(
+	KVS const& k_def,
+	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND>& param_blocks,
+	StringRef const param_blocks_name,
+	bool const indexed
+) {
+	KVS const* k_param_blocks;
+
+	// Fetch and validate structure
+	k_param_blocks = kvs::find(k_def, param_blocks_name);
+	if (k_param_blocks && !kvs::is_array(*k_param_blocks)) {
+		TOGO_LOG_ERRORF(
+			"malformed shader_def: %.*s must be an array\n",
+			param_blocks_name.size, param_blocks_name.data
+		);
+		return false;
+	} else if (!k_param_blocks) {
+		return true;
+	}
+
+	{// Read
+	KVS const* k_name;
+	KVS const* k_index;
+	unsigned local_index = 0;
+	for (KVS const& k_pb_def : *k_param_blocks) {
+		if (!kvs::is_node(k_pb_def)) {
+			TOGO_LOG_ERRORF(
+				"malformed shader_def: %.*s values must be nodes\n",
+				param_blocks_name.size, param_blocks_name.data
+			);
+			return false;
+		}
+
+		// Fetch and validate structure
+		k_name = kvs::find(k_pb_def, "name");
+		if (!k_name || !kvs::is_string(*k_name) || kvs::string_size(*k_name) == 0) {
+			TOGO_LOG_ERROR("malformed shader_def: param block definition: name must be a non-empty string\n");
+			return false;
+		}
+		k_index = kvs::find(k_pb_def, "index");
+		if (!indexed && k_index) {
+			TOGO_LOG_ERRORF(
+				"malformed shader_def: %.*s definitions cannot be explicitly indexed\n",
+				param_blocks_name.size, param_blocks_name.data
+			);
+			return false;
+		} else if (
+			indexed && (
+				!k_index ||
+				!kvs::is_integer(*k_index) ||
+				kvs::integer(*k_index) < 0 ||
+				kvs::integer(*k_index) > 15
+			)
+		) {
+			TOGO_LOG_ERRORF(
+				"malformed shader_def: %.*s definitions must be explicitly indexed in [0, 15]\n",
+				param_blocks_name.size, param_blocks_name.data
+			);
+			return false;
+		}
+
+		// Read
+		fixed_array::push_back(
+			param_blocks,
+			{
+				indexed
+				? static_cast<unsigned>(kvs::integer(*k_index))
+				: local_index,
+				kvs::name_hash(*k_name), kvs::string_ref(*k_name)
+			}
+		);
+		++local_index;
+	}}
+	return true;
+}
+
+inline static void sum_data_table_capacities(
+	unsigned& capacity,
+	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND>& param_blocks
+) {
+	for (auto const& pb_def : param_blocks) {
+		// + NUL
+		capacity += pb_def.name.size + 1;
+	}
+}
+
+inline static void push_param_block_names(
+	gfx::ShaderDef& def,
+	FixedArray<gfx::ParamBlockDef, TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND>& param_blocks
+) {
+	for (auto const& pb_def : param_blocks) {
+		fixed_array::push_back(def.data_offsets, static_cast<u32>(array::size(def.data)));
+		string::append(def.data, pb_def.name);
+		array::back(def.data) = '\x03';
+	}
+}
+
 inline static bool check_source(
 	KVS const* k_source
 ) {
@@ -132,18 +230,30 @@ static bool read_glsl_unit(
 	}
 
 	// Read
-	u32 capacity = 0;
 	def.properties |= gfx::ShaderDef::LANG_GLSL;
 
+	// Read param blocks
+	fixed_array::clear(def.fixed_param_blocks);
+	fixed_array::clear(def.draw_param_blocks);
+	if (
+		!read_param_blocks(k_def, def.fixed_param_blocks, "fixed_param_blocks", true) ||
+		!read_param_blocks(k_def, def.draw_param_blocks, "draw_param_blocks", false)
+	) {
+		return false;
+	}
+
 	// Source capacity
+	u32 capacity = 0;
 	for (KVS const* k_source : k_sources) {
 		if (k_source) {
+			// + \n
 			capacity += kvs::string_size(*k_source) + 1;
 		}
 	}
 
 	// Param block names capacity
-	// TODO
+	sum_data_table_capacities(capacity, def.fixed_param_blocks);
+	sum_data_table_capacities(capacity, def.draw_param_blocks);
 
 	array::clear(def.data);
 	array::reserve(def.data, capacity);
@@ -162,13 +272,24 @@ static bool read_glsl_unit(
 	}
 
 	// Push param block names
-	// TODO
-	fixed_array::clear(def.fixed_param_blocks);
-	fixed_array::clear(def.draw_param_blocks);
+	push_param_block_names(def, def.fixed_param_blocks);
+	push_param_block_names(def, def.draw_param_blocks);
 
 	// Endcap
 	fixed_array::push_back(def.data_offsets, static_cast<u32>(array::size(def.data)));
 	TOGO_ASSERTE(array::size(def.data) == capacity);
+
+	// Replace \x03 with NUL for param block name termination
+	for (
+		unsigned index = gfx::ShaderDef::IDX_PARAM_NAMES + 1;
+		index < fixed_array::size(def.data_offsets);
+		++index
+	) {
+		def.data[def.data_offsets[index] - 1] = '\0';
+	}
+
+	// Link param block names to def.data
+	gfx::shader_def::patch_param_block_names(def);
 
 	return true;
 }
