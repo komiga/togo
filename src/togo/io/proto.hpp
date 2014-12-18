@@ -11,8 +11,8 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/io/types.hpp>
 #include <togo/utility/utility.hpp>
+#include <togo/io/types.hpp>
 
 namespace togo {
 

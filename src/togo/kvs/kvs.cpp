@@ -5,10 +5,10 @@
 
 #include <togo/config.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/log/log.hpp>
+#include <togo/memory/memory.hpp>
 #include <togo/string/string.hpp>
 #include <togo/hash/hash.hpp>
-#include <togo/memory/memory.hpp>
-#include <togo/log/log.hpp>
 #include <togo/kvs/kvs.hpp>
 
 #include <cstring>

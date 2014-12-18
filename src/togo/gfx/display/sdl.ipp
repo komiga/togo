@@ -4,12 +4,12 @@
 */
 
 #include <togo/config.hpp>
-#include <togo/utility/utility.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/io/object_buffer.hpp>
-#include <togo/gfx/display.hpp>
 #include <togo/gfx/gfx/sdl_common.hpp>
+#include <togo/gfx/display.hpp>
 #include <togo/gfx/display/types.hpp>
 #include <togo/gfx/display/private.hpp>
 #include <togo/gfx/display/sdl.hpp>

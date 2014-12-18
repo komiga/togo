@@ -15,14 +15,14 @@
 #include <togo/filesystem/filesystem.hpp>
 #include <togo/io/io.hpp>
 #include <togo/io/file_stream.hpp>
+#include <togo/kvs/kvs.hpp>
+#include <togo/resource/resource.hpp>
 #include <togo/serialization/serializer.hpp>
 #include <togo/serialization/support.hpp>
 #include <togo/serialization/binary_serializer.hpp>
-#include <togo/serialization/string.hpp>
 #include <togo/serialization/array.hpp>
+#include <togo/serialization/string.hpp>
 #include <togo/serialization/resource/resource_metadata.hpp>
-#include <togo/kvs/kvs.hpp>
-#include <togo/resource/resource.hpp>
 #include <togo/tool_build/package_compiler.hpp>
 
 namespace togo {

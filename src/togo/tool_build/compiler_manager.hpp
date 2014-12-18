@@ -10,9 +10,9 @@
 #pragma once
 
 #include <togo/tool_build/config.hpp>
+#include <togo/tool_build/types.hpp>
 #include <togo/string/types.hpp>
 #include <togo/resource/types.hpp>
-#include <togo/tool_build/types.hpp>
 
 namespace togo {
 namespace tool_build {

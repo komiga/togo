@@ -3,8 +3,8 @@
 #include <togo/error/assert.hpp>
 #include <togo/utility/utility.hpp>
 #include <togo/log/log.hpp>
-#include <togo/hash/hash.hpp>
 #include <togo/memory/memory.hpp>
+#include <togo/hash/hash.hpp>
 #include <togo/io/types.hpp>
 #include <togo/io/io.hpp>
 #include <togo/resource/types.hpp>

@@ -10,8 +10,8 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/serialization/support.hpp>
 #include <togo/resource/types.hpp>
+#include <togo/serialization/support.hpp>
 
 namespace togo {
 

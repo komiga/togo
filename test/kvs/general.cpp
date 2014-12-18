@@ -1,8 +1,8 @@
 
-#include <togo/utility/utility.hpp>
-#include <togo/string/string.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/log/log.hpp>
+#include <togo/string/string.hpp>
 #include <togo/kvs/kvs.hpp>
 
 #include "../common/helpers.hpp"

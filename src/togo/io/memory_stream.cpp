@@ -5,8 +5,8 @@
 
 #include <togo/config.hpp>
 #include <togo/utility/utility.hpp>
-#include <togo/collection/array.hpp>
 #include <togo/memory/memory.hpp>
+#include <togo/collection/array.hpp>
 #include <togo/io/memory_stream.hpp>
 
 namespace togo {

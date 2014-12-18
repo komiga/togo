@@ -5,8 +5,8 @@
 
 #include <togo/config.hpp>
 #include <togo/gfx/gfx.hpp>
-#include <togo/gfx/gfx/common.hpp>
 #include <togo/gfx/gfx/private.hpp>
+#include <togo/gfx/gfx/common.hpp>
 
 #if (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_SDL)
 	#include <togo/gfx/gfx/sdl.ipp>

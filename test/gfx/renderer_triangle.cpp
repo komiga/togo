@@ -1,12 +1,11 @@
 
-#include <togo/utility/utility.hpp>
 #include <togo/error/assert.hpp>
-#include <togo/log/log.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/math/math.hpp>
+#include <togo/log/log.hpp>
 #include <togo/resource/types.hpp>
-#include <togo/resource/resource_manager.hpp>
 #include <togo/resource/resource_handler.hpp>
-#include <togo/input/input.hpp>
+#include <togo/resource/resource_manager.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/gfx/gfx.hpp>
 #include <togo/gfx/display.hpp>
@@ -14,6 +13,7 @@
 #include <togo/gfx/renderer/types.hpp>
 #include <togo/gfx/renderer/private.hpp>
 #include <togo/gfx/renderer/opengl.hpp>
+#include <togo/input/input.hpp>
 #include <togo/app/app.hpp>
 
 #include "../common/helpers.hpp"

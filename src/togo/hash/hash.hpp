@@ -11,8 +11,8 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/hash/types.hpp>
 #include <togo/string/string.hpp>
+#include <togo/hash/types.hpp>
 
 #include <am/hash/fnv.hpp>
 

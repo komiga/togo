@@ -4,8 +4,8 @@
 #include <togo/system/system.hpp>
 #include <togo/gfx/gfx.hpp>
 #include <togo/gfx/display.hpp>
-#include <togo/input/input_buffer.hpp>
 #include <togo/input/input.hpp>
+#include <togo/input/input_buffer.hpp>
 
 #include "../common/helpers.hpp"
 

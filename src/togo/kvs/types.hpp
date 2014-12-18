@@ -11,10 +11,10 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/utility/tags.hpp>
-#include <togo/utility/traits.hpp>
 #include <togo/types.hpp>
 #include <togo/utility/utility.hpp>
+#include <togo/utility/tags.hpp>
+#include <togo/utility/traits.hpp>
 #include <togo/math/types.hpp>
 #include <togo/string/types.hpp>
 #include <togo/hash/hash.hpp>

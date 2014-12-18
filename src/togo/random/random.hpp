@@ -11,10 +11,10 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/random/types.hpp>
-#include <togo/utility/traits.hpp>
-#include <togo/utility/utility.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
+#include <togo/utility/traits.hpp>
+#include <togo/random/types.hpp>
 
 namespace togo {
 

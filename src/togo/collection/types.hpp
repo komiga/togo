@@ -12,9 +12,8 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/memory/types.hpp>
-
 #include <togo/utility/constraints.hpp>
+#include <togo/memory/types.hpp>
 
 namespace togo {
 

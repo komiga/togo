@@ -4,9 +4,9 @@
 */
 
 #include <togo/config.hpp>
-#include <togo/threading/mutex.hpp>
-#include <togo/memory/memory.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/memory/memory.hpp>
+#include <togo/threading/mutex.hpp>
 #include <togo/external/dlmalloc_import.hpp>
 
 #include <new>

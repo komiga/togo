@@ -10,8 +10,8 @@
 #include <togo/resource/resource_handler.hpp>
 #include <togo/resource/resource_manager.hpp>
 #include <togo/serialization/serializer.hpp>
-#include <togo/serialization/resource/test_resource.hpp>
 #include <togo/serialization/binary_serializer.hpp>
+#include <togo/serialization/resource/test_resource.hpp>
 
 namespace togo {
 

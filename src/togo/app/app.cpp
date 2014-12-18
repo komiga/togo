@@ -5,10 +5,10 @@
 
 #include <togo/config.hpp>
 #include <togo/log/log.hpp>
-#include <togo/system/system.hpp>
 #include <togo/memory/memory.hpp>
-#include <togo/resource/resource_manager.hpp>
+#include <togo/system/system.hpp>
 #include <togo/resource/resource_handler.hpp>
+#include <togo/resource/resource_manager.hpp>
 #include <togo/gfx/gfx.hpp>
 #include <togo/gfx/display.hpp>
 #include <togo/gfx/renderer.hpp>

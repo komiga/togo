@@ -11,11 +11,11 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/utility/traits.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/traits.hpp>
+#include <togo/io/io.hpp>
 #include <togo/serialization/types.hpp>
 #include <togo/serialization/support.hpp>
-#include <togo/io/io.hpp>
 
 namespace togo {
 

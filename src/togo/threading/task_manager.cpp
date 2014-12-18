@@ -4,14 +4,14 @@
 */
 
 #include <togo/config.hpp>
-#include <togo/utility/utility.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/log/log.hpp>
 #include <togo/collection/array.hpp>
 #include <togo/collection/priority_queue.hpp>
-#include <togo/threading/thread.hpp>
-#include <togo/threading/mutex.hpp>
 #include <togo/threading/condvar.hpp>
+#include <togo/threading/mutex.hpp>
+#include <togo/threading/thread.hpp>
 #include <togo/threading/task_manager.hpp>
 
 #include <cstring>

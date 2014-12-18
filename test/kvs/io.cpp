@@ -1,11 +1,11 @@
 
+#include <togo/error/assert.hpp>
 #include <togo/utility/utility.hpp>
 #include <togo/math/math.hpp>
-#include <togo/error/assert.hpp>
 #include <togo/log/log.hpp>
 #include <togo/collection/array.hpp>
-#include <togo/kvs/kvs.hpp>
 #include <togo/io/memory_stream.hpp>
+#include <togo/kvs/kvs.hpp>
 
 #include "../common/helpers.hpp"
 

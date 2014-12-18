@@ -10,9 +10,9 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/math/types.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/input/types.hpp>
-#include <togo/math/types.hpp>
 
 namespace togo {
 namespace input {

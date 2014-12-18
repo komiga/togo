@@ -7,10 +7,10 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/hash/hash.hpp>
 #include <togo/memory/types.hpp>
-#include <togo/gfx/types.hpp>
 #include <togo/collection/types.hpp>
+#include <togo/hash/hash.hpp>
+#include <togo/gfx/types.hpp>
 
 #if (TOGO_CONFIG_RENDERER == TOGO_RENDERER_OPENGL)
 	#include <togo/gfx/renderer/opengl.hpp>

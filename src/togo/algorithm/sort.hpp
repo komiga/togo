@@ -11,9 +11,9 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/utility/constraints.hpp>
 #include <togo/error/assert.hpp>
 #include <togo/utility/utility.hpp>
+#include <togo/utility/constraints.hpp>
 
 #include <cstring>
 

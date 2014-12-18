@@ -11,8 +11,8 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/threading/types.hpp>
 #include <togo/memory/memory.hpp>
+#include <togo/threading/types.hpp>
 
 namespace togo {
 namespace thread {

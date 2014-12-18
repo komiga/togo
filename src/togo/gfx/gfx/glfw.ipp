@@ -4,12 +4,12 @@
 */
 
 #include <togo/config.hpp>
-#include <togo/utility/utility.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/log/log.hpp>
 #include <togo/gfx/gfx.hpp>
-#include <togo/gfx/gfx/glfw_common.hpp>
 #include <togo/gfx/gfx/private.hpp>
+#include <togo/gfx/gfx/glfw_common.hpp>
 
 #include <GLFW/glfw3.h>
 

@@ -11,9 +11,9 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/utility/constraints.hpp>
 #include <togo/io/types.hpp>
 #include <togo/io/proto.hpp>
-#include <togo/utility/constraints.hpp>
 
 namespace togo {
 namespace io {

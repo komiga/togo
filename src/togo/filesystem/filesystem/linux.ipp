@@ -6,8 +6,8 @@
 #include <togo/config.hpp>
 #include <togo/error/assert.hpp>
 #include <togo/utility/utility.hpp>
-#include <togo/string/string.hpp>
 #include <togo/log/log.hpp>
+#include <togo/string/string.hpp>
 #include <togo/filesystem/filesystem.hpp>
 
 #include <cerrno>

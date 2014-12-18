@@ -12,12 +12,12 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/utility/traits.hpp>
 #include <togo/utility/utility.hpp>
+#include <togo/utility/traits.hpp>
 #include <togo/collection/types.hpp>
 #include <togo/hash/hash.hpp>
-#include <togo/serialization/types.hpp>
 #include <togo/resource/types.hpp>
+#include <togo/serialization/types.hpp>
 
 #include <initializer_list>
 

@@ -12,8 +12,8 @@
 
 #include <togo/config.hpp>
 #include <togo/utility/utility.hpp>
-#include <togo/gfx/types.hpp>
 #include <togo/memory/memory.hpp>
+#include <togo/gfx/types.hpp>
 
 #include <initializer_list>
 

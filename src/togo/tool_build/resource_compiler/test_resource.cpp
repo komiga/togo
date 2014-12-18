@@ -4,8 +4,9 @@
 */
 
 #include <togo/tool_build/config.hpp>
-#include <togo/log/log.hpp>
+#include <togo/tool_build/types.hpp>
 #include <togo/utility/utility.hpp>
+#include <togo/log/log.hpp>
 #include <togo/collection/hash_map.hpp>
 #include <togo/string/string.hpp>
 #include <togo/hash/hash.hpp>
@@ -13,9 +14,8 @@
 #include <togo/kvs/kvs.hpp>
 #include <togo/resource/types.hpp>
 #include <togo/serialization/serializer.hpp>
-#include <togo/serialization/resource/test_resource.hpp>
 #include <togo/serialization/binary_serializer.hpp>
-#include <togo/tool_build/types.hpp>
+#include <togo/serialization/resource/test_resource.hpp>
 #include <togo/tool_build/resource_compiler.hpp>
 #include <togo/tool_build/compiler_manager.hpp>
 

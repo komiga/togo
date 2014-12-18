@@ -4,9 +4,10 @@
 */
 
 #include <togo/tool_build/config.hpp>
+#include <togo/tool_build/types.hpp>
 #include <togo/error/assert.hpp>
-#include <togo/log/log.hpp>
 #include <togo/utility/utility.hpp>
+#include <togo/log/log.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/collection/fixed_array.hpp>
 #include <togo/collection/hash_map.hpp>
@@ -14,14 +15,13 @@
 #include <togo/hash/hash.hpp>
 #include <togo/kvs/kvs.hpp>
 #include <togo/resource/resource.hpp>
-#include <togo/serialization/serializer.hpp>
-#include <togo/serialization/support.hpp>
-#include <togo/serialization/gfx/shader_def.hpp>
-#include <togo/serialization/binary_serializer.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/gfx/gfx.hpp>
 #include <togo/gfx/shader_def.hpp>
-#include <togo/tool_build/types.hpp>
+#include <togo/serialization/serializer.hpp>
+#include <togo/serialization/support.hpp>
+#include <togo/serialization/binary_serializer.hpp>
+#include <togo/serialization/gfx/shader_def.hpp>
 #include <togo/tool_build/resource_compiler.hpp>
 #include <togo/tool_build/compiler_manager.hpp>
 

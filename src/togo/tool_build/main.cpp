@@ -4,10 +4,10 @@
 */
 
 #include <togo/tool_build/config.hpp>
-#include <togo/memory/memory.hpp>
-#include <togo/utility/args.hpp>
-#include <togo/kvs/kvs.hpp>
 #include <togo/tool_build/types.hpp>
+#include <togo/utility/args.hpp>
+#include <togo/memory/memory.hpp>
+#include <togo/kvs/kvs.hpp>
 #include <togo/tool_build/interface.hpp>
 
 using namespace togo;

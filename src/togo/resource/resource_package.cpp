@@ -4,11 +4,11 @@
 */
 
 #include <togo/config.hpp>
-#include <togo/utility/utility.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/log/log.hpp>
-#include <togo/hash/hash.hpp>
 #include <togo/collection/hash_map.hpp>
+#include <togo/hash/hash.hpp>
 #include <togo/io/io.hpp>
 #include <togo/io/file_stream.hpp>
 #include <togo/resource/types.hpp>

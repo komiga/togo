@@ -6,9 +6,9 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/error/assert.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/gfx/renderer/types.hpp>
-#include <togo/error/assert.hpp>
 
 namespace togo {
 namespace gfx {

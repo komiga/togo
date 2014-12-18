@@ -12,8 +12,8 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/collection/types.hpp>
 #include <togo/memory/types.hpp>
+#include <togo/collection/types.hpp>
 
 #if defined(TOGO_PLATFORM_IS_POSIX)
 	#include <togo/threading/mutex/posix.hpp>

@@ -11,10 +11,10 @@
 #include <togo/io/memory_stream.hpp>
 #include <togo/serialization/serializer.hpp>
 #include <togo/serialization/support.hpp>
+#include <togo/serialization/binary_serializer.hpp>
 #include <togo/serialization/fixed_array.hpp>
 #include <togo/serialization/array.hpp>
 #include <togo/serialization/string.hpp>
-#include <togo/serialization/binary_serializer.hpp>
 
 #include "../common/helpers.hpp"
 

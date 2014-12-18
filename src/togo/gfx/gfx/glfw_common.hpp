@@ -6,8 +6,8 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/utility/utility.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/gfx/gfx/common.hpp>
 
 #include <GL/glew.h>

@@ -5,19 +5,19 @@
 
 #include <togo/config.hpp>
 #include <togo/error/assert.hpp>
-#include <togo/collection/array.hpp>
 #include <togo/collection/fixed_array.hpp>
+#include <togo/collection/array.hpp>
 #include <togo/resource/types.hpp>
 #include <togo/resource/resource.hpp>
 #include <togo/resource/resource_handler.hpp>
 #include <togo/resource/resource_manager.hpp>
-#include <togo/serialization/serializer.hpp>
-#include <togo/serialization/gfx/shader_def.hpp>
-#include <togo/serialization/binary_serializer.hpp>
 #include <togo/gfx/types.hpp>
+#include <togo/gfx/renderer.hpp>
 #include <togo/gfx/renderer/types.hpp>
 #include <togo/gfx/shader_def.hpp>
-#include <togo/gfx/renderer.hpp>
+#include <togo/serialization/serializer.hpp>
+#include <togo/serialization/binary_serializer.hpp>
+#include <togo/serialization/gfx/shader_def.hpp>
 
 namespace togo {
 

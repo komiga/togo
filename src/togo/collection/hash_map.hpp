@@ -12,10 +12,10 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/collection/types.hpp>
-#include <togo/utility/utility.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/memory/memory.hpp>
+#include <togo/collection/types.hpp>
 #include <togo/collection/array.hpp>
 
 #include <utility>

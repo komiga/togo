@@ -12,8 +12,8 @@
 #include <togo/config.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/serialization/support.hpp>
-#include <togo/serialization/array.hpp>
 #include <togo/serialization/fixed_array.hpp>
+#include <togo/serialization/array.hpp>
 
 namespace togo {
 

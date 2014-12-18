@@ -8,9 +8,9 @@
 #include <togo/config.hpp>
 #include <togo/types.hpp>
 #include <togo/memory/types.hpp>
+#include <togo/collection/fixed_array.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/input/types.hpp>
-#include <togo/collection/fixed_array.hpp>
 
 #if (TOGO_CONFIG_GRAPHICS_BACKEND == TOGO_GRAPHICS_BACKEND_SDL)
 	#include <togo/gfx/display/sdl.hpp>

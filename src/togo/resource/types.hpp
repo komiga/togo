@@ -13,11 +13,11 @@
 #include <togo/config.hpp>
 #include <togo/types.hpp>
 #include <togo/utility/traits.hpp>
+#include <togo/memory/types.hpp>
+#include <togo/collection/types.hpp>
 #include <togo/string/types.hpp>
 #include <togo/hash/types.hpp>
 #include <togo/hash/hash.hpp>
-#include <togo/memory/types.hpp>
-#include <togo/collection/types.hpp>
 #include <togo/io/types.hpp>
 #include <togo/io/file_stream.hpp>
 

@@ -11,9 +11,9 @@
 
 #include <togo/config.hpp>
 #include <togo/utility/tags.hpp>
-#include <togo/string/types.hpp>
 #include <togo/collection/fixed_array.hpp>
 #include <togo/collection/array.hpp>
+#include <togo/string/types.hpp>
 
 #include <cstring>
 

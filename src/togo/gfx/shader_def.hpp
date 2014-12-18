@@ -14,7 +14,6 @@
 #include <togo/utility/utility.hpp>
 #include <togo/collection/types.hpp>
 #include <togo/gfx/types.hpp>
-#include <togo/memory/memory.hpp>
 
 namespace togo {
 namespace gfx {

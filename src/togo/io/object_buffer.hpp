@@ -10,13 +10,13 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/error/assert.hpp>
 #include <togo/types.hpp>
+#include <togo/error/assert.hpp>
 #include <togo/memory/types.hpp>
 #include <togo/collection/array.hpp>
+#include <togo/io/io.hpp>
 #include <togo/io/memory_stream.hpp>
 #include <togo/io/object_buffer_type.hpp>
-#include <togo/io/io.hpp>
 
 namespace togo {
 

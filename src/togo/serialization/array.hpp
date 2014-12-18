@@ -11,8 +11,8 @@
 
 #include <togo/config.hpp>
 #include <togo/error/assert.hpp>
-#include <togo/serialization/support.hpp>
 #include <togo/collection/array.hpp>
+#include <togo/serialization/support.hpp>
 
 #include <limits>
 

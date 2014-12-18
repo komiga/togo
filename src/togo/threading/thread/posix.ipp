@@ -5,9 +5,9 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/threading/types.hpp>
 #include <togo/error/assert.hpp>
 #include <togo/memory/memory.hpp>
+#include <togo/threading/types.hpp>
 #include <togo/threading/thread.hpp>
 
 #include <cstring>

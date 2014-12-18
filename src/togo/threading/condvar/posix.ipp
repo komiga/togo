@@ -5,8 +5,8 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/threading/types.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/threading/types.hpp>
 #include <togo/threading/condvar.hpp>
 
 #include <cerrno>

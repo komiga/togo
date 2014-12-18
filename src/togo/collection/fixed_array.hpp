@@ -12,9 +12,9 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/collection/types.hpp>
-#include <togo/memory/memory.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/memory/memory.hpp>
+#include <togo/collection/types.hpp>
 
 #include <cstring>
 

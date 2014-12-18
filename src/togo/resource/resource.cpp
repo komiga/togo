@@ -5,9 +5,9 @@
 
 #include <togo/config.hpp>
 #include <togo/utility/utility.hpp>
+#include <togo/collection/fixed_array.hpp>
 #include <togo/algorithm/sort.hpp>
 #include <togo/string/string.hpp>
-#include <togo/collection/fixed_array.hpp>
 #include <togo/resource/resource.hpp>
 
 namespace togo {

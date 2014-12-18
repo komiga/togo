@@ -1,6 +1,6 @@
 
-#include <togo/utility/utility.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/log/log.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/collection/priority_queue.hpp>

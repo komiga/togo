@@ -11,13 +11,13 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/error/assert.hpp>
 #include <togo/utility/utility.hpp>
 #include <togo/string/types.hpp>
-#include <togo/kvs/types.hpp>
-#include <togo/error/assert.hpp>
 #include <togo/string/string.hpp>
 #include <togo/hash/hash.hpp>
 #include <togo/io/types.hpp>
+#include <togo/kvs/types.hpp>
 
 namespace togo {
 
