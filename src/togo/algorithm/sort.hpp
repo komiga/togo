@@ -212,7 +212,7 @@ void sort_insertion(
 		// Take value at current position
 		ivalue = *i;
 
-		// Shift elements behind ivalue forward until ivalue would
+		// Shift elements behind ivalue down until ivalue would
 		// be in its sub-sorted position
 		for (j = i; j > begin && less_func(ivalue, *(j - 1)); --j) {
 			*j = *(j - 1);
