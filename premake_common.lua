@@ -1,29 +1,19 @@
 
 -- Import precore
 
-local env_name = "PRECORE_ROOT"
-local root_path = os.getenv(env_name)
-
-if nil == root_path or 0 == #root_path then
-	error(
-		"Environment variable '" .. env_name .. "' is not " ..
-		"defined or is blank; assign it to precore's root directory"
-	)
-end
-
-dofile(path.join(os.getenv(env_name), "precore.lua"))
-
--- Utilities
-
-function action_clean()
-	if "clean" == _ACTION then
-		for _, pc_sol in pairs(precore.state.solutions) do
-			for _, pc_proj in pairs(pc_sol.projects) do
-				os.rmdir(path.join(pc_proj.obj.basedir, "out"))
-			end
-		end
+function import_precore()
+	local env_name = "PRECORE_ROOT"
+	local root_path = os.getenv(env_name)
+	if nil == root_path or 0 == #root_path then
+		error(
+			"Environment variable '" .. env_name .. "' is not " ..
+			"defined or is blank; assign it to precore's root directory"
+		)
 	end
+	dofile(path.join(root_path, "precore.lua"))
 end
+
+import_precore()
 
 -- Custom precore configs
 

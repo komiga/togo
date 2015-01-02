@@ -65,4 +65,4 @@ include("system")
 include("threading")
 include("utility")
 
-action_clean()
+precore.action_clean("out")

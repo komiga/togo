@@ -67,4 +67,4 @@ configuration {}
 
 make_tool("build", nil)
 
-action_clean()
+precore.action_clean("out", "lib", "bin")
