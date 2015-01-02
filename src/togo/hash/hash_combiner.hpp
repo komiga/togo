@@ -33,7 +33,7 @@ inline unsigned size(HashCombiner<H> const& combiner) {
 /// Returns true if any bytes have been combined.
 template<class H>
 inline bool any(HashCombiner<H> const& combiner) {
-	return hash_combiner::size(combiner) != 0;
+	return hash_combiner::size(combiner) > 0;
 }
 
 /// Returns true if no bytes have been combined.
