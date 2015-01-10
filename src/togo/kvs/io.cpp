@@ -406,7 +406,7 @@ static bool parser_read_number(Parser& p) {
 			break;
 
 		default:
-			if (p.c >= '0' || p.c <= '9') {
+			if ('0' <= p.c && p.c <= '9') {
 				if (parts & PART_EXPONENT) {
 					parts |= PART_EXPONENT_NUMERAL;
 				} else if (parts & PART_DECIMAL) {
