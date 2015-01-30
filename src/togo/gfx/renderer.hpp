@@ -54,16 +54,6 @@ gfx::GeneratorDef const* find_generator_def(
 	gfx::GeneratorNameHash name_hash
 );
 
-/// Calculate block-aligned buffer size.
-///
-/// This should be used for buffers that contain param blocks, which
-/// require aligned offsets.
-unsigned block_aligned_buffer_size(
-	gfx::Renderer const* renderer,
-	unsigned num_blocks,
-	unsigned block_size
-);
-
 /// Create buffer.
 ///
 /// If data is nullptr, map_buffer() must be used to fill the buffer.
@@ -100,6 +90,25 @@ inline void map_buffer(
 		renderer, binding.id, binding.offset, binding.size, data
 	);
 }
+
+/// Get parameter block offset by index.
+///
+/// block_size should be the size of the largest block in the buffer.
+unsigned param_block_offset(
+	gfx::Renderer const* renderer,
+	unsigned block_index,
+	unsigned block_size
+);
+
+/// Get size for a buffer of parameter blocks.
+///
+/// This should be used for buffers that contain parameter blocks,
+/// which require aligned offsets.
+unsigned param_block_buffer_size(
+	gfx::Renderer const* renderer,
+	unsigned num_blocks,
+	unsigned block_size
+);
 
 /// Make a parameter block binding.
 ///
