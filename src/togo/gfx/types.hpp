@@ -191,6 +191,8 @@ using ParamBlockNameHash = hash32;
 /// Generator name hash.
 using GeneratorNameHash = hash32;
 
+namespace hash_literals {
+
 /// Parameter block name hash literal.
 inline constexpr ParamBlockNameHash
 operator"" _param_block_name(
@@ -208,6 +210,10 @@ operator"" _generator_name(
 ) {
 	return hash::calc32_ce(data, size);
 }
+
+} // namespace hash_literals
+
+using namespace hash_literals;
 
 /// Renderer types.
 enum : RendererType {
