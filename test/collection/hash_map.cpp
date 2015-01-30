@@ -25,7 +25,7 @@ void set_first(HashMap<K, Value>& hm) {
 	Value* v;
 	hash_map::set(hm, K{1}, {42});
 	HASH_MAP_ASSERTIONS(hm, 1, 11);
-	v = hash_map::get(hm, 1u);
+	v = hash_map::find(hm, 1u);
 	TOGO_ASSERTE(v != nullptr && v->x == 42);
 	for (auto const& entry : hm) {
 		TOGO_ASSERTE(entry.value.x == 42);
@@ -33,7 +33,7 @@ void set_first(HashMap<K, Value>& hm) {
 
 	hash_map::set(hm, K{1}, {3});
 	HASH_MAP_ASSERTIONS(hm, 1, 11);
-	v = hash_map::get(hm, 1u);
+	v = hash_map::find(hm, 1u);
 	TOGO_ASSERTE(v != nullptr && v->x == 3);
 	for (auto const& entry : hm) {
 		TOGO_ASSERTE(entry.value.x == 3);
@@ -108,36 +108,36 @@ signed main() {
 		hash_map::push(hm, key, T{0});
 		HASH_MAP_ASSERTIONS(hm, 1, 11);
 		TOGO_ASSERTE(hash_map::count(hm, key) == 1);
-		v = hash_map::get(hm, key);
+		v = hash_map::find(hm, key);
 		TOGO_ASSERTE(*v == T{0});
 
 		// Overwrite first
 		hash_map::set(hm, key, T{1});
 		HASH_MAP_ASSERTIONS(hm, 1, 11);
-		v = hash_map::get(hm, key);
+		v = hash_map::find(hm, key);
 		TOGO_ASSERTE(*v == T{1});
 
 		// Second value
 		hash_map::push(hm, key, T{2});
 		HASH_MAP_ASSERTIONS(hm, 2, 11);
 		TOGO_ASSERTE(hash_map::count(hm, key) == 2);
-		v = hash_map::get(hm, key);
+		v = hash_map::find(hm, key);
 		TOGO_ASSERTE(*v == T{2});
 
 		// Check node order
-		node = hash_map::get_node(hm, key);
+		node = hash_map::find_node(hm, key);
 		TOGO_ASSERTE(node != nullptr);
 		TOGO_ASSERTE(node->value == T{2});
 
-		node = hash_map::get_next(hm, node);
+		node = hash_map::next_node(hm, node);
 		TOGO_ASSERTE(node != nullptr);
 		TOGO_ASSERTE(node->value == T{1});
 		rm_node = node;
 
-		node = hash_map::get_next(hm, node);
+		node = hash_map::next_node(hm, node);
 		TOGO_ASSERTE(node == nullptr);
 
-		TOGO_ASSERTE(hash_map::get_node(hm, K{2}) == nullptr);
+		TOGO_ASSERTE(hash_map::find_node(hm, K{2}) == nullptr);
 
 		// Remove first value, T{1}
 		hash_map::remove(hm, rm_node);
@@ -146,12 +146,12 @@ signed main() {
 		rm_node = nullptr;
 
 		// Check remaining nodes
-		node = hash_map::get_node(hm, key);
+		node = hash_map::find_node(hm, key);
 		TOGO_ASSERTE(node != nullptr);
 		TOGO_ASSERTE(node->value == T{2});
 		rm_node = node;
 
-		node = hash_map::get_next(hm, node);
+		node = hash_map::next_node(hm, node);
 		TOGO_ASSERTE(node == nullptr);
 
 		// Remove second value, T{2}

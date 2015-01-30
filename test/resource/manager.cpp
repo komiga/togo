@@ -34,21 +34,21 @@ void test(
 	bool const expect_success,
 	s64 const x
 ) {
-	TOGO_ASSERTE(!resource_manager::get_resource(
+	TOGO_ASSERTE(!resource_manager::find_resource(
 		rm, RES_TYPE_TEST, name_hash
 	).valid());
 	auto const* test_resource = static_cast<TestResource*>(
 		resource_manager::load_resource(rm, RES_TYPE_TEST, name_hash).pointer
 	);
 	TOGO_ASSERTE(static_cast<bool>(test_resource) == expect_success);
-	TOGO_ASSERTE(test_resource == resource_manager::get_resource(
+	TOGO_ASSERTE(test_resource == resource_manager::find_resource(
 		rm, RES_TYPE_TEST, name_hash
 	).pointer);
 	if (test_resource) {
 		TOGO_ASSERTE(test_resource->x == x);
 		resource_manager::unload_resource(rm, RES_TYPE_TEST, name_hash);
 		test_resource = nullptr;
-		TOGO_ASSERTE(!resource_manager::get_resource(
+		TOGO_ASSERTE(!resource_manager::find_resource(
 			rm, RES_TYPE_TEST, name_hash
 		).valid());
 	}
