@@ -64,11 +64,13 @@ signed main() {
 		filesystem::time_last_modified(TEST_FILE) >
 		system::secs_since_epoch() - 2
 	);
+	TOGO_ASSERTE(filesystem::file_size(TEST_FILE) == 0);
 
 	// File removal
 	TOGO_ASSERTE(filesystem::remove_file(TEST_FILE));
 	TOGO_ASSERTE(!filesystem::is_file(TEST_FILE));
 	TOGO_ASSERTE(!filesystem::remove_file(TEST_FILE));
+	TOGO_ASSERTE(filesystem::file_size(TEST_FILE) == 0);
 
 	// Directory removal
 	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR));
