@@ -97,8 +97,8 @@ inline void map_buffer(
 ParamBlockBinding make_param_block_binding(
 	gfx::Renderer const* renderer,
 	gfx::BufferID id,
-	u32 offset,
-	u32 size
+	unsigned offset,
+	unsigned size
 );
 
 /// Create buffer binding.
