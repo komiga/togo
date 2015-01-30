@@ -82,15 +82,18 @@ void TestAppModel::init(TestApp& app) {
 		{{app._data.triangle_buffer, &triangle_vformat, 0}}
 	);
 
-	// Setup parameter block buffer
-	// TODO: Need an alignment function for the size based on the
-	// number of param blocks that will be used in the buffer.
-	// Alignment of 256 bytes is common ;_;
+	{// Setup parameter block buffer
+	unsigned const pb_block_size = max(sizeof(ColorFactors), sizeof(Oscillator));
+	unsigned const pb_buffer_size = gfx::renderer::block_aligned_buffer_size(
+		app._renderer, 2, pb_block_size
+	);
+	TOGO_LOGF("pb_block_size = %u, pb_buffer_size = %u\n", pb_block_size, pb_buffer_size);
 	app._data.pb_buffer = gfx::renderer::create_buffer(
 		app._renderer,
-		sizeof(ColorFactors) + 256 + sizeof(Oscillator),
+		pb_buffer_size,
 		nullptr, gfx::BufferDataBinding::dynamic
 	);
+	}
 
 	// Setup ColorFactors parameter block
 	app._data.p_color_factors.rg = 1.0f;
