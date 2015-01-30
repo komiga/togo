@@ -286,13 +286,10 @@ unsigned renderer::param_block_buffer_size(
 ParamBlockBinding renderer::make_param_block_binding(
 	gfx::Renderer const* const renderer,
 	gfx::BufferID const id,
-	unsigned offset,
+	unsigned const offset,
 	unsigned const size
 ) {
 	TOGO_DEBUG_ASSERTE(size <= renderer->_impl.p_max_uniform_block_size);
-	offset = align_param_block_offset(
-		offset, renderer->_impl.p_uniform_buffer_offset_alignment
-	);
 	return {id, offset, size};
 }
 

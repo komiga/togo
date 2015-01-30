@@ -112,7 +112,7 @@ unsigned param_block_buffer_size(
 
 /// Make a parameter block binding.
 ///
-/// Offset may be aligned.
+/// Offset must be aligned with param_block_offset().
 ParamBlockBinding make_param_block_binding(
 	gfx::Renderer const* renderer,
 	gfx::BufferID id,
