@@ -35,9 +35,9 @@ signed main() {
 	auto const type_mask = DirectoryEntry::Type::all;
 
 	TOGO_ASSERTE(directory_reader::open(reader, ROOT, true, true));
-	READ_ENTRY(type_file, ROOT "/file");
 	READ_ENTRY(type_dir , ROOT "/inner_dir/");
 	READ_ENTRY(type_file, ROOT "/inner_dir/file");
+	READ_ENTRY(type_file, ROOT "/file");
 	TOGO_ASSERTE(!directory_reader::read(reader, entry, type_mask));
 	directory_reader::close(reader);
 	}
