@@ -22,6 +22,7 @@
 #include <initializer_list>
 
 using namespace togo;
+using namespace togo::gfx::hash_literals;
 
 struct Vertex {
 	Vec2 pos;
@@ -100,7 +101,7 @@ void TestAppModel::init(TestApp& app) {
 	);
 	gfx::renderer::set_fixed_param_block(
 		app._renderer,
-		0, gfx::hash_param_block_name("ColorFactors"),
+		0, "ColorFactors"_param_block_name,
 		app._data.p_color_factors_binding
 	);
 
