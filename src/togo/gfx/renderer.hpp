@@ -54,6 +54,16 @@ gfx::GeneratorDef const* find_generator_def(
 	gfx::GeneratorNameHash name_hash
 );
 
+/// Calculate block-aligned buffer size.
+///
+/// This should be used for buffers that contain param blocks, which
+/// require aligned offsets.
+unsigned block_aligned_buffer_size(
+	gfx::Renderer const* renderer,
+	unsigned num_blocks,
+	unsigned block_size
+);
+
 /// Create buffer.
 ///
 /// If data is nullptr, map_buffer() must be used to fill the buffer.

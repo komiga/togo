@@ -203,6 +203,17 @@ gfx::RendererType renderer::type(gfx::Renderer const* /*renderer*/) {
 	return gfx::RENDERER_TYPE_OPENGL;
 }
 
+unsigned renderer::block_aligned_buffer_size(
+	gfx::Renderer const* renderer,
+	unsigned const num_blocks,
+	unsigned block_size
+) {
+	block_size = align_param_block_offset(
+		block_size, renderer->_impl.p_uniform_buffer_offset_alignment
+	);
+	return num_blocks * block_size;
+}
+
 inline static gfx::GLBufferFlags gl_buffer_flags(
 	gfx::BufferDataBinding const data_binding
 ) {
