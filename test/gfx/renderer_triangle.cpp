@@ -82,7 +82,7 @@ void TestAppModel::init(TestApp& app) {
 		{{app._data.triangle_buffer, &triangle_vformat, 0}}
 	);
 
-	{// Setup parameter block buffer
+	// Setup parameter block buffer
 	unsigned const pb_block_size = max(sizeof(ColorFactors), sizeof(Oscillator));
 	unsigned const pb_buffer_size = gfx::renderer::block_aligned_buffer_size(
 		app._renderer, 2, pb_block_size
@@ -93,14 +93,13 @@ void TestAppModel::init(TestApp& app) {
 		pb_buffer_size,
 		nullptr, gfx::BufferDataBinding::dynamic
 	);
-	}
 
 	// Setup ColorFactors parameter block
 	app._data.p_color_factors.rg = 1.0f;
 	app._data.p_color_factors.gb = 1.0f;
 	app._data.p_color_factors_binding = gfx::renderer::make_param_block_binding(
 		app._renderer,
-		app._data.pb_buffer, 0, sizeof(ColorFactors)
+		app._data.pb_buffer, pb_block_size * 0, sizeof(ColorFactors)
 	);
 	gfx::renderer::set_fixed_param_block(
 		app._renderer,
@@ -112,7 +111,7 @@ void TestAppModel::init(TestApp& app) {
 	app._data.p_osc.time = MC_PI;
 	app._data.p_osc_binding = gfx::renderer::make_param_block_binding(
 		app._renderer,
-		app._data.pb_buffer, sizeof(ColorFactors), sizeof(Oscillator)
+		app._data.pb_buffer, pb_block_size * 1, sizeof(Oscillator)
 	);
 
 	// Load shader
