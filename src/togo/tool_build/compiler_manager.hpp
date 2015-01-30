@@ -50,8 +50,8 @@ bool has_compiler(
 	ResourceType type
 );
 
-/// Get resource compiler.
-ResourceCompiler const* get_compiler(
+/// Find resource compiler.
+ResourceCompiler const* find_compiler(
 	CompilerManager const& cm,
 	ResourceType type
 );
@@ -62,8 +62,8 @@ bool has_package(
 	ResourcePackageNameHash name_hash
 );
 
-/// Get package.
-PackageCompiler* get_package(
+/// Find package by name hash.
+PackageCompiler* find_package(
 	CompilerManager& cm,
 	ResourcePackageNameHash name_hash
 );
@@ -104,7 +104,7 @@ bool has_resource(
 );
 
 /// Find lookup node by resource name.
-PackageCompiler::LookupNode* get_node(
+PackageCompiler::LookupNode* find_node(
 	CompilerManager& cm,
 	ResourceNameHash name_hash,
 	PackageCompiler*& package

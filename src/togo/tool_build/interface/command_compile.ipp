@@ -31,7 +31,7 @@ static bool compile_resource(
 	}
 
 	{// Compile
-	auto const* const compiler = compiler_manager::get_compiler(
+	auto const* const compiler = compiler_manager::find_compiler(
 		interface._manager,
 		metadata.type
 	);
@@ -93,7 +93,7 @@ static bool add_resource(
 	}
 
 	auto const pkg_name_hash = package_compiler::name_hash(*pkg);
-	auto** res_list_g = hash_map::get(groups, pkg_name_hash);
+	auto** res_list_g = hash_map::find(groups, pkg_name_hash);
 	auto* res_list = res_list_g ? *res_list_g : nullptr;
 	if (!res_list) {
 		Allocator& allocator = *groups._head._allocator;
@@ -115,7 +115,7 @@ static void add_node(
 ) {
 	TOGO_ASSERTE(pkg && node);
 	StringRef const pkg_name = package_compiler::name(*pkg);
-	for (; node != nullptr; node = hash_map::get_next(pkg->_lookup, node)) {
+	for (; node != nullptr; node = hash_map::next_node(pkg->_lookup, node)) {
 		if (!add_resource(groups, pkg, node->value, force)) {
 			StringRef const path{pkg->_manifest[node->value - 1].path};
 			TOGO_LOGF(
@@ -140,7 +140,7 @@ bool interface::command_compile(
 ) {
 	TOGO_ASSERTE(paths || num_paths == 0);
 
-	auto* const from_package = compiler_manager::get_package(
+	auto* const from_package = compiler_manager::find_package(
 		interface._manager,
 		resource::hash_package_name(from_package_name)
 	);
@@ -185,11 +185,11 @@ bool interface::command_compile(
 
 			pkg = from_package;
 			if (from_package) {
-				node = package_compiler::get_node(
+				node = package_compiler::find_node(
 					*from_package, pp.name_hash
 				);
 			} else {
-				node = compiler_manager::get_node(
+				node = compiler_manager::find_node(
 					interface._manager, pp.name_hash, pkg
 				);
 			}
@@ -243,7 +243,7 @@ bool interface::command_compile(
 	StringRef pkg_name{};
 	StringRef path{};
 	for (auto const& node : groups) {
-		pkg = compiler_manager::get_package(interface._manager, node.key);
+		pkg = compiler_manager::find_package(interface._manager, node.key);
 		TOGO_ASSERTE(pkg);
 		res_list = node.value;
 		pkg_name = package_compiler::name(*pkg);

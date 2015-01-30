@@ -100,11 +100,11 @@ ResourceMetadata const& resource_package::resource_metadata(
 	return metadata;
 }
 
-ResourcePackage::LookupNode* resource_package::get_node(
+ResourcePackage::LookupNode* resource_package::find_node(
 	ResourcePackage& pkg,
 	ResourceNameHash const name_hash
 ) {
-	return hash_map::get_node(pkg._lookup, name_hash);
+	return hash_map::find_node(pkg._lookup, name_hash);
 }
 
 IReader* resource_package::open_resource_stream(

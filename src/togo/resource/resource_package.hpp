@@ -56,8 +56,8 @@ ResourceMetadata const& resource_metadata(
 	u32 id
 );
 
-/// Get lookup node by resource name.
-ResourcePackage::LookupNode* get_node(
+/// Find lookup node by resource name.
+ResourcePackage::LookupNode* find_node(
 	ResourcePackage& pkg,
 	ResourceNameHash name_hash
 );

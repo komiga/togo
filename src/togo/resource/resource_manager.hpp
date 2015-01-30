@@ -106,8 +106,8 @@ void unload_resource(
 /// Unload all resources.
 void clear_resources(ResourceManager& rm);
 
-/// Get resource.
-ResourceValue get_resource(
+/// Find resource by type and name.
+ResourceValue find_resource(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash

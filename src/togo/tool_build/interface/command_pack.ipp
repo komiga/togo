@@ -22,7 +22,7 @@ bool interface::command_pack(
 		array::resize(packages, num_package_names);
 		for (unsigned i = 0; i < num_package_names; ++i) {
 			StringRef const& pkg_name = package_names[i];
-			packages[i] = compiler_manager::get_package(
+			packages[i] = compiler_manager::find_package(
 				interface._manager,
 				resource::hash_package_name(pkg_name)
 			);

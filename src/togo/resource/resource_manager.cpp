@@ -33,7 +33,7 @@ static ResourceMetadata const* resource_metadata(
 		it_pkg >= array::begin(rm._packages);
 		--it_pkg
 	) {
-		node = resource_package::get_node(**it_pkg, name_hash);
+		node = resource_package::find_node(**it_pkg, name_hash);
 		if (!node) {
 			continue;
 		}
@@ -49,13 +49,13 @@ static ResourceMetadata const* resource_metadata(
 	return nullptr;
 }
 
-static ResourceManager::ActiveNode* get_active_node(
+static ResourceManager::ActiveNode* find_active_node(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash
 ) {
-	auto* node = hash_map::get_node(rm._resources, name_hash);
-	for (; node; node = hash_map::get_next(rm._resources, node)) {
+	auto* node = hash_map::find_node(rm._resources, name_hash);
+	for (; node; node = hash_map::next_node(rm._resources, node)) {
 		if (node->value.type == type) {
 			return node;
 		}
@@ -197,13 +197,13 @@ ResourceValue resource_manager::load_resource(
 ) {
 	TOGO_DEBUG_ASSERTE(hash_map::has(rm._handlers, type));
 	{// Lookup existing value
-	auto const existing_value = resource_manager::get_resource(rm, type, name_hash);
+	auto const existing_value = resource_manager::find_resource(rm, type, name_hash);
 	if (existing_value.valid()) {
 		return existing_value;
 	}}
 
 	// Load
-	auto const* const handler = hash_map::get(rm._handlers, type);
+	auto const* const handler = hash_map::find(rm._handlers, type);
 	ResourcePackage* pkg = nullptr;
 	ResourceMetadata const* metadata = resource_manager::resource_metadata(
 		rm, type, name_hash, pkg
@@ -243,9 +243,9 @@ void resource_manager::unload_resource(
 	ResourceNameHash const name_hash
 ) {
 	TOGO_DEBUG_ASSERTE(hash_map::has(rm._handlers, type));
-	auto* const node = resource_manager::get_active_node(rm, type, name_hash);
+	auto* const node = resource_manager::find_active_node(rm, type, name_hash);
 	if (node) {
-		auto const* const handler = hash_map::get(rm._handlers, type);
+		auto const* const handler = hash_map::find(rm._handlers, type);
 		handler->func_unload(handler->type_data, rm, node->value.value);
 		hash_map::remove(rm._resources, node);
 	}
@@ -257,23 +257,23 @@ void resource_manager::clear_resources(ResourceManager& rm) {
 	for (auto const& node : rm._resources) {
 		if (node.value.type != type) {
 			type = node.value.type;
-			handler = hash_map::get(rm._handlers, type);
+			handler = hash_map::find(rm._handlers, type);
 			TOGO_DEBUG_ASSERTE(handler);
 		}
 		// FIXME: func_unload() may make invalid requests as we aren't
-		// removing the nodes in-loop. Block get_active_node() requests
+		// removing the nodes in-loop. Block find_active_node() requests
 		// during clear or remove nodes?
 		handler->func_unload(handler->type_data, rm, node.value.value);
 	}
 	hash_map::clear(rm._resources);
 }
 
-ResourceValue resource_manager::get_resource(
+ResourceValue resource_manager::find_resource(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash
 ) {
-	auto const* const node = resource_manager::get_active_node(rm, type, name_hash);
+	auto const* const node = resource_manager::find_active_node(rm, type, name_hash);
 	return node ? node->value.value : nullptr;
 }
 

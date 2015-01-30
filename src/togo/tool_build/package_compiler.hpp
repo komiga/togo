@@ -103,7 +103,7 @@ inline bool needs_build(
 }
 
 /// Get lookup node by resource name.
-PackageCompiler::LookupNode* get_node(
+PackageCompiler::LookupNode* find_node(
 	PackageCompiler& pkg,
 	ResourceNameHash name_hash
 );

@@ -53,11 +53,11 @@ void renderer::register_generator_def(
 	hash_map::push(renderer->_generators, def.name_hash, def);
 }
 
-gfx::GeneratorDef const* renderer::get_generator_def(
+gfx::GeneratorDef const* renderer::find_generator_def(
 	gfx::Renderer const* const renderer,
 	gfx::GeneratorNameHash const name_hash
 ) {
-	return hash_map::get(renderer->_generators, name_hash);
+	return hash_map::find(renderer->_generators, name_hash);
 }
 
 } // namespace gfx

@@ -152,7 +152,7 @@ FindData find(
 template<class K, class T>
 u32 make(HashMap<K, T>& hm, K const key, bool const keep) {
 	TOGO_DEBUG_ASSERTE(array::any(hm._head));
-	FindData const fd = find(hm, key);
+	FindData const fd = internal::find(hm, key);
 	if (keep && fd.data != END) {
 		return fd.data;
 	}
@@ -182,7 +182,7 @@ void remove(HashMap<K, T>& hm, FindData const& fd) {
 	// Move last node to the removed position
 	if (fd.data != array::size(hm._data) - 1) {
 		auto const& last_node = array::back(hm._data);
-		FindData const last = find(hm, &last_node);
+		FindData const last = internal::find(hm, &last_node);
 		if (last.data_prev == END) {
 			hm._head[last.head] = fd.data;
 		} else {
@@ -259,24 +259,24 @@ inline T& push(HashMap<K, T>& hm, K const key, T const& value) {
 	return hm._data[index].value = value;
 }
 
-/// Get item.
+/// Find first item with key.
 ///
 /// If key does not exist, nullptr will be returned.
 /// If multiple values are assigned to key, this will get the most
 /// recently pushed one.
 template<class K, class T>
-inline T* get(HashMap<K, T>& hm, K const key) {
+inline T* find(HashMap<K, T>& hm, K const key) {
 	auto const index = internal::find(hm, key).data;
 	return (index != END) ? &hm._data[index].value : nullptr;
 }
 
-/// Get item.
+/// Find first item with key.
 ///
 /// If key does not exist, nullptr will be returned.
 /// If multiple values are assigned to key, this will get the most
 /// recently pushed one.
 template<class K, class T>
-inline T const* get(HashMap<K, T> const& hm, K const key) {
+inline T const* find(HashMap<K, T> const& hm, K const key) {
 	auto const index = internal::find(hm, key).data;
 	return (index != END) ? &hm._data[index].value : nullptr;
 }
@@ -285,7 +285,7 @@ inline T const* get(HashMap<K, T> const& hm, K const key) {
 ///
 /// If there are no items with key, nullptr will be returned.
 template<class K, class T>
-inline HashMapNode<K, T>* get_node(
+inline HashMapNode<K, T>* find_node(
 	HashMap<K, T>& hm,
 	K const key
 ) {
@@ -297,7 +297,7 @@ inline HashMapNode<K, T>* get_node(
 ///
 /// If there are no items with key, nullptr will be returned.
 template<class K, class T>
-inline HashMapNode<K, T> const* get_node(
+inline HashMapNode<K, T> const* find_node(
 	HashMap<K, T> const& hm,
 	K const key
 ) {
@@ -310,7 +310,7 @@ inline HashMapNode<K, T> const* get_node(
 /// An assertion will fail if node is nullptr. Returns nullptr when
 /// there are no more nodes for the key.
 template<class K, class T>
-inline HashMapNode<K, T>* get_next(
+inline HashMapNode<K, T>* next_node(
 	HashMap<K, T>& hm,
 	HashMapNode<K, T>* node
 ) {
@@ -330,7 +330,7 @@ inline HashMapNode<K, T>* get_next(
 /// An assertion will fail if node is nullptr. Returns nullptr when
 /// there are no more nodes for the key.
 template<class K, class T>
-inline HashMapNode<K, T> const* get_next(
+inline HashMapNode<K, T> const* next_node(
 	HashMap<K, T> const& hm,
 	HashMapNode<K, T> const* node
 ) {
@@ -354,10 +354,10 @@ inline bool has(HashMap<K, T> const& hm, K const key) {
 /// Count the number of values with key.
 template<class K, class T>
 inline unsigned count(HashMap<K, T> const& hm, K const key) {
-	auto const* node = get_node(hm, key);
+	auto const* node = find_node(hm, key);
 	unsigned count = 0;
 	while (node != nullptr) {
-		node = get_next(hm, node);
+		node = next_node(hm, node);
 		++count;
 	}
 	return count;

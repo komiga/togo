@@ -45,7 +45,7 @@ bool interface::command_list(
 		PackageCompiler* pkg;
 		for (unsigned i = 0; i < num_package_names; ++i) {
 			auto const& pkg_name = package_names[i];
-			pkg = compiler_manager::get_package(
+			pkg = compiler_manager::find_package(
 				const_cast<CompilerManager&>(interface._manager),
 				resource::hash_package_name(pkg_name)
 			);

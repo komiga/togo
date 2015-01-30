@@ -48,8 +48,8 @@ void register_generator_def(
 	gfx::GeneratorDef const& def
 );
 
-/// Get generator definition by name.
-gfx::GeneratorDef const* get_generator_def(
+/// Find generator definition by name.
+gfx::GeneratorDef const* find_generator_def(
 	gfx::Renderer const* renderer,
 	gfx::GeneratorNameHash name_hash
 );

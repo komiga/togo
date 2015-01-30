@@ -176,11 +176,11 @@ bool package_compiler::create_stub(
 	return true;
 }
 
-PackageCompiler::LookupNode* package_compiler::get_node(
+PackageCompiler::LookupNode* package_compiler::find_node(
 	PackageCompiler& pkg,
 	ResourceNameHash const name_hash
 ) {
-	return hash_map::get_node(pkg._lookup, name_hash);
+	return hash_map::find_node(pkg._lookup, name_hash);
 }
 
 u32 package_compiler::find_resource_id(
@@ -190,9 +190,9 @@ u32 package_compiler::find_resource_id(
 	ResourceTagsHash const tags_hash,
 	bool const tags_lenient
 ) {
-	auto const* node = hash_map::get_node(pkg._lookup, name_hash);
+	auto const* node = hash_map::find_node(pkg._lookup, name_hash);
 	u32 id_lenient = 0;
-	for (; node; node = hash_map::get_next(pkg._lookup, node)) {
+	for (; node; node = hash_map::next_node(pkg._lookup, node)) {
 		auto const& metadata = pkg._manifest[node->value - 1];
 		if (
 			metadata.id == 0 ||
@@ -252,8 +252,8 @@ void package_compiler::remove_resource(
 	);
 
 	{// Remove lookup node
-	auto const* node = hash_map::get_node(pkg._lookup, metadata.name_hash);
-	for (; node; node = hash_map::get_next(pkg._lookup, node)) {
+	auto const* node = hash_map::find_node(pkg._lookup, metadata.name_hash);
+	for (; node; node = hash_map::next_node(pkg._lookup, node)) {
 		if (node->value == id) {
 			break;
 		}

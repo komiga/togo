@@ -35,7 +35,7 @@ static void push_def(
 ) {
 	for (auto const dep_name : def.prelude) {
 		auto const* const dep_def = static_cast<gfx::ShaderDef const*>(
-			resource_manager::get_resource(manager, RES_TYPE_SHADER_PRELUDE, dep_name).pointer
+			resource_manager::find_resource(manager, RES_TYPE_SHADER_PRELUDE, dep_name).pointer
 		);
 		TOGO_DEBUG_ASSERTE(dep_def);
 		push_def(spec, stage, *dep_def, manager, push_param_blocks);
