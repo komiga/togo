@@ -84,7 +84,7 @@ void TestAppModel::init(TestApp& app) {
 
 	// Setup parameter block buffer
 	unsigned const pb_block_size = max(sizeof(ColorFactors), sizeof(Oscillator));
-	unsigned const pb_buffer_size = gfx::renderer::block_aligned_buffer_size(
+	unsigned const pb_buffer_size = gfx::renderer::param_block_buffer_size(
 		app._renderer, 2, pb_block_size
 	);
 	TOGO_LOGF("pb_block_size = %u, pb_buffer_size = %u\n", pb_block_size, pb_buffer_size);
@@ -99,7 +99,9 @@ void TestAppModel::init(TestApp& app) {
 	app._data.p_color_factors.gb = 1.0f;
 	app._data.p_color_factors_binding = gfx::renderer::make_param_block_binding(
 		app._renderer,
-		app._data.pb_buffer, pb_block_size * 0, sizeof(ColorFactors)
+		app._data.pb_buffer,
+		gfx::renderer::param_block_offset(app._renderer, 0, pb_block_size),
+		sizeof(ColorFactors)
 	);
 	gfx::renderer::set_fixed_param_block(
 		app._renderer,
@@ -111,7 +113,9 @@ void TestAppModel::init(TestApp& app) {
 	app._data.p_osc.time = MC_PI;
 	app._data.p_osc_binding = gfx::renderer::make_param_block_binding(
 		app._renderer,
-		app._data.pb_buffer, pb_block_size * 1, sizeof(Oscillator)
+		app._data.pb_buffer,
+		gfx::renderer::param_block_offset(app._renderer, 1, pb_block_size),
+		sizeof(Oscillator)
 	);
 
 	// Load shader
