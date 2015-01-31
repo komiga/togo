@@ -18,6 +18,7 @@
 #include <togo/filesystem/directory_reader.hpp>
 #include <togo/kvs/kvs.hpp>
 #include <togo/resource/resource.hpp>
+#include <togo/tool_build/resource_compiler.hpp>
 #include <togo/tool_build/package_compiler.hpp>
 #include <togo/tool_build/compiler_manager.hpp>
 #include <togo/tool_build/interface.hpp>
@@ -98,7 +99,7 @@ void interface::init(
 	}
 	interface::check_project_path(interface);
 	if (register_standard_compilers) {
-		compiler_manager::register_standard_compilers(interface._manager);
+		resource_compiler::register_standard(interface._manager);
 	}
 }
 

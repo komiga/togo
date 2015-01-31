@@ -39,11 +39,6 @@ void register_compiler(
 	ResourceCompiler const& compiler
 );
 
-/// Add standard resource compilers.
-void register_standard_compilers(
-	CompilerManager& cm
-);
-
 /// Check if there is a compiler for type registered.
 bool has_compiler(
 	CompilerManager const& cm,

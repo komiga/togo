@@ -44,14 +44,6 @@ void compiler_manager::register_compiler(
 	hash_map::push(cm._compilers, compiler.type, compiler);
 }
 
-void compiler_manager::register_standard_compilers(
-	CompilerManager& cm
-) {
-	resource_compiler::register_test(cm);
-	resource_compiler::register_shader_prelude(cm);
-	resource_compiler::register_shader(cm);
-}
-
 bool compiler_manager::has_compiler(
 	CompilerManager const& cm,
 	ResourceType const type

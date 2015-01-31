@@ -36,6 +36,17 @@ void register_shader(
 	CompilerManager& cm
 );
 
+/// Register render_config resource compiler.
+void register_render_config(
+	CompilerManager& cm,
+	GfxCompiler& gfx_compiler
+);
+
+/// Register standard resource compilers.
+void register_standard(
+	CompilerManager& cm
+);
+
 /** @} */ // end of doc-group tool_build_resource_compiler
 
 } // namespace resource_compiler
