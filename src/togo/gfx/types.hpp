@@ -255,7 +255,7 @@ struct GeneratorUnit {
 
 /// GeneratorUnit read() function.
 using generator_read_func_type = void (
-	gfx::GeneratorDef& def,
+	gfx::GeneratorDef const& def,
 	BinaryInputSerializer& ser,
 	gfx::GeneratorUnit& unit
 );
