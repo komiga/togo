@@ -21,6 +21,7 @@
 #include <togo/tool_build/resource_compiler.hpp>
 #include <togo/tool_build/package_compiler.hpp>
 #include <togo/tool_build/compiler_manager.hpp>
+#include <togo/tool_build/generator_compiler.hpp>
 #include <togo/tool_build/interface.hpp>
 
 namespace togo {
@@ -32,6 +33,7 @@ Interface::~Interface() {
 
 Interface::Interface()
 	: _manager(memory::default_allocator())
+	, _gfx_compiler(memory::default_allocator())
 	, _project_path()
 {}
 
@@ -99,7 +101,8 @@ void interface::init(
 	}
 	interface::check_project_path(interface);
 	if (register_standard_compilers) {
-		resource_compiler::register_standard(interface._manager);
+		generator_compiler::register_standard(interface._gfx_compiler);
+		resource_compiler::register_standard(interface._manager, interface._gfx_compiler);
 	}
 }
 

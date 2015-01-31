@@ -12,11 +12,13 @@ namespace togo {
 namespace tool_build {
 
 void resource_compiler::register_standard(
-	CompilerManager& cm
+	CompilerManager& cm,
+	GfxCompiler& gfx_compiler
 ) {
 	resource_compiler::register_test(cm);
 	resource_compiler::register_shader_prelude(cm);
 	resource_compiler::register_shader(cm);
+	resource_compiler::register_render_config(cm, gfx_compiler);
 }
 
 } // namespace tool_build

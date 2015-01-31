@@ -16,6 +16,8 @@
 #include <togo/string/types.hpp>
 #include <togo/hash/hash.hpp>
 #include <togo/io/types.hpp>
+#include <togo/serialization/types.hpp>
+#include <togo/gfx/types.hpp>
 #include <togo/resource/types.hpp>
 
 namespace togo {
@@ -128,6 +130,42 @@ struct CompilerManager {
 /** @} */ // end of doc-group tool_build_compiler_manager
 
 /**
+	@addtogroup tool_build_gfx_compiler
+	@{
+*/
+
+/// gfx::GeneratorUnit compiler.
+struct GeneratorCompiler {
+	/// Write a generator unit.
+	///
+	/// Unit data points to the KVS to translate to serial form.
+	using generator_write_func_type = bool (
+		GeneratorCompiler& gen_compiler,
+		BinaryOutputSerializer& ser,
+		gfx::GeneratorUnit const& unit
+	);
+
+	gfx::GeneratorNameHash name_hash;
+	generator_write_func_type* func_write;
+};
+
+/// Graphics compiler.
+struct GfxCompiler {
+	HashMap<gfx::GeneratorNameHash, GeneratorCompiler> _gen_compilers;
+
+	GfxCompiler() = delete;
+	GfxCompiler(GfxCompiler const&) = delete;
+	GfxCompiler(GfxCompiler&&) = delete;
+	GfxCompiler& operator=(GfxCompiler const&) = delete;
+	GfxCompiler& operator=(GfxCompiler&&) = delete;
+
+	~GfxCompiler() = default;
+	GfxCompiler(Allocator& allocator);
+};
+
+/** @} */ // end of doc-group tool_build_gfx_compiler
+
+/**
 	@addtogroup tool_build_interface
 	@{
 */
@@ -135,6 +173,7 @@ struct CompilerManager {
 // Tooling interface.
 struct Interface {
 	CompilerManager _manager;
+	GfxCompiler _gfx_compiler;
 	FixedArray<char, 256> _project_path;
 
 	Interface(Interface const&) = delete;

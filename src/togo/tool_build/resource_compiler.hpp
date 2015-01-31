@@ -44,7 +44,8 @@ void register_render_config(
 
 /// Register standard resource compilers.
 void register_standard(
-	CompilerManager& cm
+	CompilerManager& cm,
+	GfxCompiler& gfx_compiler
 );
 
 /** @} */ // end of doc-group tool_build_resource_compiler
