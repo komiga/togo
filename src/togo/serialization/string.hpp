@@ -105,6 +105,8 @@ write(serializer_tag, Ser& ser, SerString<S, char[N], C> const& value) {
 	;
 }
 
+/** @endcond */ // INTERNAL
+
 /** @} */ // end of doc-group serialization
 
 } // namespace togo

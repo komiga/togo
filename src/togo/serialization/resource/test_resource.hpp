@@ -33,6 +33,8 @@ serialize(serializer_tag, Ser& ser, TestResource& value_unsafe) {
 	ser % value.x;
 }
 
+/** @endcond */ // INTERNAL
+
 /** @} */ // end of doc-group serialization
 
 } // namespace togo

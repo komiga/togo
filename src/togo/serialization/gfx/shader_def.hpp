@@ -53,6 +53,8 @@ serialize(serializer_tag, Ser& ser, gfx::ShaderDef& value_unsafe) {
 	;
 }
 
+/** @endcond */ // INTERNAL
+
 /** @} */ // end of doc-group serialization
 
 } // namespace togo
