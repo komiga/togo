@@ -83,7 +83,8 @@ bool command_help(
 
 /// Run help command with KVS.
 ///
-/// Specification: `help [command_name]`.
+/// Specification:
+/// @verbatim help [command_name] @endverbatim
 bool command_help(
 	Interface const& interface,
 	KVS const& k_command_options,
@@ -102,7 +103,8 @@ bool command_list(
 
 /// Run list command with KVS.
 ///
-/// Specification: `list [-r || [<package_name> ...]]`.
+/// Specification:
+/// @verbatim list [-r || [<package_name> ...]] @endverbatim
 bool command_list(
 	Interface const& interface,
 	KVS const& k_command_options,
@@ -119,7 +121,8 @@ bool command_create(
 
 /// Run create command with KVS.
 ///
-/// Specification: `create <package_name>`.
+/// Specification:
+/// @verbatim create <package_name> @endverbatim
 bool command_create(
 	Interface& interface,
 	KVS const& k_command_options,
@@ -138,7 +141,8 @@ bool command_sync(
 
 /// Run sync command with KVS.
 ///
-/// Specification: `build sync [<package_name> ...]`.
+/// Specification:
+/// @verbatim sync [<package_name> ...] @endverbatim
 bool command_sync(
 	Interface& interface,
 	KVS const& k_command_options,
@@ -163,7 +167,8 @@ bool command_compile(
 
 /// Run compile command with KVS.
 ///
-/// Specification: `compile [-f] [--from=<package_name>] [<resource_path> ...]`.
+/// Specification:
+/// @verbatim compile [-f] [--from=<package_name>] [<resource_path> ...] @endverbatim
 bool command_compile(
 	Interface& interface,
 	KVS const& k_command_options,
@@ -185,7 +190,8 @@ bool command_pack(
 
 /// Run pack command with KVS.
 ///
-/// Specification: `build pack [-f] [<package_name> ...]`.
+/// Specification:
+/// @verbatim pack [-f] [<package_name> ...] @endverbatim
 bool command_pack(
 	Interface& interface,
 	KVS const& k_command_options,
