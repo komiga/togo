@@ -55,6 +55,7 @@ struct ResourceCompilerMetadata
 struct ResourceCompiler {
 	/// Compile a resource.
 	using compile_func_type = bool (
+		void* type_data,
 		CompilerManager& manager,
 		PackageCompiler& package,
 		ResourceCompilerMetadata const& metadata,
@@ -64,6 +65,7 @@ struct ResourceCompiler {
 
 	ResourceType type;
 	u32 format_version;
+	void* type_data;
 	compile_func_type* func_compile;
 };
 

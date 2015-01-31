@@ -26,6 +26,7 @@ namespace resource_compiler {
 namespace test_resource {
 
 static bool compile(
+	void* /*type_data*/,
 	CompilerManager& /*manager*/,
 	PackageCompiler& /*package*/,
 	ResourceCompilerMetadata const& /*metadata*/,
@@ -72,6 +73,7 @@ void resource_compiler::register_test(
 	ResourceCompiler const compiler{
 		RES_TYPE_TEST,
 		SER_FORMAT_VERSION_TEST_RESOURCE,
+		nullptr,
 		resource_compiler::test_resource::compile
 	};
 	compiler_manager::register_compiler(cm, compiler);

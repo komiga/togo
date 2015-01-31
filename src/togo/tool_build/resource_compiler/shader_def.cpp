@@ -299,6 +299,7 @@ static bool read_glsl_unit(
 }
 
 static bool compile(
+	void* /*type_data*/,
 	CompilerManager& manager,
 	PackageCompiler& /*package*/,
 	ResourceCompilerMetadata const& metadata,
@@ -367,6 +368,7 @@ static bool complete(
 }
 
 static bool compile(
+	void* type_data,
 	CompilerManager& manager,
 	PackageCompiler& package,
 	ResourceCompilerMetadata const& metadata,
@@ -374,7 +376,7 @@ static bool compile(
 	IWriter& out_stream
 ) {
 	return resource_compiler::shader_def::compile(
-		manager, package, metadata, in_stream, out_stream,
+		type_data, manager, package, metadata, in_stream, out_stream,
 		shader::complete
 	);
 }
@@ -391,6 +393,7 @@ static bool complete(
 }
 
 static bool compile(
+	void* type_data,
 	CompilerManager& manager,
 	PackageCompiler& package,
 	ResourceCompilerMetadata const& metadata,
@@ -398,7 +401,7 @@ static bool compile(
 	IWriter& out_stream
 ) {
 	return resource_compiler::shader_def::compile(
-		manager, package, metadata, in_stream, out_stream,
+		type_data, manager, package, metadata, in_stream, out_stream,
 		shader_prelude::complete
 	);
 }
@@ -413,6 +416,7 @@ void resource_compiler::register_shader(
 	ResourceCompiler const compiler{
 		RES_TYPE_SHADER,
 		SER_FORMAT_VERSION_SHADER_DEF,
+		nullptr,
 		resource_compiler::shader::compile
 	};
 	compiler_manager::register_compiler(cm, compiler);
@@ -424,6 +428,7 @@ void resource_compiler::register_shader_prelude(
 	ResourceCompiler const compiler{
 		RES_TYPE_SHADER_PRELUDE,
 		SER_FORMAT_VERSION_SHADER_DEF,
+		nullptr,
 		resource_compiler::shader_prelude::compile
 	};
 	compiler_manager::register_compiler(cm, compiler);

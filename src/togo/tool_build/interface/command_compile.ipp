@@ -40,6 +40,7 @@ static bool compile_resource(
 		return false;
 	}
 	bool const success = compiler->func_compile(
+		compiler->type_data,
 		interface._manager,
 		pkg, metadata,
 		in_stream, out_stream
