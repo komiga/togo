@@ -48,11 +48,6 @@
 #include <togo/io/object_buffer.hpp>
 #include <togo/kvs/types.hpp>
 #include <togo/kvs/kvs.hpp>
-#include <togo/resource/types.hpp>
-#include <togo/resource/resource.hpp>
-#include <togo/resource/resource_handler.hpp>
-#include <togo/resource/resource_package.hpp>
-#include <togo/resource/resource_manager.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/gfx/gfx.hpp>
 #include <togo/gfx/gfx/common.hpp>
@@ -64,8 +59,11 @@
 #include <togo/input/types.hpp>
 #include <togo/input/input.hpp>
 #include <togo/input/input_buffer.hpp>
-#include <togo/app/types.hpp>
-#include <togo/app/app.hpp>
+#include <togo/resource/types.hpp>
+#include <togo/resource/resource.hpp>
+#include <togo/resource/resource_handler.hpp>
+#include <togo/resource/resource_package.hpp>
+#include <togo/resource/resource_manager.hpp>
 #include <togo/serialization/types.hpp>
 #include <togo/serialization/serializer.hpp>
 #include <togo/serialization/support.hpp>
@@ -77,6 +75,8 @@
 #include <togo/serialization/resource/test_resource.hpp>
 #include <togo/serialization/gfx/shader_def.hpp>
 #include <togo/serialization/gfx/render_config.hpp>
+#include <togo/app/types.hpp>
+#include <togo/app/app.hpp>
 #include <togo/external/dlmalloc_import.hpp>
 
 signed main() {

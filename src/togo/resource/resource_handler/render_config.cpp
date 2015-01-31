@@ -6,8 +6,8 @@
 #include <togo/config.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/gfx/types.hpp>
-#include <togo/gfx/renderer/types.hpp>
 #include <togo/gfx/renderer.hpp>
+#include <togo/gfx/renderer/types.hpp>
 #include <togo/resource/types.hpp>
 #include <togo/resource/resource.hpp>
 #include <togo/resource/resource_handler.hpp>

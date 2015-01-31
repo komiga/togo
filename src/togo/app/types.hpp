@@ -12,9 +12,9 @@
 
 #include <togo/config.hpp>
 #include <togo/threading/types.hpp>
-#include <togo/resource/types.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/input/types.hpp>
+#include <togo/resource/types.hpp>
 
 namespace togo {
 

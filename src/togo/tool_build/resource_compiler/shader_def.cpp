@@ -14,10 +14,10 @@
 #include <togo/string/string.hpp>
 #include <togo/hash/hash.hpp>
 #include <togo/kvs/kvs.hpp>
-#include <togo/resource/resource.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/gfx/gfx.hpp>
 #include <togo/gfx/shader_def.hpp>
+#include <togo/resource/resource.hpp>
 #include <togo/serialization/serializer.hpp>
 #include <togo/serialization/support.hpp>
 #include <togo/serialization/binary_serializer.hpp>
