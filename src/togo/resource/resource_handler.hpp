@@ -15,6 +15,7 @@
 #include <togo/resource/types.hpp>
 #include <togo/resource/resource_manager.hpp>
 #include <togo/gfx/types.hpp>
+#include <togo/gfx/renderer/types.hpp>
 
 namespace togo {
 
@@ -42,6 +43,12 @@ void register_shader(
 	gfx::Renderer* const renderer
 );
 
+/// Register render_config (gfx::RenderConfig) resource handler.
+void register_render_config(
+	ResourceManager& rm,
+	gfx::Renderer* const renderer
+);
+
 /** @} */ // end of doc-group resource_handler
 
 } // namespace resource_handler
@@ -65,6 +72,20 @@ inline gfx::ShaderID load_shader(
 	};
 	TOGO_ASSERT(id.valid(), "failed to load shader");
 	return id;
+}
+
+/// Load a render config.
+///
+/// An assertion will fail if the load failed.
+inline gfx::RenderConfig* load_render_config(
+	ResourceManager& rm,
+	ResourceNameHash const name_hash
+) {
+	auto* render_config = static_cast<gfx::RenderConfig*>(
+		resource_manager::load_resource(rm, RES_TYPE_RENDER_CONFIG, name_hash).pointer
+	);
+	TOGO_ASSERT(render_config, "failed to load shader");
+	return render_config;
 }
 
 /** @} */ // end of doc-group resource
