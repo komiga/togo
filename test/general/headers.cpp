@@ -56,12 +56,10 @@
 #include <togo/gfx/types.hpp>
 #include <togo/gfx/gfx.hpp>
 #include <togo/gfx/gfx/common.hpp>
-#include <togo/gfx/gfx/opengl_common.hpp>
 #include <togo/gfx/display.hpp>
 #include <togo/gfx/display/types.hpp>
 #include <togo/gfx/renderer.hpp>
 #include <togo/gfx/renderer/types.hpp>
-#include <togo/gfx/renderer/opengl.hpp>
 #include <togo/gfx/shader_def.hpp>
 #include <togo/input/types.hpp>
 #include <togo/input/input.hpp>
