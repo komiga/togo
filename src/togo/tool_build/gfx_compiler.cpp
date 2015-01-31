@@ -7,8 +7,8 @@
 #include <togo/tool_build/types.hpp>
 #include <togo/error/assert.hpp>
 #include <togo/collection/hash_map.hpp>
-#include <togo/tool_build/gfx_compiler.hpp>
 #include <togo/tool_build/generator_compiler.hpp>
+#include <togo/tool_build/gfx_compiler.hpp>
 
 namespace togo {
 namespace tool_build {

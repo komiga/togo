@@ -5,8 +5,8 @@
 
 #include <togo/tool_build/config.hpp>
 #include <togo/tool_build/types.hpp>
-#include <togo/tool_build/generator_compiler.hpp>
 #include <togo/gfx/gfx.hpp>
+#include <togo/tool_build/generator_compiler.hpp>
 
 namespace togo {
 namespace tool_build {

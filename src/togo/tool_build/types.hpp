@@ -16,9 +16,9 @@
 #include <togo/string/types.hpp>
 #include <togo/hash/hash.hpp>
 #include <togo/io/types.hpp>
-#include <togo/serialization/types.hpp>
-#include <togo/gfx/types.hpp>
 #include <togo/resource/types.hpp>
+#include <togo/gfx/types.hpp>
+#include <togo/serialization/types.hpp>
 
 namespace togo {
 namespace tool_build {
