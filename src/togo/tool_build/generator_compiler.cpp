@@ -15,7 +15,7 @@ void generator_compiler::register_standard(
 	GfxCompiler& gfx_compiler
 ) {
 	using namespace generator_compiler;
-	gfx_compiler::register_generator_compiler(gfx_compiler, test_proxy);
+	gfx_compiler::register_generator_compiler(gfx_compiler, generator_compiler::test_proxy);
 }
 
 } // namespace tool_build
