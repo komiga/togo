@@ -84,7 +84,7 @@ inline gfx::RenderConfig* load_render_config(
 	auto* render_config = static_cast<gfx::RenderConfig*>(
 		resource_manager::load_resource(rm, RES_TYPE_RENDER_CONFIG, name_hash).pointer
 	);
-	TOGO_ASSERT(render_config, "failed to load shader");
+	TOGO_ASSERT(render_config, "failed to load render_config");
 	return render_config;
 }
 
