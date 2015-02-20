@@ -1,7 +1,7 @@
 
 /**
 
-@defgroup string String classes and utilities
+@defgroup string String
 @details
 
 String manipulation (including string::copy()) functions ensure data

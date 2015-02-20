@@ -1,7 +1,7 @@
 
 /**
 
-@defgroup random Random number generators and utilities
+@defgroup random Random
 @details
 
 The RNGs have the following properties:
