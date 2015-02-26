@@ -38,5 +38,21 @@ void renderer::teardown_base(gfx::Renderer* const renderer) {
 	hash_map::clear(renderer->_generators);
 }
 
+void renderer::configure_base(
+	gfx::Renderer* const renderer,
+	gfx::RenderConfig const& config
+) {
+	for (auto const& pipe : config.pipes) {
+	for (auto const& layer : pipe.layers) {
+	for (auto const& gen_unit : layer.layout) {
+		TOGO_ASSERTF(
+			renderer::find_generator_def(renderer, gen_unit.name_hash),
+			"generator unit %08x is not registered",
+			gen_unit.name_hash
+		);
+	}}}
+	std::memcpy(&renderer->_config, &config, sizeof(gfx::RenderConfig));
+}
+
 } // namespace gfx
 } // namespace togo

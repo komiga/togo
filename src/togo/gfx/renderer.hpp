@@ -206,6 +206,14 @@ void render_objects(
 	gfx::BufferBindingID const* objects
 );
 
+/// Configure the renderer.
+///
+/// An assertion will fail if the renderer could not be configured.
+void configure(
+	gfx::Renderer* renderer,
+	gfx::RenderConfig const& config
+);
+
 /** @} */ // end of doc-group gfx_renderer
 
 } // namespace renderer

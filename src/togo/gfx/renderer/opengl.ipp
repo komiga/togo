@@ -592,5 +592,13 @@ void renderer::render_objects(
 	}}
 }
 
+void renderer::configure(
+	gfx::Renderer* const renderer,
+	gfx::RenderConfig const& config
+) {
+	renderer::configure_base(renderer, config);
+	// TODO: Create resources?
+}
+
 } // namespace gfx
 } // namespace togo

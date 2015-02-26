@@ -27,6 +27,11 @@ namespace renderer {
 
 void teardown_base(gfx::Renderer* const renderer);
 
+void configure_base(
+	gfx::Renderer* renderer,
+	gfx::RenderConfig const& config
+);
+
 } // namespace renderer
 
 namespace resource_array {
