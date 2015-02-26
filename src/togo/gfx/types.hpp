@@ -233,38 +233,52 @@ enum : GeneratorNameHash {
 	GEN_NAME_NULL = ""_generator_name,
 };
 
-/// GeneratorUnit exec() function.
-///
-/// objects_begin and objects_end are nullptr for
-/// non-Process Generators.
-using generator_exec_func_type = void (
-	gfx::GeneratorUnit const& unit,
-	gfx::RenderNode& node,
-	unsigned layer_index,
-	unsigned generator_index,
-	gfx::RenderObject const* objects_begin,
-	gfx::RenderObject const* objects_end
-);
 
 /// Configured generator.
 struct GeneratorUnit {
+	/// GeneratorUnit exec() function.
+	using exec_func_type = void (
+		gfx::GeneratorUnit const& unit,
+		gfx::RenderNode& node,
+		unsigned layer_index,
+		unsigned generator_index,
+		gfx::RenderObject const* objects_begin,
+		gfx::RenderObject const* objects_end
+	);
+
 	gfx::GeneratorNameHash name_hash;
 	void* data;
-	gfx::generator_exec_func_type* func_exec;
-};
 
-/// GeneratorUnit read() function.
-using generator_read_func_type = void (
-	gfx::GeneratorDef const& def,
-	BinaryInputSerializer& ser,
-	gfx::GeneratorUnit& unit
-);
+	/// Execute the generator.
+	///
+	/// objects_begin and objects_end are nullptr for
+	/// non-Process Generators.
+	exec_func_type* func_exec;
+};
 
 /// Generator definition.
 struct GeneratorDef {
+	/// GeneratorDef destroy() function.
+	using destroy_func_type = void (
+		gfx::GeneratorDef const& def,
+		gfx::Renderer* renderer
+	);
+
+	/// GeneratorUnit read() function.
+	using read_unit_func_type = void (
+		gfx::GeneratorDef const& def,
+		gfx::Renderer* renderer,
+		BinaryInputSerializer& ser,
+		gfx::GeneratorUnit& unit
+	);
+
 	gfx::GeneratorNameHash name_hash;
 	void* data;
-	gfx::generator_read_func_type* func_read;
+
+	/// Destroy the definition data.
+	destroy_func_type* func_destroy;
+	/// Read a GeneratorUnit.
+	read_unit_func_type* func_read_unit;
 };
 
 /// Primitive data type.

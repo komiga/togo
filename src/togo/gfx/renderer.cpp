@@ -42,7 +42,7 @@ void renderer::register_generator_def(
 	gfx::GeneratorDef const& def
 ) {
 	TOGO_ASSERT(
-		def.func_read,
+		def.func_read_unit,
 		"func_read must be assigned in generator definition"
 	);
 	TOGO_ASSERTF(

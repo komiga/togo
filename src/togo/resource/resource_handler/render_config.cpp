@@ -45,7 +45,7 @@ static ResourceValue load(
 		gen_unit.data = nullptr;
 		auto* gen_def = gfx::renderer::find_generator_def(renderer, gen_unit.name_hash);
 		TOGO_ASSERTE(gen_def);
-		gen_def->func_read(*gen_def, ser, gen_unit);
+		gen_def->func_read_unit(*gen_def, renderer, ser, gen_unit);
 		TOGO_ASSERTE(gen_unit.func_exec);
 	}}}}
 	return render_config;
