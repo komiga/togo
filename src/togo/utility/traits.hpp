@@ -248,6 +248,13 @@ using is_arithmetic = constant_type<
 template<class>
 struct enable_enum_bitwise_ops : false_type {};
 
+/// Allow a type to be used in a collection.
+///
+/// Specialize this class deriving from true_type to allow a non-POD
+/// type to be used in a collection.
+template<class>
+struct allow_collection_value_type : false_type {};
+
 /** @} */ // end of doc-group utility
 
 } // namespace togo
