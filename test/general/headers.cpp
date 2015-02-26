@@ -48,6 +48,10 @@
 #include <togo/io/object_buffer.hpp>
 #include <togo/kvs/types.hpp>
 #include <togo/kvs/kvs.hpp>
+#include <togo/entity/types.hpp>
+#include <togo/entity/entity_manager.hpp>
+#include <togo/world/types.hpp>
+#include <togo/world/world_manager.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/gfx/gfx.hpp>
 #include <togo/gfx/gfx/common.hpp>
