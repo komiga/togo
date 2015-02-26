@@ -64,6 +64,37 @@ sizeof_empty() noexcept {
 
 /** @name Misc utilities */ /// @{
 
+/// Make an rvalue reference.
+///
+/// This is equivalent to std::move(), whose name is totally bonkers.
+template<class T>
+inline constexpr remove_ref<T>&& rvalue_ref(T&& x) noexcept {
+	return static_cast<remove_ref<T>&&>(x);
+}
+
+/// Retain value category when passing to another function.
+///
+/// This is equivalent to std::forward().
+template<class T>
+inline constexpr T&& forward(remove_ref<T>& x) noexcept {
+	return static_cast<T&&>(x);
+}
+
+template<class T>
+inline constexpr T&& forward(remove_ref<T>&& x) noexcept {
+	static_assert(
+		!is_lvalue_reference<T>::value,
+		"rvalue cannot be forwarded as an lvalue"
+	);
+	return static_cast<T&&>(x);
+}
+
+/// A type as an unevaluated value.
+///
+/// This is equivalent to std::declval().
+template<class T>
+inline add_rvalue_ref<T> type_value() noexcept;
+
 /// Swap the values of two references.
 template<class T>
 inline void swap(T& x, T& y) {
