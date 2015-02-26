@@ -96,10 +96,11 @@ namespace {
 
 template<class T> struct remove_ref_impl { using type = T; };
 template<class T> struct remove_ref_impl<T&> { using type = T; };
+template<class T> struct remove_ref_impl<T&&> { using type = T; };
 
 } // anonymous namespace
 
-/// Remove reference qualification from type.
+/// Remove reference (lvalue or rvalue) qualification from type.
 template<class T>
 using remove_ref = typename remove_ref_impl<T>::type;
 
