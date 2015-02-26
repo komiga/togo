@@ -24,19 +24,19 @@ using TestAppModel = AppModel<TestAppData>;
 template<>
 void TestAppModel::init(TestApp& app) {
 	TOGO_LOG("init()\n");
-	TOGO_ASSERTE(app._data.x == 42);
+	TOGO_ASSERTE(app.data.x == 42);
 }
 
 template<>
 void TestAppModel::shutdown(TestApp& app) {
 	TOGO_LOG("shutdown()\n");
-	TOGO_ASSERTE(app._data.x == 42);
+	TOGO_ASSERTE(app.data.x == 42);
 }
 
 template<>
 void TestAppModel::update(TestApp& app, float /*dt*/) {
 	//TOGO_LOG("update()\n");
-	if (input::key_released(app._display, KeyCode::escape)) {
+	if (input::key_released(app.display, KeyCode::escape)) {
 		app::quit();
 	}
 }

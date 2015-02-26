@@ -68,68 +68,68 @@ using TestAppModel = AppModel<TestAppData>;
 
 template<>
 void TestAppModel::init(TestApp& app) {
-	resource_manager::add_package(app._resource_manager, "test_data");
-	gfx::display::set_swap_mode(app._display, gfx::DisplaySwapMode::wait_refresh);
+	resource_manager::add_package(app.resource_manager, "test_data");
+	gfx::display::set_swap_mode(app.display, gfx::DisplaySwapMode::wait_refresh);
 
-	app._data.osc_paused = false;
+	app.data.osc_paused = false;
 
 	// Setup mesh data
-	app._data.triangle_buffer = gfx::renderer::create_buffer(
-		app._renderer, sizeof(triangle_vertices), triangle_vertices
+	app.data.triangle_buffer = gfx::renderer::create_buffer(
+		app.renderer, sizeof(triangle_vertices), triangle_vertices
 	);
-	app._data.triangle_binding = gfx::renderer::create_buffer_binding(
-		app._renderer, array_extent(triangle_vertices), 0, {},
-		{{app._data.triangle_buffer, &triangle_vformat, 0}}
+	app.data.triangle_binding = gfx::renderer::create_buffer_binding(
+		app.renderer, array_extent(triangle_vertices), 0, {},
+		{{app.data.triangle_buffer, &triangle_vformat, 0}}
 	);
 
 	// Setup parameter block buffer
 	unsigned const pb_block_size = max(sizeof(ColorFactors), sizeof(Oscillator));
 	unsigned const pb_buffer_size = gfx::renderer::param_block_buffer_size(
-		app._renderer, 2, pb_block_size
+		app.renderer, 2, pb_block_size
 	);
 	TOGO_LOGF("pb_block_size = %u, pb_buffer_size = %u\n", pb_block_size, pb_buffer_size);
-	app._data.pb_buffer = gfx::renderer::create_buffer(
-		app._renderer,
+	app.data.pb_buffer = gfx::renderer::create_buffer(
+		app.renderer,
 		pb_buffer_size,
 		nullptr, gfx::BufferDataBinding::dynamic
 	);
 
 	// Setup ColorFactors parameter block
-	app._data.p_color_factors.rg = 1.0f;
-	app._data.p_color_factors.gb = 1.0f;
-	app._data.p_color_factors_binding = gfx::renderer::make_param_block_binding(
-		app._renderer,
-		app._data.pb_buffer,
-		gfx::renderer::param_block_offset(app._renderer, 0, pb_block_size),
+	app.data.p_color_factors.rg = 1.0f;
+	app.data.p_color_factors.gb = 1.0f;
+	app.data.p_color_factors_binding = gfx::renderer::make_param_block_binding(
+		app.renderer,
+		app.data.pb_buffer,
+		gfx::renderer::param_block_offset(app.renderer, 0, pb_block_size),
 		sizeof(ColorFactors)
 	);
 	gfx::renderer::set_fixed_param_block(
-		app._renderer,
+		app.renderer,
 		0, "ColorFactors"_param_block_name,
-		app._data.p_color_factors_binding
+		app.data.p_color_factors_binding
 	);
 
 	// Setup Oscillator parameter block
-	app._data.p_osc.time = MC_PI;
-	app._data.p_osc_binding = gfx::renderer::make_param_block_binding(
-		app._renderer,
-		app._data.pb_buffer,
-		gfx::renderer::param_block_offset(app._renderer, 1, pb_block_size),
+	app.data.p_osc.time = MC_PI;
+	app.data.p_osc_binding = gfx::renderer::make_param_block_binding(
+		app.renderer,
+		app.data.pb_buffer,
+		gfx::renderer::param_block_offset(app.renderer, 1, pb_block_size),
 		sizeof(Oscillator)
 	);
 
 	// Load shader
-	app._data.shader = resource::load_shader(
-		app._resource_manager,
+	app.data.shader = resource::load_shader(
+		app.resource_manager,
 		"test/gfx/simple-oscillate"_resource_name
 	);
 }
 
 template<>
 void TestAppModel::shutdown(TestApp& app) {
-	gfx::renderer::destroy_buffer(app._renderer, app._data.pb_buffer);
-	gfx::renderer::destroy_buffer_binding(app._renderer, app._data.triangle_binding);
-	gfx::renderer::destroy_buffer(app._renderer, app._data.triangle_buffer);
+	gfx::renderer::destroy_buffer(app.renderer, app.data.pb_buffer);
+	gfx::renderer::destroy_buffer_binding(app.renderer, app.data.triangle_binding);
+	gfx::renderer::destroy_buffer(app.renderer, app.data.triangle_buffer);
 }
 
 f32 usin(f32 x) {
@@ -138,41 +138,41 @@ f32 usin(f32 x) {
 
 template<>
 void TestAppModel::update(TestApp& app, float dt) {
-	if (input::key_released(app._display, KeyCode::space)) {
-		app._data.osc_paused = !app._data.osc_paused;
+	if (input::key_released(app.display, KeyCode::space)) {
+		app.data.osc_paused = !app.data.osc_paused;
 	}
-	if (input::key_released(app._display, KeyCode::escape)) {
+	if (input::key_released(app.display, KeyCode::escape)) {
 		app::quit();
 	}
 
 	// Update p_osc
 	constexpr f32 const m = MC_TAU * 100.0f;
-	if (!app._data.osc_paused) {
-		app._data.p_osc.time = std::fmod(app._data.p_osc.time + dt, m);
+	if (!app.data.osc_paused) {
+		app.data.p_osc.time = std::fmod(app.data.p_osc.time + dt, m);
 	}
 
 	// Update p_color_factors
-	Vec2 const mp = input::mouse_position(app._display);
-	app._data.p_color_factors.rg = mp.x / static_cast<f32>(gfx::display::width(app._display));
-	app._data.p_color_factors.gb = mp.y / static_cast<f32>(gfx::display::height(app._display));
+	Vec2 const mp = input::mouse_position(app.display);
+	app.data.p_color_factors.rg = mp.x / static_cast<f32>(gfx::display::width(app.display));
+	app.data.p_color_factors.gb = mp.y / static_cast<f32>(gfx::display::height(app.display));
 }
 
 template<>
 void TestAppModel::render(TestApp& app) {
-	gfx::renderer::clear_backbuffer(app._renderer);
+	gfx::renderer::clear_backbuffer(app.renderer);
 	gfx::renderer::map_buffer(
-		app._renderer,
-		app._data.p_color_factors_binding, &app._data.p_color_factors
+		app.renderer,
+		app.data.p_color_factors_binding, &app.data.p_color_factors
 	);
 	gfx::renderer::map_buffer(
-		app._renderer,
-		app._data.p_osc_binding, &app._data.p_osc
+		app.renderer,
+		app.data.p_osc_binding, &app.data.p_osc
 	);
 	gfx::renderer::render_objects(
-		app._renderer,
-		app._data.shader,
-		1, &app._data.p_osc_binding,
-		1, &app._data.triangle_binding
+		app.renderer,
+		app.data.shader,
+		1, &app.data.p_osc_binding,
+		1, &app.data.triangle_binding
 	);
 }
 
