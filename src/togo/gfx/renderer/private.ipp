@@ -32,6 +32,10 @@ void renderer::teardown_base(gfx::Renderer* const renderer) {
 		pb_name_hash = gfx::PB_NAME_NULL;
 	}
 	renderer->_num_active_draw_param_blocks = 0;
+	for (auto& entry : renderer->_generators) {
+		entry.value.func_destroy(entry.value, renderer);
+	}
+	hash_map::clear(renderer->_generators);
 }
 
 } // namespace gfx
