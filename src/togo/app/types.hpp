@@ -12,6 +12,8 @@
 
 #include <togo/config.hpp>
 #include <togo/threading/types.hpp>
+#include <togo/entity/types.hpp>
+#include <togo/world/types.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/input/types.hpp>
 #include <togo/resource/types.hpp>
@@ -52,6 +54,9 @@ struct AppBase {
 
 	TaskManager _task_manager;
 	ResourceManager _resource_manager;
+	EntityManager _entity_manager;
+	WorldManager _world_manager;
+
 	gfx::Display* _display;
 	InputBuffer _input_buffer;
 	gfx::Renderer* _renderer;

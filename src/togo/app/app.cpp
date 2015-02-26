@@ -7,6 +7,8 @@
 #include <togo/log/log.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/system/system.hpp>
+#include <togo/entity/entity_manager.hpp>
+#include <togo/world/world_manager.hpp>
 #include <togo/gfx/gfx.hpp>
 #include <togo/gfx/display.hpp>
 #include <togo/gfx/renderer.hpp>
@@ -43,6 +45,8 @@ AppBase::AppBase(
 		base_path,
 		memory::default_allocator()
 	)
+	, _entity_manager(memory::default_allocator())
+	, _world_manager(memory::default_allocator())
 	, _display(nullptr)
 	, _input_buffer(memory::default_allocator())
 	, _renderer(nullptr)
@@ -87,7 +91,7 @@ static void core_init(AppBase& app_base) {
 		memory::default_allocator()
 	);
 
-	// Register resource handlers.
+	// Register resource handlers
 	resource_handler::register_test(app_base._resource_manager);
 	resource_handler::register_shader_prelude(app_base._resource_manager, app_base._renderer);
 	resource_handler::register_shader(app_base._resource_manager, app_base._renderer);
@@ -100,6 +104,9 @@ static void core_init(AppBase& app_base) {
 static void core_shutdown(AppBase& app_base) {
 	TOGO_LOG("App: shutting down\n");
 	app_base._func_shutdown(app_base);
+
+	world_manager::shutdown(app_base._world_manager);
+	entity_manager::shutdown(app_base._entity_manager);
 
 	resource_manager::clear_resources(app_base._resource_manager);
 	gfx::renderer::destroy(app_base._renderer);
