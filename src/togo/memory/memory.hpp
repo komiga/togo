@@ -11,9 +11,9 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/utility/traits.hpp>
 #include <togo/memory/types.hpp>
 
-#include <type_traits>
 #include <new>
 #include <cstdlib>
 
@@ -24,12 +24,9 @@ namespace togo {
 	@{
 */
 
-namespace {
-	template<class T>
-	using pointer_type = typename std::remove_const<
-		typename std::remove_pointer<T>::type
-	>::type;
-}
+/// Allocate an object with an allocator without constructing it.
+#define TOGO_ALLOCATE(a, T) \
+	((a).allocate(sizeof(T), alignof(T)))
 
 /// Construct an object with an allocator.
 #define TOGO_CONSTRUCT(a, T, ...) \
@@ -58,7 +55,7 @@ namespace {
 // Oh C++.
 #define TOGO_DESTROY(a, p) \
 	do { if (p) { \
-		(p)->~pointer_type<decltype(p)>(); (a).deallocate(p); \
+		(p)->~remove_cv<remove_ptr<decltype(p)>>(); (a).deallocate(p); \
 	} } while (false)
 
 /// %Allocator base class.
