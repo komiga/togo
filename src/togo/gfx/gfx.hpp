@@ -22,13 +22,18 @@ namespace gfx {
 	@{
 */
 
+/// Calculate hash of parameter block name.
+inline gfx::ParamBlockNameHash hash_param_block_name(StringRef const& name) {
+	return hash::calc32(name);
+}
+
 /// Calculate hash of generator name.
 inline gfx::GeneratorNameHash hash_generator_name(StringRef const& name) {
 	return hash::calc32(name);
 }
 
-/// Calculate hash of parameter block name.
-inline gfx::ParamBlockNameHash hash_param_block_name(StringRef const& name) {
+/// Calculate hash of viewport name.
+inline gfx::GeneratorNameHash hash_viewport_name(StringRef const& name) {
 	return hash::calc32(name);
 }
 

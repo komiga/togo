@@ -173,10 +173,11 @@ using ShaderID = gfx::ResourceID<gfx::Shader>;
 struct GeneratorDef;
 struct GeneratorUnit;
 
+struct RenderConfig;
+
 /// Render object.
 struct RenderObject; // TODO
 
-/// Render node.
 struct RenderNode;
 
 /// Renderer.
@@ -190,6 +191,9 @@ using ParamBlockNameHash = hash32;
 
 /// Generator name hash.
 using GeneratorNameHash = hash32;
+
+/// Viewport name hash.
+using ViewportNameHash = hash32;
 
 namespace hash_literals {
 
@@ -205,6 +209,15 @@ operator"" _param_block_name(
 /// Generator name hash literal.
 inline constexpr GeneratorNameHash
 operator"" _generator_name(
+	char const* const data,
+	std::size_t const size
+) {
+	return hash::calc32_ce(data, size);
+}
+
+/// Viewport name hash literal.
+inline constexpr ViewportNameHash
+operator"" _viewport_name(
 	char const* const data,
 	std::size_t const size
 ) {
@@ -233,6 +246,11 @@ enum : GeneratorNameHash {
 	GEN_NAME_NULL = ""_generator_name,
 };
 
+/// Viewport names.
+enum : ViewportNameHash {
+	/// Null name.
+	VIEWPORT_NAME_NULL = ""_viewport_name,
+};
 
 /// Configured generator.
 struct GeneratorUnit {
@@ -430,6 +448,57 @@ struct ShaderDef {
 		, fixed_param_blocks()
 		, draw_param_blocks()
 	{}
+};
+
+/// Pipe layer.
+struct Layer {
+	enum class Order : u32 {
+		back_front,
+		front_back,
+	};
+
+	hash32 name_hash;
+	FixedArray<hash32, 4> rts;
+	hash32 dst;
+	Order order;
+	FixedArray<gfx::GeneratorUnit, TOGO_GFX_LAYER_NUM_GENERATORS> layout;
+	FixedArray<char, 32> name;
+};
+
+/// Render pipe.
+struct Pipe {
+	hash32 name_hash;
+	FixedArray<gfx::Layer, TOGO_GFX_PIPE_NUM_LAYERS> layers;
+	FixedArray<char, 32> name;
+};
+
+/// Render viewport.
+struct Viewport {
+	// TODO: resources
+	gfx::ViewportNameHash name_hash;
+	u32 pipe;
+	hash32 output_rt;
+	hash32 output_dst;
+	FixedArray<char, 32> name;
+};
+
+/// Render config.
+struct RenderConfig {
+	// TODO: shared_resources
+	FixedArray<gfx::Viewport, TOGO_GFX_CONFIG_NUM_VIEWPORTS> viewports;
+	FixedArray<gfx::Pipe, TOGO_GFX_CONFIG_NUM_PIPES> pipes;
+};
+
+/// Render command key.
+struct RenderCmdKey {
+	u64 key;
+	void* data;
+};
+
+/// Render node.
+struct RenderNode {
+	gfx::RenderCmdKey keys[TOGO_GFX_NODE_NUM_COMMANDS];
+	u8 buffer[TOGO_GFX_NODE_BUFFER_SIZE];
 };
 
 /** @} */ // end of doc-group gfx_renderer

@@ -83,51 +83,6 @@ struct ResourceArray {
 	}
 };
 
-struct Layer {
-	enum class Order : u32 {
-		back_front,
-		front_back,
-	};
-
-	hash32 name_hash;
-	FixedArray<hash32, 4> rts;
-	hash32 dst;
-	Order order;
-	FixedArray<gfx::GeneratorUnit, TOGO_GFX_LAYER_NUM_GENERATORS> layout;
-	FixedArray<char, 32> name;
-};
-
-struct Pipe {
-	hash32 name_hash;
-	FixedArray<gfx::Layer, TOGO_GFX_PIPE_NUM_LAYERS> layers;
-	FixedArray<char, 32> name;
-};
-
-struct Viewport {
-	// TODO: resources
-	hash32 name_hash;
-	u32 pipe;
-	hash32 output_rt;
-	hash32 output_dst;
-	FixedArray<char, 32> name;
-};
-
-struct RenderConfig {
-	// TODO: shared_resources
-	FixedArray<gfx::Viewport, TOGO_GFX_CONFIG_NUM_VIEWPORTS> viewports;
-	FixedArray<gfx::Pipe, TOGO_GFX_CONFIG_NUM_PIPES> pipes;
-};
-
-struct RenderCmdKey {
-	u64 key;
-	void* data;
-};
-
-struct RenderNode {
-	gfx::RenderCmdKey keys[TOGO_GFX_NODE_NUM_COMMANDS];
-	u8 buffer[TOGO_GFX_NODE_BUFFER_SIZE];
-};
-
 struct Renderer {
 	Allocator* _allocator;
 
