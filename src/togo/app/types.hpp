@@ -31,6 +31,8 @@ struct App;
 /// Application model.
 template<class Data>
 struct AppModel {
+	static void destruct(App<Data>& app);
+
 	static void init(App<Data>& app);
 	static void shutdown(App<Data>& app);
 	static void update(App<Data>& app, float dt);
@@ -39,11 +41,13 @@ struct AppModel {
 
 /// Base application class.
 struct AppBase {
+	using destruct_func_type = void (AppBase& app_base);
 	using init_func_type = void (AppBase& app_base);
 	using shutdown_func_type = void (AppBase& app_base);
 	using update_func_type = void (AppBase& app_base, float dt);
 	using render_func_type = void (AppBase& app_base);
 
+	destruct_func_type& _func_destruct;
 	init_func_type& _func_init;
 	shutdown_func_type& _func_shutdown;
 	update_func_type& _func_update;
@@ -72,13 +76,14 @@ struct AppBase {
 
 	~AppBase();
 	AppBase(
+		destruct_func_type& func_destruct,
 		init_func_type& func_init,
 		shutdown_func_type& func_shutdown,
 		update_func_type& func_update,
 		render_func_type& func_render,
 		unsigned num_args,
 		char const* const args[],
-		StringRef const base_path,
+		StringRef base_path,
 		float update_freq
 	);
 };
@@ -101,9 +106,8 @@ struct App
 	App(
 		unsigned num_args,
 		char const* const args[],
-		StringRef const base_path,
-		float update_freq,
-		Data&& data
+		StringRef base_path,
+		float update_freq
 	);
 };
 

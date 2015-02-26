@@ -4,6 +4,7 @@
 */
 
 #include <togo/config.hpp>
+#include <togo/error/assert.hpp>
 #include <togo/log/log.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/system/system.hpp>
@@ -16,12 +17,28 @@
 #include <togo/resource/resource_handler.hpp>
 #include <togo/resource/resource_manager.hpp>
 #include <togo/app/types.hpp>
+#include <togo/app/app.hpp>
 
 namespace togo {
+
+namespace app {
+
+app::Globals _app_globals{
+	nullptr,
+	nullptr
+};
+
+void init_with(Allocator& allocator, AppBase* app_base);
+void actual_init(AppBase& app_base);
+void update(AppBase& app_base, float dt);
+void render(AppBase& app_base);
+
+} // namespace app
 
 AppBase::~AppBase() {}
 
 AppBase::AppBase(
+	destruct_func_type& func_destruct,
 	init_func_type& func_init,
 	shutdown_func_type& func_shutdown,
 	update_func_type& func_update,
@@ -31,7 +48,8 @@ AppBase::AppBase(
 	StringRef const base_path,
 	float update_freq
 )
-	: _func_init(func_init)
+	: _func_destruct(func_destruct)
+	, _func_init(func_init)
 	, _func_shutdown(func_shutdown)
 	, _func_update(func_update)
 	, _func_render(func_render)
@@ -54,17 +72,17 @@ AppBase::AppBase(
 	, _quit(false)
 {}
 
-namespace app {
+void app::init_with(Allocator& allocator, AppBase* app_base) {
+	TOGO_ASSERT(
+		!_app_globals.instance,
+		"application has already been initialized"
+	);
+	_app_globals.allocator = &allocator;
+	_app_globals.instance = app_base;
+	app::actual_init(*app_base);
+}
 
-void core_quit(AppBase& app_base);
-void core_run(AppBase& app_base);
-
-static void core_init(AppBase& app_base);
-static void core_shutdown(AppBase& app_base);
-static void core_update(AppBase& app_base, float dt);
-static void core_render(AppBase& app_base);
-
-static void core_init(AppBase& app_base) {
+void app::actual_init(AppBase& app_base) {
 	TOGO_LOG("App: initializing\n");
 
 	// Initialize graphics
@@ -97,11 +115,17 @@ static void core_init(AppBase& app_base) {
 	resource_handler::register_shader(app_base._resource_manager, app_base._renderer);
 	resource_handler::register_render_config(app_base._resource_manager, app_base._renderer);
 
+	// Register components
+	//components::register_transform3d(app_base._world_manager);
+	//components::register_mesh(app_base._world_manager);
+	//components::register_camera(app_base._world_manager);
+
 	app_base._quit = false;
 	app_base._func_init(app_base);
 }
 
-static void core_shutdown(AppBase& app_base) {
+void app::shutdown() {
+	auto& app_base = app::instance();
 	TOGO_LOG("App: shutting down\n");
 	app_base._func_shutdown(app_base);
 
@@ -117,9 +141,14 @@ static void core_shutdown(AppBase& app_base) {
 	gfx::shutdown();
 	resource_manager::clear_packages(app_base._resource_manager);
 	resource_manager::clear_handlers(app_base._resource_manager);
+
+	app_base._func_destruct(app_base);
+	TOGO_DESTROY(*_app_globals.allocator, &app_base);
+	_app_globals.allocator = nullptr;
+	_app_globals.instance = nullptr;
 }
 
-static void core_update(AppBase& app_base, float dt) {
+void app::update(AppBase& app_base, float dt) {
 	InputEventType event_type{};
 	InputEvent const* event = nullptr;
 	input_buffer::update(app_base._input_buffer);
@@ -129,7 +158,7 @@ static void core_update(AppBase& app_base, float dt) {
 		}
 		switch (event_type) {
 		case InputEventType::display_close_request:
-			app::core_quit(app_base);
+			app::quit();
 			break;
 
 		case InputEventType::display_resize:
@@ -147,13 +176,13 @@ static void core_update(AppBase& app_base, float dt) {
 	app_base._func_update(app_base, dt);
 }
 
-static void core_render(AppBase& app_base) {
+void app::render(AppBase& app_base) {
 	app_base._func_render(app_base);
 	gfx::display::swap_buffers(app_base._display);
 }
 
-void core_run(AppBase& app_base) {
-	app::core_init(app_base);
+void app::run() {
+	auto& app_base = app::instance();
 	float const update_freq = app_base._update_freq;
 	float time_prev = system::time_monotonic();
 	float time_next;
@@ -168,20 +197,19 @@ void core_run(AppBase& app_base) {
 		do_render = time_accum >= update_freq;
 		while (time_accum >= update_freq) {
 			time_accum -= update_freq;
-			app::core_update(app_base, update_freq);
+			app::update(app_base, update_freq);
 		}
 		if (do_render) {
-			app::core_render(app_base);
+			app::render(app_base);
 		}
 		system::sleep_ms(1);
 	}
-	app::core_shutdown(app_base);
 }
 
-void core_quit(AppBase& app_base) {
+void app::quit() {
+	auto& app_base = app::instance();
 	TOGO_LOG("App: quitting\n");
 	app_base._quit = true;
 }
 
-} // namespace app
 } // namespace togo

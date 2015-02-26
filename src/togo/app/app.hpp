@@ -10,9 +10,18 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
+#include <togo/memory/types.hpp>
+#include <togo/memory/memory.hpp>
 #include <togo/app/types.hpp>
 
 namespace togo {
+
+template<class Data>
+void AppModel<Data>::destruct(App<Data>& app) {
+	app._data.~Data();
+}
 
 /// Construct application with arguments and model data.
 ///
@@ -21,11 +30,11 @@ template<class Data>
 inline App<Data>::App(
 	unsigned num_args,
 	char const* const args[],
-	StringRef const base_path,
-	float update_freq,
-	Data&& data
+	StringRef base_path,
+	float update_freq
 )
 	: AppBase(
+		reinterpret_cast<AppBase::destruct_func_type&>(AppModel<Data>::destruct),
 		reinterpret_cast<AppBase::init_func_type&>(AppModel<Data>::init),
 		reinterpret_cast<AppBase::shutdown_func_type&>(AppModel<Data>::shutdown),
 		reinterpret_cast<AppBase::update_func_type&>(AppModel<Data>::update),
@@ -35,7 +44,7 @@ inline App<Data>::App(
 		base_path,
 		update_freq
 	)
-	, _data(data)
+	, _data()
 {}
 
 namespace app {
@@ -45,25 +54,56 @@ namespace app {
 	@{
 */
 
+struct Globals {
+	Allocator* allocator;
+	AppBase* instance;
+};
+extern app::Globals _app_globals;
+
+/// Get application.
+///
+/// An assertion will fail if the application has not been created.
+inline AppBase& instance() {
+	auto* instance = _app_globals.instance;
+	TOGO_ASSERTE(instance);
+	return *instance;
+}
+
+/// Initialize application.
+///
+/// An assertion will fail if the application has already been created.
+template<class Data>
+inline AppBase& init(
+	Allocator& allocator,
+	unsigned num_args,
+	char const* const args[],
+	StringRef base_path,
+	float update_freq
+) {
+	auto* const app = TOGO_CONSTRUCT(
+		allocator, App<Data>,
+		num_args, args, base_path, update_freq
+	);
+	extern void init_with(Allocator&, AppBase*);
+	init_with(allocator, app);
+	return app::instance();
+}
+
+/// Shutdown application.
+///
+/// An assertion will fail if the application has not been created.
+void shutdown();
+
 /// Run the application.
 ///
-/// This will initialize the application and run the main loop until
-/// a quit is signaled.
-template<class Data>
-inline void run(App<Data>& app) {
-	extern void core_run(AppBase&);
-	core_run(app);
-}
+/// This will run the main loop until a quit is signaled.
+void run();
 
 /// Signal the application to quit.
 ///
 /// This has no effect if the application is not running
 /// (see app::run()).
-template<class Data>
-inline void quit(App<Data>& app) {
-	extern void core_quit(AppBase&);
-	core_quit(app);
-}
+void quit();
 
 /** @} */ // end of doc-group app
 
