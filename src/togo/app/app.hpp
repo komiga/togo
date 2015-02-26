@@ -20,7 +20,7 @@ namespace togo {
 
 template<class Data>
 void AppModel<Data>::destruct(App<Data>& app) {
-	app._data.~Data();
+	app.data.~Data();
 }
 
 /// Construct application with arguments and model data.
@@ -42,7 +42,7 @@ inline App<Data>::App(
 		base_path,
 		update_freq
 	)
-	, _data()
+	, data()
 {}
 
 namespace app {

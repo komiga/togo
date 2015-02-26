@@ -52,20 +52,20 @@ AppBase::AppBase(
 	, _func_shutdown(func_shutdown)
 	, _func_update(func_update)
 	, _func_render(func_render)
-	, _args(args)
-	, _task_manager(
+	, args(args)
+	, task_manager(
 		system::num_cores() - 1u,
 		memory::default_allocator()
 	)
-	, _resource_manager(
+	, resource_manager(
 		base_path,
 		memory::default_allocator()
 	)
-	, _entity_manager(memory::default_allocator())
-	, _world_manager(memory::default_allocator())
-	, _display(nullptr)
-	, _input_buffer(memory::default_allocator())
-	, _renderer(nullptr)
+	, entity_manager(memory::default_allocator())
+	, world_manager(memory::default_allocator())
+	, display(nullptr)
+	, input_buffer(memory::default_allocator())
+	, renderer(nullptr)
 	, _update_freq(update_freq)
 	, _quit(false)
 {}
@@ -92,7 +92,7 @@ void app::actual_init(AppBase& app_base) {
 	config.msaa_num_buffers = 0;
 	config.msaa_num_samples = 0;
 	config.flags = gfx::DisplayConfigFlags::double_buffered;
-	app_base._display = gfx::display::create(
+	app_base.display = gfx::display::create(
 		"togo display",
 		1024, 768,
 		gfx::DisplayFlags::borderless |
@@ -101,22 +101,22 @@ void app::actual_init(AppBase& app_base) {
 		nullptr,
 		memory::default_allocator()
 	);
-	input_buffer::add_display(app_base._input_buffer, app_base._display);
-	gfx::display::set_mouse_lock(app_base._display, false);
-	app_base._renderer = gfx::renderer::create(
+	input_buffer::add_display(app_base.input_buffer, app_base.display);
+	gfx::display::set_mouse_lock(app_base.display, false);
+	app_base.renderer = gfx::renderer::create(
 		memory::default_allocator()
 	);
 
 	// Register resource handlers
-	resource_handler::register_test(app_base._resource_manager);
-	resource_handler::register_shader_prelude(app_base._resource_manager, app_base._renderer);
-	resource_handler::register_shader(app_base._resource_manager, app_base._renderer);
-	resource_handler::register_render_config(app_base._resource_manager, app_base._renderer);
+	resource_handler::register_test(app_base.resource_manager);
+	resource_handler::register_shader_prelude(app_base.resource_manager, app_base.renderer);
+	resource_handler::register_shader(app_base.resource_manager, app_base.renderer);
+	resource_handler::register_render_config(app_base.resource_manager, app_base.renderer);
 
 	// Register components
-	//components::register_transform3d(app_base._world_manager);
-	//components::register_mesh(app_base._world_manager);
-	//components::register_camera(app_base._world_manager);
+	//components::register_transform3d(app_base.world_manager);
+	//components::register_mesh(app_base.world_manager);
+	//components::register_camera(app_base.world_manager);
 
 	app_base._quit = false;
 	app_base._func_init(app_base);
@@ -127,18 +127,18 @@ void app::shutdown() {
 	TOGO_LOG("App: shutting down\n");
 	app_base._func_shutdown(app_base);
 
-	world_manager::shutdown(app_base._world_manager);
-	entity_manager::shutdown(app_base._entity_manager);
+	world_manager::shutdown(app_base.world_manager);
+	entity_manager::shutdown(app_base.entity_manager);
 
-	resource_manager::clear_resources(app_base._resource_manager);
-	gfx::renderer::destroy(app_base._renderer);
-	app_base._renderer = nullptr;
-	input_buffer::remove_display(app_base._input_buffer, app_base._display);
-	gfx::display::destroy(app_base._display);
-	app_base._display = nullptr;
+	resource_manager::clear_resources(app_base.resource_manager);
+	gfx::renderer::destroy(app_base.renderer);
+	app_base.renderer = nullptr;
+	input_buffer::remove_display(app_base.input_buffer, app_base.display);
+	gfx::display::destroy(app_base.display);
+	app_base.display = nullptr;
 	gfx::shutdown();
-	resource_manager::clear_packages(app_base._resource_manager);
-	resource_manager::clear_handlers(app_base._resource_manager);
+	resource_manager::clear_packages(app_base.resource_manager);
+	resource_manager::clear_handlers(app_base.resource_manager);
 
 	app_base._func_destruct(app_base);
 	TOGO_DESTROY(*_app_globals.allocator, &app_base);
@@ -149,9 +149,9 @@ void app::shutdown() {
 void app::update(AppBase& app_base, float dt) {
 	InputEventType event_type{};
 	InputEvent const* event = nullptr;
-	input_buffer::update(app_base._input_buffer);
-	while (input_buffer::poll(app_base._input_buffer, event_type, event)) {
-		if (event->display != app_base._display) {
+	input_buffer::update(app_base.input_buffer);
+	while (input_buffer::poll(app_base.input_buffer, event_type, event)) {
+		if (event->display != app_base.display) {
 			continue;
 		}
 		switch (event_type) {
@@ -161,7 +161,7 @@ void app::update(AppBase& app_base, float dt) {
 
 		case InputEventType::display_resize:
 			gfx::renderer::set_viewport_size(
-				app_base._renderer,
+				app_base.renderer,
 				event->display_resize.new_width,
 				event->display_resize.new_height
 			);
@@ -176,7 +176,7 @@ void app::update(AppBase& app_base, float dt) {
 
 void app::render(AppBase& app_base) {
 	app_base._func_render(app_base);
-	gfx::display::swap_buffers(app_base._display);
+	gfx::display::swap_buffers(app_base.display);
 }
 
 void app::run() {

@@ -54,16 +54,16 @@ struct AppBase {
 	update_func_type& _func_update;
 	render_func_type& _func_render;
 
-	ArrayRef<char const* const> _args;
+	ArrayRef<char const* const> args;
 
-	TaskManager _task_manager;
-	ResourceManager _resource_manager;
-	EntityManager _entity_manager;
-	WorldManager _world_manager;
+	TaskManager task_manager;
+	ResourceManager resource_manager;
+	EntityManager entity_manager;
+	WorldManager world_manager;
 
-	gfx::Display* _display;
-	InputBuffer _input_buffer;
-	gfx::Renderer* _renderer;
+	gfx::Display* display;
+	InputBuffer input_buffer;
+	gfx::Renderer* renderer;
 
 	float _update_freq;
 	bool _quit;
@@ -92,7 +92,7 @@ template<class Data>
 struct App
 	: public AppBase
 {
-	Data _data;
+	Data data;
 
 	App() = delete;
 	App(App<Data> const&) = delete;
