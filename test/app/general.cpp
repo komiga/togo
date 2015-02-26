@@ -1,6 +1,7 @@
 
 #include <togo/error/assert.hpp>
 #include <togo/log/log.hpp>
+#include <togo/memory/memory.hpp>
 #include <togo/input/input.hpp>
 #include <togo/app/app.hpp>
 
@@ -9,44 +10,52 @@
 using namespace togo;
 
 struct TestAppData {
-	unsigned x;
+	unsigned x{42};
+
+	~TestAppData() {
+		TOGO_LOG("~TestAppData()\n");
+	}
 };
 
+using TestApp = App<TestAppData>;
+using TestAppModel = AppModel<TestAppData>;
+
 template<>
-void AppModel<TestAppData>::init(App<TestAppData>& app) {
+void TestAppModel::init(TestApp& app) {
 	TOGO_LOG("init()\n");
 	TOGO_ASSERTE(app._data.x == 42);
 }
 
 template<>
-void AppModel<TestAppData>::shutdown(App<TestAppData>& app) {
+void TestAppModel::shutdown(TestApp& app) {
 	TOGO_LOG("shutdown()\n");
 	TOGO_ASSERTE(app._data.x == 42);
 }
 
 template<>
-void AppModel<TestAppData>::update(App<TestAppData>& app, float /*dt*/) {
+void TestAppModel::update(TestApp& app, float /*dt*/) {
 	//TOGO_LOG("update()\n");
 	if (input::key_released(app._display, KeyCode::escape)) {
-		app::quit(app);
+		app::quit();
 	}
 }
 
 template<>
-void AppModel<TestAppData>::render(App<TestAppData>& /*app*/) {
+void TestAppModel::render(TestApp& /*app*/) {
 	//TOGO_LOG("render()\n");
 }
 
 signed main(signed argc, char* argv[]) {
 	memory_init();
 
-	App<TestAppData> app{
+	app::init<TestAppData>(
+		memory::default_allocator(),
 		static_cast<unsigned>(max(0, argc - 1)),
 		argv,
 		"data/",
-		1.0f / 30.0f,
-		TestAppData{42}
-	};
-	app::run(app);
+		1.0f / 30.0f
+	);
+	app::run();
+	app::shutdown();
 	return 0;
 }

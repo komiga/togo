@@ -142,7 +142,7 @@ void TestAppModel::update(TestApp& app, float dt) {
 		app._data.osc_paused = !app._data.osc_paused;
 	}
 	if (input::key_released(app._display, KeyCode::escape)) {
-		app::quit(app);
+		app::quit();
 	}
 
 	// Update p_osc
@@ -179,13 +179,14 @@ void TestAppModel::render(TestApp& app) {
 signed main(signed argc, char* argv[]) {
 	memory_init();
 
-	TestApp app{
+	app::init<TestAppData>(
+		memory::default_allocator(),
 		unsigned_cast(max(0, argc - 1)),
 		argv,
 		"data/project/package/",
-		1.0f / 30.0f,
-		TestAppData{}
-	};
-	app::run(app);
+		1.0f / 30.0f
+	);
+	app::run();
+	app::shutdown();
 	return 0;
 }
