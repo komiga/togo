@@ -128,6 +128,20 @@ using remove_cvr = remove_cv<remove_ref<T>>;
 
 namespace {
 
+template<class T> struct add_rvalue_ref_impl { using type = T&&; };
+template<> struct add_rvalue_ref_impl<void> { using type = void; };
+template<> struct add_rvalue_ref_impl<void const> { using type = void const; };
+template<> struct add_rvalue_ref_impl<void volatile> { using type = void volatile; };
+template<> struct add_rvalue_ref_impl<void const volatile> { using type = void const volatile; };
+
+} // anonymous namespace
+
+/// Add an rvalue reference to type.
+template<class T>
+using add_rvalue_ref = typename add_rvalue_ref_impl<T>::type;
+
+namespace {
+
 template<class T, class U> struct is_same_impl : false_type {};
 template<class T> struct is_same_impl<T, T> : true_type {};
 
