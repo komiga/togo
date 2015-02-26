@@ -28,10 +28,10 @@ app::Globals _app_globals{
 	nullptr
 };
 
-void init_with(Allocator& allocator, AppBase* app_base);
-void actual_init(AppBase& app_base);
-void update(AppBase& app_base, float dt);
-void render(AppBase& app_base);
+void init_with(Allocator& allocator, AppBase* app);
+void actual_init(AppBase& app);
+void update(AppBase& app, float dt);
+void render(AppBase& app);
 
 } // namespace app
 
@@ -70,17 +70,17 @@ AppBase::AppBase(
 	, _quit(false)
 {}
 
-void app::init_with(Allocator& allocator, AppBase* app_base) {
+void app::init_with(Allocator& allocator, AppBase* app) {
 	TOGO_ASSERT(
 		!_app_globals.instance,
 		"application has already been initialized"
 	);
 	_app_globals.allocator = &allocator;
-	_app_globals.instance = app_base;
-	app::actual_init(*app_base);
+	_app_globals.instance = app;
+	app::actual_init(*app);
 }
 
-void app::actual_init(AppBase& app_base) {
+void app::actual_init(AppBase& app) {
 	TOGO_LOG("App: initializing\n");
 
 	// Initialize graphics
@@ -92,7 +92,7 @@ void app::actual_init(AppBase& app_base) {
 	config.msaa_num_buffers = 0;
 	config.msaa_num_samples = 0;
 	config.flags = gfx::DisplayConfigFlags::double_buffered;
-	app_base.display = gfx::display::create(
+	app.display = gfx::display::create(
 		"togo display",
 		1024, 768,
 		gfx::DisplayFlags::borderless |
@@ -101,57 +101,57 @@ void app::actual_init(AppBase& app_base) {
 		nullptr,
 		memory::default_allocator()
 	);
-	input_buffer::add_display(app_base.input_buffer, app_base.display);
-	gfx::display::set_mouse_lock(app_base.display, false);
-	app_base.renderer = gfx::renderer::create(
+	input_buffer::add_display(app.input_buffer, app.display);
+	gfx::display::set_mouse_lock(app.display, false);
+	app.renderer = gfx::renderer::create(
 		memory::default_allocator()
 	);
 
 	// Register resource handlers
-	resource_handler::register_test(app_base.resource_manager);
-	resource_handler::register_shader_prelude(app_base.resource_manager, app_base.renderer);
-	resource_handler::register_shader(app_base.resource_manager, app_base.renderer);
-	resource_handler::register_render_config(app_base.resource_manager, app_base.renderer);
+	resource_handler::register_test(app.resource_manager);
+	resource_handler::register_shader_prelude(app.resource_manager, app.renderer);
+	resource_handler::register_shader(app.resource_manager, app.renderer);
+	resource_handler::register_render_config(app.resource_manager, app.renderer);
 
 	// Register components
-	//components::register_transform3d(app_base.world_manager);
-	//components::register_mesh(app_base.world_manager);
-	//components::register_camera(app_base.world_manager);
+	//components::register_transform3d(app.world_manager);
+	//components::register_mesh(app.world_manager);
+	//components::register_camera(app.world_manager);
 
-	app_base._quit = false;
-	app_base._func_init(app_base);
+	app._quit = false;
+	app._func_init(app);
 }
 
 void app::shutdown() {
-	auto& app_base = app::instance();
+	auto& app = app::instance();
 	TOGO_LOG("App: shutting down\n");
-	app_base._func_shutdown(app_base);
+	app._func_shutdown(app);
 
-	world_manager::shutdown(app_base.world_manager);
-	entity_manager::shutdown(app_base.entity_manager);
+	world_manager::shutdown(app.world_manager);
+	entity_manager::shutdown(app.entity_manager);
 
-	resource_manager::clear_resources(app_base.resource_manager);
-	gfx::renderer::destroy(app_base.renderer);
-	app_base.renderer = nullptr;
-	input_buffer::remove_display(app_base.input_buffer, app_base.display);
-	gfx::display::destroy(app_base.display);
-	app_base.display = nullptr;
+	resource_manager::clear_resources(app.resource_manager);
+	gfx::renderer::destroy(app.renderer);
+	app.renderer = nullptr;
+	input_buffer::remove_display(app.input_buffer, app.display);
+	gfx::display::destroy(app.display);
+	app.display = nullptr;
 	gfx::shutdown();
-	resource_manager::clear_packages(app_base.resource_manager);
-	resource_manager::clear_handlers(app_base.resource_manager);
+	resource_manager::clear_packages(app.resource_manager);
+	resource_manager::clear_handlers(app.resource_manager);
 
-	app_base._func_destruct(app_base);
-	TOGO_DESTROY(*_app_globals.allocator, &app_base);
+	app._func_destruct(app);
+	TOGO_DESTROY(*_app_globals.allocator, &app);
 	_app_globals.allocator = nullptr;
 	_app_globals.instance = nullptr;
 }
 
-void app::update(AppBase& app_base, float dt) {
+void app::update(AppBase& app, float dt) {
 	InputEventType event_type{};
 	InputEvent const* event = nullptr;
-	input_buffer::update(app_base.input_buffer);
-	while (input_buffer::poll(app_base.input_buffer, event_type, event)) {
-		if (event->display != app_base.display) {
+	input_buffer::update(app.input_buffer);
+	while (input_buffer::poll(app.input_buffer, event_type, event)) {
+		if (event->display != app.display) {
 			continue;
 		}
 		switch (event_type) {
@@ -161,7 +161,7 @@ void app::update(AppBase& app_base, float dt) {
 
 		case InputEventType::display_resize:
 			gfx::renderer::set_viewport_size(
-				app_base.renderer,
+				app.renderer,
 				event->display_resize.new_width,
 				event->display_resize.new_height
 			);
@@ -171,23 +171,23 @@ void app::update(AppBase& app_base, float dt) {
 			break;
 		}
 	}
-	app_base._func_update(app_base, dt);
+	app._func_update(app, dt);
 }
 
-void app::render(AppBase& app_base) {
-	app_base._func_render(app_base);
-	gfx::display::swap_buffers(app_base.display);
+void app::render(AppBase& app) {
+	app._func_render(app);
+	gfx::display::swap_buffers(app.display);
 }
 
 void app::run() {
-	auto& app_base = app::instance();
-	float const update_freq = app_base._update_freq;
+	auto& app = app::instance();
+	float const update_freq = app._update_freq;
 	float time_prev = system::time_monotonic();
 	float time_next;
 	float time_delta;
 	float time_accum = update_freq;
 	bool do_render = false;
-	while (!app_base._quit) {
+	while (!app._quit) {
 		time_next = system::time_monotonic();
 		time_delta = time_next - time_prev;
 		time_prev = time_next;
@@ -195,19 +195,19 @@ void app::run() {
 		do_render = time_accum >= update_freq;
 		while (time_accum >= update_freq) {
 			time_accum -= update_freq;
-			app::update(app_base, update_freq);
+			app::update(app, update_freq);
 		}
 		if (do_render) {
-			app::render(app_base);
+			app::render(app);
 		}
 		system::sleep_ms(1);
 	}
 }
 
 void app::quit() {
-	auto& app_base = app::instance();
+	auto& app = app::instance();
 	TOGO_LOG("App: quitting\n");
-	app_base._quit = true;
+	app._quit = true;
 }
 
 } // namespace togo
