@@ -223,6 +223,28 @@ inline constexpr FlagT& operator&=(FlagT& x, FlagT const& y) noexcept {
 
 /** @name Collection utilities */ /// @{
 
+template<class T>
+struct ArrayRef {
+	T* _begin;
+	T* _end;
+
+	inline ArrayRef(T* const begin, T* const end)
+		: _begin(begin)
+		, _end(end)
+	{}
+
+	template<class U, class = enable_if<std::is_convertible<U, T>::value>>
+	inline ArrayRef(ArrayRef<U> const& other)
+		: _begin(other._begin)
+		, _end(other._end)
+	{}
+
+	/// Number of items.
+	unsigned size() const {
+		return _end - _begin;
+	}
+};
+
 /// Make reference to array.
 template<class T>
 inline ArrayRef<T> array_ref(unsigned const size, T* const data) {

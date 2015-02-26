@@ -10,7 +10,6 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/types.hpp>
 
 namespace togo {
 
@@ -21,10 +20,7 @@ namespace togo {
 
 /// Array reference.
 template<class T>
-struct ArrayRef {
-	T* _begin;
-	T* _end;
-};
+struct ArrayRef;
 
 /** @} */ // end of doc-group utility
 
