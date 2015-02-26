@@ -164,15 +164,28 @@ using is_pointer = is_pointer_impl<remove_cv<T>>;
 
 namespace {
 
-template<class T> struct is_reference_impl : false_type {};
-template<class T> struct is_reference_impl<T&> : true_type {};
-template<class T> struct is_reference_impl<T&&> : true_type {};
+template<class T> struct is_lvalue_reference_impl : false_type {};
+template<class T> struct is_lvalue_reference_impl<T&> : true_type {};
+
+template<class T> struct is_rvalue_reference_impl : false_type {};
+template<class T> struct is_rvalue_reference_impl<T&&> : true_type {};
 
 } // anonymous namespace
 
+/// Boolean constant of true if T is an lvalue reference.
+template<class T>
+using is_lvalue_reference = is_lvalue_reference_impl<T>;
+
+/// Boolean constant of true if T is an rvalue reference.
+template<class T>
+using is_rvalue_reference = is_rvalue_reference_impl<T>;
+
 /// Boolean constant of true if T is an lvalue or rvalue reference.
 template<class T>
-using is_reference = is_reference_impl<T>;
+using is_reference = constant_type<bool,
+	is_lvalue_reference<T>::value ||
+	is_rvalue_reference<T>::value
+>;
 
 namespace {
 
