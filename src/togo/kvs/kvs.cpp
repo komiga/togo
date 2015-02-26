@@ -5,6 +5,7 @@
 
 #include <togo/config.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/log/log.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/string/string.hpp>
@@ -12,8 +13,6 @@
 #include <togo/kvs/kvs.hpp>
 
 #include <cstring>
-
-#include <utility>
 
 namespace togo {
 
@@ -44,7 +43,7 @@ KVS::KVS(KVS&& other)
 	, _name_size(other._name_size)
 	, _name_hash(other._name_hash)
 	, _name(other._name)
-	, _value(std::move(other._value))
+	, _value(rvalue_ref(other._value))
 {
 	other._type = KVSType::null;
 	other._name = nullptr;
@@ -216,7 +215,7 @@ void kvs::move(KVS& dst, KVS& src) {
 	dst._name = src._name;
 	dst._name_size = src._name_size;
 	dst._name_hash = src._name_hash;
-	dst._value = std::move(src._value);
+	dst._value = rvalue_ref(src._value);
 
 	src._type = KVSType::null;
 	src._name = nullptr;

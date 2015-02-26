@@ -18,8 +18,6 @@
 #include <togo/collection/types.hpp>
 #include <togo/collection/array.hpp>
 
-#include <utility>
-
 namespace togo {
 
 /// Construct with allocator for storage.
@@ -206,7 +204,7 @@ void resize(HashMap<K, T>& hm, u32_fast const new_size) {
 		index = make(hm, node.key, false);
 		hm._data[index].value = node.value;
 	}
-	hm = std::move(new_hm);
+	hm = rvalue_ref(new_hm);
 }
 
 template<class K, class T>

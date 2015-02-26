@@ -13,10 +13,9 @@
 #include <togo/config.hpp>
 #include <togo/types.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/collection/types.hpp>
 #include <togo/collection/array.hpp>
-
-#include <utility>
 
 #include <cstring>
 
@@ -36,7 +35,7 @@ inline Queue<T>::Queue(Allocator& allocator)
 // Move constructor.
 template<class T>
 inline Queue<T>::Queue(Queue<T>&& other)
-	: _data(std::move(other._data))
+	: _data(rvalue_ref(other._data))
 	, _head(other._head)
 	, _size(other._size)
 {
@@ -47,7 +46,7 @@ inline Queue<T>::Queue(Queue<T>&& other)
 // Move assignment operator.
 template<class T>
 inline Queue<T>& Queue<T>::operator=(Queue<T>&& other) {
-	_data = std::move(other._data);
+	_data = rvalue_ref(other._data);
 	_head = other._head;
 	_size = other._size;
 	other._head = 0;

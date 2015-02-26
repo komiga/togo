@@ -11,11 +11,9 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/utility/traits.hpp>
 #include <togo/serialization/types.hpp>
-
-#include <type_traits>
-#include <utility>
 
 /** @cond INTERNAL */
 
@@ -51,8 +49,8 @@ struct has_serializer_serialize_lvalue {
 		detail::unimplemented,
 		decltype(serialize(
 			serializer_tag{},
-			std::declval<ser_type&>(),
-			std::declval<remove_cvr<T>&>()
+			type_value<ser_type&>(),
+			type_value<remove_cvr<T>&>()
 		))
 	>;
 	static constexpr bool const value = !unimpl_capture::value;
@@ -65,8 +63,8 @@ struct has_serializer_serialize_rvalue {
 		detail::unimplemented,
 		decltype(serialize(
 			serializer_tag{},
-			std::declval<ser_type&>(),
-			std::declval<T&&>()
+			type_value<ser_type&>(),
+			type_value<T&&>()
 		))
 	>;
 	static constexpr bool const value = !unimpl_capture::value;
@@ -87,16 +85,16 @@ struct has_serializer_read {
 		detail::unimplemented,
 		decltype(read(
 			serializer_tag{},
-			std::declval<ser_type&>(),
-			std::declval<T&>()
+			type_value<ser_type&>(),
+			type_value<T&>()
 		))
 	>;
 	using unimpl_capture_rvalue = is_same<
 		detail::unimplemented,
 		decltype(read(
 			serializer_tag{},
-			std::declval<ser_type&>(),
-			std::declval<T&&>()
+			type_value<ser_type&>(),
+			type_value<T&&>()
 		))
 	>;
 	static constexpr bool const value =
@@ -112,8 +110,8 @@ struct has_serializer_write {
 		detail::unimplemented,
 		decltype(write(
 			serializer_tag{},
-			std::declval<ser_type&>(),
-			std::declval<T const&>()
+			type_value<ser_type&>(),
+			type_value<T const&>()
 		))
 	>;
 	static constexpr bool const value = !unimpl_capture::value;
@@ -142,19 +140,19 @@ namespace serializer {
 template<class Ser, class T>
 inline enable_if<has_serializer_serialize<Ser, T>::value, void>
 read(Ser& ser, T&& value) {
-	serialize(serializer_tag{}, ser, std::forward<T>(value));
+	serialize(serializer_tag{}, ser, forward<T>(value));
 }
 
 template<class Ser, class T>
 inline enable_if<has_serializer_read<Ser, T>::value, void>
 read(Ser& ser, T&& value) {
-	read(serializer_tag{}, ser, std::forward<T>(value));
+	read(serializer_tag{}, ser, forward<T>(value));
 }
 
 template<class Ser, class T>
 inline enable_if<has_serializer_serialize_rvalue<Ser, T>::value, void>
 write(Ser& ser, T&& value) {
-	serialize(serializer_tag{}, ser, std::forward<T>(value));
+	serialize(serializer_tag{}, ser, forward<T>(value));
 }
 
 template<class Ser, class T>
@@ -187,7 +185,7 @@ operator%(
 	InputSerializer<Impl>& ser,
 	T&& value
 ) {
-	serializer::read(ser.impl(), std::forward<T>(value));
+	serializer::read(ser.impl(), forward<T>(value));
 	return ser.impl();
 }
 
@@ -219,7 +217,7 @@ operator%(
 	OutputSerializer<Impl>& ser,
 	T&& value
 ) {
-	serializer::write(ser.impl(), std::forward<T>(value));
+	serializer::write(ser.impl(), forward<T>(value));
 	return ser.impl();
 }
 
