@@ -85,10 +85,15 @@ namespace {
 
 template<class T> struct remove_ptr_impl { using type = T; };
 template<class T> struct remove_ptr_impl<T*> { using type = T; };
+template<class T> struct remove_ptr_impl<T* const> { using type = T; };
+template<class T> struct remove_ptr_impl<T* volatile> { using type = T; };
+template<class T> struct remove_ptr_impl<T* const volatile> { using type = T; };
 
 } // anonymous namespace
 
 /// Remove pointer qualification from type.
+///
+/// If the pointer type is qualified, they are also removed.
 template<class T>
 using remove_ptr = typename remove_ptr_impl<T>::type;
 
@@ -113,7 +118,7 @@ template<class T> struct remove_cv_impl<T const volatile> { using type = T; };
 
 } // anonymous namespace
 
-/// Remove const, volatile, and reference qualifications from type.
+/// Remove const and volatile qualifications from type.
 template<class T>
 using remove_cv = typename remove_cv_impl<T>::type;
 
