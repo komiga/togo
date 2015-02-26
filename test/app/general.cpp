@@ -1,5 +1,6 @@
 
 #include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/log/log.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/input/input.hpp>
@@ -50,8 +51,7 @@ signed main(signed argc, char* argv[]) {
 
 	app::init<TestAppData>(
 		memory::default_allocator(),
-		static_cast<unsigned>(max(0, argc - 1)),
-		argv,
+		array_ref(unsigned_cast(max(0, argc - 1)), argv),
 		"data/",
 		1.0f / 30.0f
 	);
