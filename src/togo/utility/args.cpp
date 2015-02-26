@@ -8,8 +8,6 @@
 #include <togo/string/string.hpp>
 #include <togo/kvs/kvs.hpp>
 
-#include <utility>
-
 namespace togo {
 
 bool parse_args(
