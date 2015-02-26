@@ -11,6 +11,7 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/utility/types.hpp>
 #include <togo/utility/traits.hpp>
 #include <togo/utility/constraints.hpp>
 
@@ -221,13 +222,6 @@ inline constexpr FlagT& operator&=(FlagT& x, FlagT const& y) noexcept {
 /// @}
 
 /** @name Collection utilities */ /// @{
-
-/// Array reference.
-template<class T>
-struct ArrayRef {
-	T* _begin;
-	T* _end;
-};
 
 /// Make reference to array.
 template<class T>
