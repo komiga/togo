@@ -28,8 +28,7 @@ void AppModel<Data>::destruct(App<Data>& app) {
 /// args should not contain argv[0].
 template<class Data>
 inline App<Data>::App(
-	unsigned num_args,
-	char const* const args[],
+	ArrayRef<char const* const> args,
 	StringRef base_path,
 	float update_freq
 )
@@ -39,7 +38,6 @@ inline App<Data>::App(
 		reinterpret_cast<AppBase::shutdown_func_type&>(AppModel<Data>::shutdown),
 		reinterpret_cast<AppBase::update_func_type&>(AppModel<Data>::update),
 		reinterpret_cast<AppBase::render_func_type&>(AppModel<Data>::render),
-		num_args,
 		args,
 		base_path,
 		update_freq
@@ -75,14 +73,13 @@ inline AppBase& instance() {
 template<class Data>
 inline AppBase& init(
 	Allocator& allocator,
-	unsigned num_args,
-	char const* const args[],
+	ArrayRef<char const* const> args,
 	StringRef base_path,
 	float update_freq
 ) {
 	auto* const app = TOGO_CONSTRUCT(
 		allocator, App<Data>,
-		num_args, args, base_path, update_freq
+		args, base_path, update_freq
 	);
 	extern void init_with(Allocator&, AppBase*);
 	init_with(allocator, app);

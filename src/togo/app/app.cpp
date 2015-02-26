@@ -43,8 +43,7 @@ AppBase::AppBase(
 	shutdown_func_type& func_shutdown,
 	update_func_type& func_update,
 	render_func_type& func_render,
-	unsigned num_args,
-	char const* const args[],
+	ArrayRef<char const* const> args,
 	StringRef const base_path,
 	float update_freq
 )
@@ -53,7 +52,6 @@ AppBase::AppBase(
 	, _func_shutdown(func_shutdown)
 	, _func_update(func_update)
 	, _func_render(func_render)
-	, _num_args(num_args)
 	, _args(args)
 	, _task_manager(
 		system::num_cores() - 1u,
