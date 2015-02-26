@@ -26,6 +26,14 @@
 			"T is not a POD type"									\
 		)
 
+	#define TOGO_CONSTRAIN_POD_COLLECTION(T)						\
+		static_assert(												\
+			std::is_trivially_copyable<T>::value ||					\
+			allow_collection_value_type<remove_cv<T>>::value,		\
+			"T is not a POD type and is not explicitly permitted"	\
+			" in collections"										\
+		)
+
 	#define TOGO_CONSTRAIN_SAME(T, U)								\
 		static_assert(												\
 			is_same<T, U>::value,									\
@@ -58,6 +66,11 @@
 #else
 	/// Statically assert that type T is of standard layout.
 	#define TOGO_CONSTRAIN_POD(T)
+
+	/// Statically assert that type T is of standard layout or
+	/// explicitly permitted to be a collection value type through
+	/// allow_collection_value_type<T>.
+	#define TOGO_CONSTRAIN_POD_COLLECTION(T)
 
 	/// Statically assert that type T is the same as type U.
 	#define TOGO_CONSTRAIN_SAME(T, U)
