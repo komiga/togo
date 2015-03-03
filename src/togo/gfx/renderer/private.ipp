@@ -33,7 +33,9 @@ void renderer::teardown_base(gfx::Renderer* const renderer) {
 	}
 	renderer->_num_active_draw_param_blocks = 0;
 	for (auto& entry : renderer->_generators) {
-		entry.value.func_destroy(entry.value, renderer);
+		if (entry.value.func_destroy) {
+			entry.value.func_destroy(entry.value, renderer);
+		}
 	}
 	hash_map::clear(renderer->_generators);
 }
