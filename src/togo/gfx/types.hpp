@@ -461,6 +461,7 @@ struct Layer {
 	FixedArray<hash32, 4> rts;
 	hash32 dst;
 	Order order;
+	u32 seq_base;
 	FixedArray<gfx::GeneratorUnit, TOGO_GFX_LAYER_NUM_GENERATORS> layout;
 	FixedArray<char, 32> name;
 };

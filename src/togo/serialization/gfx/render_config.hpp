@@ -25,7 +25,7 @@ namespace togo {
 /** @cond INTERNAL */
 
 enum : u32 {
-	SER_FORMAT_VERSION_RENDER_CONFIG = 2,
+	SER_FORMAT_VERSION_RENDER_CONFIG = 3,
 };
 
 template<class Ser>
@@ -45,6 +45,7 @@ serialize(serializer_tag, Ser& ser, gfx::Layer& value_unsafe) {
 		% make_ser_collection<u8>(value.rts)
 		% value.dst
 		% make_ser_proxy<u8>(value.order)
+		% make_ser_proxy<u8>(value.seq_base)
 		% make_ser_collection<u8>(value.layout)
 	;
 }
