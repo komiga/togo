@@ -184,6 +184,7 @@ struct GeneratorUnit;
 struct RenderConfig;
 struct RenderObject;
 struct RenderNode;
+struct Camera;
 
 /// Renderer.
 struct Renderer;
@@ -513,6 +514,10 @@ struct RenderNode {
 	gfx::CmdKey keys[TOGO_GFX_NODE_NUM_COMMANDS];
 	u8 buffer[TOGO_GFX_NODE_BUFFER_SIZE];
 };
+
+// TODO: Move to component
+/// Camera.
+struct Camera {};
 
 /** @} */ // end of doc-group gfx_renderer
 

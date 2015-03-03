@@ -212,6 +212,15 @@ void configure(
 	gfx::RenderConfig const& config
 );
 
+/// Render objects through camera and viewport.
+void render_objects(
+	gfx::Renderer* renderer,
+	unsigned num_objects,
+	gfx::RenderObject const* objects,
+	gfx::Camera const& camera,
+	gfx::ViewportNameHash viewport_name_hash
+);
+
 /** @} */ // end of doc-group gfx_renderer
 
 } // namespace renderer

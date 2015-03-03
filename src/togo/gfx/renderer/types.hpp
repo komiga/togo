@@ -101,6 +101,8 @@ struct Renderer {
 	gfx::ResourceArray<gfx::Shader, TOGO_GFX_NUM_SHADERS> _shaders;
 
 	gfx::RenderNode _nodes[TOGO_GFX_NUM_NODES];
+	gfx::CmdKey _joined_keys_a[TOGO_GFX_NUM_NODES * TOGO_GFX_NODE_NUM_COMMANDS];
+	gfx::CmdKey _joined_keys_b[TOGO_GFX_NUM_NODES * TOGO_GFX_NODE_NUM_COMMANDS];
 
 	Renderer() = delete;
 	Renderer(Renderer const&) = delete;
