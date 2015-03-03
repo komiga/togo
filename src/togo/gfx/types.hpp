@@ -12,6 +12,7 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/math/types.hpp>
 #include <togo/utility/utility.hpp>
 #include <togo/utility/traits.hpp>
 #include <togo/collection/types.hpp>
@@ -111,6 +112,13 @@ struct Display;
 #define TOGO_GFX_NODE_NUM_COMMANDS 1024
 #define TOGO_GFX_NODE_BUFFER_SIZE 8192
 
+#define TOGO_GFX_KEY_SEQ_BITS 9
+#define TOGO_GFX_KEY_SEQ_MAX (1ul << TOGO_GFX_KEY_SEQ_BITS)
+#define TOGO_GFX_KEY_SEQ_MASK (TOGO_GFX_KEY_SEQ_MAX - 1)
+
+#define TOGO_GFX_KEY_USER_BITS (64ul - TOGO_GFX_KEY_SEQ_BITS)
+#define TOGO_GFX_KEY_USER_MASK ((1ul << TOGO_GFX_KEY_USER_BITS) - 1)
+
 #define TOGO_GFX_CONFIG_NUM_PIPES 8
 #define TOGO_GFX_CONFIG_NUM_VIEWPORTS 8
 #define TOGO_GFX_PIPE_NUM_LAYERS 32
@@ -174,10 +182,7 @@ struct GeneratorDef;
 struct GeneratorUnit;
 
 struct RenderConfig;
-
-/// Render object.
-struct RenderObject; // TODO
-
+struct RenderObject;
 struct RenderNode;
 
 /// Renderer.
@@ -258,8 +263,6 @@ struct GeneratorUnit {
 	using exec_func_type = void (
 		gfx::GeneratorUnit const& unit,
 		gfx::RenderNode& node,
-		unsigned layer_index,
-		unsigned generator_index,
 		gfx::RenderObject const* objects_begin,
 		gfx::RenderObject const* objects_end
 	);
@@ -490,15 +493,24 @@ struct RenderConfig {
 	FixedArray<gfx::Pipe, TOGO_GFX_CONFIG_NUM_PIPES> pipes;
 };
 
+/// Render object.
+struct RenderObject {
+	Mat4x4 transform;
+	gfx::BufferBindingID binding;
+};
+
 /// Render command key.
-struct RenderCmdKey {
+struct CmdKey {
 	u64 key;
 	void* data;
 };
 
 /// Render node.
 struct RenderNode {
-	gfx::RenderCmdKey keys[TOGO_GFX_NODE_NUM_COMMANDS];
+	u64 sequence;
+	unsigned num_commands;
+	unsigned buffer_size;
+	gfx::CmdKey keys[TOGO_GFX_NODE_NUM_COMMANDS];
 	u8 buffer[TOGO_GFX_NODE_BUFFER_SIZE];
 };
 
