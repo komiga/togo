@@ -92,6 +92,8 @@ static bool read_pipe(
 	KVS const* k_layer_order;
 	KVS const* k_layer_layout;
 	KVS const* k_layer_layout_generators;
+
+	unsigned seq_base = 0;
 	for (KVS const& k_layer : *k_layers) {
 		if (!kvs::is_node(k_layer) || !kvs::is_named(k_layer)) {
 			TOGO_LOG_ERRORF(
@@ -259,6 +261,20 @@ static bool read_pipe(
 			}
 			fixed_array::push_back(layer.layout, gen_unit);
 		}}
+
+		layer.seq_base = seq_base;
+		seq_base += fixed_array::size(layer.layout);
+		if (seq_base > TOGO_GFX_KEY_SEQ_MAX) {
+			TOGO_LOG_ERRORF(
+				"malformed render_config: "
+				"too many generators defined (%u/%lu); at layer '%.*s' in pipe '%.*s'\n",
+				seq_base,
+				TOGO_GFX_KEY_SEQ_MAX,
+				kvs::name_size(k_layer), kvs::name(k_layer),
+				kvs::name_size(k_pipe), kvs::name(k_pipe)
+			);
+			return false;
+		}
 	}}
 
 	return true;
