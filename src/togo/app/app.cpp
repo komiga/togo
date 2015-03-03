@@ -23,7 +23,7 @@ namespace togo {
 
 namespace app {
 
-app::Globals _app_globals{
+app::Globals _globals{
 	nullptr,
 	nullptr
 };
@@ -72,11 +72,11 @@ AppBase::AppBase(
 
 void app::init_with(Allocator& allocator, AppBase* app) {
 	TOGO_ASSERT(
-		!_app_globals.instance,
+		!app::_globals.instance,
 		"application has already been initialized"
 	);
-	_app_globals.allocator = &allocator;
-	_app_globals.instance = app;
+	app::_globals.allocator = &allocator;
+	app::_globals.instance = app;
 	app::actual_init(*app);
 }
 
@@ -141,9 +141,9 @@ void app::shutdown() {
 	resource_manager::clear_handlers(app.resource_manager);
 
 	app._func_destruct(app);
-	TOGO_DESTROY(*_app_globals.allocator, &app);
-	_app_globals.allocator = nullptr;
-	_app_globals.instance = nullptr;
+	TOGO_DESTROY(*app::_globals.allocator, &app);
+	app::_globals.allocator = nullptr;
+	app::_globals.instance = nullptr;
 }
 
 void app::update(AppBase& app, float dt) {
@@ -206,7 +206,7 @@ void app::run() {
 
 void app::quit() {
 	auto& app = app::instance();
-	TOGO_LOG("App: quitting\n");
+	TOGO_LOG("App: quit requested\n");
 	app._quit = true;
 }
 

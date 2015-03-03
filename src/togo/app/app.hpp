@@ -56,13 +56,13 @@ struct Globals {
 	Allocator* allocator;
 	AppBase* instance;
 };
-extern app::Globals _app_globals;
+extern app::Globals _globals;
 
 /// Get application.
 ///
 /// An assertion will fail if the application has not been created.
 inline AppBase& instance() {
-	auto* instance = _app_globals.instance;
+	auto* instance = app::_globals.instance;
 	TOGO_ASSERTE(instance);
 	return *instance;
 }
