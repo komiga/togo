@@ -11,8 +11,6 @@
 #pragma once
 
 #include <togo/config.hpp>
-#include <togo/utility/utility.hpp>
-#include <togo/memory/memory.hpp>
 #include <togo/gfx/types.hpp>
 
 #include <initializer_list>
@@ -196,14 +194,14 @@ void clear_backbuffer(
 	gfx::Renderer* renderer
 );
 
-/// Render objects by buffer bindings.
-void render_objects(
+/// Render buffers.
+void render_buffers(
 	gfx::Renderer* renderer,
 	gfx::ShaderID shader_id,
 	unsigned num_draw_param_blocks,
 	gfx::ParamBlockBinding const* draw_param_blocks,
-	unsigned num_objects,
-	gfx::BufferBindingID const* objects
+	unsigned num_buffers,
+	gfx::BufferBindingID const* buffers
 );
 
 /// Configure the renderer.

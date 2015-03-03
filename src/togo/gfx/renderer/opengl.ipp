@@ -532,17 +532,17 @@ void renderer::clear_backbuffer(
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void renderer::render_objects(
+void renderer::render_buffers(
 	gfx::Renderer* const renderer,
 	gfx::ShaderID const shader_id,
 	unsigned const num_draw_param_blocks,
 	gfx::ParamBlockBinding const* const draw_param_blocks,
-	unsigned const num_objects,
-	gfx::BufferBindingID const* const objects
+	unsigned const num_buffers,
+	gfx::BufferBindingID const* const buffers
 ) {
 	TOGO_DEBUG_ASSERTE(
 		(num_draw_param_blocks == 0 || draw_param_blocks) &&
-		num_objects > 0 && objects
+		num_buffers > 0 && buffers
 	);
 
 	{// Bind shader and validate supplied parameter blocks
@@ -572,7 +572,7 @@ void renderer::render_objects(
 
 	{// Render!
 	unsigned index_data_type;
-	for (auto const id : array_ref(num_objects, objects)) {
+	for (auto const id : array_ref(num_buffers, buffers)) {
 		auto const& bb = resource_array::get(renderer->_buffer_bindings, id);
 		TOGO_ASSERT(bb.id == id, "invalid buffer binding ID");
 		TOGO_GLCE_X(glBindVertexArray(bb.va_handle));
