@@ -6,6 +6,7 @@ exclusions["./algorithm/sort.elf"]=true
 exclusions["./app/general.elf"]=true
 exclusions["./gfx/display.elf"]=true
 exclusions["./gfx/renderer_triangle.elf"]=true
+exclusions["./gfx/renderer_pipeline.elf"]=true
 
 declare -A arguments
 arguments["./utility/args.elf"]="-a --b=1234 --c=\"goats\" cmd -d a1 a2 \"a3\" 1 false true"
