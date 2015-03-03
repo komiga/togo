@@ -214,7 +214,7 @@ static bool read_glsl_unit(
 	gfx::ShaderDef& def,
 	KVS const& k_def
 ) {
-	constexpr static StringRef const source_names[]{
+	static constexpr StringRef const source_names[]{
 		"shared_source",
 		"vertex_source",
 		"fragment_source",
