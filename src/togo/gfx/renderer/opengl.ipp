@@ -189,6 +189,7 @@ gfx::Renderer* renderer::create(
 		allocator,
 		OpenGLRendererImpl{}
 	);
+	renderer::init_base(renderer);
 	query_parameters(renderer);
 	return renderer;
 }
@@ -597,7 +598,7 @@ void renderer::configure(
 	gfx::RenderConfig const& config
 ) {
 	renderer::configure_base(renderer, config);
-	// TODO: Create resources?
+	// TODO: Create global resources
 }
 
 } // namespace gfx

@@ -25,7 +25,8 @@ inline bool operator!=(ResourceID<R> const& lhs, ResourceID<R> const& rhs) {
 
 namespace renderer {
 
-void teardown_base(gfx::Renderer* const renderer);
+void init_base(gfx::Renderer* renderer);
+void teardown_base(gfx::Renderer* renderer);
 
 void configure_base(
 	gfx::Renderer* renderer,

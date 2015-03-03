@@ -7,11 +7,17 @@
 
 #include <togo/config.hpp>
 #include <togo/gfx/types.hpp>
+#include <togo/gfx/generator.hpp>
 #include <togo/gfx/renderer/types.hpp>
 #include <togo/gfx/renderer/private.hpp>
 
 namespace togo {
 namespace gfx {
+
+void renderer::init_base(gfx::Renderer* const renderer) {
+	// Register standard generators
+	gfx::renderer::register_generator_def(renderer, gfx::generator::clear);
+}
 
 #define TOGO_GFX_RENDERER_TEARDOWN_RA_(ra, func_destroy)		\
 	if (renderer->ra._num > 0) {								\
