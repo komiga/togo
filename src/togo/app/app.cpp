@@ -210,4 +210,20 @@ void app::quit() {
 	app._quit = true;
 }
 
+void app::render_world(
+	WorldID const /*world_id*/,
+	EntityID const /*camera_id*/,
+	gfx::ViewportNameHash viewport_name_hash
+) {
+	// TODO: Camera data from entity
+	// TODO: Cull objects from world
+	auto& app = app::instance();
+	gfx::Camera const camera{};
+	gfx::renderer::render_objects(
+		app.renderer,
+		0, nullptr,
+		camera, viewport_name_hash
+	);
+}
+
 } // namespace togo

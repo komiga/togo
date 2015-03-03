@@ -14,6 +14,9 @@
 #include <togo/utility/utility.hpp>
 #include <togo/memory/types.hpp>
 #include <togo/memory/memory.hpp>
+#include <togo/entity/types.hpp>
+#include <togo/world/types.hpp>
+#include <togo/gfx/types.hpp>
 #include <togo/app/types.hpp>
 
 namespace togo {
@@ -101,6 +104,13 @@ void run();
 /// This has no effect if the application is not running
 /// (see app::run()).
 void quit();
+
+/// Render a world through a camera and viewport.
+void render_world(
+	WorldID world_id,
+	EntityID camera_id,
+	gfx::ViewportNameHash viewport_name_hash
+);
 
 /** @} */ // end of doc-group app
 
