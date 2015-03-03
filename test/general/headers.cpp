@@ -57,6 +57,9 @@
 #include <togo/gfx/gfx/common.hpp>
 #include <togo/gfx/display.hpp>
 #include <togo/gfx/display/types.hpp>
+#include <togo/gfx/command.hpp>
+#include <togo/gfx/generator.hpp>
+#include <togo/gfx/render_node.hpp>
 #include <togo/gfx/renderer.hpp>
 #include <togo/gfx/renderer/types.hpp>
 #include <togo/gfx/shader_def.hpp>
