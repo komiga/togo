@@ -168,7 +168,7 @@ void TestAppModel::render(TestApp& app) {
 		app.renderer,
 		app.data.p_osc_binding, &app.data.p_osc
 	);
-	gfx::renderer::render_objects(
+	gfx::renderer::render_buffers(
 		app.renderer,
 		app.data.shader,
 		1, &app.data.p_osc_binding,
