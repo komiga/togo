@@ -5,8 +5,8 @@
 
 #include <togo/tool_build/config.hpp>
 #include <togo/tool_build/types.hpp>
-#include <togo/log/log.hpp>
 #include <togo/utility/utility.hpp>
+#include <togo/log/log.hpp>
 #include <togo/hash/hash.hpp>
 #include <togo/kvs/kvs.hpp>
 #include <togo/gfx/gfx.hpp>

@@ -12,9 +12,9 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
-#include <togo/math/types.hpp>
 #include <togo/utility/utility.hpp>
 #include <togo/utility/traits.hpp>
+#include <togo/math/types.hpp>
 #include <togo/collection/types.hpp>
 #include <togo/hash/hash.hpp>
 #include <togo/resource/types.hpp>
