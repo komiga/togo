@@ -24,6 +24,9 @@ namespace generator_compiler {
 /// test_proxy generator compiler.
 extern GeneratorCompiler const test_proxy;
 
+/// clear generator compiler.
+extern GeneratorCompiler const clear;
+
 /// Register standard generator compilers.
 void register_standard(
 	GfxCompiler& gfx_compiler
