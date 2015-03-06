@@ -62,8 +62,13 @@ void set_mouse_lock(gfx::Display* display, bool enable);
 /// displays. The display's context will be current after this call.
 void set_swap_mode(gfx::Display* display, gfx::DisplaySwapMode mode);
 
-/// Make display context the current context.
-void make_current(gfx::Display* display);
+/// Bind the display context to the current thread.
+///
+/// Only one thread at a time can have a display's context bound.
+void bind_context(gfx::Display* display);
+
+/// Unbind the current display context from the current thread.
+void unbind_context();
 
 /// Swap buffers in display.
 ///

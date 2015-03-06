@@ -97,12 +97,20 @@ void display::set_swap_mode(gfx::Display* display, gfx::DisplaySwapMode mode) {
 	TOGO_SDL_CHECK(SDL_GL_SetSwapInterval(interval));
 }
 
-void display::make_current(gfx::Display* display) {
+void display::bind_context(gfx::Display* display) {
 	TOGO_SDL_CHECK(SDL_GL_MakeCurrent(display->_impl.handle, display->_impl.context));
 	return;
 
 sdl_error:
-	TOGO_ASSERTF(false, "failed to make window current: %s", SDL_GetError());
+	TOGO_ASSERTF(false, "failed to bind display context: %s", SDL_GetError());
+}
+
+void display::unbind_context() {
+	TOGO_SDL_CHECK(SDL_GL_MakeCurrent(nullptr, nullptr));
+	return;
+
+sdl_error:
+	TOGO_ASSERTF(false, "failed to unbind display context: %s", SDL_GetError());
 }
 
 void display::swap_buffers(gfx::Display* display) {

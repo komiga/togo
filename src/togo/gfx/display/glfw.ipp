@@ -84,13 +84,16 @@ void display::set_swap_mode(gfx::Display* display, gfx::DisplaySwapMode mode) {
 	case gfx::DisplaySwapMode::immediate:		interval = 0; break;
 	case gfx::DisplaySwapMode::wait_refresh:	interval = 1; break;
 	}
-	display::make_current(display);
+	display::bind_context(display);
 	glfwSwapInterval(interval);
 }
 
-void display::make_current(gfx::Display* display) {
+void display::bind_context(gfx::Display* display) {
 	glfwMakeContextCurrent(display->_impl.handle);
-	return;
+}
+
+void display::unbind_context() {
+	glfwMakeContextCurrent(nullptr);
 }
 
 void display::swap_buffers(gfx::Display* display) {
