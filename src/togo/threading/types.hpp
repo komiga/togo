@@ -109,10 +109,12 @@ struct CondVar {
 	@{
 */
 
+/// Task ID.
 struct TaskID {
 	u32 _value;
 };
 
+/// Task work.
 struct TaskWork {
 	using func_type = void (
 		TaskID task_id,
