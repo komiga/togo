@@ -28,7 +28,7 @@ void render_node::push(
 		(key_user & ~TOGO_GFX_KEY_USER_MASK) == 0
 	);
 	unsigned const next_buffer_size = node.buffer_size + sizeof(gfx::CmdType) + data_size;
-	TOGO_ASSERTE(TOGO_GFX_NODE_BUFFER_SIZE > next_buffer_size);
+	TOGO_ASSERTE(TOGO_GFX_NODE_BUFFER_SIZE >= next_buffer_size);
 
 	auto* put = static_cast<void*>(node.buffer + node.buffer_size);
 	auto& cmd_key = node.keys[node.num_commands];
