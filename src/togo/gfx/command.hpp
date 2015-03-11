@@ -12,6 +12,8 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/entity/types.hpp>
+#include <togo/world/types.hpp>
 #include <togo/gfx/types.hpp>
 
 namespace togo {
@@ -27,6 +29,7 @@ enum class CmdType : u8 {
 	Callback,
 	ClearBackbuffer,
 	RenderBuffers,
+	RenderWorld,
 };
 
 template<class T>
@@ -49,6 +52,13 @@ TOGO_GFX_CMD(RenderBuffers) {
 	u32 num_buffers;
 	gfx::ParamBlockBinding const* draw_param_blocks;
 	gfx::BufferBindingID const* buffers;
+};
+
+/// renderer::render_world() command.
+TOGO_GFX_CMD(RenderWorld) {
+	WorldID world_id;
+	EntityID camera_id;
+	gfx::ViewportNameHash viewport_name_hash;
 };
 
 #undef TOGO_GFX_CMD

@@ -11,6 +11,8 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/entity/types.hpp>
+#include <togo/world/types.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/gfx/command.hpp>
 
@@ -228,6 +230,14 @@ void render_objects(
 	unsigned num_objects,
 	gfx::RenderObject const* objects,
 	gfx::Camera const& camera,
+	gfx::ViewportNameHash viewport_name_hash
+);
+
+/// Render world through camera and viewport.
+void render_world(
+	gfx::Renderer* renderer,
+	WorldID world_id,
+	EntityID camera_id,
 	gfx::ViewportNameHash viewport_name_hash
 );
 

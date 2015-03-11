@@ -91,6 +91,17 @@ unsigned renderer::execute_command(
 		);
 		return sizeof(*d);
 	}
+
+	case gfx::CmdType::RenderWorld: {
+		auto* d = static_cast<gfx::CmdRenderWorld const*>(data);
+		gfx::renderer::render_world(
+			renderer,
+			d->world_id,
+			d->camera_id,
+			d->viewport_name_hash
+		);
+		return sizeof(*d);
+	}
 	}
 	TOGO_ASSERTE(false);
 }
@@ -162,8 +173,27 @@ void renderer::render_objects(
 	for (auto const& key : array_ref(num_commands, keys)) {
 		type = *static_cast<gfx::CmdType const*>(key.data);
 		data_untyped = pointer_add(key.data, sizeof(gfx::CmdType));
+		TOGO_ASSERTE(type != gfx::CmdType::RenderWorld);
 		renderer::execute_command(renderer, type, data_untyped);
 	}}
+}
+
+void renderer::render_world(
+	gfx::Renderer* const renderer,
+	WorldID const /*world_id*/,
+	EntityID const /*camera_id*/,
+	gfx::ViewportNameHash const viewport_name_hash
+) {
+	// TODO: Take mesh component manager and Camera object directly
+	// (lower-level than app::render_world()). Rename, too.
+	// TODO: Camera data from entity
+	// TODO: Cull objects from world
+	gfx::Camera const camera{};
+	gfx::renderer::render_objects(
+		renderer,
+		0, nullptr,
+		camera, viewport_name_hash
+	);
 }
 
 } // namespace gfx
