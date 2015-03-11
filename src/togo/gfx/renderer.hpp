@@ -12,6 +12,7 @@
 
 #include <togo/config.hpp>
 #include <togo/gfx/types.hpp>
+#include <togo/gfx/command.hpp>
 
 #include <initializer_list>
 
@@ -187,6 +188,15 @@ void set_viewport_size(
 	gfx::Renderer* renderer,
 	unsigned width,
 	unsigned height
+);
+
+/// Execute command.
+///
+/// Returns the size of the command data.
+unsigned execute_command(
+	gfx::Renderer* renderer,
+	gfx::CmdType type,
+	void const* data
 );
 
 /// Clear the backbuffer.

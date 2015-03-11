@@ -65,6 +65,36 @@ gfx::GeneratorDef const* renderer::find_generator_def(
 	return hash_map::find(renderer->_generators, name_hash);
 }
 
+unsigned renderer::execute_command(
+	gfx::Renderer* const renderer,
+	gfx::CmdType const type,
+	void const* const data
+) {
+	switch (type) {
+	case gfx::CmdType::Callback:
+		// TODO
+		return 0;
+
+	case gfx::CmdType::ClearBackbuffer:
+		gfx::renderer::clear_backbuffer(renderer);
+		return 0;
+
+	case gfx::CmdType::RenderBuffers: {
+		auto* d = static_cast<gfx::CmdRenderBuffers const*>(data);
+		gfx::renderer::render_buffers(
+			renderer,
+			d->shader_id,
+			d->num_draw_param_blocks,
+			d->draw_param_blocks,
+			d->num_buffers,
+			d->buffers
+		);
+		return sizeof(*d);
+	}
+	}
+	TOGO_ASSERTE(false);
+}
+
 namespace {
 struct CmdKeyKeyFunc {
 	inline u64 operator()(gfx::CmdKey const& key) const noexcept {
@@ -132,27 +162,7 @@ void renderer::render_objects(
 	for (auto const& key : array_ref(num_commands, keys)) {
 		type = *static_cast<gfx::CmdType const*>(key.data);
 		data_untyped = pointer_add(key.data, sizeof(gfx::CmdType));
-		switch (type) {
-		case gfx::CmdType::Callback:
-			// TODO
-			break;
-
-		case gfx::CmdType::ClearBackbuffer:
-			gfx::renderer::clear_backbuffer(renderer);
-			break;
-
-		case gfx::CmdType::RenderBuffers: {
-			auto* d = static_cast<gfx::CmdRenderBuffers const*>(data_untyped);
-			gfx::renderer::render_buffers(
-				renderer,
-				d->shader_id,
-				d->num_draw_param_blocks,
-				d->draw_param_blocks,
-				d->num_buffers,
-				d->buffers
-			);
-		}	break;
-		}
+		renderer::execute_command(renderer, type, data_untyped);
 	}}
 }
 
