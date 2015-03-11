@@ -155,7 +155,9 @@ inline constexpr T clamp(T const x, T const minimum, T const maximum) noexcept {
 /// @warning This advances by bytes, not sizeof(T).
 template<class T>
 inline T* pointer_add(T* p, u32 const bytes) noexcept {
-	return reinterpret_cast<T*>(reinterpret_cast<char*>(p) + bytes);
+	return reinterpret_cast<T*>(
+		reinterpret_cast<type_if<is_const<T>::value, char const*, char*>>(p) + bytes
+	);
 }
 
 /// Aligns a pointer by moving it forward.
