@@ -6,6 +6,7 @@
 #include <togo/gfx/types.hpp>
 #include <togo/gfx/gfx.hpp>
 #include <togo/gfx/display.hpp>
+#include <togo/gfx/command.hpp>
 #include <togo/gfx/renderer.hpp>
 #include <togo/gfx/renderer/types.hpp>
 #include <togo/gfx/renderer/private.hpp>
@@ -155,11 +156,8 @@ void TestAppModel::update(TestApp& app, float dt) {
 	Vec2 const mp = input::mouse_position(app.display);
 	app.data.p_color_factors.rg = mp.x / static_cast<f32>(gfx::display::width(app.display));
 	app.data.p_color_factors.gb = mp.y / static_cast<f32>(gfx::display::height(app.display));
-}
 
-template<>
-void TestAppModel::render(TestApp& app) {
-	gfx::renderer::clear_backbuffer(app.renderer);
+	// Map buffers
 	gfx::renderer::map_buffer(
 		app.renderer,
 		app.data.p_color_factors_binding, &app.data.p_color_factors
@@ -168,11 +166,19 @@ void TestAppModel::render(TestApp& app) {
 		app.renderer,
 		app.data.p_osc_binding, &app.data.p_osc
 	);
-	gfx::renderer::render_buffers(
+}
+
+template<>
+void TestAppModel::render(TestApp& app) {
+	gfx::renderer::push_work(app.renderer, gfx::CmdClearBackbuffer{});
+	gfx::renderer::push_work(
 		app.renderer,
-		app.data.shader,
-		1, &app.data.p_osc_binding,
-		1, &app.data.triangle_binding
+		gfx::CmdRenderBuffers{
+			app.data.shader,
+			1, 1,
+			&app.data.p_osc_binding,
+			&app.data.triangle_binding
+		}
 	);
 }
 
