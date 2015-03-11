@@ -8,6 +8,7 @@
 #include <togo/log/log.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/system/system.hpp>
+#include <togo/threading/task_manager.hpp>
 #include <togo/entity/entity_manager.hpp>
 #include <togo/world/world_manager.hpp>
 #include <togo/gfx/gfx.hpp>
@@ -175,8 +176,14 @@ void app::update(AppBase& app, float dt) {
 }
 
 void app::render(AppBase& app) {
+	gfx::display::unbind_context();
+	TaskID const work_task_id = gfx::renderer::begin_frame(
+		app.renderer, app.task_manager, app.display
+	);
 	app._func_render(app);
-	gfx::display::swap_buffers(app.display);
+	gfx::renderer::end_frame(app.renderer);
+	task_manager::wait(app.task_manager, work_task_id);
+	gfx::display::bind_context(app.display);
 }
 
 void app::run() {
