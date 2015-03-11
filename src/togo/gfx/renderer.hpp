@@ -11,6 +11,7 @@
 #pragma once
 
 #include <togo/config.hpp>
+#include <togo/threading/types.hpp>
 #include <togo/entity/types.hpp>
 #include <togo/world/types.hpp>
 #include <togo/gfx/types.hpp>
@@ -191,6 +192,48 @@ void set_viewport_size(
 	unsigned width,
 	unsigned height
 );
+
+/// Begin frame.
+///
+/// This binds the display context to the worker thread. It must be
+/// unbound on all other threads before calling this.
+///
+/// An assertion will fail if the frame has already begun.
+TaskID begin_frame(
+	gfx::Renderer* renderer,
+	TaskManager& task_manager,
+	gfx::Display* display
+);
+
+/// End frame.
+///
+/// An assertion will fail if the frame has already ended.
+void end_frame(gfx::Renderer* renderer);
+
+/// Push work.
+///
+/// command is copied to an internal buffer.
+///
+/// An assertion will fail if there is no space for another command.
+void push_work(
+	gfx::Renderer* renderer,
+	gfx::CmdType type,
+	unsigned data_size,
+	void const* data
+);
+
+/// Push work (generic helper).
+template<class T>
+inline void push_work(
+	gfx::Renderer* renderer,
+	T const& data
+) {
+	renderer::push_work(
+		renderer,
+		CmdTypeProperties<T>::type,
+		sizeof_empty<T>(), &data
+	);
+}
 
 /// Execute command.
 ///

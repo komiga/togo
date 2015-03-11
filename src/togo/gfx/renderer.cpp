@@ -8,7 +8,11 @@
 #include <togo/utility/utility.hpp>
 #include <togo/collection/hash_map.hpp>
 #include <togo/algorithm/sort.hpp>
+#include <togo/threading/mutex.hpp>
+#include <togo/threading/condvar.hpp>
+#include <togo/threading/task_manager.hpp>
 #include <togo/gfx/command.hpp>
+#include <togo/gfx/display.hpp>
 #include <togo/gfx/renderer.hpp>
 #include <togo/gfx/renderer/types.hpp>
 #include <togo/gfx/renderer/private.hpp>
@@ -33,6 +37,9 @@ Renderer::Renderer(
 	, _num_active_draw_param_blocks(0)
 	, _fixed_param_blocks()
 	, _generators(allocator)
+	, _frame_mutex()
+	, _frame_condvar()
+	, _work_data()
 	, _config()
 	, _buffers()
 	, _buffer_bindings()
@@ -63,6 +70,95 @@ gfx::GeneratorDef const* renderer::find_generator_def(
 	gfx::GeneratorNameHash const name_hash
 ) {
 	return hash_map::find(renderer->_generators, name_hash);
+}
+
+static void process_work(
+	gfx::Renderer* const renderer
+) {
+	auto& w = renderer->_work_data;
+	if (w.num_commands == 0) {
+		return;
+	}
+
+	void const* data = w.buffer;
+	gfx::CmdType type;
+	for (; w.num_commands > 0; --w.num_commands) {
+		type = *static_cast<gfx::CmdType const*>(data);
+		data = pointer_add(data, sizeof(gfx::CmdType));
+		data = pointer_add(data, renderer::execute_command(renderer, type, data));
+	}
+	w.num_commands = 0;
+	w.buffer_size = 0;
+}
+
+static void worker_task_func(TaskID /*id*/, void* task_data) {
+	auto* renderer = static_cast<gfx::Renderer*>(task_data);
+	auto& w = renderer->_work_data;
+	MutexLock l{renderer->_frame_mutex};
+	gfx::display::bind_context(w.display);
+	while (
+		w.active ||
+		w.num_commands > 0
+	) {
+		process_work(renderer);
+		if (!w.active) {
+			break;
+		}
+		condvar::wait(renderer->_frame_condvar, l);
+	}
+	gfx::display::swap_buffers(w.display);
+	gfx::display::unbind_context();
+	w.display = nullptr;
+}
+
+TaskID renderer::begin_frame(
+	gfx::Renderer* renderer,
+	TaskManager& task_manager,
+	gfx::Display* display
+) {
+	MutexLock l{renderer->_frame_mutex};
+	auto& w = renderer->_work_data;
+	TOGO_ASSERTE(!w.active);
+	w.active = true;
+	w.display = display;
+	w.num_commands = 0;
+	w.buffer_size = 0;
+	return task_manager::add(
+		task_manager, TaskWork{renderer, worker_task_func}
+	);
+}
+
+void renderer::end_frame(gfx::Renderer* renderer) {
+	MutexLock l{renderer->_frame_mutex};
+	auto& w = renderer->_work_data;
+	TOGO_ASSERTE(w.active);
+	w.active = false;
+	condvar::signal(renderer->_frame_condvar, l);
+}
+
+void renderer::push_work(
+	gfx::Renderer* const renderer,
+	gfx::CmdType const type,
+	unsigned const data_size,
+	void const* const data
+) {
+	MutexLock l{renderer->_frame_mutex};
+	auto& w = renderer->_work_data;
+	TOGO_ASSERTE(w.active);
+
+	unsigned const next_buffer_size = w.buffer_size + sizeof(gfx::CmdType) + data_size;
+	TOGO_ASSERTE(sizeof(w.buffer) >= next_buffer_size);
+
+	auto* put = static_cast<void*>(w.buffer + w.buffer_size);
+	*static_cast<gfx::CmdType*>(put) = type;
+	if (data_size > 0) {
+		put = pointer_add(put, sizeof(gfx::CmdType));
+		std::memcpy(put, data, data_size);
+	}
+
+	w.buffer_size = next_buffer_size;
+	++w.num_commands;
+	condvar::signal(renderer->_frame_condvar, l);
 }
 
 unsigned renderer::execute_command(

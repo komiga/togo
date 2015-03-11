@@ -9,8 +9,10 @@
 #include <togo/types.hpp>
 #include <togo/memory/types.hpp>
 #include <togo/collection/types.hpp>
+#include <togo/threading/types.hpp>
 #include <togo/hash/hash.hpp>
 #include <togo/gfx/types.hpp>
+#include <togo/gfx/command.hpp>
 
 #if (TOGO_CONFIG_RENDERER == TOGO_RENDERER_OPENGL)
 	#include <togo/gfx/renderer/opengl.hpp>
@@ -92,6 +94,16 @@ struct Renderer {
 	unsigned _num_active_draw_param_blocks;
 	gfx::ParamBlockNameHash _fixed_param_blocks[TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND];
 	HashMap<gfx::GeneratorNameHash, gfx::GeneratorDef> _generators;
+	Mutex _frame_mutex;
+	CondVar _frame_condvar;
+	struct WorkData {
+		bool active;
+		gfx::Display* display;
+		unsigned num_commands;
+		unsigned buffer_size;
+		u8 buffer[48 * sizeof(gfx::CmdRenderWorld)];
+	} _work_data;
+
 	gfx::RenderConfig _config;
 
 	gfx::ResourceArray<gfx::Buffer, TOGO_GFX_NUM_BUFFERS> _buffers;
