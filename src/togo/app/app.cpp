@@ -218,18 +218,14 @@ void app::quit() {
 }
 
 void app::render_world(
-	WorldID const /*world_id*/,
-	EntityID const /*camera_id*/,
-	gfx::ViewportNameHash viewport_name_hash
+	WorldID const world_id,
+	EntityID const camera_id,
+	gfx::ViewportNameHash const viewport_name_hash
 ) {
-	// TODO: Camera data from entity
-	// TODO: Cull objects from world
 	auto& app = app::instance();
-	gfx::Camera const camera{};
-	gfx::renderer::render_objects(
+	gfx::renderer::push_work(
 		app.renderer,
-		0, nullptr,
-		camera, viewport_name_hash
+		gfx::CmdRenderWorld{world_id, camera_id, viewport_name_hash}
 	);
 }
 
