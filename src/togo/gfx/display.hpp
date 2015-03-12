@@ -47,6 +47,9 @@ unsigned width(gfx::Display const* display);
 /// Display height.
 unsigned height(gfx::Display const* display);
 
+/// Display size.
+Vec2 size(gfx::Display const* display);
+
 /// Set title.
 void set_title(gfx::Display* display, char const* title);
 
