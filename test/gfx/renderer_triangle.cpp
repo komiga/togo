@@ -42,8 +42,7 @@ static Vertex const triangle_vertices[]{
 };
 
 struct ColorFactors {
-	f32 rg;
-	f32 gb;
+	Vec2 rg_gb;
 };
 
 struct Oscillator {
@@ -96,8 +95,7 @@ void TestAppModel::init(TestApp& app) {
 	);
 
 	// Setup ColorFactors parameter block
-	app.data.p_color_factors.rg = 1.0f;
-	app.data.p_color_factors.gb = 1.0f;
+	app.data.p_color_factors.rg_gb = Vec2{1.0f, 1.0f};
 	app.data.p_color_factors_binding = gfx::renderer::make_param_block_binding(
 		app.renderer,
 		app.data.pb_buffer,
@@ -150,21 +148,20 @@ void TestAppModel::update(TestApp& app, float dt) {
 	constexpr f32 const m = MC_TAU * 100.0f;
 	if (!app.data.osc_paused) {
 		app.data.p_osc.time = std::fmod(app.data.p_osc.time + dt, m);
+		gfx::renderer::map_buffer(
+			app.renderer,
+			app.data.p_osc_binding, &app.data.p_osc
+		);
 	}
 
 	// Update p_color_factors
 	Vec2 const mp = input::mouse_position(app.display);
-	app.data.p_color_factors.rg = mp.x / static_cast<f32>(gfx::display::width(app.display));
-	app.data.p_color_factors.gb = mp.y / static_cast<f32>(gfx::display::height(app.display));
+	Vec2 const display_size = gfx::display::size(app.display);
+	app.data.p_color_factors.rg_gb = mp / display_size;
 
-	// Map buffers
 	gfx::renderer::map_buffer(
 		app.renderer,
 		app.data.p_color_factors_binding, &app.data.p_color_factors
-	);
-	gfx::renderer::map_buffer(
-		app.renderer,
-		app.data.p_osc_binding, &app.data.p_osc
 	);
 }
 

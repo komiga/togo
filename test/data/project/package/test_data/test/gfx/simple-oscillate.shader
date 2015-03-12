@@ -16,8 +16,7 @@ shared_source = ```
 	}
 
 	PARAM_BLOCK_FIXED(ColorFactors, 0) {
-		f32 rg;
-		f32 gb;
+		Vec2 rg_gb;
 	} p_color_factors;
 
 	PARAM_BLOCK_DRAW(Oscillator) {
@@ -34,9 +33,9 @@ vertex_source = ```
 	MAIN {
 		// frag_color = a_color;
 		frag_color = Vec3(
-			a_color.r * p_color_factors.rg,
-			a_color.g * (0.5 * p_color_factors.rg + 0.5 * p_color_factors.gb),
-			a_color.b * p_color_factors.gb
+			a_color.r * p_color_factors.rg_gb.x,
+			a_color.g * (0.5 * p_color_factors.rg_gb.x + 0.5 * p_color_factors.rg_gb.y),
+			a_color.b * p_color_factors.rg_gb.y
 		);
 		RESULT = Vec4(a_pos * sinu(0.60 * p_osc.time), 0.0, 1.0);
 		// RESULT = Vec4(a_pos, 0.0, 1.0);
