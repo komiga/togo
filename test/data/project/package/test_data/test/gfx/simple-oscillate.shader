@@ -11,6 +11,10 @@ draw_param_blocks = [
 ]
 
 shared_source = ```
+	f32 sinu(f32 x) {
+		return abs(sin(x));
+	}
+
 	PARAM_BLOCK_FIXED(ColorFactors, 0) {
 		f32 rg;
 		f32 gb;
@@ -27,10 +31,6 @@ vertex_source = ```
 	VERT_ATTR(0) Vec2 a_pos;
 	VERT_ATTR(1) Vec3 a_color;
 
-	f32 sinu(f32 x) {
-		return abs(sin(x));
-	}
-
 	MAIN {
 		// frag_color = a_color;
 		frag_color = Vec3(
@@ -45,10 +45,6 @@ vertex_source = ```
 
 fragment_source = ```
 	FRAG_RESULT(0) Vec4 RESULT0;
-
-	f32 sinu(f32 x) {
-		return abs(sin(x));
-	}
 
 	MAIN {
 		Vec3 c = 1.0 - frag_color;
