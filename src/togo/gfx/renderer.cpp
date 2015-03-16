@@ -8,11 +8,11 @@
 #include <togo/utility/utility.hpp>
 #include <togo/collection/hash_map.hpp>
 #include <togo/algorithm/sort.hpp>
-#include <togo/threading/mutex.hpp>
 #include <togo/threading/condvar.hpp>
+#include <togo/threading/mutex.hpp>
 #include <togo/threading/task_manager.hpp>
-#include <togo/gfx/command.hpp>
 #include <togo/gfx/display.hpp>
+#include <togo/gfx/command.hpp>
 #include <togo/gfx/renderer.hpp>
 #include <togo/gfx/renderer/types.hpp>
 #include <togo/gfx/renderer/private.hpp>

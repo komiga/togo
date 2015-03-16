@@ -9,8 +9,8 @@
 #include <togo/types.hpp>
 #include <togo/memory/types.hpp>
 #include <togo/collection/types.hpp>
-#include <togo/threading/types.hpp>
 #include <togo/hash/hash.hpp>
+#include <togo/threading/types.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/gfx/command.hpp>
 
