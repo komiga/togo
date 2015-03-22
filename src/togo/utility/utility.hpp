@@ -13,6 +13,7 @@
 #include <togo/types.hpp>
 #include <togo/error/assert.hpp>
 #include <togo/utility/types.hpp>
+#include <togo/utility/tags.hpp>
 #include <togo/utility/traits.hpp>
 #include <togo/utility/constraints.hpp>
 
@@ -230,6 +231,11 @@ template<class T>
 struct ArrayRef {
 	T* _begin;
 	T* _end;
+
+	inline ArrayRef(null_ref_tag const)
+		: _begin(nullptr)
+		, _end(nullptr)
+	{}
 
 	inline ArrayRef(T* const begin, T* const end)
 		: _begin(begin)
