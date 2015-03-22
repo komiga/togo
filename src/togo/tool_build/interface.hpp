@@ -184,8 +184,7 @@ bool command_compile(
 bool command_pack(
 	Interface& interface,
 	bool const force,
-	StringRef const* package_names,
-	unsigned num_package_names
+	ArrayRef<StringRef const> package_names
 );
 
 /// Run pack command with KVS.

@@ -9,36 +9,15 @@ namespace tool_build {
 bool interface::command_pack(
 	Interface& interface,
 	bool const force,
-	StringRef const* package_names,
-	unsigned num_package_names
+	ArrayRef<StringRef const> package_names
 ) {
-	TOGO_ASSERTE(package_names || num_package_names == 0);
-
 	Array<PackageCompiler*> packages{memory::scratch_allocator()};
-
-	// Lookup packages
-	if (num_package_names > 0) {
-		bool lookup_failed = false;
-		array::resize(packages, num_package_names);
-		for (unsigned i = 0; i < num_package_names; ++i) {
-			StringRef const& pkg_name = package_names[i];
-			packages[i] = compiler_manager::find_package(
-				interface._manager,
-				resource::hash_package_name(pkg_name)
-			);
-			if (!packages[i]) {
-				TOGO_LOG_ERRORF(
-					"package '%.*s' not found\n",
-					pkg_name.size, pkg_name.data
-				);
-				lookup_failed = true;
-			}
-		}
-		if (lookup_failed) {
-			return false;
-		}
-	} else {
+	if (package_names.size() == 0) {
 		array::copy(packages, compiler_manager::packages(interface._manager));
+	} else if (!compiler_manager::find_packages(
+		interface._manager, packages, package_names
+	)) {
+		return false;
 	}
 
 	if (array::empty(packages)) {
@@ -48,11 +27,10 @@ bool interface::command_pack(
 
 	{// Build packages
 	StringRef pkg_name;
-	PackageCompiler* pkg;
 	FixedArray<char, 80> build_path{};
+	unsigned next = 1;
 	signed print_size;
-	for (unsigned i = 0; i < array::size(packages); ++i) {
-		pkg = packages[i];
+	for (auto* pkg : packages) {
 		pkg_name = package_compiler::name(*pkg);
 		TOGO_LOGF("PKG %.*s\n", pkg_name.size, pkg_name.data);
 		if (!interface::command_compile(interface, force, pkg_name, nullptr, 0)) {
@@ -84,7 +62,7 @@ bool interface::command_pack(
 				return false;
 			}
 		}
-		if (i + 1 < array::size(packages)) {
+		if (next++ < array::size(packages)) {
 			TOGO_LOG("\n");
 		}
 	}}
@@ -116,21 +94,15 @@ bool interface::command_pack(
 		}
 	}
 
-	FixedArray<StringRef, 16> names{};
+	Array<StringRef> names{memory::scratch_allocator()};
 	for (KVS const& k_name : k_command) {
 		if (!kvs::is_string(k_name) || kvs::string_size(k_name) == 0) {
 			TOGO_LOG("error: expected non-empty string argument\n");
 			return false;
 		}
-		fixed_array::push_back(names, kvs::string_ref(k_name));
+		array::push_back(names, kvs::string_ref(k_name));
 	}
-
-	return interface::command_pack(
-		interface,
-		force,
-		fixed_array::begin(names),
-		fixed_array::size(names)
-	);
+	return interface::command_pack(interface, force, names);
 }
 
 } // namespace tool_build
