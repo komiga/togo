@@ -24,9 +24,9 @@ static void print_package(
 	}
 	for (auto const& metadata : package_compiler::manifest(pkg)) {
 		TOGO_LOGF(
-			"  %c [%08x %016lx] %.*s\n",
+			"  %c [%08x %016lx %-4u] %.*s\n",
 			metadata.last_compiled == 0 ? ' ' : 'C',
-			metadata.type, metadata.name_hash,
+			metadata.type, metadata.name_hash, metadata.id,
 			string::size(metadata.path),
 			fixed_array::begin(metadata.path)
 		);
