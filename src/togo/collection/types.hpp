@@ -17,6 +17,10 @@
 
 namespace togo {
 
+// Forward declarations
+template<class T>
+struct ArrayRef; // external
+
 /**
 	@addtogroup collection
 	@{
@@ -49,6 +53,9 @@ struct Array {
 
 	T& operator[](unsigned const i);
 	T const& operator[](unsigned const i) const;
+
+	operator ArrayRef<T>() const;
+	operator ArrayRef<T const>() const;
 };
 
 /** @} */ // end of doc-group array

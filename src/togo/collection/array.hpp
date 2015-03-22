@@ -13,6 +13,7 @@
 #include <togo/config.hpp>
 #include <togo/types.hpp>
 #include <togo/error/assert.hpp>
+#include <togo/utility/utility.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/collection/types.hpp>
 
@@ -76,6 +77,18 @@ template<class T>
 inline T const& Array<T>::operator[](unsigned const i) const {
 	TOGO_DEBUG_ASSERTE(i < _size);
 	return _data[i];
+}
+
+/// Convert to array reference.
+template<class T>
+inline Array<T>::operator ArrayRef<T>() const {
+	return array_ref(_size, _data);
+}
+
+/// Convert to array reference.
+template<class T>
+inline Array<T>::operator ArrayRef<T const>() const {
+	return array_ref(_size, _data);
 }
 
 namespace array {
