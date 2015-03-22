@@ -44,6 +44,7 @@ signed main() {
 
 	#define TEST_DIR "test_dir"
 	#define TEST_FILE TEST_DIR "/test_file"
+	#define TEST_FILE_MOVED TEST_DIR "/test_file_moved"
 
 	// Directory creation
 	TOGO_ASSERTE(!filesystem::is_directory(TEST_DIR));
@@ -65,6 +66,16 @@ signed main() {
 		system::secs_since_epoch() - 2
 	);
 	TOGO_ASSERTE(filesystem::file_size(TEST_FILE) == 0);
+
+	// File move
+	TOGO_ASSERTE(filesystem::move_file(TEST_FILE, TEST_FILE_MOVED));
+	TOGO_ASSERTE(!filesystem::is_file(TEST_FILE));
+	TOGO_ASSERTE(filesystem::is_file(TEST_FILE_MOVED));
+	TOGO_ASSERTE(!filesystem::move_file(TEST_FILE, TEST_FILE_MOVED));
+
+	TOGO_ASSERTE(filesystem::move_file(TEST_FILE_MOVED, TEST_FILE));
+	TOGO_ASSERTE(filesystem::is_file(TEST_FILE));
+	TOGO_ASSERTE(!filesystem::is_file(TEST_FILE_MOVED));
 
 	// File removal
 	TOGO_ASSERTE(filesystem::remove_file(TEST_FILE));
