@@ -162,6 +162,26 @@ bool filesystem::remove_file(StringRef const& path) {
 	return true;
 }
 
+bool filesystem::move_file(StringRef const& src, StringRef const& dest) {
+	signed err = ::link(src.data, dest.data);
+	if (err != 0) {
+		TOGO_LOG_DEBUGF(
+			"move_file: link(): errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+		return false;
+	}
+	err = ::unlink(src.data);
+	if (err != 0) {
+		TOGO_LOG_DEBUGF(
+			"move_file: unlink(): errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+		return false;
+	}
+	return true;
+}
+
 bool filesystem::create_directory(StringRef const& path) {
 	signed const err = ::mkdir(
 		path.data,

@@ -74,6 +74,11 @@ bool create_file(StringRef const& path);
 /// Remove a file.
 bool remove_file(StringRef const& path);
 
+/// Move a file.
+///
+/// If dest already exists, this will fail.
+bool move_file(StringRef const& src, StringRef const& dest);
+
 /// Create a directory.
 ///
 /// If the directory already exists, this will fail.
