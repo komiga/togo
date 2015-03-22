@@ -99,5 +99,25 @@ signed main() {
 	array::remove(a, 0);
 	TOGO_ASSERTE(array::empty(a));
 
+	// Remove-overwrite
+	count = 4;
+	while (count--) {
+		array::push_back(a, 3 - count);
+	}
+	array::remove_over(a, 0);
+	TOGO_ASSERTE(a[0] == 3);
+	TOGO_ASSERTE(a[1] == 1);
+	TOGO_ASSERTE(a[2] == 2);
+
+	array::remove_over(a, 0);
+	TOGO_ASSERTE(a[0] == 2);
+	TOGO_ASSERTE(a[1] == 1);
+
+	array::remove_over(a, 0);
+	TOGO_ASSERTE(a[0] == 1);
+
+	array::remove_over(a, 0);
+	TOGO_ASSERTE(array::empty(a));
+
 	return 0;
 }
