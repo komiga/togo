@@ -11,6 +11,7 @@
 
 #include <togo/config.hpp>
 #include <togo/types.hpp>
+#include <togo/error/assert.hpp>
 #include <togo/utility/types.hpp>
 #include <togo/utility/traits.hpp>
 #include <togo/utility/constraints.hpp>
@@ -244,6 +245,18 @@ struct ArrayRef {
 	/// Number of items.
 	unsigned size() const {
 		return _end - _begin;
+	}
+
+	/// Access value by index.
+	T& operator[](unsigned const i) {
+		TOGO_DEBUG_ASSERTE(_begin + i < _end);
+		return _begin[i];
+	}
+
+	/// Access value by index.
+	T const& operator[](unsigned const i) const {
+		TOGO_DEBUG_ASSERTE(_begin + i < _end);
+		return _begin[i];
 	}
 };
 
