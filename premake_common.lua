@@ -58,6 +58,7 @@ project = function()
 	configuration {}
 		includedirs {
 			precore.subst("${ROOT}/dep/am/"),
+			-- precore.subst("${ROOT}/dep/luajit/include/luajit-2.0/"),
 		}
 
 	-- premake4.4-beta5 doesn't have the "opt=value" syntax for configuration
@@ -91,6 +92,14 @@ end}})
 precore.make_config(
 "togo-deps-link", {{
 project = function()
+	--[[configuration {}
+		libdirs {
+			precore.subst("${ROOT}/dep/luajit/lib/"),
+		}
+		links {
+			":libluajit-5.1.a",
+		}--]]
+
 	configuration {"linux"}
 		buildoptions {
 			"-pthread",
