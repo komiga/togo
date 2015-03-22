@@ -36,22 +36,19 @@ static void print_package(
 bool interface::command_list(
 	Interface const& interface,
 	bool const list_resources,
-	StringRef const* const package_names,
-	unsigned const num_package_names
+	ArrayRef<StringRef const> const package_names
 ) {
-	TOGO_ASSERTE(package_names || num_package_names == 0);
 	auto const& packages = compiler_manager::packages(interface._manager);
-	if (num_package_names > 0) {
-		PackageCompiler* pkg;
-		for (unsigned i = 0; i < num_package_names; ++i) {
-			auto const& pkg_name = package_names[i];
-			pkg = compiler_manager::find_package(
+	unsigned next = 1;
+	if (package_names.size() > 0) {
+		for (auto const& pkg_name : package_names) {
+			auto const* pkg = compiler_manager::find_package(
 				const_cast<CompilerManager&>(interface._manager),
 				resource::hash_package_name(pkg_name)
 			);
 			if (pkg) {
 				print_package(*pkg, true);
-				if (list_resources && i + 1 < num_package_names) {
+				if (next++ < package_names.size()) {
 					TOGO_LOG("\n");
 				}
 			} else {
@@ -62,10 +59,9 @@ bool interface::command_list(
 			}
 		}
 	} else if (array::any(packages)) {
-		for (unsigned i = 0; i < array::size(packages); ++i) {
-			auto const* pkg = packages[i];
+		for (auto const* pkg : packages) {
 			print_package(*pkg, list_resources);
-			if (list_resources && i + 1 < array::size(packages)) {
+			if (list_resources && next++ < array::size(packages)) {
 				TOGO_LOG("\n");
 			}
 		}
@@ -103,22 +99,17 @@ bool interface::command_list(
 		if (kvs::any(k_command)) {
 			TOGO_LOG("NB: takes no arguments with -r\n");
 		}
-		return interface::command_list(interface, true, nullptr, 0);
+		return interface::command_list(interface, true, null_ref_tag{});
 	} else {
-		FixedArray<StringRef, 32> package_names{};
+		Array<StringRef> package_names{memory::scratch_allocator()};
 		for (KVS const& k_pkg_name : k_command) {
 			if (!kvs::is_string(k_pkg_name) || kvs::string_size(k_pkg_name) == 0) {
 				TOGO_LOG("error: expected non-empty string argument\n");
 				return false;
 			}
-			fixed_array::push_back(package_names, kvs::string_ref(k_pkg_name));
+			array::push_back(package_names, kvs::string_ref(k_pkg_name));
 		}
-		return interface::command_list(
-			interface,
-			false,
-			fixed_array::begin(package_names),
-			fixed_array::size(package_names)
-		);
+		return interface::command_list(interface, false, package_names);
 	}
 }
 

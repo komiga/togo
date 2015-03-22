@@ -97,8 +97,7 @@ bool command_help(
 bool command_list(
 	Interface const& interface,
 	bool list_resources,
-	StringRef const* package_names,
-	unsigned num_package_names
+	ArrayRef<StringRef const> package_names
 );
 
 /// Run list command with KVS.
@@ -135,8 +134,7 @@ bool command_create(
 /// If no packages are specified, all packages are synced.
 bool command_sync(
 	Interface& interface,
-	StringRef const* package_names,
-	unsigned num_package_names
+	ArrayRef<StringRef const> package_names
 );
 
 /// Run sync command with KVS.

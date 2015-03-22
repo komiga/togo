@@ -93,15 +93,12 @@ static bool sync_package(
 
 bool interface::command_sync(
 	Interface& interface,
-	StringRef const* package_names,
-	unsigned num_package_names
+	ArrayRef<StringRef const> const package_names
 ) {
-	TOGO_ASSERTE(package_names || num_package_names == 0);
 	auto& packages = compiler_manager::packages(interface._manager);
-	if (num_package_names > 0) {
+	if (package_names.size() > 0) {
 		PackageCompiler* pkg;
-		for (unsigned i = 0; i < num_package_names; ++i) {
-			auto const& pkg_name = package_names[i];
+		for (auto const& pkg_name : package_names) {
 			pkg = compiler_manager::find_package(
 				const_cast<CompilerManager&>(interface._manager),
 				resource::hash_package_name(pkg_name)
@@ -139,19 +136,15 @@ bool interface::command_sync(
 		TOGO_LOG("error: options unexpected\n");
 		return false;
 	}
-	FixedArray<StringRef, 32> package_names{};
+	Array<StringRef> package_names{memory::scratch_allocator()};
 	for (KVS const& k_pkg_name : k_command) {
 		if (!kvs::is_string(k_pkg_name) || kvs::string_size(k_pkg_name) == 0) {
 			TOGO_LOG("error: expected non-empty string argument\n");
 			return false;
 		}
-		fixed_array::push_back(package_names, kvs::string_ref(k_pkg_name));
+		array::push_back(package_names, kvs::string_ref(k_pkg_name));
 	}
-	return interface::command_sync(
-		interface,
-		fixed_array::begin(package_names),
-		fixed_array::size(package_names)
-	);
+	return interface::command_sync(interface, package_names);
 }
 
 } // namespace tool_build

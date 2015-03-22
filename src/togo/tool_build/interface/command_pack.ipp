@@ -9,7 +9,7 @@ namespace tool_build {
 bool interface::command_pack(
 	Interface& interface,
 	bool const force,
-	ArrayRef<StringRef const> package_names
+	ArrayRef<StringRef const> const package_names
 ) {
 	Array<PackageCompiler*> packages{memory::scratch_allocator()};
 	if (package_names.size() == 0) {
