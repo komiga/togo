@@ -34,60 +34,42 @@ bool create_stub(
 );
 
 /// Get name hash.
-inline ResourcePackageNameHash name_hash(
-	PackageCompiler const& pkg
-) {
+inline ResourcePackageNameHash name_hash(PackageCompiler const& pkg) {
 	return pkg._name_hash;
 }
 
 /// Get name.
-inline StringRef name(
-	PackageCompiler const& pkg
-) {
+inline StringRef name(PackageCompiler const& pkg) {
 	return {pkg._name};
 }
 
 /// Get path.
-inline StringRef path(
-	PackageCompiler const& pkg
-) {
+inline StringRef path(PackageCompiler const& pkg) {
 	return {pkg._path};
 }
 
 /// Get manifest.
-inline Array<ResourceCompilerMetadata> const& manifest(
-	PackageCompiler const& pkg
-) {
+inline Array<ResourceCompilerMetadata> const& manifest(PackageCompiler const& pkg) {
 	return pkg._manifest;
 }
 
 /// Check if the package properties are marked as modified.
-inline bool properties_modified(
-	PackageCompiler const& pkg
-) {
+inline bool properties_modified(PackageCompiler const& pkg) {
 	return pkg._properties_modified;
 }
 
 /// Mark the package properties as modified or unmodified.
-inline void set_properties_modified(
-	PackageCompiler& pkg,
-	bool const value
-) {
+inline void set_properties_modified(PackageCompiler& pkg, bool const value) {
 	pkg._properties_modified = value;
 }
 
 /// Check if the package manifest is marked as modified.
-inline bool manifest_modified(
-	PackageCompiler const& pkg
-) {
+inline bool manifest_modified(PackageCompiler const& pkg) {
 	return pkg._manifest_modified;
 }
 
 /// Mark the package manifest as modified or unmodified.
-inline void set_manifest_modified(
-	PackageCompiler& pkg,
-	bool const value
-) {
+inline void set_manifest_modified(PackageCompiler& pkg, bool const value) {
 	pkg._manifest_modified = value;
 	if (pkg._manifest_modified) {
 		package_compiler::set_properties_modified(pkg, pkg._build_parity != false || true);
@@ -96,9 +78,7 @@ inline void set_manifest_modified(
 }
 
 /// Check if the package needs to be built.
-inline bool needs_build(
-	PackageCompiler const& pkg
-) {
+inline bool needs_build(PackageCompiler const& pkg) {
 	return !pkg._build_parity;
 }
 
@@ -146,36 +126,22 @@ u32 add_resource(
 /// Remove resource by ID.
 ///
 /// This assumes the working directory is already at the package.
-void remove_resource(
-	PackageCompiler& pkg,
-	u32 id
-);
+void remove_resource(PackageCompiler& pkg, u32 id);
 
 /// Read package data.
-void read(
-	PackageCompiler& pkg
-);
+void read(PackageCompiler& pkg);
 
 /// Write modified package data and mark it as not modified.
-bool write(
-	PackageCompiler& pkg
-);
+bool write(PackageCompiler& pkg);
 
 /// Write package properties.
-bool write_properties(
-	PackageCompiler& pkg
-);
+bool write_properties(PackageCompiler& pkg);
 
 /// Write package manifest.
-bool write_manifest(
-	PackageCompiler& pkg
-);
+bool write_manifest(PackageCompiler& pkg);
 
 /// Build package.
-bool build(
-	PackageCompiler& pkg,
-	StringRef const& output_path
-);
+bool build(PackageCompiler& pkg, StringRef const& output_path);
 
 /** @} */ // end of doc-group tool_build_package_compiler
 

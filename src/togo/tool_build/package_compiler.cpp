@@ -240,10 +240,7 @@ u32 package_compiler::add_resource(
 	return metadata.id;
 }
 
-void package_compiler::remove_resource(
-	PackageCompiler& pkg,
-	u32 const id
-) {
+void package_compiler::remove_resource(PackageCompiler& pkg, u32 const id) {
 	TOGO_ASSERTE(id > 0 && id <= array::size(pkg._manifest));
 	auto& metadata = pkg._manifest[id - 1];
 	TOGO_ASSERT(
@@ -293,9 +290,7 @@ void package_compiler::remove_resource(
 	package_compiler::set_manifest_modified(pkg, true);
 }
 
-void package_compiler::read(
-	PackageCompiler& pkg
-) {
+void package_compiler::read(PackageCompiler& pkg) {
 	pkg._name_hash = ""_resource_package_name;
 	string::copy(pkg._name, "");
 	hash_map::clear(pkg._lookup);
@@ -392,9 +387,7 @@ void package_compiler::read(
 	}
 }
 
-bool package_compiler::write(
-	PackageCompiler& pkg
-) {
+bool package_compiler::write(PackageCompiler& pkg) {
 	if (
 		package_compiler::properties_modified(pkg) &&
 		!package_compiler::write_properties(pkg)
@@ -411,9 +404,7 @@ bool package_compiler::write(
 	return true;
 }
 
-bool package_compiler::write_properties(
-	PackageCompiler& pkg
-) {
+bool package_compiler::write_properties(PackageCompiler& pkg) {
 	StringRef const path{pkg._path};
 	TOGO_ASSERTF(
 		filesystem::is_directory(path),
@@ -438,9 +429,7 @@ bool package_compiler::write_properties(
 	return true;
 }
 
-bool package_compiler::write_manifest(
-	PackageCompiler& pkg
-) {
+bool package_compiler::write_manifest(PackageCompiler& pkg) {
 	StringRef const path{pkg._path};
 	TOGO_ASSERTF(
 		filesystem::is_directory(path),
@@ -491,10 +480,7 @@ bool package_compiler::write_manifest(
 	return true;
 }
 
-bool package_compiler::build(
-	PackageCompiler& pkg,
-	StringRef const& output_path
-) {
+bool package_compiler::build(PackageCompiler& pkg, StringRef const& output_path) {
 	StringRef const path{pkg._path};
 	TOGO_ASSERTF(
 		filesystem::is_directory(path),
