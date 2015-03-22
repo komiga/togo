@@ -264,6 +264,8 @@ inline void pop_back(Array<T>& a) {
 }
 
 /// Remove an item by index.
+///
+/// Moves all subsequent elements left in memory.
 template<class T>
 inline void remove(Array<T>& a, unsigned const i) {
 	TOGO_DEBUG_ASSERTE(any(a));
@@ -286,6 +288,31 @@ inline void remove(Array<T>& a, T const* const ptr) {
 	TOGO_DEBUG_ASSERTE(any(a));
 	TOGO_DEBUG_ASSERTE(array::begin(a) <= ptr && ptr < array::end(a));
 	remove(a, (ptr - a._data) / sizeof(T));
+}
+
+/// Remove-overwrite an item by index.
+///
+/// Assigns the specified element with the last element instead of moving
+/// all subsequent elements.
+template<class T>
+inline void remove_over(Array<T>& a, unsigned const i) {
+	TOGO_DEBUG_ASSERTE(any(a));
+	TOGO_DEBUG_ASSERTE(i < a._size);
+	--a._size;
+	if (i < a._size) {
+		a._data[i] = a._data[a._size];
+	}
+}
+
+/// Remove-overwrite an item by address.
+///
+/// If ptr is nullptr, an assertion will fail.
+template<class T>
+inline void remove_over(Array<T>& a, T const* const ptr) {
+	TOGO_ASSERTE(ptr != nullptr);
+	TOGO_DEBUG_ASSERTE(any(a));
+	TOGO_DEBUG_ASSERTE(array::begin(a) <= ptr && ptr < array::end(a));
+	remove_over(a, (ptr - a._data) / sizeof(T));
 }
 
 /// Copy array.
