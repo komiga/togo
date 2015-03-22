@@ -195,6 +195,25 @@ bool command_pack(
 	KVS const& k_command
 );
 
+/// Run compact command.
+///
+/// Removes empty metadata entries.
+/// If no packages are specified, all packages are selected.
+bool command_compact(
+	Interface& interface,
+	ArrayRef<StringRef const> package_names
+);
+
+/// Run compact command with KVS.
+///
+/// Specification:
+/// @verbatim compact [<package_name> ...] @endverbatim
+bool command_compact(
+	Interface& interface,
+	KVS const& k_command_options,
+	KVS const& k_command
+);
+
 /** @} */ // end of doc-group tool_build_interface
 
 } // namespace interface

@@ -67,6 +67,11 @@ bool interface::command_help(
 			"\n"
 			"  -f: force build selected packages and all of their resources\n"
 		);
+		CASE_DESCRIBE_COMMAND(
+			"compact", "[<package_name> ...]",
+			"  remove empty metadata entries\n"
+			"  if no packages are specified, all are selected\n"
+		);
 
 	default:
 		if (!do_all) {

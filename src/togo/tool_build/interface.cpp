@@ -195,6 +195,7 @@ bool interface::run(
 		CMD_CASE(sync);
 		CMD_CASE(compile);
 		CMD_CASE(pack);
+		CMD_CASE(compact);
 
 	default:
 		if (kvs::is_named(k_command)) {
@@ -231,3 +232,4 @@ bool interface::run(
 #include <togo/tool_build/interface/command_sync.ipp>
 #include <togo/tool_build/interface/command_compile.ipp>
 #include <togo/tool_build/interface/command_pack.ipp>
+#include <togo/tool_build/interface/command_compact.ipp>
