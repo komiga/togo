@@ -72,7 +72,7 @@ inline bool manifest_modified(PackageCompiler const& pkg) {
 inline void set_manifest_modified(PackageCompiler& pkg, bool const value) {
 	pkg._manifest_modified = value;
 	if (pkg._manifest_modified) {
-		package_compiler::set_properties_modified(pkg, pkg._build_parity != false || true);
+		package_compiler::set_properties_modified(pkg, true);
 		pkg._build_parity = false;
 	}
 }
