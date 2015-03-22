@@ -96,6 +96,8 @@ project = function()
 			"-pthread",
 		}
 		links {
+			"m",
+			"dl",
 			"pthread",
 		}
 
