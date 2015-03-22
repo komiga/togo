@@ -143,6 +143,9 @@ bool write_manifest(PackageCompiler& pkg);
 /// Build package.
 bool build(PackageCompiler& pkg, StringRef const& output_path);
 
+/// Remove empty metadata entries.
+bool compact(PackageCompiler& pkg);
+
 /** @} */ // end of doc-group tool_build_package_compiler
 
 } // namespace package_compiler

@@ -581,5 +581,55 @@ bool package_compiler::build(PackageCompiler& pkg, StringRef const& output_path)
 	return true;
 }
 
+bool package_compiler::compact(PackageCompiler& pkg) {
+	bool modified = false;
+	for (unsigned i = 0; i < array::size(pkg._manifest);) {
+		auto const& metadata = pkg._manifest[i];
+		if (metadata.id == 0) {
+			// Retain relative order
+			array::remove(pkg._manifest, i);
+			modified = true;
+			continue;
+		} else if (metadata.id != i + 1) {
+			modified = true;
+		}
+		++i;
+	}
+	if (modified) {
+		WorkingDirScope wd_scope{package_compiler::path(pkg)};
+		hash_map::clear(pkg._lookup);
+		unsigned id = 1;
+		ResourceCompiledPath compiled_path{};
+		ResourceCompiledPath compiled_path_to{};
+		for (auto& metadata : pkg._manifest) {
+			TOGO_DEBUG_ASSERTE(
+				metadata.id != 0 &&
+				metadata.name_hash != RES_NAME_NULL
+			);
+			if (metadata.id != id) {
+				resource::compiled_path(compiled_path, metadata.id);
+				resource::compiled_path(compiled_path_to, id);
+				if (
+					filesystem::is_file(compiled_path) &&
+					!filesystem::move_file(compiled_path, compiled_path_to)
+				) {
+					TOGO_LOG_ERRORF(
+						"failed to move compiled resource file: '%.*s' -> '%.*s'\n",
+						compiled_path.size(), compiled_path.data(),
+						compiled_path_to.size(), compiled_path_to.data()
+					);
+				}
+				metadata.id = id;
+				// TODO: Require recompile if dependencies were relocated
+				//metadata.last_compiled = 0;
+			}
+			hash_map::push(pkg._lookup, metadata.name_hash, metadata.id);
+			++id;
+		}
+		package_compiler::set_manifest_modified(pkg, true);
+	}
+	return modified;
+}
+
 } // namespace tool_build
 } // namespace togo
