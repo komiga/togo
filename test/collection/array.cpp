@@ -18,23 +18,23 @@ using namespace togo;
 signed main() {
 	memory_init();
 
-	TOGO_LOGF("sizeof(Array<u32>) = %zu\n", sizeof(Array<u32>));
-	TOGO_LOGF("alignof(Array<u32>) = %zu\n", alignof(Array<u32>));
+	TOGO_LOGF("sizeof(Array<s32>) = %zu\n", sizeof(Array<s32>));
+	TOGO_LOGF("alignof(Array<s32>) = %zu\n", alignof(Array<s32>));
 
 	// Invariants
-	Array<u32> a{memory::default_allocator()};
+	Array<s32> a{memory::default_allocator()};
 	ARRAY_ASSERTIONS(a, 0, 0);
 
-	array::push_back(a, 42u);
+	array::push_back(a, 42);
 	ARRAY_ASSERTIONS(a, 1, 8);
 
 	array::clear(a);
 	ARRAY_ASSERTIONS(a, 0, 8);
 
 	// Insertion
-	u32 count = 10;
+	s32 count = 10;
 	while (count--) {
-		array::push_back(a, static_cast<u32>(10 - count));
+		array::push_back(a, 10 - count);
 	}
 	ARRAY_ASSERTIONS(a, 10, 24);
 
@@ -48,7 +48,7 @@ signed main() {
 	TOGO_LOG("\n");
 
 	for (u32 i = 0; i < array::size(a); ++i) {
-		TOGO_ASSERTE(a[i] == i + 1);
+		TOGO_ASSERTE(a[i] == signed_cast(i + 1));
 	}
 
 	count = 1;
@@ -58,7 +58,7 @@ signed main() {
 	}
 
 	// Copy
-	Array<u32> copy{memory::default_allocator()};
+	Array<s32> copy{memory::default_allocator()};
 
 	array::copy(copy, a);
 	TOGO_ASSERTE(array::size(copy) == array::size(a));
@@ -80,10 +80,10 @@ signed main() {
 	ARRAY_ASSERTIONS(a, 0, 24);
 
 	/// Removal by index
-	array::push_back(a, 0u);
-	array::push_back(a, 1u);
-	array::push_back(a, 2u);
-	array::push_back(a, 3u);
+	count = 4;
+	while (count--) {
+		array::push_back(a, 3 - count);
+	}
 	array::remove(a, 3);
 	TOGO_ASSERTE(a[0] == 0);
 	TOGO_ASSERTE(a[1] == 1);
