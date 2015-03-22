@@ -23,6 +23,9 @@ namespace togo {
 /// Null value tag.
 enum class null_tag {};
 
+/// Null reference tag.
+enum class null_ref_tag {};
+
 /// NUL-terminated string tag.
 enum class cstr_tag {};
 
