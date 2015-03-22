@@ -76,7 +76,7 @@ PackageCompiler::PackageCompiler(
 	: _properties_modified(false)
 	, _manifest_modified(false)
 	, _build_parity(false)
-	, _name_hash(""_resource_package_name)
+	, _name_hash(PKG_NAME_NULL)
 	, _lookup(allocator)
 	, _manifest(allocator)
 	, _name()
@@ -278,8 +278,8 @@ void package_compiler::remove_resource(PackageCompiler& pkg, u32 const id) {
 
 	// Leave hole at ID
 	metadata.id = 0;
-	metadata.name_hash = 0;
-	metadata.tags_hash = 0;
+	metadata.name_hash = RES_NAME_NULL;
+	metadata.tags_hash = RES_TAGS_NULL;
 	metadata.type = RES_TYPE_NULL;
 	metadata.data_format_version = 0;
 	metadata.data_offset = 0;
@@ -291,7 +291,7 @@ void package_compiler::remove_resource(PackageCompiler& pkg, u32 const id) {
 }
 
 void package_compiler::read(PackageCompiler& pkg) {
-	pkg._name_hash = ""_resource_package_name;
+	pkg._name_hash = RES_NAME_NULL;
 	string::copy(pkg._name, "");
 	hash_map::clear(pkg._lookup);
 	array::clear(pkg._manifest);
@@ -370,19 +370,19 @@ void package_compiler::read(PackageCompiler& pkg) {
 		path.size, path.data, format_version
 	);
 
-	for (auto& rmd : pkg._manifest) {
-		ser % make_serial_auxiliary(rmd);
+	for (auto& metadata : pkg._manifest) {
+		ser % make_serial_auxiliary(metadata);
 	}
 	stream.close();
 	}
 
-	for (u32 i = 0; i < array::size(pkg._manifest); ++i) {
-		auto& rmd = pkg._manifest[i];
-		if (rmd.type != RES_TYPE_NULL) {
-			rmd.id = i + 1;
-			hash_map::push(pkg._lookup, rmd.name_hash, rmd.id);
+	for (unsigned i = 0; i < array::size(pkg._manifest); ++i) {
+		auto& metadata = pkg._manifest[i];
+		if (metadata.type != RES_TYPE_NULL) {
+			metadata.id = i + 1;
+			hash_map::push(pkg._lookup, metadata.name_hash, metadata.id);
 		} else {
-			rmd.id = 0;
+			metadata.id = 0;
 		}
 	}
 }
@@ -470,8 +470,8 @@ bool package_compiler::write_manifest(PackageCompiler& pkg) {
 	ser
 		% u32{SER_FORMAT_VERSION_PKG_COMPILER_METADATA}
 	;
-	for (auto const& rmd : pkg._manifest) {
-		ser % make_serial_auxiliary(rmd);
+	for (auto const& metadata : pkg._manifest) {
+		ser % make_serial_auxiliary(metadata);
 	}
 	stream.close();
 	}
@@ -509,18 +509,18 @@ bool package_compiler::build(PackageCompiler& pkg, StringRef const& output_path)
 	{// Calculate data offsets and sizes
 	u32 size;
 	u32 offset = offset_basis;
-	for (auto& rmd : pkg._manifest) {
-		if (rmd.id == 0) {
-			rmd.data_offset = 0;
-			rmd.data_size = 0;
+	for (auto& metadata : pkg._manifest) {
+		if (metadata.id == 0) {
+			metadata.data_offset = 0;
+			metadata.data_size = 0;
 			continue;
 		}
 
-		resource::compiled_path(compiled_path, rmd.id);
+		resource::compiled_path(compiled_path, metadata.id);
 		TOGO_ASSERTE(filesystem::is_file(compiled_path));
 		size = static_cast<u32>(filesystem::file_size(compiled_path));
-		rmd.data_offset = offset;
-		rmd.data_size = size;
+		metadata.data_offset = offset;
+		metadata.data_size = size;
 		offset += size;
 	}}
 
@@ -543,13 +543,13 @@ bool package_compiler::build(PackageCompiler& pkg, StringRef const& output_path)
 	FileReader compiled_stream{};
 	unsigned read_size;
 	void* const tmp_buffer = memory::scratch_allocator().allocate(tmp_buffer_size);
-	for (auto const& rmd : pkg._manifest) {
-		if (rmd.id == 0) {
+	for (auto const& metadata : pkg._manifest) {
+		if (metadata.id == 0) {
 			continue;
 		}
 
-		resource::compiled_path(compiled_path, rmd.id);
-		rpath = rmd.path;
+		resource::compiled_path(compiled_path, metadata.id);
+		rpath = metadata.path;
 		if (!compiled_stream.open(compiled_path)) {
 			TOGO_LOG_ERRORF(
 				"failed to open compiled resource file for '%.*s': '%.*s'\n",
@@ -560,7 +560,7 @@ bool package_compiler::build(PackageCompiler& pkg, StringRef const& output_path)
 			return false;
 		}
 
-		TOGO_ASSERTE(rmd.data_offset == io::position(stream));
+		TOGO_ASSERTE(metadata.data_offset == io::position(stream));
 		do {
 			TOGO_ASSERTE(!io::read(
 				compiled_stream,
@@ -569,7 +569,7 @@ bool package_compiler::build(PackageCompiler& pkg, StringRef const& output_path)
 			).fail());
 			TOGO_ASSERTE(io::write(stream, tmp_buffer, read_size));
 		} while (io::status(compiled_stream));
-		TOGO_ASSERTE(rmd.data_size == io::position(compiled_stream));
+		TOGO_ASSERTE(metadata.data_size == io::position(compiled_stream));
 		compiled_stream.close();
 	}
 	memory::scratch_allocator().deallocate(tmp_buffer);
