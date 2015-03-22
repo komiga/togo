@@ -10,6 +10,7 @@
 #include <togo/collection/fixed_array.hpp>
 #include <togo/collection/array.hpp>
 #include <togo/collection/hash_map.hpp>
+#include <togo/resource/resource.hpp>
 #include <togo/tool_build/resource_compiler.hpp>
 #include <togo/tool_build/package_compiler.hpp>
 #include <togo/tool_build/compiler_manager.hpp>
@@ -80,6 +81,26 @@ PackageCompiler* compiler_manager::find_package(
 		}
 	}
 	return nullptr;
+}
+
+bool compiler_manager::find_packages(
+	CompilerManager& cm,
+	Array<PackageCompiler*>& packages,
+	ArrayRef<StringRef const> const names
+) {
+	array::resize(packages, names.size());
+	bool lookup_failed = false;
+	for (unsigned i = 0; i < names.size(); ++i) {
+		StringRef const& pkg_name = names[i];
+		packages[i] = compiler_manager::find_package(
+			cm, resource::hash_package_name(pkg_name)
+		);
+		if (!packages[i]) {
+			TOGO_LOG_ERRORF("package '%.*s' not found\n", pkg_name.size, pkg_name.data);
+			lookup_failed = true;
+		}
+	}
+	return !lookup_failed;
 }
 
 ResourcePackageNameHash compiler_manager::add_package(

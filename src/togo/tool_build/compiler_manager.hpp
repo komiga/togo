@@ -63,6 +63,16 @@ PackageCompiler* find_package(
 	ResourcePackageNameHash name_hash
 );
 
+/// Find packages by names.
+///
+/// packages elements will be nullptr when lookup for its name misses.
+/// Returns false if a lookup fails.
+bool find_packages(
+	CompilerManager& cm,
+	Array<PackageCompiler*>& packages,
+	ArrayRef<StringRef const> names
+);
+
 /// Add package.
 ///
 /// An assertion will fail if the package is already in the manager.
