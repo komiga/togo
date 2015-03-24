@@ -40,6 +40,27 @@ precore.make_solution(
 	}
 )
 
+-- igen
+
+precore.make_project(
+	"igen",
+	"C++", "StaticLib",
+	"out/igen/", "out/igen/",
+	nil, nil
+)
+
+configuration {}
+	includedirs {
+		"src/"
+	}
+
+configuration {"gmake"}
+	prebuildcommands {
+		"$(SILENT) ./toolchain/collect_igen_users",
+		"$(SILENT) ./toolchain/run_igen.py -- $(ALL_CXXFLAGS)",
+		"$(SILENT) exit 0",
+	}
+
 -- Core library
 
 precore.make_project(
