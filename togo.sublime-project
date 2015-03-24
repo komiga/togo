@@ -7,6 +7,7 @@
 			"folder_exclude_patterns": [
 				"doc",
 				"dep",
+				"toolchain",
 				"src",
 				"test",
 				"out",
@@ -31,6 +32,10 @@
 			"folder_exclude_patterns": [
 				"*"
 			]
+		},
+		{
+			"name": "- Toolchain",
+			"path": "./toolchain/"
 		},
 		{
 			"name": "- Source",
