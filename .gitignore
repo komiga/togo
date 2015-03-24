@@ -6,3 +6,6 @@ Makefile
 out/
 lib/
 bin/
+
+*.gen_interface
+toolchain/igen_users

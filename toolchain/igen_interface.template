@@ -1,0 +1,23 @@
+/**
+@file
+@brief GENERATED
+@note This file was created by igen.
+*/
+
+#pragma once
+
+%for ns in group.funcs_by_namespace.values():
+${ns.open_string()}
+/**
+	@addtogroup ${group.userdata.doc_group}
+	@{
+*/
+
+%for f in ns.funcs:
+${f.cursor.raw_comment}
+${f.signature(named_args = False)};
+%endfor
+
+/** @} */
+${ns.close_string()}
+%endfor
