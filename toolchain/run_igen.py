@@ -90,12 +90,12 @@ class Interface:
 	def build(self):
 		def pre_filter(cursor):
 			return (
-				cursor.location.file.name == i.source and
+				cursor.location.file.name == self.source and
 				cursor.raw_comment != None
 			)
 		def post_filter(function):
 			return (
-				function.xqn == i.namespace or
+				function.xqn == self.namespace or
 				has_annotation(function.cursor, "igen_interface")
 			)
 		self.group = igen.generate(
