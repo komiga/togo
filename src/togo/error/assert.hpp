@@ -19,13 +19,8 @@ namespace togo {
 */
 
 /// Abort the program with contextual information.
-[[noreturn]] void
-error_abort(
-	unsigned line,
-	char const* file,
-	char const* msg,
-	...
-);
+[[noreturn]]
+void error_abort(unsigned line, char const* file, char const* msg, ...);
 
 #if !defined(TOGO_DISABLE_ASSERTIONS) && !defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
 	#define TOGO_ASSERT(expr, msg) \
