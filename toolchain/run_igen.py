@@ -89,7 +89,10 @@ class Interface:
 
 	def build(self):
 		def pre_filter(cursor):
-			return cursor.location.file.name == i.source
+			return (
+				cursor.location.file.name == i.source and
+				cursor.raw_comment != None
+			)
 		def post_filter(function):
 			return (
 				function.xqn == i.namespace or
