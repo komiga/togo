@@ -9,7 +9,7 @@
 %for ns in group.funcs_by_namespace.values():
 ${ns.open_string()}
 /**
-	@addtogroup ${group.userdata.doc_group}
+	@addtogroup ${interface.doc_group}
 	@{
 */
 
