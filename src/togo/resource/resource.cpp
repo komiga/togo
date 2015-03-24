@@ -21,6 +21,10 @@ struct TagLessThan {
 	}
 };
 
+/// Parse resource path.
+///
+/// Tags are sorted by hash value.
+/// Returns false if the given path is malformed.
 bool resource::parse_path(
 	StringRef const& path,
 	ResourcePathParts& pp
@@ -98,6 +102,7 @@ bool resource::parse_path(
 	return true;
 }
 
+/// Get compiled path.
 void resource::compiled_path(
 	ResourceCompiledPath& path,
 	u32 const id

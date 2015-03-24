@@ -29,6 +29,7 @@ EntityManager::EntityManager(
 	queue::reserve(_free_indices, MIN_FREE_INDICES);
 }
 
+/// Check if an entity is alive.
 bool entity_manager::alive(
 	EntityManager const& em,
 	EntityID const& id
@@ -40,6 +41,7 @@ bool entity_manager::alive(
 	;
 }
 
+/// Create an entity.
 EntityID entity_manager::create(EntityManager& em) {
 	EntityID::value_type index;
 	if (queue::size(em._free_indices) > MIN_FREE_INDICES) {
@@ -54,6 +56,7 @@ EntityID entity_manager::create(EntityManager& em) {
 	return EntityID{index | (em._generation[index] << EntityID::INDEX_BITS)};
 }
 
+/// Destroy an entity.
 void entity_manager::destroy(
 	EntityManager& em,
 	EntityID const& id
@@ -70,6 +73,10 @@ void entity_manager::destroy(
 	}
 }
 
+/// Shutdown.
+///
+/// Removes all entities.
+/// This should only be used as part of system deinitialization.
 void entity_manager::shutdown(EntityManager& em) {
 	queue::clear(em._free_indices);
 	array::clear(em._generation);

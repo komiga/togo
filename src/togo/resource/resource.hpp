@@ -16,6 +16,7 @@
 #include <togo/hash/hash_combiner.hpp>
 #include <togo/resource/types.hpp>
 #include <togo/resource/resource_package.hpp>
+#include <togo/resource/resource.gen_interface>
 
 namespace togo {
 
@@ -64,21 +65,6 @@ inline ResourceTagsHash hash_tags(
 inline ResourcePackageNameHash hash_package_name(StringRef const& name) {
 	return hash::calc32(name);
 }
-
-/// Parse resource path.
-///
-/// Tags are sorted by hash value.
-/// Returns false if the given path is malformed.
-bool parse_path(
-	StringRef const& path,
-	ResourcePathParts& pp
-);
-
-/// Get compiled path.
-void compiled_path(
-	ResourceCompiledPath& path,
-	u32 id
-);
 
 /** @} */ // end of doc-group resource
 

@@ -13,6 +13,7 @@
 #include <togo/types.hpp>
 #include <togo/collection/fixed_array.hpp>
 #include <togo/string/types.hpp>
+#include <togo/system/system.gen_interface>
 
 namespace togo {
 namespace system {
@@ -33,9 +34,6 @@ void sleep_ms(unsigned duration_ms);
 /// The return value should have a precision of milliseconds or
 /// better (typically nanoseconds).
 float time_monotonic();
-
-/// Get the system time in seconds since the POSIX epoch.
-u64 secs_since_epoch();
 
 /// Get environment variable value.
 ///

@@ -29,6 +29,11 @@ InputBuffer::~InputBuffer() {
 	}
 }
 
+/// Add a display.
+///
+/// If the display is already owned by an input buffer, an assertion
+/// will fail. If the input buffer has no space for more displays, an
+/// assertion will fail.
 void input_buffer::add_display(InputBuffer& ib, gfx::Display* display) {
 	TOGO_DEBUG_ASSERTE(display);
 	TOGO_ASSERT(
@@ -46,6 +51,10 @@ void input_buffer::add_display(InputBuffer& ib, gfx::Display* display) {
 	TOGO_ASSERT(false, "something has gone terribly wrong");
 }
 
+/// Remove a display.
+///
+/// If the display is not owned by the input buffer, an assertion
+/// will fail.
 void input_buffer::remove_display(InputBuffer& ib, gfx::Display* display) {
 	TOGO_DEBUG_ASSERTE(display);
 	for (auto& it : ib._displays) {
@@ -71,6 +80,10 @@ static void update_input_states(gfx::Display* display) {
 	}
 }
 
+/// Update input states.
+///
+/// This should be executed once per frame before polling the input
+/// buffer.
 void input_buffer::update(InputBuffer& ib) {
 	for (auto display : ib._displays) {
 		if (!display) {
@@ -110,6 +123,12 @@ static void set_key_state(KeyEvent const& event) {
 	}
 }
 
+/// Poll events.
+///
+/// Returns true if an event was fetched.
+///
+/// @warning This must be called on the thread that created the
+/// displays.
 bool input_buffer::poll(
 	InputBuffer& ib,
 	InputEventType& type,

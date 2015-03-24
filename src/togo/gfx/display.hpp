@@ -14,6 +14,7 @@
 #include <togo/utility/utility.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/gfx/types.hpp>
+#include <togo/gfx/display.gen_interface>
 
 namespace togo {
 namespace gfx {
@@ -23,6 +24,8 @@ namespace display {
 	@addtogroup gfx_display
 	@{
 */
+
+// implementation
 
 /// Create graphics display.
 ///
@@ -40,15 +43,6 @@ gfx::Display* create(
 	gfx::Display* share_with = nullptr,
 	Allocator& allocator = memory::default_allocator()
 );
-
-/// Display width.
-unsigned width(gfx::Display const* display);
-
-/// Display height.
-unsigned height(gfx::Display const* display);
-
-/// Display size.
-Vec2 size(gfx::Display const* display);
 
 /// Set title.
 void set_title(gfx::Display* display, char const* title);

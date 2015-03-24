@@ -84,6 +84,10 @@ ResourceManager::ResourceManager(
 	string::ensure_trailing_slash(_base_path);
 }
 
+/// Register resource handler.
+///
+/// An assertion will fail if a handler for the type has already
+/// been registered.
 void resource_manager::register_handler(
 	ResourceManager& rm,
 	ResourceHandler const& handler
@@ -99,11 +103,13 @@ void resource_manager::register_handler(
 	hash_map::push(rm._handlers, handler.type, handler);
 }
 
+/// Remove all resource handlers.
 void resource_manager::clear_handlers(ResourceManager& rm) {
 	TOGO_DEBUG_ASSERTE(hash_map::empty(rm._resources));
 	hash_map::clear(rm._handlers);
 }
 
+/// Check if a resource handler is registered.
 bool resource_manager::has_handler(
 	ResourceManager const& rm,
 	ResourceType const type
@@ -111,6 +117,9 @@ bool resource_manager::has_handler(
 	return hash_map::has(rm._handlers, type);
 }
 
+/// Add package by name and base path.
+///
+/// Returns package name hash.
 ResourcePackageNameHash resource_manager::add_package(
 	ResourceManager& rm,
 	StringRef const& name
@@ -123,6 +132,9 @@ ResourcePackageNameHash resource_manager::add_package(
 	return resource_manager::add_package(rm, name, path);
 }
 
+/// Add package by name and path.
+///
+/// Returns package name hash.
 ResourcePackageNameHash resource_manager::add_package(
 	ResourceManager& rm,
 	StringRef const& name,
@@ -150,6 +162,7 @@ ResourcePackageNameHash resource_manager::add_package(
 	return resource_package::name_hash(*pkg);
 }
 
+/// Remove package.
 void resource_manager::remove_package(
 	ResourceManager& rm,
 	ResourcePackageNameHash const name_hash
@@ -168,6 +181,7 @@ void resource_manager::remove_package(
 	TOGO_ASSERT(false, "package not found");
 }
 
+/// Remove all packages.
 void resource_manager::clear_packages(ResourceManager& rm) {
 	Allocator& allocator = *rm._packages._allocator;
 	resource_manager::clear_resources(rm);
@@ -178,6 +192,7 @@ void resource_manager::clear_packages(ResourceManager& rm) {
 	array::clear(rm._packages);
 }
 
+/// Check if a resource exists.
 bool resource_manager::has_resource(
 	ResourceManager& rm,
 	ResourceType const type,
@@ -190,6 +205,9 @@ bool resource_manager::has_resource(
 	return metadata != nullptr;
 }
 
+/// Load resource.
+///
+/// The resource is not reloaded if it is already loaded.
 ResourceValue resource_manager::load_resource(
 	ResourceManager& rm,
 	ResourceType const type,
@@ -237,6 +255,7 @@ ResourceValue resource_manager::load_resource(
 	return load_value;
 }
 
+/// Unload resource.
 void resource_manager::unload_resource(
 	ResourceManager& rm,
 	ResourceType const type,
@@ -251,6 +270,7 @@ void resource_manager::unload_resource(
 	}
 }
 
+/// Unload all resources.
 void resource_manager::clear_resources(ResourceManager& rm) {
 	ResourceType type = RES_TYPE_NULL;
 	ResourceHandler const* handler;
@@ -268,6 +288,7 @@ void resource_manager::clear_resources(ResourceManager& rm) {
 	hash_map::clear(rm._resources);
 }
 
+/// Find resource by type and name.
 ResourceValue resource_manager::find_resource(
 	ResourceManager& rm,
 	ResourceType const type,

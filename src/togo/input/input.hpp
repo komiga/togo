@@ -13,6 +13,7 @@
 #include <togo/math/types.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/input/types.hpp>
+#include <togo/input/input.gen_interface>
 
 namespace togo {
 namespace input {
@@ -22,20 +23,7 @@ namespace input {
 	@{
 */
 
-/// Check if a key has been pressed for a display.
-bool key_pressed(gfx::Display* display, KeyCode const code);
 
-/// Check if a key has been released for a display.
-bool key_released(gfx::Display* display, KeyCode const code);
-
-/// Check if a mouse button has been pressed for a display.
-bool mouse_button_pressed(gfx::Display* display, MouseButton const button);
-
-/// Check if a mouse button has been released for a display.
-bool mouse_button_released(gfx::Display* display, MouseButton const button);
-
-/// Get mouse position for a display.
-Vec2 mouse_position(gfx::Display* display);
 
 /** @} */ // end of doc-group input
 

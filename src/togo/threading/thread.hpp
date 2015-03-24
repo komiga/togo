@@ -13,6 +13,7 @@
 #include <togo/config.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/threading/types.hpp>
+#include <togo/threading/thread/thread.gen_interface>
 
 namespace togo {
 namespace thread {
@@ -22,8 +23,7 @@ namespace thread {
 	@{
 */
 
-/// Get the name of the current thread.
-char const* name();
+// implementation
 
 /// Check if the current thread is the main thread.
 bool is_main();

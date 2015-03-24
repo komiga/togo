@@ -18,6 +18,7 @@
 
 namespace togo {
 
+/// Get the system time in seconds since the POSIX epoch.
 u64 system::secs_since_epoch() {
 	auto const s = std::time(nullptr);
 	TOGO_ASSERT(s != static_cast<std::time_t>(-1), "std::time() failed");

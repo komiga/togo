@@ -44,6 +44,7 @@ WorldManager::~WorldManager() {
 	world_manager::shutdown(*this);
 }
 
+/// Check if a world is alive.
 bool world_manager::alive(
 	WorldManager const& wm,
 	WorldID const& id
@@ -55,6 +56,11 @@ bool world_manager::alive(
 	;
 }
 
+/// Register a component manager.
+///
+/// An assertion will fail if the component name has already been
+/// registered.
+/// Component managers must be registered before any worlds are created.
 void world_manager::register_component_manager(
 	WorldManager& wm,
 	ComponentManagerDef const& def
@@ -76,6 +82,7 @@ void world_manager::register_component_manager(
 	hash_map::push(wm._component_manager_defs, def.name_hash, def);
 }
 
+/// Create a world.
 WorldID world_manager::create(WorldManager& wm) {
 	WorldID::value_type index;
 	if (queue::size(wm._free_indices) > MIN_FREE_INDICES) {
@@ -98,6 +105,7 @@ WorldID world_manager::create(WorldManager& wm) {
 	return WorldID{index | (wm._instances[index].generation << WorldID::INDEX_BITS)};
 }
 
+/// Destroy a world.
 void world_manager::destroy(
 	WorldManager& wm,
 	WorldID const& id
@@ -116,6 +124,12 @@ void world_manager::destroy(
 	queue::push_back(wm._free_indices, index);
 }
 
+/// Shutdown.
+///
+/// Removes all worlds and component manager definitions.
+/// This should only be used as part of system deinitialization.
+/// Using it during runtime can lead to zombie IDs pointing to valid
+/// worlds (i.e., not the world originally created with the ID).
 void world_manager::shutdown(WorldManager& wm) {
 	for (auto& instance : wm._instances) {
 		for (auto const& entry : instance.component_managers) {

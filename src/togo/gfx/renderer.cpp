@@ -49,6 +49,10 @@ Renderer::Renderer(
 	, _nodes()
 {}
 
+/// Register generator definition.
+///
+/// An assertion will fail if the generator definition is malformed
+/// or is already registered.
 void renderer::register_generator_def(
 	gfx::Renderer* const renderer,
 	gfx::GeneratorDef const& def
@@ -65,6 +69,7 @@ void renderer::register_generator_def(
 	hash_map::push(renderer->_generators, def.name_hash, def);
 }
 
+/// Find generator definition by name.
 gfx::GeneratorDef const* renderer::find_generator_def(
 	gfx::Renderer const* const renderer,
 	gfx::GeneratorNameHash const name_hash
@@ -111,6 +116,12 @@ static void worker_task_func(TaskID /*id*/, void* task_data) {
 	w.display = nullptr;
 }
 
+/// Begin frame.
+///
+/// This binds the display context to the worker thread. It must be
+/// unbound on all other threads before calling this.
+///
+/// An assertion will fail if the frame has already begun.
 TaskID renderer::begin_frame(
 	gfx::Renderer* renderer,
 	TaskManager& task_manager,
@@ -128,6 +139,9 @@ TaskID renderer::begin_frame(
 	);
 }
 
+/// End frame.
+///
+/// An assertion will fail if the frame has already ended.
 void renderer::end_frame(gfx::Renderer* renderer) {
 	MutexLock l{renderer->_frame_mutex};
 	auto& w = renderer->_work_data;
@@ -136,6 +150,11 @@ void renderer::end_frame(gfx::Renderer* renderer) {
 	condvar::signal(renderer->_frame_condvar, l);
 }
 
+/// Push work.
+///
+/// command is copied to an internal buffer.
+///
+/// An assertion will fail if there is no space for another command.
 void renderer::push_work(
 	gfx::Renderer* const renderer,
 	gfx::CmdType const type,
@@ -161,6 +180,9 @@ void renderer::push_work(
 	condvar::signal(renderer->_frame_condvar, l);
 }
 
+/// Execute command.
+///
+/// Returns the size of the command data.
 unsigned renderer::execute_command(
 	gfx::Renderer* const renderer,
 	gfx::CmdType const type,
@@ -210,6 +232,7 @@ struct CmdKeyKeyFunc {
 };
 } // anonymous namespace
 
+/// Render objects through camera and viewport.
 void renderer::render_objects(
 	gfx::Renderer* const renderer,
 	unsigned const num_objects,
@@ -274,6 +297,7 @@ void renderer::render_objects(
 	}}
 }
 
+/// Render world through camera and viewport.
 void renderer::render_world(
 	gfx::Renderer* const renderer,
 	WorldID const /*world_id*/,

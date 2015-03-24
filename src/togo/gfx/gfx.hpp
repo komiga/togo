@@ -13,6 +13,7 @@
 #include <togo/string/types.hpp>
 #include <togo/hash/hash.hpp>
 #include <togo/gfx/types.hpp>
+#include <togo/gfx/gfx.gen_interface>
 
 namespace togo {
 namespace gfx {
@@ -36,19 +37,6 @@ inline gfx::GeneratorNameHash hash_generator_name(StringRef const& name) {
 inline gfx::GeneratorNameHash hash_viewport_name(StringRef const& name) {
 	return hash::calc32(name);
 }
-
-/// Initialize the graphics backend.
-///
-/// context_major and context_minor are OpenGL context version numbers.
-/// If these are less than 3 and 2, respectively, an assertion will fail.
-/// The core profile is forced.
-void init(
-	unsigned context_major,
-	unsigned context_minor
-);
-
-/// Shutdown the graphics backend.
-void shutdown();
 
 /** @} */ // end of doc-group gfx
 

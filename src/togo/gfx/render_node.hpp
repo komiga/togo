@@ -14,6 +14,7 @@
 #include <togo/utility/utility.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/gfx/command.hpp>
+#include <togo/gfx/render_node.gen_interface>
 
 namespace togo {
 namespace gfx {
@@ -23,22 +24,6 @@ namespace render_node {
 	@addtogroup gfx_render_node
 	@{
 */
-
-/// Push command.
-///
-/// data is copied to the node's internal buffer.
-///
-/// An assertion will fail if the node does not have space for another
-/// command.
-/// An assertion will fail if key_user is not contained within the
-/// user key bit space.
-void push(
-	gfx::RenderNode& node,
-	u64 key_user,
-	gfx::CmdType type,
-	unsigned data_size,
-	void const* data
-);
 
 /// Push command (generic helper).
 template<class T>

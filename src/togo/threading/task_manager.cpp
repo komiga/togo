@@ -252,10 +252,13 @@ TaskManager::TaskManager(unsigned num_workers, Allocator& allocator)
 
 // interface task_manager implementation
 
+/// Add task with no children.
+///
+/// The task may start immediately.
 TaskID task_manager::add(
 	TaskManager& tm,
 	TaskWork const& work,
-	u16 const priority
+	u16 const priority IGEN_DEFAULT(0)
 ) {
 	MutexLock lock{tm._mutex};
 	Task& task = add_task(tm, work, priority);
@@ -263,15 +266,20 @@ TaskID task_manager::add(
 	return task.id;
 }
 
+/// Add task with a hold on its execution.
 TaskID task_manager::add_hold(
 	TaskManager& tm,
 	TaskWork const& work,
-	u16 const priority
+	u16 const priority IGEN_DEFAULT(0)
 ) {
 	MutexLock lock{tm._mutex};
 	return add_task(tm, work, priority).id;
 }
 
+/// Set task parent.
+///
+/// To prevent race conditions, this should only be used with a parent
+/// that was created with add_hold().
 void task_manager::set_parent(
 	TaskManager& tm,
 	TaskID const child_id,
@@ -296,6 +304,7 @@ void task_manager::set_parent(
 	child.parent = parent_id;
 }
 
+/// End the hold on a task.
 void task_manager::end_hold(TaskManager& tm, TaskID const id) {
 	MutexLock lock{tm._mutex};
 	Task& task = get_task(tm, id);
@@ -303,6 +312,9 @@ void task_manager::end_hold(TaskManager& tm, TaskID const id) {
 	queue_task(tm, task);
 }
 
+/// Wait for a task to complete.
+///
+/// This function will execute any available tasks while id is incomplete.
 void task_manager::wait(TaskManager& tm, TaskID const id) {
 	TOGO_DEBUG_ASSERT(id != ID_NULL, "attempted to wait on null ID");
 	execute_pending(tm, id);

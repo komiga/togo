@@ -22,6 +22,11 @@ gfx::Globals _gfx_globals{false, false, 0, 0};
 
 } // namespace gfx
 
+/// Initialize the graphics backend.
+///
+/// context_major and context_minor are OpenGL context version numbers.
+/// If these are less than 3 and 2, respectively, an assertion will fail.
+/// The core profile is forced.
 void gfx::init(
 	unsigned context_major,
 	unsigned context_minor
@@ -40,6 +45,7 @@ void gfx::init(
 	return;
 }
 
+/// Shutdown the graphics backend.
 void gfx::shutdown() {
 	TOGO_ASSERT(_gfx_globals.initialized, "graphics backend has not been initialized");
 

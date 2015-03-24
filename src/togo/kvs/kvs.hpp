@@ -18,6 +18,7 @@
 #include <togo/hash/hash.hpp>
 #include <togo/io/types.hpp>
 #include <togo/kvs/types.hpp>
+#include <togo/kvs/kvs.gen_interface>
 
 namespace togo {
 
@@ -266,43 +267,6 @@ inline Vec4 const& vec4(KVS const& kvs) {
 	return kvs._value.vec4;
 }
 
-/// Find item in collection by name.
-KVS* find(KVS& kvs, StringRef const& name);
-
-/// Find item in collection by name.
-KVS const* find(KVS const& kvs, StringRef const& name);
-
-/// Find item in collection by name hash.
-KVS* find(KVS& kvs, KVSNameHash name_hash);
-
-/// Find item in collection by name hash.
-KVS const* find(KVS const& kvs, KVSNameHash name_hash);
-
-/// Free value if dynamic and change type iff type differs.
-///
-/// Returns true if the type changed.
-bool set_type(KVS& kvs, KVSType const type);
-
-/// Set name.
-void set_name(KVS& kvs, StringRef const& name);
-
-/// Clear name.
-void clear_name(KVS& kvs);
-
-/// Clear value.
-void clear(KVS& kvs);
-
-/// Free dynamic value.
-void free_dynamic(KVS& kvs);
-
-/// Copy value.
-void copy(KVS& dst, KVS const& src);
-
-/// Move state.
-///
-/// src will be null and unnamed after this call.
-void move(KVS& dst, KVS& src);
-
 /// Free value if dynamic and change type to KVSType::null.
 inline void nullify(KVS& kvs) {
 	kvs::set_type(kvs, KVSType::null);
@@ -325,9 +289,6 @@ inline void boolean(KVS& kvs, bool const value) {
 	kvs::set_type(kvs, KVSType::boolean);
 	kvs._value.boolean = value;
 }
-
-/// Set string value.
-void string(KVS& kvs, StringRef const& value);
 
 /// Set 1-dimensional vector value.
 inline void vec1(KVS& kvs, Vec1 const& value) {
@@ -353,18 +314,6 @@ inline void vec4(KVS& kvs, Vec4 const& value) {
 	kvs._value.vec4 = value;
 }
 
-/// Change collection capacity.
-///
-/// If new_capacity is lower than the size, the collection is resized
-/// to new_capacity.
-void set_capacity(KVS& kvs, u32 const new_capacity);
-
-/// Grow collection with a doubling factor.
-///
-/// Cost of insertion should be amortized O(1), assuming no aggressive
-/// shrinking. Grows to at least min_capacity if it is non-zero.
-void grow(KVS& kvs, u32 const min_capacity = 0);
-
 /// Shrink collection capacity to fit current size.
 inline void shrink_to_fit(KVS& kvs) {
 	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
@@ -372,12 +321,6 @@ inline void shrink_to_fit(KVS& kvs) {
 		kvs::set_capacity(kvs, kvs._value.collection.size);
 	}
 }
-
-/// Change collection size.
-///
-/// Upsize grows by using new_size as the minimum capacity.
-/// If the collection grows, the new values will be null.
-void resize(KVS& kvs, u32 const new_size);
 
 /// Reserve at least new_capacity in collection.
 inline void reserve(KVS& kvs, u32 const new_capacity) {
@@ -425,14 +368,6 @@ inline void pop_back(KVS& kvs) {
 	TOGO_ASSERTE(kvs::any(kvs));
 	kvs::resize(kvs, kvs._value.collection.size - 1);
 }
-
-/// Remove an item by index.
-void remove(KVS& kvs, unsigned const i);
-
-/// Remove an item by address.
-///
-/// If ptr is nullptr, an assertion will fail.
-void remove(KVS& kvs, KVS const* const ptr);
 
 /// Read from stream.
 ///

@@ -16,6 +16,14 @@
 namespace togo {
 namespace gfx {
 
+/// Push command.
+///
+/// data is copied to the node's internal buffer.
+///
+/// An assertion will fail if the node does not have space for another
+/// command.
+/// An assertion will fail if key_user is not contained within the
+/// user key bit space.
 void render_node::push(
 	gfx::RenderNode& node,
 	u64 const key_user,

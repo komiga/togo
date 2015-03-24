@@ -14,6 +14,7 @@
 #include <togo/collection/fixed_array.hpp>
 #include <togo/collection/array.hpp>
 #include <togo/string/types.hpp>
+#include <togo/string/string.gen_interface>
 
 #include <cstring>
 
@@ -68,17 +69,6 @@ inline unsigned size(Array<char> const& string) {
 		: array::size(string)
 	;
 }
-
-/// Compare two strings for equality.
-///
-/// This will short-circuit if lhs and rhs are not the same size.
-bool compare_equal(StringRef const& lhs, StringRef const& rhs);
-
-/// Copy string.
-///
-/// dst will be NUL-terminated.
-/// The capacity of dst must be at least src.size + 1.
-void copy(char* dst, unsigned capacity, StringRef const& src);
 
 /// Copy string.
 ///
@@ -158,12 +148,6 @@ inline void append(Array<char>& dst, StringRef const& str) {
 
 /// Trim trailing slashes from string.
 ///
-/// The first trailing slash is replaced by a NUL.
-/// Returns new size of string (not including NUL terminator).
-unsigned trim_trailing_slashes(char* string, unsigned size);
-
-/// Trim trailing slashes from string.
-///
 /// Returns new size of string (not including NUL terminator).
 template<unsigned N>
 inline unsigned trim_trailing_slashes(FixedArray<char, N>& string) {
@@ -177,17 +161,6 @@ inline unsigned trim_trailing_slashes(FixedArray<char, N>& string) {
 	}
 	return new_size;
 }
-
-/// Ensure string has a trailing slash by appending if necessary.
-///
-/// str will be NUL terminated if it is modified.
-/// If str is modified, its capacity must be at least size + 2.
-/// Returns new size of str (not including NUL terminator).
-unsigned ensure_trailing_slash(
-	char* str,
-	unsigned capacity,
-	unsigned size
-);
 
 /// Ensure string has a trailing slash by appending if necessary.
 ///

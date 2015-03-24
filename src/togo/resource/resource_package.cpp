@@ -40,6 +40,7 @@ ResourcePackage::ResourcePackage(
 	string::copy(_path, path);
 }
 
+/// Open package.
 void resource_package::open(
 	ResourcePackage& pkg,
 	ResourceManager const& rm
@@ -83,6 +84,7 @@ void resource_package::open(
 	}
 }
 
+/// Close package.
 void resource_package::close(
 	ResourcePackage& pkg
 ) {
@@ -90,6 +92,9 @@ void resource_package::close(
 	pkg._stream.close();
 }
 
+/// Get resource metadata by ID.
+///
+/// An assertion will fail if the ID is invalid.
 ResourceMetadata const& resource_package::resource_metadata(
 	ResourcePackage const& pkg,
 	u32 const id
@@ -100,6 +105,7 @@ ResourceMetadata const& resource_package::resource_metadata(
 	return metadata;
 }
 
+/// Find lookup node by resource name.
 ResourcePackage::LookupNode* resource_package::find_node(
 	ResourcePackage& pkg,
 	ResourceNameHash const name_hash
@@ -107,6 +113,10 @@ ResourcePackage::LookupNode* resource_package::find_node(
 	return hash_map::find_node(pkg._lookup, name_hash);
 }
 
+/// Open resource stream by ID.
+///
+/// An assertion will fail if resource stream couldn't be opened.
+/// An assertion will fail if there is already an open stream.
 IReader* resource_package::open_resource_stream(
 	ResourcePackage& pkg,
 	u32 const id
@@ -119,6 +129,9 @@ IReader* resource_package::open_resource_stream(
 	return &pkg._stream;
 }
 
+/// Close current resource stream.
+///
+/// An assertion will fail if there is no open stream.
 void resource_package::close_resource_stream(
 	ResourcePackage& pkg
 ) {

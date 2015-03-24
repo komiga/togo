@@ -78,26 +78,33 @@ KVS const* kvs::find_impl(
 	return nullptr;
 }
 
+/// Find item in collection by name.
 KVS* kvs::find(KVS& kvs, StringRef const& name) {
 	KVSNameHash const name_hash = kvs::hash_name(name);
 	return const_cast<KVS*>(kvs::find_impl(kvs, name, name_hash));
 }
 
+/// Find item in collection by name.
 KVS const* kvs::find(KVS const& kvs, StringRef const& name) {
 	KVSNameHash const name_hash = kvs::hash_name(name);
 	return kvs::find_impl(kvs, name, name_hash);
 }
 
+/// Find item in collection by name hash.
 KVS* kvs::find(KVS& kvs, KVSNameHash const name_hash) {
 	return const_cast<KVS*>(
 		kvs::find_impl(kvs, StringRef{}, name_hash)
 	);
 }
 
+/// Find item in collection by name hash.
 KVS const* kvs::find(KVS const& kvs, KVSNameHash const name_hash) {
 	return kvs::find_impl(kvs, StringRef{}, name_hash);
 }
 
+/// Free value if dynamic and change type iff type differs.
+///
+/// Returns true if the type changed.
 bool kvs::set_type(KVS& kvs, KVSType const type) {
 	if (kvs._type == type) {
 		return false;
@@ -118,6 +125,7 @@ bool kvs::set_type(KVS& kvs, KVSType const type) {
 	return true;
 }
 
+/// Set name.
 void kvs::set_name(KVS& kvs, StringRef const& name) {
 	if (name.empty()) {
 		kvs::clear_name(kvs);
@@ -134,6 +142,7 @@ void kvs::set_name(KVS& kvs, StringRef const& name) {
 	kvs._name_hash = kvs::hash_name(name);
 }
 
+/// Clear name.
 void kvs::clear_name(KVS& kvs) {
 	if (kvs::is_named(kvs)) {
 		TOGO_DESTROY(memory::default_allocator(), kvs._name);
@@ -143,6 +152,7 @@ void kvs::clear_name(KVS& kvs) {
 	}
 }
 
+/// Clear value.
 void kvs::clear(KVS& kvs) {
 	switch (kvs._type) {
 	case KVSType::integer: kvs._value.integer = 0; break;
@@ -167,6 +177,7 @@ void kvs::clear(KVS& kvs) {
 	}
 }
 
+/// Free dynamic value.
 void kvs::free_dynamic(KVS& kvs) {
 	if (kvs::is_type(kvs, KVSType::string)) {
 		TOGO_DESTROY(memory::default_allocator(), kvs._value.string.data);
@@ -178,6 +189,7 @@ void kvs::free_dynamic(KVS& kvs) {
 	}
 }
 
+/// Copy value.
 void kvs::copy(KVS& dst, KVS const& src) {
 	kvs::set_name(dst, kvs::name_ref(src));
 	switch (src._type) {
@@ -208,6 +220,9 @@ void kvs::copy(KVS& dst, KVS const& src) {
 	}
 }
 
+/// Move state.
+///
+/// src will be null and unnamed after this call.
 void kvs::move(KVS& dst, KVS& src) {
 	kvs::clear_name(dst);
 	kvs::free_dynamic(dst);
@@ -223,6 +238,7 @@ void kvs::move(KVS& dst, KVS& src) {
 	src._name_hash = KVS_NAME_NULL;
 }
 
+/// Set string value.
 void kvs::string(KVS& kvs, StringRef const& value) {
 	TOGO_ASSERTE(value.size == 0 || value.valid());
 	kvs::set_type(kvs, KVSType::string);
@@ -244,6 +260,10 @@ void kvs::string(KVS& kvs, StringRef const& value) {
 	kvs._value.string.size = value.size;
 }
 
+/// Change collection capacity.
+///
+/// If new_capacity is lower than the size, the collection is resized
+/// to new_capacity.
 void kvs::set_capacity(KVS& kvs, u32 const new_capacity) {
 	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
 	if (new_capacity == kvs._value.collection.capacity) {
@@ -276,7 +296,12 @@ void kvs::set_capacity(KVS& kvs, u32 const new_capacity) {
 	kvs::init_children(kvs, kvs._value.collection.size, new_capacity);
 }
 
-void kvs::grow(KVS& kvs, u32 const min_capacity) {
+/// Grow collection with a doubling factor.
+///
+/// Cost of insertion should be amortized O(1), assuming no aggressive
+/// shrinking. Grows to at least min_capacity if it is non-zero.
+void kvs::grow(KVS& kvs, u32 const min_capacity IGEN_DEFAULT(0))
+{
 	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
 	u32 new_capacity = kvs._value.collection.capacity * 2 + 8;
 	if (min_capacity > new_capacity) {
@@ -285,6 +310,10 @@ void kvs::grow(KVS& kvs, u32 const min_capacity) {
 	kvs::set_capacity(kvs, new_capacity);
 }
 
+/// Change collection size.
+///
+/// Upsize grows by using new_size as the minimum capacity.
+/// If the collection grows, the new values will be null.
 void kvs::resize(KVS& kvs, u32 const new_size) {
 	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
 	if (new_size > kvs._value.collection.capacity) {
@@ -297,6 +326,7 @@ void kvs::resize(KVS& kvs, u32 const new_size) {
 	kvs._value.collection.size = new_size;
 }
 
+/// Remove an item by index.
 void kvs::remove(KVS& kvs, unsigned const i) {
 	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
 	TOGO_ASSERTE(kvs::any(kvs));
@@ -312,6 +342,9 @@ void kvs::remove(KVS& kvs, unsigned const i) {
 	kvs::resize(kvs, new_size);
 }
 
+/// Remove an item by address.
+///
+/// If ptr is nullptr, an assertion will fail.
 void kvs::remove(KVS& kvs, KVS const* const ptr) {
 	TOGO_ASSERTE(kvs::is_type_any(kvs, type_mask_collection));
 	TOGO_ASSERTE(ptr != nullptr);

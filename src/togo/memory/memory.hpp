@@ -13,6 +13,7 @@
 #include <togo/types.hpp>
 #include <togo/utility/traits.hpp>
 #include <togo/memory/types.hpp>
+#include <togo/memory/memory.gen_interface>
 
 #include <new>
 #include <cstdlib>
@@ -107,38 +108,5 @@ public:
 inline Allocator::~Allocator() = default;
 
 /** @} */ // end of doc-group memory
-
-namespace memory {
-
-/**
-	@addtogroup memory
-	@{
-*/
-
-/// Initialize global allocators.
-///
-/// scratch_size is size of the scratch space block to pre-allocate.
-/// If scratch_size < SCRATCH_ALLOCATOR_SIZE_MINIMUM, an assertion will trigger.
-void init(u32 const scratch_size = SCRATCH_ALLOCATOR_SIZE_MINIMUM);
-
-/// Shutdown allocators created by init().
-void shutdown();
-
-/// Get the default allocator.
-///
-/// This is a thread-safe growing heap allocator.
-Allocator& default_allocator();
-
-/// Get the scratch allocator.
-///
-/// This is a thread-safe allocator.
-/// This should *only* be used for temporary memory. It uses a ring
-/// buffer for allocations, backed by a block of memory from the
-/// default allocator.
-Allocator& scratch_allocator();
-
-/** @} */ // end of doc-group memory
-
-} // namespace memory
 
 } // namespace togo

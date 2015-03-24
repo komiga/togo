@@ -121,7 +121,6 @@ public:
 } // anonymous namespace
 
 namespace memory {
-
 namespace {
 
 using default_allocator_type = HeapAllocator;
@@ -142,8 +141,13 @@ static constexpr u32 const
 HEAP_CAPACITY = 8 * 1024 * 1024; // 8MB
 
 } // anonymous namespace
+} // namespace memory
 
-void init(u32 const scratch_size) {
+/// Initialize global allocators.
+///
+/// scratch_size is size of the scratch space block to pre-allocate.
+/// If scratch_size < SCRATCH_ALLOCATOR_SIZE_MINIMUM, an assertion will trigger.
+void memory::init(u32 const scratch_size IGEN_DEFAULT(SCRATCH_ALLOCATOR_SIZE_DEFAULT)) {
 	TOGO_ASSERT(!_mem_globals.active, "memory system has already been initialized");
 	TOGO_ASSERT(
 		scratch_size >= SCRATCH_ALLOCATOR_SIZE_MINIMUM,
@@ -160,7 +164,8 @@ void init(u32 const scratch_size) {
 	_mem_globals.active = true;
 }
 
-void shutdown() {
+/// Shutdown allocators created by init().
+void memory::shutdown() {
 	TOGO_ASSERT(_mem_globals.active, "memory system has not been initialized");
 
 	/*_mem_globals.scratch_allocator->~scratch_allocator_type();
@@ -170,16 +175,23 @@ void shutdown() {
 	_mem_globals.active = false;
 }
 
-Allocator& default_allocator() {
+/// Get the default allocator.
+///
+/// This is a thread-safe growing heap allocator.
+Allocator& memory::default_allocator() {
 	TOGO_DEBUG_ASSERT(_mem_globals.active, "memory system has not been initialized");
 	return *_mem_globals.default_allocator;
 }
 
-Allocator& scratch_allocator() {
+/// Get the scratch allocator.
+///
+/// This is a thread-safe allocator.
+/// This should *only* be used for temporary memory. It uses a ring
+/// buffer for allocations, backed by a block of memory from the
+/// default allocator.
+Allocator& memory::scratch_allocator() {
 	TOGO_DEBUG_ASSERT(_mem_globals.active, "memory system has not been initialized");
 	return *_mem_globals.default_allocator;
 }
-
-} // namespace memory
 
 } // namespace togo

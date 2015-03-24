@@ -16,6 +16,7 @@
 #include <togo/world/types.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/gfx/command.hpp>
+#include <togo/gfx/renderer.gen_interface>
 
 #include <initializer_list>
 
@@ -40,21 +41,6 @@ void destroy(gfx::Renderer* renderer);
 
 /// Renderer type.
 gfx::RendererType type(gfx::Renderer const* renderer);
-
-/// Register generator definition.
-///
-/// An assertion will fail if the generator definition is malformed
-/// or is already registered.
-void register_generator_def(
-	gfx::Renderer* renderer,
-	gfx::GeneratorDef const& def
-);
-
-/// Find generator definition by name.
-gfx::GeneratorDef const* find_generator_def(
-	gfx::Renderer const* renderer,
-	gfx::GeneratorNameHash name_hash
-);
 
 /// Create buffer.
 ///
@@ -193,35 +179,6 @@ void set_viewport_size(
 	unsigned height
 );
 
-/// Begin frame.
-///
-/// This binds the display context to the worker thread. It must be
-/// unbound on all other threads before calling this.
-///
-/// An assertion will fail if the frame has already begun.
-TaskID begin_frame(
-	gfx::Renderer* renderer,
-	TaskManager& task_manager,
-	gfx::Display* display
-);
-
-/// End frame.
-///
-/// An assertion will fail if the frame has already ended.
-void end_frame(gfx::Renderer* renderer);
-
-/// Push work.
-///
-/// command is copied to an internal buffer.
-///
-/// An assertion will fail if there is no space for another command.
-void push_work(
-	gfx::Renderer* renderer,
-	gfx::CmdType type,
-	unsigned data_size,
-	void const* data
-);
-
 /// Push work (generic helper).
 template<class T>
 inline void push_work(
@@ -234,15 +191,6 @@ inline void push_work(
 		sizeof_empty<T>(), &data
 	);
 }
-
-/// Execute command.
-///
-/// Returns the size of the command data.
-unsigned execute_command(
-	gfx::Renderer* renderer,
-	gfx::CmdType type,
-	void const* data
-);
 
 /// Clear the backbuffer.
 void clear_backbuffer(
@@ -265,23 +213,6 @@ void render_buffers(
 void configure(
 	gfx::Renderer* renderer,
 	gfx::RenderConfig const& config
-);
-
-/// Render objects through camera and viewport.
-void render_objects(
-	gfx::Renderer* renderer,
-	unsigned num_objects,
-	gfx::RenderObject const* objects,
-	gfx::Camera const& camera,
-	gfx::ViewportNameHash viewport_name_hash
-);
-
-/// Render world through camera and viewport.
-void render_world(
-	gfx::Renderer* renderer,
-	WorldID world_id,
-	EntityID camera_id,
-	gfx::ViewportNameHash viewport_name_hash
 );
 
 /** @} */ // end of doc-group gfx_renderer
