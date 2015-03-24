@@ -47,6 +47,13 @@ class Interface:
 		self.needs_rebuild = self.gen_time < self.source_time
 		self.group = None
 
+		# Make sure the file exists, since we're parsing the hierarchy that
+		# #includes it. Due to -fsyntax-only this doesn't cause issues, but
+		# it's better to be on the safe side.
+		if not os.path.isfile(self.gen_path):
+			with open(self.gen_path, "w") as f:
+				pass
+
 	def build(self):
 		def pre_filter(cursor):
 			return cursor.location.file.name == i.source
