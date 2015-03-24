@@ -49,9 +49,17 @@ namespace togo {
 	///
 	/// This is enabled if it is defined.
 	#define TOGO_USE_CONSTRAINTS
+
+	/// Defined to annotate interface functions when running igen.
+	#define IGEN_INTERFACE
 #else
 	#if !defined(TOGO_DEBUG) && (defined(DEBUG) || !defined(NDEBUG))
 		#define TOGO_DEBUG
+	#endif
+	#if defined(IGEN_RUNNING)
+		#define IGEN_INTERFACE __attribute__((annotate("igen_interface")))
+	#else
+		#define IGEN_INTERFACE
 	#endif
 #endif // defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
 
