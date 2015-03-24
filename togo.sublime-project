@@ -23,7 +23,8 @@
 			"name": "- Documentation",
 			"path": "./doc/",
 			"folder_exclude_patterns": [
-				"html"
+				"html",
+				"gen_interface"
 			]
 		},
 		{
@@ -42,11 +43,17 @@
 			"path": "./src/togo/",
 			"folder_exclude_patterns": [
 				"tool_build"
+			],
+			"file_exclude_patterns": [
+				"*.gen_interface"
 			]
 		},
 		{
 			"name": "- Source: tool_build",
-			"path": "./src/togo/tool_build/"
+			"path": "./src/togo/tool_build/",
+			"file_exclude_patterns": [
+				"*.gen_interface"
+			]
 		},
 		{
 			"name": "- Test",
