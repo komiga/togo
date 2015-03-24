@@ -31,7 +31,7 @@ def mtime(path):
 	return 0
 
 def source_path(path):
-	return os.path.join("src", "togo", path)
+	return os.path.join("src/togo", path)
 
 class Interface:
 	def __init__(self, spec):
@@ -53,6 +53,17 @@ class Interface:
 		if not os.path.isfile(self.gen_path):
 			with open(self.gen_path, "w") as f:
 				pass
+
+	def link_doc(self):
+		if not os.path.exists("doc/gen_interface"):
+			os.mkdir("doc/gen_interface")
+		doc_path = os.path.join(
+			"doc/gen_interface",
+			self.slug.replace("/", "_") + ".dox"
+		)
+		if os.path.exists(doc_path):
+			os.remove(doc_path)
+		os.symlink(os.path.join("../..", self.gen_path), doc_path)
 
 	def build(self):
 		def pre_filter(cursor):
@@ -100,5 +111,6 @@ for i in G.interfaces.values():
 	if not force and not i.needs_rebuild:
 		continue
 	i.build()
+	i.link_doc()
 	if G.debug:
 		print("")
