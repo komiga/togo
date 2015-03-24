@@ -4,7 +4,7 @@
 #include <togo/memory/memory.hpp>
 
 #if !defined(TOGO_TEST_SCRATCH_SIZE)
-	#define TOGO_TEST_SCRATCH_SIZE togo::memory::SCRATCH_SIZE_DEFAULT
+	#define TOGO_TEST_SCRATCH_SIZE togo::SCRATCH_ALLOCATOR_SIZE_DEFAULT
 #endif
 
 struct MemoryInitializer {
