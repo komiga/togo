@@ -9,3 +9,4 @@ bin/
 
 *.gen_interface
 toolchain/igen_users
+toolchain/igen_cache
