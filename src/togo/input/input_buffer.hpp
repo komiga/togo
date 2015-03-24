@@ -5,6 +5,7 @@
 @file
 @brief InputBuffer interface.
 @ingroup input
+@ingroup input_buffer
 */
 
 #pragma once
@@ -29,7 +30,7 @@ inline InputBuffer::InputBuffer(
 namespace input_buffer {
 
 /**
-	@addtogroup input
+	@addtogroup input_buffer
 	@{
 */
 
@@ -65,7 +66,7 @@ void update(InputBuffer& ib);
 /// displays.
 bool poll(InputBuffer& ib, InputEventType& type, InputEvent const*& event);
 
-/** @} */ // end of doc-group input
+/** @} */ // end of doc-group input_buffer
 
 } // namespace input_buffer
 } // namespace togo
