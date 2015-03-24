@@ -115,18 +115,11 @@ namespace memory {
 	@{
 */
 
-static constexpr u32 const
-	/// Minimum scratch size (8K).
-	SCRATCH_SIZE_MINIMUM = 8 * 1024,
-	/// Default scratch size (4MB).
-	SCRATCH_SIZE_DEFAULT = 4 * 1024 * 1024
-;
-
 /// Initialize global allocators.
 ///
 /// scratch_size is size of the scratch space block to pre-allocate.
-/// If scratch_size < SCRATCH_SIZE_MINIMUM, an assertion will trigger.
-void init(u32 const scratch_size = SCRATCH_SIZE_MINIMUM);
+/// If scratch_size < SCRATCH_ALLOCATOR_SIZE_MINIMUM, an assertion will trigger.
+void init(u32 const scratch_size = SCRATCH_ALLOCATOR_SIZE_MINIMUM);
 
 /// Shutdown allocators created by init().
 void shutdown();

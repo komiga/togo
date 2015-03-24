@@ -146,7 +146,7 @@ HEAP_CAPACITY = 8 * 1024 * 1024; // 8MB
 void init(u32 const scratch_size) {
 	TOGO_ASSERT(!_mem_globals.active, "memory system has already been initialized");
 	TOGO_ASSERT(
-		scratch_size >= memory::SCRATCH_SIZE_MINIMUM,
+		scratch_size >= SCRATCH_ALLOCATOR_SIZE_MINIMUM,
 		"scratch_size is below the minimum"
 	);
 
