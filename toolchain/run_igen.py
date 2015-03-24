@@ -104,15 +104,14 @@ class Interface:
 
 	def load(self):
 		def pre_filter(cursor):
-			return (
-				cursor.location.file.name == self.source and
-				cursor.raw_comment != None
+			return cursor.location.file.name == self.source and (
+				cursor.raw_comment != None or
+				has_annotation(cursor, "igen_interface")
 			)
 		def post_filter(function):
-			return (
-				function.xqn == self.namespace or
-				has_annotation(function.cursor, "igen_interface")
-			)
+			# function.xqn == self.namespace or
+			return True
+
 		self.group = igen.collect(
 			self.source, G.clang_args,
 			pre_filter = pre_filter,
