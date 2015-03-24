@@ -59,7 +59,7 @@ void input_buffer::remove_display(InputBuffer& ib, gfx::Display* display) {
 	TOGO_ASSERT(false, "something has gone terribly wrong");
 }
 
-void update_input_states(gfx::Display* display) {
+static void update_input_states(gfx::Display* display) {
 	for (auto const code : display->_key_clear_queue) {
 		display->_key_states[
 			unsigned_cast(code)
@@ -80,7 +80,7 @@ void input_buffer::update(InputBuffer& ib) {
 	}
 }
 
-void set_key_state(KeyEvent const& event) {
+static void set_key_state(KeyEvent const& event) {
 	gfx::Display* const display = event.display;
 	if (event.action == KeyAction::press) {
 		// If state already has KeyAction::release, retain it
