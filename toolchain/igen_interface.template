@@ -15,7 +15,7 @@ ${ns.open_string()}
 
 %for f in ns.funcs:
 ${f.cursor.raw_comment}
-${f.signature(named_args = False)};
+${f.signature(named_args = True)};
 %endfor
 
 /** @} */
