@@ -23,17 +23,17 @@ namespace resource_package {
 	@{
 */
 
-/// Get name hash (cached).
+/// Name hash (cached).
 inline ResourcePackageNameHash name_hash(ResourcePackage const& pkg) {
 	return pkg._name_hash;
 }
 
-/// Get name.
+/// Name.
 inline StringRef name(ResourcePackage const& pkg) {
 	return pkg._name;
 }
 
-/// Get path.
+/// Path.
 inline StringRef path(ResourcePackage const& pkg) {
 	return pkg._path;
 }
