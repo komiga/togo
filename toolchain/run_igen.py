@@ -22,7 +22,27 @@ cindex.Config.set_library_path(IGEN_ROOT)
 
 G.F_USERS = "toolchain/igen_users"
 G.F_TEMPLATE = "toolchain/igen_interface.template"
+
+arg_sep_index = sys.argv.index("--")
+argv = sys.argv[1:arg_sep_index]
+argv_rest = sys.argv[arg_sep_index + 1:]
+
 G.debug = os.environ.get("DEBUG", False)
+G.force = os.environ.get("FORCE", False) or "--force" in argv
+
+flag_exclusions = {
+	"-MMD",
+	"-MP",
+}
+G.clang_args = [
+	"-fsyntax-only",
+	"-DIGEN_RUNNING",
+] + [a for a in argv_rest if a not in flag_exclusions]
+
+G.template = Template(filename = G.F_TEMPLATE)
+
+#if G.debug:
+#	print("clang_args: %r" % G.clang_args)
 
 def mtime(path):
 	if os.path.exists(path):
@@ -42,10 +62,12 @@ class Interface:
 		self.namespace = spec["namespace"]
 		self.doc_group = spec["doc_group"]
 
-		self.source_time = mtime(self.source)
-		self.gen_time = mtime(self.gen_path)
-		self.needs_rebuild = self.gen_time < self.source_time
 		self.group = None
+		self.needs_rebuild = G.force
+		if not G.force:
+			source_time = mtime(self.source)
+			gen_time = mtime(self.gen_path)
+			self.needs_rebuild = gen_time < source_time
 
 		# Make sure the file exists, since we're parsing the hierarchy that
 		# #includes it. Due to -fsyntax-only this doesn't cause issues, but
@@ -80,24 +102,6 @@ class Interface:
 			userdata = self,
 		)
 
-arg_sep_index = sys.argv.index("--")
-argv = sys.argv[1:arg_sep_index]
-argv_rest = sys.argv[arg_sep_index + 1:]
-
-flag_exclusions = {
-	"-MMD",
-	"-MP",
-}
-G.clang_args = [
-	"-fsyntax-only",
-	"-DIGEN_RUNNING",
-] + [a for a in argv_rest if a not in flag_exclusions]
-
-G.template = Template(filename = G.F_TEMPLATE)
-
-#if G.debug:
-#	print("clang_args: %r" % G.clang_args)
-
 G.interfaces = {}
 with open(G.F_USERS, "r") as f:
 	users = json.load(f)["users"]
@@ -105,10 +109,8 @@ with open(G.F_USERS, "r") as f:
 		i = Interface(spec)
 		G.interfaces[i.slug] = i
 
-force = "--force" in argv or os.environ.get("FORCE", False)
-
 for i in G.interfaces.values():
-	if not force and not i.needs_rebuild:
+	if not i.needs_rebuild:
 		continue
 	i.build()
 	i.link_doc()
