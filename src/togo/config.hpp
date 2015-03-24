@@ -50,16 +50,23 @@ namespace togo {
 	/// This is enabled if it is defined.
 	#define TOGO_USE_CONSTRAINTS
 
-	/// Defined to annotate interface functions when running igen.
+	/// Mark functions as part of the interface when running igen.
 	#define IGEN_INTERFACE
+
+	/// Set parameter default value when running igen.
+	///
+	/// The default value will be kept only for the generated header.
+	#define IGEN_DEFAULT(x)
 #else
 	#if !defined(TOGO_DEBUG) && (defined(DEBUG) || !defined(NDEBUG))
 		#define TOGO_DEBUG
 	#endif
 	#if defined(IGEN_RUNNING)
 		#define IGEN_INTERFACE __attribute__((annotate("igen_interface")))
+		#define IGEN_DEFAULT(x) __attribute__((annotate("igen_default:" #x)))
 	#else
 		#define IGEN_INTERFACE
+		#define IGEN_DEFAULT(x)
 	#endif
 #endif // defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
 
