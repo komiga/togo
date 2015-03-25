@@ -5,6 +5,7 @@ print("run_igen")
 import os
 import sys
 import time
+import re
 import hashlib
 import json
 from mako.template import Template
@@ -76,11 +77,14 @@ class Source:
 
 class Interface:
 	def __init__(self, spec):
-		self.slug = spec["slug"]
 		self.path = spec["path"]
 		self.sources = [Source(path) for path in spec["sources"]]
 		self.gen_path = spec["gen_path"]
 		self.doc_group = spec["doc_group"]
+		self.doc_path = os.path.join(
+			"doc/gen_interface",
+			re.sub(r'(.+)\.(.+)$', r'\1.dox', self.path).replace("/", "_")
+		)
 
 		self.group = None
 		self.data = None
@@ -113,13 +117,9 @@ class Interface:
 	def link_doc(self):
 		if not os.path.exists("doc/gen_interface"):
 			os.mkdir("doc/gen_interface")
-		doc_path = os.path.join(
-			"doc/gen_interface",
-			self.slug.replace("/", "_") + ".dox"
-		)
-		if os.path.exists(doc_path):
-			os.remove(doc_path)
-		os.symlink(os.path.join("../..", self.gen_path), doc_path)
+		if os.path.exists(self.doc_path):
+			os.remove(self.doc_path)
+		os.symlink(os.path.join("../..", self.gen_path), self.doc_path)
 
 	def load(self):
 		def pre_filter(cursor):
