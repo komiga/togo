@@ -50,8 +50,14 @@ namespace togo {
 	/// This is enabled if it is defined.
 	#define TOGO_USE_CONSTRAINTS
 
-	/// Mark functions as part of the interface when running igen.
+	/// Mark function as part of the generated interface when running igen.
 	#define IGEN_INTERFACE
+
+	/// Mark function as private part of the generated interface when
+	/// running igen.
+	///
+	/// This hides the function from documentation.
+	#define IGEN_PRIVATE
 
 	/// Set parameter default value when running igen.
 	///
@@ -63,9 +69,11 @@ namespace togo {
 	#endif
 	#if defined(IGEN_RUNNING)
 		#define IGEN_INTERFACE __attribute__((annotate("igen_interface")))
+		#define IGEN_PRIVATE __attribute__((annotate("igen_private")))
 		#define IGEN_DEFAULT(x) __attribute__((annotate("igen_default:" #x)))
 	#else
 		#define IGEN_INTERFACE
+		#define IGEN_PRIVATE
 		#define IGEN_DEFAULT(x)
 	#endif
 #endif // defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
