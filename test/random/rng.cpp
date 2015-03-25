@@ -55,7 +55,7 @@ void test_udist(
 	array::resize(values, N);
 	unsigned i = 0;
 	while (i < N) {
-		T const x = rng_next_udist(s, udist);
+		T const x = random::next_udist(s, udist);
 		//T const x = udist(s);
 		TOGO_ASSERTE(min <= x && x <= max);
 		values[i++] = x;
@@ -71,7 +71,7 @@ void test_sdist(S& s) {
 	array::resize(values, N);
 	unsigned i = 0;
 	while (i < N) {
-		T const x = rng_next_sdist(s);
+		T const x = random::next_sdist(s);
 		//T const x = sdist(s);
 		TOGO_ASSERTE(0.0f <= x && x <= 1.0f);
 		values[i++] = x;

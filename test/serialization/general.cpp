@@ -33,7 +33,7 @@ signed main() {
 
 	// Arithmetic
 	{
-		u64 const basis = rng_next(rng);
+		u64 const basis = random::next(rng);
 		oser % basis;
 		io::seek_to(stream, 0);
 
@@ -45,7 +45,7 @@ signed main() {
 
 	// SerBuffer
 	{
-		u64 const basis = rng_next(rng);
+		u64 const basis = random::next(rng);
 		oser % make_ser_buffer(&basis, sizeof(u64));
 		io::seek_to(stream, 0);
 
@@ -58,7 +58,7 @@ signed main() {
 	// Proxy
 	{
 		IntUDist<u32> udist{0, static_cast<u32>(~0)};
-		u64 const basis = rng_next_udist(rng, udist);
+		u64 const basis = random::next_udist(rng, udist);
 		oser % make_ser_proxy<u32>(basis);
 		io::seek_to(stream, 0);
 
@@ -90,7 +90,7 @@ signed main() {
 		FixedArray<u64, SIZE> basis{};
 		fixed_array::resize(basis, SIZE);
 		for (auto& value : basis) {
-			value = rng_next(rng);
+			value = random::next(rng);
 		}
 		oser % make_ser_collection<u8>(basis);
 		io::seek_to(stream, 0);
@@ -111,7 +111,7 @@ signed main() {
 		Array<u64> basis{memory::default_allocator()};
 		array::resize(basis, SIZE);
 		for (auto& value : basis) {
-			value = rng_next(rng);
+			value = random::next(rng);
 		}
 		oser % make_ser_collection<u32>(basis);
 		io::seek_to(stream, 0);
