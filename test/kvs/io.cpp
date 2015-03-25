@@ -101,9 +101,9 @@ void test_str(KVS& root, StringRef const& data, bool const expected = true) {
 		TOGO_ASSERTE(kvs::write(root, out_stream));
 		TOGO_LOGF(
 			"root rewritten (%u): <%.*s>\n",
-			static_cast<unsigned>(array::size(out_stream.buffer())),
-			static_cast<unsigned>(array::size(out_stream.buffer())),
-			array::begin(out_stream.buffer())
+			static_cast<unsigned>(out_stream.size()),
+			static_cast<unsigned>(out_stream.size()),
+			array::begin(out_stream.data())
 		);
 	} else {
 		TOGO_LOGF(

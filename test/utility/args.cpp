@@ -26,30 +26,30 @@ signed main(signed argc, char* argv[]) {
 		TOGO_ASSERTE(kvs::write(k_options, out_stream));
 		TOGO_LOGF(
 			"#### options (%u): `%.*s`: <%.*s>\n",
-			static_cast<unsigned>(array::size(out_stream.buffer())),
+			static_cast<unsigned>(out_stream.size()),
 			kvs::name_size(k_options), kvs::name(k_options),
-			static_cast<unsigned>(array::size(out_stream.buffer())),
-			array::begin(out_stream.buffer())
+			static_cast<unsigned>(out_stream.size()),
+			array::begin(out_stream.data())
 		);
 		out_stream.clear();
 
 		TOGO_ASSERTE(kvs::write(k_command_options, out_stream));
 		TOGO_LOGF(
 			"#### command options (%u): `%.*s` <%.*s>\n",
-			static_cast<unsigned>(array::size(out_stream.buffer())),
+			static_cast<unsigned>(out_stream.size()),
 			kvs::name_size(k_command_options), kvs::name(k_command_options),
-			static_cast<unsigned>(array::size(out_stream.buffer())),
-			array::begin(out_stream.buffer())
+			static_cast<unsigned>(out_stream.size()),
+			array::begin(out_stream.data())
 		);
 		out_stream.clear();
 
 		TOGO_ASSERTE(kvs::write(k_command, out_stream));
 		TOGO_LOGF(
 			"#### command (%u): `%.*s` <%.*s>\n",
-			static_cast<unsigned>(array::size(out_stream.buffer())),
+			static_cast<unsigned>(out_stream.size()),
 			kvs::name_size(k_command), kvs::name(k_command),
-			static_cast<unsigned>(array::size(out_stream.buffer())),
-			array::begin(out_stream.buffer())
+			static_cast<unsigned>(out_stream.size()),
+			array::begin(out_stream.data())
 		);
 		out_stream.clear();
 	}

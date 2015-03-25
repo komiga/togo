@@ -19,12 +19,10 @@ void echo(KVS& root, StringRef const& path) {
 	if (kvs::read_file(root, path)) {
 		MemoryStream out_stream{memory::default_allocator(), 2048};
 		TOGO_ASSERTE(kvs::write(root, out_stream));
-		unsigned const size = static_cast<unsigned>(
-			array::size(out_stream.buffer())
-		);
+		unsigned const size = static_cast<unsigned>(out_stream.size());
 		TOGO_LOGF(
 			"#### rewritten (%u): <%.*s>\n",
-			size, size, array::begin(out_stream.buffer())
+			size, size, array::begin(out_stream.data())
 		);
 	} else {
 		TOGO_LOG_ERROR("#### failed to read file\n");
