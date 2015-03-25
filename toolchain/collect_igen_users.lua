@@ -18,6 +18,14 @@ function trim_trailing_slash(path)
 	return path
 end
 
+function make_inverse_table(t, value)
+	local it = {}
+	for k, v in pairs(t) do
+		it[v] = value or k
+	end
+	return it
+end
+
 function iterate_dir(dir, select_only)
 	assert(dir and dir ~= "", "directory parameter is missing or empty")
 	dir = trim_trailing_slash(dir)
@@ -183,6 +191,10 @@ function main(arguments)
 		users = {},
 	}
 
+	local ext_filter = make_inverse_table({
+		"hpp",
+	}, true)
+
 	for i = 1, #arguments do
 		local dir = trim_trailing_slash(arguments[i])
 		for rel_path, _ in iterate_dir(dir, "file") do
@@ -190,7 +202,7 @@ function main(arguments)
 			local _, extension = split_path(rel_path)
 			ctx.path_from[path] = dir
 			table.insert(ctx.paths, path)
-			if extension == "hpp" then
+			if ext_filter[extension] then
 				assert(not ctx.user_paths[path], "duplicate path: " .. dir .. ", " .. path)
 				table.insert(ctx.user_paths, path)
 			end
