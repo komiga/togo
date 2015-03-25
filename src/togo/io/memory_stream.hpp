@@ -34,7 +34,7 @@ class MemoryStream
 {
 public:
 	IOStatus _status;
-	Array<u8> _buffer;
+	Array<u8> _data;
 	u64 _position;
 
 	~MemoryStream() override;
@@ -47,8 +47,14 @@ public:
 	MemoryStream& operator=(MemoryStream const&) = delete;
 	MemoryStream& operator=(MemoryStream&&) = delete;
 
-	Array<u8>& buffer() noexcept {
-		return _buffer;
+	/// Size.
+	u32_fast size() noexcept {
+		return _data._size;
+	}
+
+	/// Data.
+	Array<u8>& data() noexcept {
+		return _data;
 	}
 
 	/// Clear buffer and stream position.
@@ -79,7 +85,7 @@ class MemoryReader
 public:
 	IOStatus _status;
 	u32_fast _size;
-	u8 const* _buffer;
+	u8 const* _data;
 	u64 _position;
 
 	~MemoryReader() override;
@@ -95,12 +101,14 @@ public:
 	MemoryReader& operator=(MemoryReader const&) = delete;
 	MemoryReader& operator=(MemoryReader&&) = delete;
 
+	/// Size.
 	u32_fast size() noexcept {
 		return _size;
 	}
 
-	u8 const* buffer() noexcept {
-		return _buffer;
+	/// Data.
+	u8 const* data() noexcept {
+		return _data;
 	}
 
 private:
