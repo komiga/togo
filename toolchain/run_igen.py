@@ -25,6 +25,11 @@ G.F_TEMPLATE = "toolchain/igen_interface.template"
 G.F_CACHE = "toolchain/igen_cache"
 G.F_USERS = "toolchain/igen_users"
 
+G.PASS_ANNOTATIONS = [
+	"igen_interface",
+	"igen_private",
+]
+
 arg_sep_index = sys.argv.index("--")
 argv = sys.argv[1:arg_sep_index]
 argv_rest = sys.argv[arg_sep_index + 1:]
@@ -121,11 +126,13 @@ class Interface:
 			return (
 				True in (s.path == cursor.location.file.name for s in self.sources) and (
 					cursor.raw_comment != None or
-					has_annotation(cursor, "igen_interface")
+					has_annotation(cursor, G.PASS_ANNOTATIONS)
 				)
 			)
 		def post_filter(function):
 			# function.xqn == self.namespace or
+			function.annotations = get_annotations(function.cursor)
+			function.anno_private = "igen_private" in function.annotations
 			return True
 
 		self.group = igen.Group(None)
