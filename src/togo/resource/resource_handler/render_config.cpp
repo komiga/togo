@@ -63,6 +63,7 @@ static void unload(
 } // namespace render_config
 } // namespace resource_handler
 
+/// Register render_config (gfx::RenderConfig) resource handler.
 void resource_handler::register_render_config(
 	ResourceManager& rm,
 	gfx::Renderer* const renderer

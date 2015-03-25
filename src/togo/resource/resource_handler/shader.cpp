@@ -201,6 +201,7 @@ static void unload(
 } // namespace shader
 } // namespace resource_handler
 
+/// Register shader (gfx::ShaderID) resource handler.
 void resource_handler::register_shader(
 	ResourceManager& rm,
 	gfx::Renderer* const renderer

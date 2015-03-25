@@ -10,49 +10,17 @@
 
 #pragma once
 
+// igen-source-pattern: src/togo/resource/resource_handler/.+cpp
+
 #include <togo/config.hpp>
 #include <togo/error/assert.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/gfx/renderer/types.hpp>
 #include <togo/resource/types.hpp>
 #include <togo/resource/resource_manager.hpp>
+#include <togo/resource/resource_handler.gen_interface>
 
 namespace togo {
-
-namespace resource_handler {
-
-/**
-	@addtogroup resource_handler
-	@{
-*/
-
-/// Register test (TestResource) resource handler.
-void register_test(
-	ResourceManager& rm
-);
-
-/// Register shader_prelude (gfx::ShaderDef) resource handler.
-void register_shader_prelude(
-	ResourceManager& rm,
-	gfx::Renderer* const renderer
-);
-
-/// Register shader (gfx::ShaderID) resource handler.
-void register_shader(
-	ResourceManager& rm,
-	gfx::Renderer* const renderer
-);
-
-/// Register render_config (gfx::RenderConfig) resource handler.
-void register_render_config(
-	ResourceManager& rm,
-	gfx::Renderer* const renderer
-);
-
-/** @} */ // end of doc-group resource_handler
-
-} // namespace resource_handler
-
 namespace resource {
 
 /**
@@ -91,5 +59,4 @@ inline gfx::RenderConfig* load_render_config(
 /** @} */ // end of doc-group resource
 
 } // namespace resource
-
 } // namespace togo

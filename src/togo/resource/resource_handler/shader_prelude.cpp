@@ -74,6 +74,7 @@ static void unload(
 } // namespace shader_prelude
 } // namespace resource_handler
 
+/// Register shader_prelude (gfx::ShaderDef) resource handler.
 void resource_handler::register_shader_prelude(
 	ResourceManager& rm,
 	gfx::Renderer* const renderer

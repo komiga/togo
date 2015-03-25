@@ -50,6 +50,7 @@ static void unload(
 } // namespace test_resource
 } // namespace resource_handler
 
+/// Register test (TestResource) resource handler.
 void resource_handler::register_test(
 	ResourceManager& rm
 ) {
