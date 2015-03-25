@@ -72,7 +72,7 @@ class Source:
 class Interface:
 	def __init__(self, spec):
 		self.slug = spec["slug"]
-		self.header = spec["header"]
+		self.path = spec["path"]
 		self.sources = [Source(path) for path in spec["sources"]]
 		self.gen_path = spec["gen_path"]
 		self.doc_group = spec["doc_group"]
@@ -85,11 +85,11 @@ class Interface:
 
 		cache = G.cache.get(self.gen_path, {})
 		self.check_time = cache.get("check_time", 0)
-		self.header_time = mtime(self.header)
+		self.path_time = mtime(self.path)
 
 		self.needs_check = (
 			G.do_check or
-			self.check_time < self.header_time or
+			self.check_time < self.path_time or
 			True in (self.check_time < source.time for source in self.sources)
 		)
 
