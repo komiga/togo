@@ -102,8 +102,8 @@ bool resource::parse_path(
 	return true;
 }
 
-/// Get compiled path.
-void resource::compiled_path(
+/// Set compiled path from metadata ID.
+void resource::set_compiled_path(
 	ResourceCompiledPath& path,
 	u32 const id
 ) {

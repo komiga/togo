@@ -264,7 +264,7 @@ void package_compiler::remove_resource(PackageCompiler& pkg, u32 const id) {
 
 	if (metadata.last_compiled != 0) {
 		ResourceCompiledPath compiled_path{};
-		resource::compiled_path(compiled_path, metadata.id);
+		resource::set_compiled_path(compiled_path, metadata.id);
 		if (
 			filesystem::is_file(compiled_path) &&
 			!filesystem::remove_file(compiled_path)
@@ -516,7 +516,7 @@ bool package_compiler::build(PackageCompiler& pkg, StringRef const& output_path)
 			continue;
 		}
 
-		resource::compiled_path(compiled_path, metadata.id);
+		resource::set_compiled_path(compiled_path, metadata.id);
 		TOGO_ASSERTE(filesystem::is_file(compiled_path));
 		size = static_cast<u32>(filesystem::file_size(compiled_path));
 		metadata.data_offset = offset;
@@ -548,7 +548,7 @@ bool package_compiler::build(PackageCompiler& pkg, StringRef const& output_path)
 			continue;
 		}
 
-		resource::compiled_path(compiled_path, metadata.id);
+		resource::set_compiled_path(compiled_path, metadata.id);
 		rpath = metadata.path;
 		if (!compiled_stream.open(compiled_path)) {
 			TOGO_LOG_ERRORF(
@@ -607,8 +607,8 @@ bool package_compiler::compact(PackageCompiler& pkg) {
 				metadata.name_hash != RES_NAME_NULL
 			);
 			if (metadata.id != id) {
-				resource::compiled_path(compiled_path, metadata.id);
-				resource::compiled_path(compiled_path_to, id);
+				resource::set_compiled_path(compiled_path, metadata.id);
+				resource::set_compiled_path(compiled_path_to, id);
 				if (
 					filesystem::is_file(compiled_path) &&
 					!filesystem::move_file(compiled_path, compiled_path_to)

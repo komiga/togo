@@ -12,7 +12,7 @@ static bool compile_resource(
 	ResourceCompilerMetadata& metadata
 ) {
 	ResourceCompiledPath compiled_path{};
-	resource::compiled_path(compiled_path, metadata.id);
+	resource::set_compiled_path(compiled_path, metadata.id);
 
 	// Open streams
 	FileReader in_stream{};
