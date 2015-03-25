@@ -33,6 +33,9 @@ static void print_package(
 	}
 }
 
+/// Run list command.
+///
+/// Lists packages in the project or resources in packages.
 bool interface::command_list(
 	Interface const& interface,
 	bool const list_resources,
@@ -71,6 +74,10 @@ bool interface::command_list(
 	return true;
 }
 
+/// Run list command with KVS.
+///
+/// Specification:
+/// @verbatim list [-r || [<package_name> ...]] @endverbatim
 bool interface::command_list(
 	Interface const& interface,
 	KVS const& k_command_options,

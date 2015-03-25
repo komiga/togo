@@ -11,6 +11,7 @@
 
 #include <togo/tool_build/config.hpp>
 #include <togo/tool_build/types.hpp>
+#include <togo/tool_build/generator_compiler.gen_interface>
 
 namespace togo {
 namespace tool_build {
@@ -26,11 +27,6 @@ extern GeneratorCompiler const test_proxy;
 
 /// clear generator compiler.
 extern GeneratorCompiler const clear;
-
-/// Register standard generator compilers.
-void register_standard(
-	GfxCompiler& gfx_compiler
-);
 
 /** @} */ // end of doc-group tool_build_gfx_compiler
 

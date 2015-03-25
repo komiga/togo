@@ -67,6 +67,7 @@ static bool compile(
 } // namespace test_resource
 } // namespace resource_compiler
 
+/// Register test resource compiler.
 void resource_compiler::register_test(
 	CompilerManager& cm
 ) {

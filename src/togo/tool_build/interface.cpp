@@ -65,6 +65,9 @@ static void set_project_path(
 
 } // namespace interface
 
+/// Read options.
+///
+/// This should only be called before init().
 bool interface::read_options(
 	Interface& interface,
 	KVS const& k_options
@@ -91,6 +94,12 @@ bool interface::read_options(
 	return true;
 }
 
+/// Initialize.
+///
+/// This must be called for the project path to be assigned.
+/// If project_path is empty, the TOGO_PROJECT environment variable
+/// will be used.
+/// If there is no project path, an assertion will fail.
 void interface::init(
 	Interface& interface,
 	StringRef const& project_path,
@@ -106,6 +115,7 @@ void interface::init(
 	}
 }
 
+/// Add package by name.
 void interface::add_package(
 	Interface& interface,
 	StringRef const& name
@@ -126,6 +136,7 @@ void interface::add_package(
 	compiler_manager::add_package(interface._manager, path);
 }
 
+/// Read project data.
 void interface::read_project(
 	Interface& interface
 ) {
@@ -151,6 +162,7 @@ void interface::read_project(
 	}}
 }
 
+/// Write project data.
 void interface::write_project(
 	Interface& interface
 ) {
@@ -169,6 +181,7 @@ void interface::write_project(
 	}
 }
 
+/// Run tool with main() arguments.
 bool interface::run(
 	Interface& interface,
 	KVS const& k_command_options,

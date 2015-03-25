@@ -11,6 +11,7 @@
 
 #include <togo/tool_build/config.hpp>
 #include <togo/tool_build/types.hpp>
+#include <togo/tool_build/gfx_compiler.gen_interface>
 
 namespace togo {
 namespace tool_build {
@@ -21,17 +22,7 @@ namespace gfx_compiler {
 	@{
 */
 
-/// Register a generator compiler.
-void register_generator_compiler(
-	GfxCompiler& gfx_compiler,
-	GeneratorCompiler const& gen_compiler
-);
 
-/// Find a generator compiler by name.
-GeneratorCompiler* find_generator_compiler(
-	GfxCompiler& gc,
-	gfx::GeneratorNameHash name_hash
-);
 
 /** @} */ // end of doc-group tool_build_gfx_compiler
 

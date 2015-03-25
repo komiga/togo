@@ -6,6 +6,10 @@
 namespace togo {
 namespace tool_build {
 
+/// Run compact command.
+///
+/// Removes empty metadata entries.
+/// If no packages are specified, all packages are selected.
 bool interface::command_compact(
 	Interface& interface,
 	ArrayRef<StringRef const> const package_names
@@ -43,6 +47,10 @@ bool interface::command_compact(
 	return true;
 }
 
+/// Run compact command with KVS.
+///
+/// Specification:
+/// @verbatim compact [<package_name> ...] @endverbatim
 bool interface::command_compact(
 	Interface& interface,
 	KVS const& k_command_options,

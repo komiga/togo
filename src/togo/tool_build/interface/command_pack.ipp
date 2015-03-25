@@ -6,6 +6,12 @@
 namespace togo {
 namespace tool_build {
 
+/// Run pack command.
+///
+/// Builds packages.
+/// If no packages are specified, all packages are selected.
+/// If force is true, all selected packages are built regardless of
+/// their source-compilation parity.
 bool interface::command_pack(
 	Interface& interface,
 	bool const force,
@@ -69,6 +75,10 @@ bool interface::command_pack(
 	return true;
 }
 
+/// Run pack command with KVS.
+///
+/// Specification:
+/// @verbatim pack [-f] [<package_name> ...] @endverbatim
 bool interface::command_pack(
 	Interface& interface,
 	KVS const& k_command_options,

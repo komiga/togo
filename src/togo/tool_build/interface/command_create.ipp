@@ -6,6 +6,9 @@
 namespace togo {
 namespace tool_build {
 
+/// Run create command.
+///
+/// Creates package.
 bool interface::command_create(
 	Interface& interface,
 	StringRef const& name
@@ -35,6 +38,10 @@ bool interface::command_create(
 	return true;
 }
 
+/// Run create command with KVS.
+///
+/// Specification:
+/// @verbatim create <package_name> @endverbatim
 bool interface::command_create(
 	Interface& interface,
 	KVS const& k_command_options,

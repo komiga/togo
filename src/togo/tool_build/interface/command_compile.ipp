@@ -132,6 +132,14 @@ static void add_node(
 //   N: no compile needed
 //   C: compiling
 
+/// Run compile command.
+///
+/// Builds resources.
+/// If a package is specified, only resources within that package can
+/// be selected.
+/// If no resources are specified, all unbuilt resources are compiled.
+/// If force is true, all selected resources are built regardless of
+/// their source-compilation parity.
 bool interface::command_compile(
 	Interface& interface,
 	bool const force,
@@ -275,6 +283,10 @@ l_exit:
 	return success;
 }
 
+/// Run compile command with KVS.
+///
+/// Specification:
+/// @verbatim compile [-f] [--from=<package_name>] [<resource_path> ...] @endverbatim
 bool interface::command_compile(
 	Interface& interface,
 	KVS const& k_command_options,

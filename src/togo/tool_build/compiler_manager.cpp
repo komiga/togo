@@ -30,6 +30,10 @@ CompilerManager::CompilerManager(Allocator& allocator)
 	array::reserve(_packages, 8);
 }
 
+/// Add a resource compiler.
+///
+/// An assertion will fail if the resource type has already been
+/// registered.
 void compiler_manager::register_compiler(
 	CompilerManager& cm,
 	ResourceCompiler const& compiler
@@ -45,6 +49,7 @@ void compiler_manager::register_compiler(
 	hash_map::push(cm._compilers, compiler.type, compiler);
 }
 
+/// Whether there is a compiler for type registered.
 bool compiler_manager::has_compiler(
 	CompilerManager const& cm,
 	ResourceType const type
@@ -52,6 +57,7 @@ bool compiler_manager::has_compiler(
 	return hash_map::has(cm._compilers, type);
 }
 
+/// Find resource compiler.
 ResourceCompiler const* compiler_manager::find_compiler(
 	CompilerManager const& cm,
 	ResourceType const type
@@ -59,6 +65,7 @@ ResourceCompiler const* compiler_manager::find_compiler(
 	return hash_map::find(cm._compilers, type);
 }
 
+/// Whether a package with name_hash exists.
 bool compiler_manager::has_package(
 	CompilerManager const& cm,
 	ResourcePackageNameHash const name_hash
@@ -71,6 +78,7 @@ bool compiler_manager::has_package(
 	return false;
 }
 
+/// Find package by name hash.
 PackageCompiler* compiler_manager::find_package(
 	CompilerManager& cm,
 	ResourcePackageNameHash const name_hash
@@ -83,6 +91,10 @@ PackageCompiler* compiler_manager::find_package(
 	return nullptr;
 }
 
+/// Find packages by names.
+///
+/// packages elements will be nullptr when lookup for its name misses.
+/// Returns false if a lookup fails.
 bool compiler_manager::find_packages(
 	CompilerManager& cm,
 	Array<PackageCompiler*>& packages,
@@ -103,6 +115,10 @@ bool compiler_manager::find_packages(
 	return !lookup_failed;
 }
 
+/// Add package.
+///
+/// An assertion will fail if the package is already in the manager.
+/// Returns package name hash.
 ResourcePackageNameHash compiler_manager::add_package(
 	CompilerManager& cm,
 	StringRef const& path
@@ -124,6 +140,9 @@ ResourcePackageNameHash compiler_manager::add_package(
 	return package_compiler::name_hash(*pkg);
 }
 
+/// Remove package.
+///
+/// An assertion will fail if the package does not exist.
 void compiler_manager::remove_package(
 	CompilerManager& cm,
 	ResourcePackageNameHash const name_hash
@@ -141,6 +160,7 @@ void compiler_manager::remove_package(
 	TOGO_ASSERT(false, "package not found");
 }
 
+/// Remove all packages.
 void compiler_manager::clear_packages(
 	CompilerManager& cm
 ) {
@@ -151,6 +171,7 @@ void compiler_manager::clear_packages(
 	array::clear(cm._packages);
 }
 
+/// Write all packages that are modified.
 bool compiler_manager::write_packages(
 	CompilerManager& cm
 ) {
@@ -162,11 +183,12 @@ bool compiler_manager::write_packages(
 	return true;
 }
 
+/// Whether a resource with identity exists.
 bool compiler_manager::has_resource(
 	CompilerManager const& cm,
 	ResourceType const type,
 	ResourceNameHash const name_hash,
-	ResourceTagsHash const tags_hash
+	ResourceTagsHash const tags_hash IGEN_DEFAULT(RES_TAGS_NULL)
 ) {
 	for (auto const* pkg : cm._packages) {
 		if (package_compiler::find_resource_id(
@@ -178,6 +200,7 @@ bool compiler_manager::has_resource(
 	return false;
 }
 
+/// Find lookup node by resource name.
 PackageCompiler::LookupNode* compiler_manager::find_node(
 	CompilerManager& cm,
 	ResourceNameHash const name_hash,

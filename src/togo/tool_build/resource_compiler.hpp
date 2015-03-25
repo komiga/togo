@@ -9,8 +9,11 @@
 
 #pragma once
 
+// igen-source-pattern: src/togo/tool_build/resource_compiler/.+cpp
+
 #include <togo/tool_build/config.hpp>
 #include <togo/tool_build/types.hpp>
+#include <togo/tool_build/resource_compiler.gen_interface>
 
 namespace togo {
 namespace tool_build {
@@ -21,32 +24,7 @@ namespace resource_compiler {
 	@{
 */
 
-/// Register test resource compiler.
-void register_test(
-	CompilerManager& cm
-);
 
-/// Register shader_prelude resource compiler.
-void register_shader_prelude(
-	CompilerManager& cm
-);
-
-/// Register shader resource compiler.
-void register_shader(
-	CompilerManager& cm
-);
-
-/// Register render_config resource compiler.
-void register_render_config(
-	CompilerManager& cm,
-	GfxCompiler& gfx_compiler
-);
-
-/// Register standard resource compilers.
-void register_standard(
-	CompilerManager& cm,
-	GfxCompiler& gfx_compiler
-);
 
 /** @} */ // end of doc-group tool_build_resource_compiler
 

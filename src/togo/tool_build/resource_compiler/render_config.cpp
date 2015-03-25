@@ -469,6 +469,7 @@ l_failed:
 } // namespace render_config
 } // namespace resource_compiler
 
+/// Register render_config resource compiler.
 void resource_compiler::register_render_config(
 	CompilerManager& cm,
 	GfxCompiler& gfx_compiler

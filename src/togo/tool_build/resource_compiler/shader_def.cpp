@@ -410,18 +410,7 @@ static bool compile(
 
 } // namespace resource_compiler
 
-void resource_compiler::register_shader(
-	CompilerManager& cm
-) {
-	ResourceCompiler const compiler{
-		RES_TYPE_SHADER,
-		SER_FORMAT_VERSION_SHADER_DEF,
-		nullptr,
-		resource_compiler::shader::compile
-	};
-	compiler_manager::register_compiler(cm, compiler);
-}
-
+/// Register shader_prelude resource compiler.
 void resource_compiler::register_shader_prelude(
 	CompilerManager& cm
 ) {
@@ -430,6 +419,19 @@ void resource_compiler::register_shader_prelude(
 		SER_FORMAT_VERSION_SHADER_DEF,
 		nullptr,
 		resource_compiler::shader_prelude::compile
+	};
+	compiler_manager::register_compiler(cm, compiler);
+}
+
+/// Register shader resource compiler.
+void resource_compiler::register_shader(
+	CompilerManager& cm
+) {
+	ResourceCompiler const compiler{
+		RES_TYPE_SHADER,
+		SER_FORMAT_VERSION_SHADER_DEF,
+		nullptr,
+		resource_compiler::shader::compile
 	};
 	compiler_manager::register_compiler(cm, compiler);
 }

@@ -6,6 +6,9 @@
 namespace togo {
 namespace tool_build {
 
+/// Run help command.
+///
+/// Prints command help information.
 bool interface::command_help(
 	Interface const& /*interface*/,
 	StringRef const& command_name
@@ -86,6 +89,10 @@ bool interface::command_help(
 	return true;
 }
 
+/// Run help command with KVS.
+///
+/// Specification:
+/// @verbatim help [command_name] @endverbatim
 bool interface::command_help(
 	Interface const& interface,
 	KVS const& /*k_command_options*/,

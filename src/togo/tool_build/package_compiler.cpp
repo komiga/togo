@@ -86,6 +86,10 @@ PackageCompiler::PackageCompiler(
 	string::trim_trailing_slashes(_path);
 }
 
+/// Create a package stub.
+///
+/// This will fail if the path already exists or if any part of the
+/// package couldn't be created.
 bool package_compiler::create_stub(
 	StringRef const& path,
 	StringRef const& name
@@ -176,6 +180,7 @@ bool package_compiler::create_stub(
 	return true;
 }
 
+/// Find lookup node by resource name.
 PackageCompiler::LookupNode* package_compiler::find_node(
 	PackageCompiler& pkg,
 	ResourceNameHash const name_hash
@@ -183,6 +188,11 @@ PackageCompiler::LookupNode* package_compiler::find_node(
 	return hash_map::find_node(pkg._lookup, name_hash);
 }
 
+/// Find resource ID by identity.
+///
+/// 0 is returned if a resource was not found.
+/// If tags_lenient is true, a tag-less entry will match if there is
+/// no resource with tags_hash exactly.
 u32 package_compiler::find_resource_id(
 	PackageCompiler const& pkg,
 	ResourceType const type,
@@ -212,6 +222,7 @@ u32 package_compiler::find_resource_id(
 	return id_lenient;
 }
 
+/// Add resource.
 u32 package_compiler::add_resource(
 	PackageCompiler& pkg,
 	StringRef const& path,
@@ -240,6 +251,9 @@ u32 package_compiler::add_resource(
 	return metadata.id;
 }
 
+/// Remove resource by ID.
+///
+/// This assumes the working directory is already at the package.
 void package_compiler::remove_resource(PackageCompiler& pkg, u32 const id) {
 	TOGO_ASSERTE(id > 0 && id <= array::size(pkg._manifest));
 	auto& metadata = pkg._manifest[id - 1];
@@ -290,6 +304,7 @@ void package_compiler::remove_resource(PackageCompiler& pkg, u32 const id) {
 	package_compiler::set_manifest_modified(pkg, true);
 }
 
+/// Read package data.
 void package_compiler::read(PackageCompiler& pkg) {
 	pkg._name_hash = RES_NAME_NULL;
 	string::copy(pkg._name, "");
@@ -387,6 +402,7 @@ void package_compiler::read(PackageCompiler& pkg) {
 	}
 }
 
+/// Write modified package data and mark it as not modified.
 bool package_compiler::write(PackageCompiler& pkg) {
 	if (
 		package_compiler::properties_modified(pkg) &&
@@ -404,6 +420,7 @@ bool package_compiler::write(PackageCompiler& pkg) {
 	return true;
 }
 
+/// Write package properties.
 bool package_compiler::write_properties(PackageCompiler& pkg) {
 	StringRef const path{pkg._path};
 	TOGO_ASSERTF(
@@ -429,6 +446,7 @@ bool package_compiler::write_properties(PackageCompiler& pkg) {
 	return true;
 }
 
+/// Write package manifest.
 bool package_compiler::write_manifest(PackageCompiler& pkg) {
 	StringRef const path{pkg._path};
 	TOGO_ASSERTF(
@@ -480,6 +498,7 @@ bool package_compiler::write_manifest(PackageCompiler& pkg) {
 	return true;
 }
 
+/// Build package.
 bool package_compiler::build(PackageCompiler& pkg, StringRef const& output_path) {
 	StringRef const path{pkg._path};
 	TOGO_ASSERTF(
@@ -581,6 +600,7 @@ bool package_compiler::build(PackageCompiler& pkg, StringRef const& output_path)
 	return true;
 }
 
+/// Remove empty metadata entries.
 bool package_compiler::compact(PackageCompiler& pkg) {
 	bool modified = false;
 	for (unsigned i = 0; i < array::size(pkg._manifest);) {

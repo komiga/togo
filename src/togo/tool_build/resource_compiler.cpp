@@ -11,6 +11,7 @@
 namespace togo {
 namespace tool_build {
 
+/// Register standard resource compilers.
 void resource_compiler::register_standard(
 	CompilerManager& cm,
 	GfxCompiler& gfx_compiler

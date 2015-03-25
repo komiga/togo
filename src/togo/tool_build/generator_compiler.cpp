@@ -11,6 +11,7 @@
 namespace togo {
 namespace tool_build {
 
+/// Register standard generator compilers.
 void generator_compiler::register_standard(
 	GfxCompiler& gfx_compiler
 ) {

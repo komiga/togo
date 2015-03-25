@@ -19,6 +19,7 @@ GfxCompiler::GfxCompiler(Allocator& allocator)
 	hash_map::reserve(_gen_compilers, 16);
 }
 
+/// Register a generator compiler.
 void gfx_compiler::register_generator_compiler(
 	GfxCompiler& gfx_compiler,
 	GeneratorCompiler const& gen_compiler
@@ -35,6 +36,7 @@ void gfx_compiler::register_generator_compiler(
 	hash_map::push(gfx_compiler._gen_compilers, gen_compiler.name_hash, gen_compiler);
 }
 
+/// Find a generator compiler by name.
 GeneratorCompiler* gfx_compiler::find_generator_compiler(
 	GfxCompiler& gfx_compiler,
 	gfx::GeneratorNameHash name_hash

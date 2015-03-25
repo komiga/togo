@@ -91,6 +91,10 @@ static bool sync_package(
 	return package_compiler::write(pkg);
 }
 
+/// Run sync command.
+///
+/// Updates package manifests to match filesystem.
+/// If no packages are specified, all packages are synced.
 bool interface::command_sync(
 	Interface& interface,
 	ArrayRef<StringRef const> const package_names
@@ -127,6 +131,10 @@ bool interface::command_sync(
 	return true;
 }
 
+/// Run sync command with KVS.
+///
+/// Specification:
+/// @verbatim sync [<package_name> ...] @endverbatim
 bool interface::command_sync(
 	Interface& interface,
 	KVS const& k_command_options,
