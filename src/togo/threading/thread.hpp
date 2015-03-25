@@ -13,7 +13,7 @@
 #include <togo/config.hpp>
 #include <togo/memory/memory.hpp>
 #include <togo/threading/types.hpp>
-#include <togo/threading/thread/thread.gen_interface>
+#include <togo/threading/thread.gen_interface>
 
 namespace togo {
 namespace thread {
@@ -24,6 +24,9 @@ namespace thread {
 */
 
 // implementation
+
+/// Get the name of a thread.
+char const* name(Thread* t);
 
 /// Check if the current thread is the main thread.
 bool is_main();
@@ -46,9 +49,6 @@ Thread* create(
 	void* (*func)(void* call_data),
 	Allocator& allocator = memory::default_allocator()
 );
-
-/// Get the name of a thread.
-char const* name(Thread* t);
 
 /// Join a thread.
 ///
