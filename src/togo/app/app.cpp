@@ -29,11 +29,6 @@ app::Globals _globals{
 	nullptr
 };
 
-void init_with(Allocator& allocator, AppBase* app);
-void actual_init(AppBase& app);
-void update(AppBase& app, float dt);
-void render(AppBase& app);
-
 } // namespace app
 
 AppBase::~AppBase() {}
@@ -71,6 +66,7 @@ AppBase::AppBase(
 	, _quit(false)
 {}
 
+IGEN_PRIVATE
 void app::init_with(Allocator& allocator, AppBase* app) {
 	TOGO_ASSERT(
 		!app::_globals.instance,
@@ -81,6 +77,7 @@ void app::init_with(Allocator& allocator, AppBase* app) {
 	app::actual_init(*app);
 }
 
+IGEN_PRIVATE
 void app::actual_init(AppBase& app) {
 	TOGO_LOG("App: initializing\n");
 
@@ -150,6 +147,7 @@ void app::shutdown() {
 	app::_globals.instance = nullptr;
 }
 
+IGEN_PRIVATE
 void app::update(AppBase& app, float dt) {
 	InputEventType event_type{};
 	InputEvent const* event = nullptr;
@@ -178,6 +176,7 @@ void app::update(AppBase& app, float dt) {
 	app._func_update(app, dt);
 }
 
+IGEN_PRIVATE
 void app::render(AppBase& app) {
 	gfx::display::unbind_context();
 	TaskID const work_task_id = gfx::renderer::begin_frame(
