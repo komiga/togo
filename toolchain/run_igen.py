@@ -70,15 +70,18 @@ def mtime(path):
 	return 0
 
 class Source:
-	def __init__(self, path):
-		self.path = path
+	def __init__(self, spec):
+		self.path = spec["path"]
+		self.included = spec["included"]
 		assert os.path.exists(self.path), "source does not exist: %s" % (self.path)
 		self.time = mtime(self.path)
 
 class Interface:
 	def __init__(self, spec):
 		self.path = spec["path"]
-		self.sources = [Source(path) for path in spec["sources"]]
+		self.sources = [
+			Source(source_spec) for source_spec in spec["sources"]
+		]
 		self.gen_path = spec["gen_path"]
 		self.doc_group = spec["doc_group"]
 		self.doc_path = os.path.join(
@@ -137,6 +140,9 @@ class Interface:
 
 		self.group = igen.Group(None)
 		for source in self.sources:
+			if source.included:
+				# Skip sources that are included by the interface
+				continue
 			funcs = igen.parse_and_collect(source.path, G.clang_args, pre_filter, post_filter)
 			self.group.add_funcs(funcs)
 

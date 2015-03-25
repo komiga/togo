@@ -1,5 +1,8 @@
 
-require "lfs"
+package.path = package.path .. ';' .. [[dep/?.lua]]
+
+require("lfs")
+local dkjson = require("dep/dkjson/dkjson")
 
 local THRESHOLD = 150
 
@@ -64,15 +67,24 @@ local MATCHERS = {
 			return true
 		end
 	end,
+	['igen%-following%-sources%-included$'] = function(ctx, data, _)
+		data.sources_included = true
+	end,
 	['igen%-source:%s*([^%s]+)$'] = function(ctx, data, path)
-		table.insert(data.sources, path)
+		table.insert(data.sources, {
+			path = path,
+			included = data.sources_included,
+		})
 	end,
 	['igen%-source%-pattern:%s*([^%s]+)$'] = function(ctx, data, pattern)
 		pattern = string.format("^%s$", pattern)
 		for _, path in pairs(ctx.paths) do
 			local i, _ = string.find(path, pattern)
 			if i ~= nil then
-				table.insert(data.sources, path)
+				table.insert(data.sources, {
+					path = path,
+					included = data.sources_included,
+				})
 			end
 		end
 	end,
@@ -89,13 +101,17 @@ function process_file(ctx, from, path)
 		slug = path_no_ext:gsub("^" .. from .. "/", ""),
 		path = path,
 		gen_path = nil,
+		sources_included = false,
 		sources = {},
 		ingroups = {},
 	}
 
 	local primary_source = path_no_ext .. ".cpp"
 	if ctx.path_from[primary_source] ~= nil then
-		table.insert(data.sources, primary_source)
+		table.insert(data.sources, {
+			path = primary_source,
+			included = data.sources_included,
+		})
 	end
 
 	local continue = true
@@ -122,33 +138,15 @@ function process_file(ctx, from, path)
 		return false
 	end
 
+	data.from = nil
 	data.doc_group = #data.ingroups > 0 and table_last(data.ingroups) or nil
+	data.ingroups = nil
+	data.sources_included = nil
 	table.insert(ctx.users, data)
 	return true
 end
 
 local USERS_PATH = "toolchain/igen_users"
-
-local FIELDS = {
-	"slug",
-	"path",
-	"sources",
-	"gen_path",
-	"doc_group",
-}
-
-local FIELD_FMT = '\t"%s" : %s'
-
-function json_array(t)
-	local str = "[\n"
-	for i, v in ipairs(t) do
-		str = str .. string.format('\t\t"%s"', tostring(v))
-		if i < #t then
-			str = str .. ",\n"
-		end
-	end
-	return str .. "\n\t]"
-end
 
 function write_users(ctx)
 	local path = USERS_PATH
@@ -156,25 +154,7 @@ function write_users(ctx)
 	if stream == nil then
 		error("failed to open '" .. path .. "': " .. err)
 	end
-	stream:write('{"users" : [\n')
-	for i, user in ipairs(ctx.users) do
-		stream:write("{\n")
-		for j, name in pairs(FIELDS) do
-			local field = user[name]
-			if type(field) == "table" then
-				field = json_array(field)
-			else
-				field = string.format('"%s"', tostring(field))
-			end
-			stream:write(string.format(FIELD_FMT, name, field))
-			stream:write(j < #FIELDS and ",\n" or "\n")
-		end
-		stream:write("}")
-		if i < #ctx.users then
-			stream:write(",")
-		end
-	end
-	stream:write("]}\n")
+	stream:write(dkjson.encode({users = ctx.users}, {indent = false}))
 	stream:close()
 end
 
