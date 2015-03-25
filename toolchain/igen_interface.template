@@ -14,8 +14,15 @@ ${ns.open_string()}
 */
 
 %for f in ns.funcs:
+%if f.anno_private:
+/// @cond INTERNAL
+%elif f.cursor.raw_comment:
 ${f.cursor.raw_comment}
+%endif
 ${f.signature(named_args = True)};
+%if f.anno_private:
+/// @endcond
+%endif
 
 %endfor
 /** @} */
