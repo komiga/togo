@@ -41,7 +41,7 @@ void error_abort(unsigned line, char const* file, char const* msg, ...);
 	#define TOGO_ASSERTE(expr) ((void)0)
 #endif
 
-#if defined(TOGO_DEBUG) && !defined(TOGO_DISABLE_ASSERTIONS)
+#if defined(TOGO_DEBUG) && !defined(TOGO_DISABLE_ASSERTIONS) && !defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
 	#define TOGO_DEBUG_ASSERT(expr, msg) TOGO_ASSERT(expr, msg)
 	#define TOGO_DEBUG_ASSERTF(expr, msg, ...) TOGO_ASSERTF(expr, msg, __VA_ARGS__)
 	#define TOGO_DEBUG_ASSERTE(expr) TOGO_ASSERTE(expr)
