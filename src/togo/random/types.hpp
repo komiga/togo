@@ -35,6 +35,9 @@ enum : s64 {
 	RNG_MAX_S = static_cast<s64>((~u64{0u} << 1) >> 1),
 };
 
+// Public domain xorshift RNGs sourced from:
+// http://xorshift.di.unimi.it/
+
 /// xorshift64* state.
 struct XS64M {
 	u64 _v;
