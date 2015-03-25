@@ -760,6 +760,10 @@ l_set_value:
 
 } // anonymous namespace
 
+/// Read from stream.
+///
+/// Returns false if a parser error occurred. pinfo will have the
+/// position and error message of the parser.
 bool kvs::read(KVS& root, IReader& stream, ParserInfo& pinfo) {
 	TempAllocator<4096> allocator{};
 	Parser p{
@@ -807,6 +811,7 @@ bool kvs::read(KVS& root, IReader& stream, ParserInfo& pinfo) {
 	return ~p.flags & PF_ERROR;
 }
 
+/// Read from stream (sans parser info).
 bool kvs::read(KVS& root, IReader& stream) {
 	ParserInfo pinfo;
 	if (!kvs::read(root, stream, pinfo)) {
@@ -819,6 +824,7 @@ bool kvs::read(KVS& root, IReader& stream) {
 	return true;
 }
 
+/// Read from file.
 bool kvs::read_file(KVS& root, StringRef const& path) {
 	FileReader stream{};
 	if (!stream.open(path)) {
@@ -1005,11 +1011,16 @@ static bool kvs_write(
 
 } // anonymous namespace
 
+/// Write to stream.
+///
+/// Returns IO status of the stream (output is likely incomplete
+/// if !status).
 IOStatus kvs::write(KVS const& kvs, IWriter& stream) {
 	kvs_write(kvs, stream, KVSType::node, 0, true);
 	return io::status(stream);
 }
 
+/// Write to file.
 bool kvs::write_file(KVS const& kvs, StringRef const& path) {
 	FileWriter stream{};
 	if (!stream.open(path, false)) {

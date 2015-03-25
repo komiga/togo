@@ -9,6 +9,8 @@
 
 #pragma once
 
+// igen-source: src/togo/kvs/io.cpp
+
 #include <togo/config.hpp>
 #include <togo/types.hpp>
 #include <togo/error/assert.hpp>
@@ -368,27 +370,6 @@ inline void pop_back(KVS& kvs) {
 	TOGO_ASSERTE(kvs::any(kvs));
 	kvs::resize(kvs, kvs._value.collection.size - 1);
 }
-
-/// Read from stream.
-///
-/// Returns false if a parser error occurred. pinfo will have the
-/// position and error message of the parser.
-bool read(KVS& root, IReader& stream, ParserInfo& pinfo);
-
-/// Read from stream (sans parser info).
-bool read(KVS& root, IReader& stream);
-
-/// Read from file.
-bool read_file(KVS& root, StringRef const& path);
-
-/// Write to stream.
-///
-/// Returns IO status of the stream (output is likely incomplete
-/// if !status).
-IOStatus write(KVS const& kvs, IWriter& stream);
-
-/// Write to file.
-bool write_file(KVS const& kvs, StringRef const& path);
 
 /** @} */ // end of doc-group kvs
 
