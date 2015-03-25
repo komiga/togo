@@ -4,5 +4,4 @@ echo "collect_igen_users"
 
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-find src/togo/ -type f -name "*.hpp" \
-	| xargs lua5.2 "$ROOT/collect_igen_users.lua"
+lua5.2 "$ROOT/collect_igen_users.lua" "src/togo/"

@@ -4,7 +4,7 @@ print("run_igen")
 
 import os
 import sys
-
+import time
 import hashlib
 import json
 from mako.template import Template
@@ -29,9 +29,15 @@ arg_sep_index = sys.argv.index("--")
 argv = sys.argv[1:arg_sep_index]
 argv_rest = sys.argv[arg_sep_index + 1:]
 
-G.debug = os.environ.get("DEBUG", False)
-G.do_force = os.environ.get("FORCE", False) or "--force" in argv
-G.do_check = G.do_force or os.environ.get("CHECK", False) or "--check" in argv
+def opt(name):
+	return (
+		os.environ.get(name.upper(), False) or
+		("--" + name) in argv
+	)
+
+G.debug = opt("debug") != False
+G.do_force = opt("force") != False
+G.do_check = opt("check") != False or G.do_force
 G.template = Template(filename = G.F_TEMPLATE)
 G.cache = {}
 
@@ -57,27 +63,32 @@ def mtime(path):
 		return stat.st_mtime
 	return 0
 
-def source_path(path):
-	return os.path.join("src/togo", path)
+class Source:
+	def __init__(self, path):
+		self.path = path
+		assert os.path.exists(self.path), "source does not exist: %s" % (self.path)
+		self.time = mtime(self.path)
 
 class Interface:
 	def __init__(self, spec):
 		self.slug = spec["slug"]
-		self.header = source_path(spec["header"])
-		self.source = source_path(spec["source"])
-		self.gen_path = source_path(spec["gen_path"])
-		self.namespace = spec["namespace"]
+		self.header = spec["header"]
+		self.sources = [Source(path) for path in spec["sources"]]
+		self.gen_path = spec["gen_path"]
 		self.doc_group = spec["doc_group"]
 
 		self.group = None
 		self.data = None
 		self.data_hash = None
 
-		cache = G.cache.get(self.source, {})
+		assert len(self.sources) > 0, "no sources for %s" % (self.gen_path)
+
+		cache = G.cache.get(self.gen_path, {})
 		self.check_time = cache.get("check_time", 0)
-		self.source_time = mtime(self.source)
-		# self.gen_time = mtime(self.gen_path)
-		self.needs_check = G.do_check or self.check_time < self.source_time
+		self.needs_check = (
+			G.do_check or
+			True in (self.check_time < source.time for source in self.sources)
+		)
 
 		gen_exists = os.path.isfile(self.gen_path)
 		self.gen_hash = None
@@ -104,33 +115,35 @@ class Interface:
 
 	def load(self):
 		def pre_filter(cursor):
-			return cursor.location.file.name == self.source and (
-				cursor.raw_comment != None or
-				has_annotation(cursor, "igen_interface")
+			return (
+				True in (s.path == cursor.location.file.name for s in self.sources) and (
+					cursor.raw_comment != None or
+					has_annotation(cursor, "igen_interface")
+				)
 			)
 		def post_filter(function):
 			# function.xqn == self.namespace or
 			return True
 
-		self.group = igen.collect(
-			self.source, G.clang_args,
-			pre_filter = pre_filter,
-			post_filter = post_filter,
-		)
+		self.group = igen.Group(None)
+		for source in self.sources:
+			funcs = igen.parse_and_collect(source.path, G.clang_args, pre_filter, post_filter)
+			self.group.add_funcs(funcs)
+
 		self.data = G.template.render_unicode(
 			group = self.group,
 			interface = self,
 		).encode("utf-8", "replace")
 		self.data_hash = not G.do_force and hashlib.md5(self.data).digest() or None
 		self.needs_build = G.do_force or self.data_hash != self.gen_hash
-		self.check_time = self.source_time
+		self.check_time = int(time.mktime(time.localtime()))
 
 	def write(self):
 		with open(self.gen_path, "w") as f:
 			f.write(self.data)
 
-	def cache(self):
-		return {
+	def set_cache(self):
+		G.cache[self.gen_path] = {
 			"check_time" : self.check_time,
 		}
 
@@ -145,9 +158,12 @@ for i in G.interfaces.values():
 	if not i.needs_check:
 		continue
 
-	print("\ncheck: %s -> %s" % (i.source, i.gen_path))
+	print("\ncheck: %s" % (i.gen_path))
+	for source in i.sources:
+		print("  from %s" % (source.path))
 	i.load()
-	if G.debug:
+	if G.debug and len(i.group.funcs) > 0:
+		print("")
 		for f in i.group.funcs:
 			print("  %s" % f.signature_fqn())
 
@@ -159,7 +175,7 @@ for i in G.interfaces.values():
 
 G.cache = {}
 for i in G.interfaces.values():
-	G.cache[i.source] = i.cache()
+	i.set_cache()
 
 with open(G.F_CACHE, "w") as f:
 	json.dump(G.cache, f)
