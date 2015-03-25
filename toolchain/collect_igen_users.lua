@@ -83,17 +83,17 @@ function process_file(ctx, from, path)
 	if stream == nil then
 		error("failed to open '" .. path .. "': " .. err)
 	end
-	local slug = path:gsub("^" .. from .. "/", ""):gsub("%.hpp$", "")
+	local path_no_ext = path:gsub("%.[^%.]+$", "")
 	local data = {
 		from = from,
-		slug = slug,
-		header = path,
+		slug = path_no_ext:gsub("^" .. from .. "/", ""),
+		path = path,
 		gen_path = nil,
 		sources = {},
 		ingroups = {},
 	}
 
-	local primary_source = path:gsub("hpp$", "cpp")
+	local primary_source = path_no_ext .. ".cpp"
 	if ctx.path_from[primary_source] ~= nil then
 		table.insert(data.sources, primary_source)
 	end
@@ -131,7 +131,7 @@ local USERS_PATH = "toolchain/igen_users"
 
 local FIELDS = {
 	"slug",
-	"header",
+	"path",
 	"sources",
 	"gen_path",
 	"doc_group",
