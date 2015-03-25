@@ -123,6 +123,9 @@ void app::actual_init(AppBase& app) {
 	app._func_init(app);
 }
 
+/// Shutdown application.
+///
+/// An assertion will fail if the application has not been created.
 void app::shutdown() {
 	auto& app = app::instance();
 	TOGO_LOG("App: shutting down\n");
@@ -186,6 +189,9 @@ void app::render(AppBase& app) {
 	gfx::display::bind_context(app.display);
 }
 
+/// Run the application.
+///
+/// This will run the main loop until a quit is signaled.
 void app::run() {
 	auto& app = app::instance();
 	float const update_freq = app._update_freq;
@@ -211,12 +217,17 @@ void app::run() {
 	}
 }
 
+/// Signal the application to quit.
+///
+/// This has no effect if the application is not running
+/// (see app::run()).
 void app::quit() {
 	auto& app = app::instance();
 	TOGO_LOG("App: quit requested\n");
 	app._quit = true;
 }
 
+/// Render a world through a camera and viewport.
 void app::render_world(
 	WorldID const world_id,
 	EntityID const camera_id,

@@ -18,6 +18,7 @@
 #include <togo/world/types.hpp>
 #include <togo/gfx/types.hpp>
 #include <togo/app/types.hpp>
+#include <togo/app/app.gen_interface>
 
 namespace togo {
 
@@ -88,29 +89,6 @@ inline AppBase& init(
 	init_with(allocator, app);
 	return app::instance();
 }
-
-/// Shutdown application.
-///
-/// An assertion will fail if the application has not been created.
-void shutdown();
-
-/// Run the application.
-///
-/// This will run the main loop until a quit is signaled.
-void run();
-
-/// Signal the application to quit.
-///
-/// This has no effect if the application is not running
-/// (see app::run()).
-void quit();
-
-/// Render a world through a camera and viewport.
-void render_world(
-	WorldID world_id,
-	EntityID camera_id,
-	gfx::ViewportNameHash viewport_name_hash
-);
 
 /** @} */ // end of doc-group app
 
