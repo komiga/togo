@@ -162,7 +162,7 @@ with open(G.F_USERS, "r") as f:
 	users = json.load(f)["users"]
 	for spec in users:
 		i = Interface(spec)
-		G.interfaces[i.slug] = i
+		G.interfaces[i.gen_path] = i
 
 for i in G.interfaces.values():
 	if not i.needs_check:
