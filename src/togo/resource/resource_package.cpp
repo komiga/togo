@@ -92,7 +92,7 @@ void resource_package::close(
 	pkg._stream.close();
 }
 
-/// Get resource metadata by ID.
+/// Resource metadata for ID.
 ///
 /// An assertion will fail if the ID is invalid.
 ResourceMetadata const& resource_package::resource_metadata(

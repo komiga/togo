@@ -23,7 +23,7 @@ namespace compiler_manager {
 	@{
 */
 
-/// Get package collection.
+/// Package collection.
 inline Array<PackageCompiler*> const& packages(
 	CompilerManager const& cm
 ) {
@@ -39,7 +39,7 @@ void register_compiler(
 	ResourceCompiler const& compiler
 );
 
-/// Check if there is a compiler for type registered.
+/// Whether there is a compiler for type registered.
 bool has_compiler(
 	CompilerManager const& cm,
 	ResourceType type
@@ -51,7 +51,7 @@ ResourceCompiler const* find_compiler(
 	ResourceType type
 );
 
-/// Check if package exists.
+/// Whether a package with name_hash exists.
 bool has_package(
 	CompilerManager const& cm,
 	ResourcePackageNameHash name_hash
@@ -100,7 +100,7 @@ bool write_packages(
 	CompilerManager& cm
 );
 
-/// Check if a resource exists.
+/// Whether a resource with identity exists.
 bool has_resource(
 	CompilerManager const& cm,
 	ResourceType type,

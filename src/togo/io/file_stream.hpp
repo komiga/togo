@@ -46,7 +46,7 @@ public:
 	FileReader& operator=(FileReader const&) = delete;
 	FileReader& operator=(FileReader&&) = delete;
 
-	/// Check if stream is open.
+	/// Whether stream is open.
 	bool is_open() const;
 
 	/// Attempt to open a file.
@@ -55,7 +55,7 @@ public:
 	/// path must be NUL-terminated.
 	bool open(StringRef const& path);
 
-	/// Close the stream.
+	/// Close.
 	void close();
 
 private:
@@ -88,7 +88,7 @@ public:
 	FileWriter& operator=(FileWriter const&) = delete;
 	FileWriter& operator=(FileWriter&&) = delete;
 
-	/// Check if stream is open.
+	/// Whether stream is open.
 	bool is_open() const;
 
 	/// Attempt to open a file.
@@ -99,7 +99,7 @@ public:
 	/// path must be NUL-terminated.
 	bool open(StringRef const& path, bool append);
 
-	/// Close the stream.
+	/// Close.
 	void close();
 
 private:

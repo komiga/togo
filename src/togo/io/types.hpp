@@ -38,7 +38,7 @@ struct IOStatus {
 
 	unsigned _value;
 
-	/// Assign status and return self.
+	/// Set status and return self.
 	IOStatus& assign(bool const fail, bool const eof) {
 		_value
 			= fail ? flag_fail : flag_none
@@ -53,17 +53,17 @@ struct IOStatus {
 		return *this;
 	}
 
-	/// No errors.
+	/// Whether there are no errors.
 	constexpr bool ok() const noexcept {
 		return !_value;
 	}
 
-	/// An operation failed.
+	/// Whether an operation failed.
 	constexpr bool fail() const noexcept {
 		return _value & flag_fail;
 	}
 
-	/// An operation failed and reached the end of the stream.
+	/// Whether an operation failed and reached the end of the stream.
 	///
 	/// Writers that have a bound stream size (i.e., non-growing) may
 	/// set this flag.
@@ -71,7 +71,7 @@ struct IOStatus {
 		return _value & flag_eof;
 	}
 
-	/// Same as ok().
+	/// Whether there are no errors.
 	constexpr operator bool() const noexcept {
 		return ok();
 	}

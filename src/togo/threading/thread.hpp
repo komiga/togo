@@ -25,16 +25,16 @@ namespace thread {
 
 // implementation
 
-/// Get the name of a thread.
+/// Name.
 char const* name(Thread* t);
 
-/// Check if the current thread is the main thread.
+/// Whether the current thread is the main thread.
 bool is_main();
 
 /// Yield to the processor on the current thread.
 void yield();
 
-/// Create a thread.
+/// Create thread.
 ///
 /// Execution will begin as soon as the system allots time to the
 /// thread.
@@ -50,7 +50,7 @@ Thread* create(
 	Allocator& allocator = memory::default_allocator()
 );
 
-/// Join a thread.
+/// Join thread.
 ///
 /// The thread object will be invalid after this call. The return
 /// value is the return value of the function passed to

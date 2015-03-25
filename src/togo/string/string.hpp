@@ -27,27 +27,27 @@ namespace string {
 	@{
 */
 
-/// Get size of a NUL-terminated string.
+/// Calculate size of a NUL-terminated string.
 ///
 /// This does not include the NUL terminator.
 inline unsigned size(char const* cstr, cstr_tag = cstr_tag{}) {
 	return cstr ? std::strlen(cstr) : 0;
 }
 
-/// Get size of a string literal.
+/// Calculate size of a string literal.
 ///
 /// This does not include the NUL terminator if there is one.
 /// If there are NULs before N, they are counted.
 ///
 /// @warning This should only be called for string literals.
 /// The C-string variant should be used for character arrays that may
-/// have empty space before N.
+/// have NULs before N.
 template<unsigned N>
 inline constexpr unsigned size(char const (&data)[N]) {
 	return N > 0 && data[N - 1] == '\0' ? N - 1 : N;
 }
 
-/// Get size of a fixed-capacity string.
+/// Calculate size of a fixed-capacity string.
 ///
 /// This does not include the NUL terminator if there is one.
 template<unsigned N>
@@ -59,7 +59,7 @@ inline unsigned size(FixedArray<char, N> const& string) {
 	;
 }
 
-/// Get size of a string.
+/// Calculate size of a string.
 ///
 /// This does not include the NUL terminator if there is one.
 inline unsigned size(Array<char> const& string) {
@@ -221,17 +221,17 @@ inline StringRef::StringRef(FixedArray<char, N> const& array)
 	: StringRef(fixed_array::begin(array), fixed_array::size(array))
 {}
 
-/// Check if the reference has non-null data.
+/// Whether the reference has non-null data.
 inline bool StringRef::valid() const {
 	return data != nullptr;
 }
 
-/// Check if the reference points to non-empty string.
+/// Whether the reference points to a non-empty string.
 inline bool StringRef::any() const {
 	return size > 0;
 }
 
-/// Check if the reference points to an empty string.
+/// Whether the reference points to an empty string.
 inline bool StringRef::empty() const {
 	return size == 0;
 }

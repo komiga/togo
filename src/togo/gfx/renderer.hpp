@@ -39,7 +39,7 @@ gfx::Renderer* create(
 /// Destroy renderer.
 void destroy(gfx::Renderer* renderer);
 
-/// Renderer type.
+/// Type.
 gfx::RendererType type(gfx::Renderer const* renderer);
 
 /// Create buffer.
@@ -79,7 +79,7 @@ inline void map_buffer(
 	);
 }
 
-/// Get parameter block offset by index.
+/// Parameter block offset by index.
 ///
 /// block_size should be the size of the largest block in the buffer.
 unsigned param_block_offset(
@@ -88,7 +88,7 @@ unsigned param_block_offset(
 	unsigned block_size
 );
 
-/// Get size for a buffer of parameter blocks.
+/// Size for a buffer of parameter blocks.
 ///
 /// This should be used for buffers that contain parameter blocks,
 /// which require aligned offsets.

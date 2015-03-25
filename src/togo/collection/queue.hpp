@@ -54,14 +54,14 @@ inline Queue<T>& Queue<T>::operator=(Queue<T>&& other) {
 	return *this;
 }
 
-/// Access value by index.
+/// Get value by index.
 template<class T>
 inline T& Queue<T>::operator[](unsigned const i) {
 	TOGO_DEBUG_ASSERTE(i < _size);
 	return _data[(_head + i) % array::size(_data)];
 }
 
-/// Access value by index.
+/// Get value by index.
 template<class T>
 inline T const& Queue<T>::operator[](unsigned const i) const {
 	TOGO_DEBUG_ASSERTE(i < _size);
@@ -119,32 +119,32 @@ inline u32_fast capacity(Queue<T> const& q) { return array::size(q._data); }
 template<class T>
 inline u32_fast space(Queue<T> const& q) { return array::size(q._data) - q._size; }
 
-/// Returns true if there are any items in the queue.
+/// Whether there are any items in the queue.
 template<class T>
 inline bool any(Queue<T> const& q) { return q._size != 0; }
 
-/// Returns true if there are no items in the queue.
+/// Whether there are no items in the queue.
 template<class T>
 inline bool empty(Queue<T> const& q) { return q._size == 0; }
 
-/// Access first item.
+/// Get first item.
 template<class T>
 inline T& front(Queue<T>& q) {
 	return q[0];
 }
-/// Access first item.
+/// Get first item.
 template<class T>
 inline T const& front(Queue<T> const& q) {
 	return q[0];
 }
 
-/// Access last item.
+/// Get last item.
 template<class T>
 inline T& back(Queue<T>& q) {
 	TOGO_DEBUG_ASSERTE(any(q));
 	return q[q._size - 1];
 }
-/// Access last item.
+/// Get last item.
 template<class T>
 inline T const& back(Queue<T> const& q) {
 	TOGO_DEBUG_ASSERTE(any(q));
@@ -167,7 +167,7 @@ inline void clear(Queue<T>& q) {
 	q._size = 0;
 }
 
-/// Push an item to the back of the queue.
+/// Add an item to the back of the queue.
 template<class T>
 inline T& push_back(Queue<T>& q, T const& item) {
 	if (!space(q)) {
@@ -187,7 +187,7 @@ inline void pop_back(Queue<T>& q) {
 	}
 }
 
-/// Push an item to the front of the queue.
+/// Add an item to the front of the queue.
 template<class T>
 inline T& push_front(Queue<T>& q, T const& item) {
 	if (!space(q)) {

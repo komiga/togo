@@ -62,7 +62,7 @@ struct Globals {
 };
 extern app::Globals _globals;
 
-/// Get application.
+/// Get application instance.
 ///
 /// An assertion will fail if the application has not been created.
 inline AppBase& instance() {

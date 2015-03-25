@@ -23,13 +23,13 @@ namespace system {
 	@{
 */
 
-/// Get the number of cores for the system's processor.
+/// Number of cores.
 unsigned num_cores();
 
 /// Sleep the current thread for a duration in milliseconds.
 void sleep_ms(unsigned duration_ms);
 
-/// Get time in seconds from monotonic system clock.
+/// Time in seconds from monotonic system clock.
 ///
 /// The return value should have a precision of milliseconds or
 /// better (typically nanoseconds).

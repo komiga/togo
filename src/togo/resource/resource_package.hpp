@@ -23,7 +23,7 @@ namespace resource_package {
 	@{
 */
 
-/// Name hash (cached).
+/// Name hash.
 inline ResourcePackageNameHash name_hash(ResourcePackage const& pkg) {
 	return pkg._name_hash;
 }

@@ -33,27 +33,27 @@ bool create_stub(
 	StringRef const& name
 );
 
-/// Get name hash.
+/// Name hash.
 inline ResourcePackageNameHash name_hash(PackageCompiler const& pkg) {
 	return pkg._name_hash;
 }
 
-/// Get name.
+/// Name.
 inline StringRef name(PackageCompiler const& pkg) {
 	return {pkg._name};
 }
 
-/// Get path.
+/// Path.
 inline StringRef path(PackageCompiler const& pkg) {
 	return {pkg._path};
 }
 
-/// Get manifest.
+/// Manifest.
 inline Array<ResourceCompilerMetadata> const& manifest(PackageCompiler const& pkg) {
 	return pkg._manifest;
 }
 
-/// Check if the package properties are marked as modified.
+/// Whether the package properties are marked as modified.
 inline bool properties_modified(PackageCompiler const& pkg) {
 	return pkg._properties_modified;
 }
@@ -63,7 +63,7 @@ inline void set_properties_modified(PackageCompiler& pkg, bool const value) {
 	pkg._properties_modified = value;
 }
 
-/// Check if the package manifest is marked as modified.
+/// Whether the package manifest is marked as modified.
 inline bool manifest_modified(PackageCompiler const& pkg) {
 	return pkg._manifest_modified;
 }
@@ -77,12 +77,12 @@ inline void set_manifest_modified(PackageCompiler& pkg, bool const value) {
 	}
 }
 
-/// Check if the package needs to be built.
+/// Whether the package needs to be built.
 inline bool needs_build(PackageCompiler const& pkg) {
 	return !pkg._build_parity;
 }
 
-/// Get lookup node by resource name.
+/// Find lookup node by resource name.
 PackageCompiler::LookupNode* find_node(
 	PackageCompiler& pkg,
 	ResourceNameHash name_hash

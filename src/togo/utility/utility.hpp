@@ -42,21 +42,21 @@ unsigned_cast(T const value) noexcept {
 	return static_cast<typename std::make_unsigned<T>::type>(value);
 }
 
-/// Get number of elements in bounded array.
+/// Number of elements in bounded array.
 template<class T, unsigned N>
 inline constexpr unsigned
 array_extent(T const (&)[N]) noexcept {
 	return N;
 }
 
-/// Get number of elements in bounded array.
+/// Number of elements in bounded array.
 template<class T, class U, unsigned N>
 inline constexpr unsigned
 array_extent(T const (U::* const)[N]) noexcept {
 	return N;
 }
 
-/// Get sizeof type or 0 if the type is empty.
+/// Get sizeof(T) or 0 if T is empty.
 template<class T>
 inline constexpr unsigned
 sizeof_empty() noexcept {
@@ -122,14 +122,14 @@ inline bool greater(T const& x, T const& y) {
 
 /** @name Arithmetic utilities */ /// @{
 
-/// Get the smallest of two values.
+/// Get the lesser of two values.
 template<class T>
 inline constexpr T min(T const x, T const y) noexcept {
 	TOGO_CONSTRAIN_INTEGRAL(T);
 	return x < y ? x : y;
 }
 
-/// Get the largest of two values.
+/// Get the greater of two values.
 template<class T>
 inline constexpr T max(T const x, T const y) noexcept {
 	TOGO_CONSTRAIN_INTEGRAL(T);
@@ -154,6 +154,7 @@ inline constexpr T clamp(T const x, T const minimum, T const maximum) noexcept {
 /** @name Memory utilities */ /// @{
 
 /// Advance pointer by bytes.
+///
 /// @warning This advances by bytes, not sizeof(T).
 template<class T>
 inline T* pointer_add(T* p, u32 const bytes) noexcept {
@@ -176,7 +177,7 @@ inline T* pointer_align(T* p, u32 const align) noexcept {
 
 /** @name Enum utilities */ /// @{
 
-/// Return true whether an enum value is non-zero.
+/// Whether an enum value is non-zero.
 template<class T>
 inline constexpr bool enum_bool(T const value) {
 	static_assert(
@@ -253,13 +254,13 @@ struct ArrayRef {
 		return _end - _begin;
 	}
 
-	/// Access value by index.
+	/// Get value by index.
 	T& operator[](unsigned const i) {
 		TOGO_DEBUG_ASSERTE(_begin + i < _end);
 		return _begin[i];
 	}
 
-	/// Access value by index.
+	/// Get value by index.
 	T const& operator[](unsigned const i) const {
 		TOGO_DEBUG_ASSERTE(_begin + i < _end);
 		return _begin[i];

@@ -23,14 +23,14 @@ namespace resource_manager {
 	@{
 */
 
-/// Get base path.
+/// Base path.
 inline StringRef base_path(
 	ResourceManager const& rm
 ) {
 	return rm._base_path;
 }
 
-/// Get package collection.
+/// Package collection.
 inline Array<ResourcePackage*> const& packages(
 	ResourceManager const& rm
 ) {

@@ -166,13 +166,13 @@ struct TaskManager {
 	TaskManager(TaskManager const&) = delete;
 	TaskManager& operator=(TaskManager const&) = delete;
 
-	/// Destroy task manager.
+	/// Destroy.
 	///
 	/// All worker threads will be halted and any waiting threads will
 	/// return.
 	~TaskManager();
 
-	/// Construct task manager with worker threads and an allocator.
+	/// Construct with worker threads and an allocator.
 	///
 	/// num_workers threads will be created to execute tasks. If
 	/// num_workers is 0, tasks can only be executed by a thread that

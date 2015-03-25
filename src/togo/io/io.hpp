@@ -23,12 +23,12 @@ namespace io {
 	@{
 */
 
-/// Get stream IO status.
+/// Stream IO status.
 inline IOStatus status(IStreamBase const& stream) {
 	return stream.status();
 }
 
-/// Get stream position.
+/// Stream position.
 inline u64 position(IStreamSeekable& stream) {
 	return stream.position();
 }

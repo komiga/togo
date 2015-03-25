@@ -44,7 +44,7 @@ WorldManager::~WorldManager() {
 	world_manager::shutdown(*this);
 }
 
-/// Check if a world is alive.
+/// Whether a world is alive.
 bool world_manager::alive(
 	WorldManager const& wm,
 	WorldID const& id
@@ -82,7 +82,7 @@ void world_manager::register_component_manager(
 	hash_map::push(wm._component_manager_defs, def.name_hash, def);
 }
 
-/// Create a world.
+/// Create world.
 WorldID world_manager::create(WorldManager& wm) {
 	WorldID::value_type index;
 	if (queue::size(wm._free_indices) > MIN_FREE_INDICES) {
@@ -105,7 +105,7 @@ WorldID world_manager::create(WorldManager& wm) {
 	return WorldID{index | (wm._instances[index].generation << WorldID::INDEX_BITS)};
 }
 
-/// Destroy a world.
+/// Destroy world.
 void world_manager::destroy(
 	WorldManager& wm,
 	WorldID const& id

@@ -23,7 +23,7 @@ namespace interface {
 	@{
 */
 
-/// Get project path.
+/// Project path.
 inline StringRef project_path(
 	Interface const& interface
 ) {
@@ -38,7 +38,7 @@ bool read_options(
 	KVS const& k_options
 );
 
-/// Initialize interface.
+/// Initialize.
 ///
 /// This must be called for the project path to be assigned.
 /// If project_path is empty, the TOGO_PROJECT environment variable

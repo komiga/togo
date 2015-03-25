@@ -27,14 +27,14 @@ inline FixedArray<T, N>::FixedArray()
 	, _data()
 {}
 
-/// Access value by index.
+/// Get value by index.
 template<class T, unsigned N>
 inline T& FixedArray<T, N>::operator[](unsigned const i) {
 	TOGO_DEBUG_ASSERTE(i < _size);
 	return _data[i];
 }
 
-/// Access value by index.
+/// Get value by index.
 template<class T, unsigned N>
 inline T const& FixedArray<T, N>::operator[](unsigned const i) const {
 	TOGO_DEBUG_ASSERTE(i < _size);
@@ -60,11 +60,11 @@ inline u32_fast capacity(FixedArray<T, N> const& /*a*/) { return N; }
 template<class T, unsigned N>
 inline u32_fast space(FixedArray<T, N> const& a) { return N - a._size; }
 
-/// Returns true if there are any items in the array.
+/// Whether there are any items in the array.
 template<class T, unsigned N>
 inline bool any(FixedArray<T, N> const& a) { return a._size != 0; }
 
-/// Returns true if there are no items in the array.
+/// Whether there are no items in the array.
 template<class T, unsigned N>
 inline bool empty(FixedArray<T, N> const& a) { return a._size == 0; }
 
@@ -90,26 +90,26 @@ inline T const* end(FixedArray<T, N> const& a) {
 	return a._data + a._size;
 }
 
-/// Access first item.
+/// Get first item.
 template<class T, unsigned N>
 inline T& front(FixedArray<T, N>& a) {
 	TOGO_DEBUG_ASSERTE(any(a));
 	return a._data[0];
 }
-/// Access first item.
+/// Get first item.
 template<class T, unsigned N>
 inline T const& front(FixedArray<T, N> const& a) {
 	TOGO_DEBUG_ASSERTE(any(a));
 	return a._data[0];
 }
 
-/// Access last item.
+/// Get last item.
 template<class T, unsigned N>
 inline T& back(FixedArray<T, N>& a) {
 	TOGO_DEBUG_ASSERTE(any(a));
 	return a._data[a._size - 1];
 }
-/// Access last item.
+/// Get last item.
 template<class T, unsigned N>
 inline T const& back(FixedArray<T, N> const& a) {
 	TOGO_DEBUG_ASSERTE(any(a));

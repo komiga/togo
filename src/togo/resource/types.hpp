@@ -212,7 +212,7 @@ union ResourceValue {
 	/// Construct with 32-bit unsigned integer.
 	ResourceValue(u32 const uinteger) : uinteger(uinteger) {}
 
-	/// Check if pointer is valid.
+	/// Whether pointer is valid.
 	bool valid() const {
 		return pointer != nullptr;
 	}

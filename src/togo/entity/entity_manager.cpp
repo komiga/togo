@@ -29,7 +29,7 @@ EntityManager::EntityManager(
 	queue::reserve(_free_indices, MIN_FREE_INDICES);
 }
 
-/// Check if an entity is alive.
+/// Whether id is alive.
 bool entity_manager::alive(
 	EntityManager const& em,
 	EntityID const& id

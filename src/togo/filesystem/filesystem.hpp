@@ -24,21 +24,21 @@ namespace filesystem {
 	@{
 */
 
-/// Get the path to the directory of the process's executable.
+/// Path to the process executable parent directory.
 StringRef exec_dir();
 
-/// Get the path to the working directory.
+/// Working directory path.
 ///
 /// Returns the size of str, or 0 if an error occurred.
 unsigned working_dir(char* str, unsigned capacity);
 
-/// Get the path to the working directory.
+/// Working directory path.
 template<unsigned N>
 inline unsigned working_dir(char (&str)[N]) {
 	return working_dir(str, N);
 }
 
-/// Get the path to the working directory.
+/// Working directory path.
 template<unsigned N>
 inline unsigned working_dir(FixedArray<char, N>& str) {
 	unsigned const size = working_dir(str._data, N);
@@ -46,22 +46,22 @@ inline unsigned working_dir(FixedArray<char, N>& str) {
 	return size;
 }
 
-/// Set the working directory.
+/// Set the working directory path.
 bool set_working_dir(StringRef const& path);
 
-/// Check if a path is a file.
+/// Whether path is a file.
 bool is_file(StringRef const& path);
 
-/// Check if a path is a directory.
+/// Whether path is a directory.
 bool is_directory(StringRef const& path);
 
-/// Get the last-modified time in seconds since the POSIX epoch.
+/// Last-modified time of file in seconds since the POSIX epoch.
 ///
-/// Returns 0 on error. Only time-travelers would have a legitimate
-/// reason for such a timestamp, and they are not welcome here.
+/// Returns 0 on error. Only time-travelers would have a legitimate reason
+/// for such a timestamp, and they are not welcome here.
 u64 time_last_modified(StringRef const& path);
 
-/// Get file size in bytes.
+/// Size of file in bytes.
 ///
 /// Returns 0 on error.
 u64 file_size(StringRef const& path);
@@ -98,8 +98,8 @@ inline WorkingDirScope::~WorkingDirScope() {
 	TOGO_ASSERTE(filesystem::set_working_dir(_prev_path));
 }
 
-/// Stores the current working directory path and then sets the
-/// working directory to path.
+/// Stores the current working directory path and then sets the working
+/// directory to path.
 inline WorkingDirScope::WorkingDirScope(
 	StringRef const& path
 )

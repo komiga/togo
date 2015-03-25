@@ -59,7 +59,7 @@ inline void* thread_runner(ThreadData& data) {
 	return exit_value;
 }
 
-/// Get the name of the current thread.
+/// Name of the current thread.
 char const* thread::name() {
 	if (thread::is_main()) {
 		return "main";

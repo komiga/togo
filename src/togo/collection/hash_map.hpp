@@ -58,11 +58,11 @@ inline u32_fast space(HashMap<K, T> const& hm) {
 	return capacity(hm) - size(hm);
 }
 
-/// Returns true if there are any values.
+/// Whether there are any values.
 template<class K, class T>
 inline bool any(HashMap<K, T> const& hm) { return size(hm) != 0; }
 
-/// Returns true if there are no values.
+/// Whether there are no values.
 template<class K, class T>
 inline bool empty(HashMap<K, T> const& hm) { return size(hm) == 0; }
 
@@ -245,7 +245,7 @@ inline T& set(HashMap<K, T>& hm, K const key, T const& value) {
 	return hm._data[index].value = value;
 }
 
-/// Push item.
+/// Add item.
 ///
 /// If there are existing values with key, they are retained.
 template<class K, class T>
@@ -343,13 +343,13 @@ inline HashMapNode<K, T> const* next_node(
 	return nullptr;
 }
 
-/// Check if there is a value with key.
+/// Whether there is a value with key.
 template<class K, class T>
 inline bool has(HashMap<K, T> const& hm, K const key) {
 	return internal::find(hm, key).data != END;
 }
 
-/// Count the number of values with key.
+/// Number of values with key.
 template<class K, class T>
 inline unsigned count(HashMap<K, T> const& hm, K const key) {
 	auto const* node = find_node(hm, key);

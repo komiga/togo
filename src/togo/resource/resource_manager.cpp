@@ -109,7 +109,7 @@ void resource_manager::clear_handlers(ResourceManager& rm) {
 	hash_map::clear(rm._handlers);
 }
 
-/// Check if a resource handler is registered.
+/// Whether a resource handler is registered.
 bool resource_manager::has_handler(
 	ResourceManager const& rm,
 	ResourceType const type
@@ -192,7 +192,7 @@ void resource_manager::clear_packages(ResourceManager& rm) {
 	array::clear(rm._packages);
 }
 
-/// Check if a resource exists.
+/// Whether a resource matching (type, name_hash) exists.
 bool resource_manager::has_resource(
 	ResourceManager& rm,
 	ResourceType const type,

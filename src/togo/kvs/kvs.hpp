@@ -60,83 +60,81 @@ inline KVSNameHash hash_name(StringRef const& name) {
 	return hash::calc32(name);
 }
 
-/// Get type.
+/// Type.
 inline KVSType type(KVS const& kvs) {
 	return kvs._type;
 }
 
-/// Check type equivalence.
+/// Whether value type is type.
 inline bool is_type(KVS const& kvs, KVSType const type) {
 	return kvs._type == type;
 }
 
-/// Check type by set.
+/// Whether value type is any in type.
 inline bool is_type_any(KVS const& kvs, KVSType const type) {
 	return enum_bool(kvs._type & type);
 }
 
-/// Check if type is KVSType::null.
+/// Whether type is KVSType::null.
 inline bool is_null(KVS const& kvs) { return kvs::is_type(kvs, KVSType::null); }
 
-/// Check if type is KVSType::integer.
+/// Whether type is KVSType::integer.
 inline bool is_integer(KVS const& kvs) { return kvs::is_type(kvs, KVSType::integer); }
 
-/// Check if type is KVSType::decimal.
+/// Whether type is KVSType::decimal.
 inline bool is_decimal(KVS const& kvs) { return kvs::is_type(kvs, KVSType::decimal); }
 
-/// Check if type is KVSType::boolean.
+/// Whether type is KVSType::boolean.
 inline bool is_boolean(KVS const& kvs) { return kvs::is_type(kvs, KVSType::boolean); }
 
-/// Check if type is KVSType::string.
+/// Whether type is KVSType::string.
 inline bool is_string(KVS const& kvs) { return kvs::is_type(kvs, KVSType::string); }
 
-/// Check if type is KVSType::vec1.
+/// Whether type is KVSType::vec1.
 inline bool is_vec1(KVS const& kvs) { return kvs::is_type(kvs, KVSType::vec1); }
 
-/// Check if type is KVSType::vec2.
+/// Whether type is KVSType::vec2.
 inline bool is_vec2(KVS const& kvs) { return kvs::is_type(kvs, KVSType::vec2); }
 
-/// Check if type is KVSType::vec3.
+/// Whether type is KVSType::vec3.
 inline bool is_vec3(KVS const& kvs) { return kvs::is_type(kvs, KVSType::vec3); }
 
-/// Check if type is KVSType::vec4.
+/// Whether type is KVSType::vec4.
 inline bool is_vec4(KVS const& kvs) { return kvs::is_type(kvs, KVSType::vec4); }
 
-/// Check if type is KVSType::node.
+/// Whether type is KVSType::node.
 inline bool is_node(KVS const& kvs) { return kvs::is_type(kvs, KVSType::node); }
 
-/// Check if type is KVSType::array.
+/// Whether type is KVSType::array.
 inline bool is_array(KVS const& kvs) { return kvs::is_type(kvs, KVSType::array); }
 
-/// Check if type is a vector type.
+/// Whether type is a vector type.
 inline bool is_vector(KVS const& kvs) { return kvs::is_type_any(kvs, type_mask_vector); }
 
-/// Check if type is an array or node.
+/// Whether type is an array or node.
 inline bool is_collection(KVS const& kvs) { return kvs::is_type_any(kvs, type_mask_collection); }
 
-/// Get name (NUL-terminated).
+/// Name (NUL-terminated).
 inline char const* name(KVS const& kvs) {
 	return kvs._name ? kvs._name : "";
 }
 
-/// Get name size.
-///
-/// This does not include the NUL terminator.
+/// Name size (not including NUL terminator).
 inline u32 name_size(KVS const& kvs) {
 	return kvs._name_size;
 }
 
-/// Get name reference.
+/// Name reference.
 inline StringRef name_ref(KVS const& kvs) {
 	return StringRef{kvs._name, kvs._name_size};
 }
 
-/// Get name hash.
+/// Name hash.
 inline KVSNameHash name_hash(KVS const& kvs) {
 	return kvs._name_hash;
 }
 
-/// Check if named.
+/// Whether name is non-empty.
 inline bool is_named(KVS const& kvs) {
 	return kvs._name;
 }
@@ -160,12 +158,12 @@ inline u32 space(KVS const& kvs) {
 	;
 }
 
-/// Returns true if there are any values in the collection.
+/// Whether there are any values in the collection.
 inline bool any(KVS const& kvs) {
 	return kvs::is_collection(kvs) ? kvs._value.collection.size : false;
 }
 
-/// Returns true if there are no values in the collection.
+/// Whether there are no values in the collection.
 inline bool empty(KVS const& kvs) {
 	return kvs::is_collection(kvs) ? kvs._value.collection.size == 0 : true;
 }
@@ -204,39 +202,37 @@ inline KVS const* end(KVS const& kvs) {
 	;
 }
 
-/// Get integer value.
+/// Integer value.
 inline s64 integer(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::integer));
 	return kvs._value.integer;
 }
 
-/// Get decimal value.
+/// Decimal value.
 inline f64 decimal(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::decimal));
 	return kvs._value.decimal;
 }
 
-/// Get boolean value.
+/// Boolean value.
 inline bool boolean(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::boolean));
 	return kvs._value.boolean;
 }
 
-/// Get string value (NUL-terminated).
+/// String value (NUL-terminated).
 inline char const* string(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::string));
 	return kvs._value.string.data ? kvs._value.string.data : "";
 }
 
-/// Get string value size.
-///
-/// This does not include the NUL terminator.
+/// String value size (not including NUL terminator).
 inline u32 string_size(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::string));
 	return kvs._value.string.size;
 }
 
-/// Get string value reference.
+/// String value reference.
 inline StringRef string_ref(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::string));
 	return StringRef{
@@ -245,25 +241,25 @@ inline StringRef string_ref(KVS const& kvs) {
 	};
 }
 
-/// Get 1-dimensional vector value.
+/// 1-dimensional vector value.
 inline Vec1 const& vec1(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::vec1));
 	return kvs._value.vec1;
 }
 
-/// Get 2-dimensional vector value.
+/// 2-dimensional vector value.
 inline Vec2 const& vec2(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::vec2));
 	return kvs._value.vec2;
 }
 
-/// Get 3-dimensional vector value.
+/// 3-dimensional vector value.
 inline Vec3 const& vec3(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::vec3));
 	return kvs._value.vec3;
 }
 
-/// Get 4-dimensional vector value.
+/// 4-dimensional vector value.
 inline Vec4 const& vec4(KVS const& kvs) {
 	TOGO_ASSERTE(kvs::is_type(kvs, KVSType::vec4));
 	return kvs._value.vec4;
@@ -457,14 +453,14 @@ inline KVS::KVS(StringRef const& name, Vec3 const& value) : KVS(value) { kvs::se
 /// Construct with name and 4-dimensional vector value.
 inline KVS::KVS(StringRef const& name, Vec4 const& value) : KVS(value) { kvs::set_name(*this, name); }
 
-/// Access value by index.
+/// Get value by index.
 inline KVS& KVS::operator[](unsigned const i) {
 	TOGO_ASSERTE(kvs::is_type_any(*this, type_mask_collection));
 	TOGO_DEBUG_ASSERTE(i < _value.collection.size);
 	return _value.collection.data[i];
 }
 
-/// Access value by index.
+/// Get value by index.
 inline KVS const& KVS::operator[](unsigned const i) const {
 	TOGO_ASSERTE(kvs::is_type_any(*this, type_mask_collection));
 	TOGO_DEBUG_ASSERTE(i < _value.collection.size);

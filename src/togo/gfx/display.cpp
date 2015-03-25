@@ -25,17 +25,17 @@ Display::~Display() {
 	}
 }
 
-/// Display width.
+/// Width.
 unsigned display::width(gfx::Display const* display) {
 	return display->_width;
 }
 
-/// Display height.
+/// Height.
 unsigned display::height(gfx::Display const* display) {
 	return display->_height;
 }
 
-/// Display size.
+/// Size.
 Vec2 display::size(gfx::Display const* display) {
 	return Vec2{
 		static_cast<f32>(display->_width),

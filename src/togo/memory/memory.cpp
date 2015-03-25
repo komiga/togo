@@ -143,7 +143,7 @@ HEAP_CAPACITY = 8 * 1024 * 1024; // 8MB
 } // anonymous namespace
 } // namespace memory
 
-/// Initialize global allocators.
+/// Initialize.
 ///
 /// scratch_size is size of the scratch space block to pre-allocate.
 /// If scratch_size < SCRATCH_ALLOCATOR_SIZE_MINIMUM, an assertion will trigger.
@@ -164,7 +164,7 @@ void memory::init(u32 const scratch_size IGEN_DEFAULT(SCRATCH_ALLOCATOR_SIZE_DEF
 	_mem_globals.active = true;
 }
 
-/// Shutdown allocators created by init().
+/// Shutdown.
 void memory::shutdown() {
 	TOGO_ASSERT(_mem_globals.active, "memory system has not been initialized");
 
@@ -175,7 +175,7 @@ void memory::shutdown() {
 	_mem_globals.active = false;
 }
 
-/// Get the default allocator.
+/// Default allocator.
 ///
 /// This is a thread-safe growing heap allocator.
 Allocator& memory::default_allocator() {
@@ -183,7 +183,7 @@ Allocator& memory::default_allocator() {
 	return *_mem_globals.default_allocator;
 }
 
-/// Get the scratch allocator.
+/// Scratch allocator.
 ///
 /// This is a thread-safe allocator.
 /// This should *only* be used for temporary memory. It uses a ring

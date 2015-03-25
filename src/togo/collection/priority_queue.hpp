@@ -32,13 +32,13 @@ inline PriorityQueue<T>::PriorityQueue(
 	, _less_func(less_func)
 {}
 
-/// Access value by index.
+/// Get value by index.
 template<class T>
 inline T& PriorityQueue<T>::operator[](unsigned const i) {
 	return _data[i];
 }
 
-/// Access value by index.
+/// Get value by index.
 template<class T>
 inline T const& PriorityQueue<T>::operator[](unsigned const i) const {
 	return _data[i];
@@ -63,11 +63,11 @@ inline u32_fast capacity(PriorityQueue<T> const& pq) { return array::capacity(pq
 template<class T>
 inline u32_fast space(PriorityQueue<T> const& pq) { return array::space(pq._data); }
 
-/// Returns true if there are any items in the queue.
+/// Whether there are any items in the queue.
 template<class T>
 inline bool any(PriorityQueue<T> const& pq) { return array::any(pq._data); }
 
-/// Returns true if there are no items in the queue.
+/// Whether there are no items in the queue.
 template<class T>
 inline bool empty(PriorityQueue<T> const& pq) { return array::empty(pq._data); }
 
@@ -93,26 +93,26 @@ inline T const* end(PriorityQueue<T> const& pq) {
 	return array::end(pq._data);
 }
 
-/// Access first item (maximum).
+/// Get first item (maximum).
 template<class T>
 inline T& front(PriorityQueue<T>& pq) {
 	TOGO_DEBUG_ASSERTE(any(pq));
 	return array::front(pq._data);
 }
-/// Access first item (maximum).
+/// Get first item (maximum).
 template<class T>
 inline T const& front(PriorityQueue<T> const& pq) {
 	TOGO_DEBUG_ASSERTE(any(pq));
 	return array::front(pq._data);
 }
 
-/// Access last item.
+/// Get last item.
 template<class T>
 inline T& back(PriorityQueue<T>& pq) {
 	TOGO_DEBUG_ASSERTE(any(pq));
 	return array::back(pq._data);
 }
-/// Access last item.
+/// Get last item.
 template<class T>
 inline T const& back(PriorityQueue<T> const& pq) {
 	TOGO_DEBUG_ASSERTE(any(pq));
@@ -230,8 +230,7 @@ inline void pop(PriorityQueue<T>& pq) {
 /// Copy queue.
 ///
 /// The allocator of dst is unchanged.
-/// The comparison function of dst is changed to src's
-/// (order invariant).
+/// The comparison function of dst is changed to src's (order invariant).
 template<class T>
 inline void copy(PriorityQueue<T>& dst, PriorityQueue<T> const& src) {
 	array::copy(dst._data, src._data);

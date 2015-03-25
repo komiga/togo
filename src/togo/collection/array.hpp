@@ -65,14 +65,14 @@ inline Array<T>& Array<T>::operator=(Array<T>&& other) {
 	return *this;
 }
 
-/// Access value by index.
+/// Get value by index.
 template<class T>
 inline T& Array<T>::operator[](unsigned const i) {
 	TOGO_DEBUG_ASSERTE(i < _size);
 	return _data[i];
 }
 
-/// Access value by index.
+/// Get value by index.
 template<class T>
 inline T const& Array<T>::operator[](unsigned const i) const {
 	TOGO_DEBUG_ASSERTE(i < _size);
@@ -110,11 +110,11 @@ inline u32_fast capacity(Array<T> const& a) { return a._capacity; }
 template<class T>
 inline u32_fast space(Array<T> const& a) { return a._capacity - a._size; }
 
-/// Returns true if there are any items in the array.
+/// Whether there are any items in the array.
 template<class T>
 inline bool any(Array<T> const& a) { return a._size != 0; }
 
-/// Returns true if there are no items in the array.
+/// Whether there are no items in the array.
 template<class T>
 inline bool empty(Array<T> const& a) { return a._size == 0; }
 
@@ -140,26 +140,26 @@ inline T const* end(Array<T> const& a) {
 	return a._data + a._size;
 }
 
-/// Access first item.
+/// Get first item.
 template<class T>
 inline T& front(Array<T>& a) {
 	TOGO_DEBUG_ASSERTE(any(a));
 	return a._data[0];
 }
-/// Access first item.
+/// Get first item.
 template<class T>
 inline T const& front(Array<T> const& a) {
 	TOGO_DEBUG_ASSERTE(any(a));
 	return a._data[0];
 }
 
-/// Access last item.
+/// Get last item.
 template<class T>
 inline T& back(Array<T>& a) {
 	TOGO_DEBUG_ASSERTE(any(a));
 	return a._data[a._size - 1];
 }
-/// Access last item.
+/// Get last item.
 template<class T>
 inline T const& back(Array<T> const& a) {
 	TOGO_DEBUG_ASSERTE(any(a));

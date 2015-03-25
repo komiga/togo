@@ -79,28 +79,28 @@ public:
 	/// in the destructor.
 	virtual ~Allocator() = 0;
 
-	/// Get number of active allocations.
+	/// Number of active allocations.
 	virtual u32 num_allocations() const = 0;
 
-	/// Get total number of bytes allocated by the allocator.
+	/// Number of bytes allocated by the allocator.
 	///
 	/// If an allocator does not support this operation, it shall
 	/// return SIZE_NOT_TRACKED.
 	virtual u32 total_size() const = 0;
 
-	/// Get size of block allocated for p.
+	/// Size of block allocated for p.
 	///
 	/// This may be greater than the actual size of the object type
 	/// due to internal state and alignment. If an allocator does not
 	/// support this operation, it shall return SIZE_NOT_TRACKED.
 	virtual u32 allocation_size(void const* p) const = 0;
 
-	/// Allocate a chunk of memory.
+	/// Allocate memory.
 	///
 	/// If align is 0, no alignment is used.
 	virtual void* allocate(u32 size, u32 align = DEFAULT_ALIGNMENT) = 0;
 
-	/// Deallocate a pointer.
+	/// Deallocate memory.
 	///
 	/// Does nothing if p is nullptr.
 	virtual void deallocate(void const* p) = 0;

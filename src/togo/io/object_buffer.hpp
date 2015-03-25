@@ -44,13 +44,13 @@ inline unsigned size(ObjectBuffer<T, S> const& ob) {
 	return ob._num_objects;
 }
 
-/// Returns true if the buffer is empty.
+/// Whether the buffer is empty.
 template<class T, class S>
 inline bool empty(ObjectBuffer<T, S> const& ob) {
 	return ob._num_objects == 0;
 }
 
-/// Returns true if there is another object in the buffer.
+/// Whether there is another object in the buffer.
 ///
 /// This is always false if buffer is not in consume mode.
 template<class T, class S>
