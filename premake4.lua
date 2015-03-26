@@ -5,7 +5,7 @@ function make_tool(name, configs)
 	precore.make_project(
 		"tool_" .. name,
 		"C++", "ConsoleApp",
-		"bin/", "out/tool_" .. name .. "/",
+		"build/bin/", "build/out/tool_" .. name .. "/",
 		nil, configs
 	)
 	precore.apply("togo-deps")
@@ -45,7 +45,7 @@ precore.make_solution(
 precore.make_project(
 	"igen",
 	"C++", "StaticLib",
-	"out/igen/", "out/igen/",
+	"build/igen/", "build/igen/",
 	nil, nil
 )
 
@@ -66,7 +66,7 @@ configuration {"gmake"}
 precore.make_project(
 	"togo",
 	"C++", "StaticLib",
-	"lib/", "out/togo/",
+	"build/lib/", "build/out/togo/",
 	nil, nil
 )
 
@@ -88,4 +88,4 @@ configuration {}
 
 make_tool("build", nil)
 
-precore.action_clean("out", "lib", "bin")
+precore.action_clean("build")

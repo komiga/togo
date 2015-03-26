@@ -228,7 +228,7 @@ project = function()
 			precore.subst("${ROOT}/src/")
 		}
 		libdirs {
-			precore.subst("${ROOT}/lib/")
+			precore.subst("${ROOT}/build/lib/")
 		}
 
 	configuration {"debug"}
