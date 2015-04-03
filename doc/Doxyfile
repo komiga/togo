@@ -153,7 +153,8 @@ FULL_PATH_NAMES        = YES
 # This tag requires that the tag FULL_PATH_NAMES is set to YES.
 
 STRIP_FROM_PATH        = ../lib/core/src/ \
-                         ../lib/game/src/
+                         ../lib/game/src/ \
+                         ../tool/res_build/src/
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of the
 # path mentioned in the documentation of a class, which tells the reader which
@@ -762,6 +763,7 @@ WARN_LOGFILE           =
 INPUT                  = ./pages/ \
                          ../lib/core/src/ \
                          ../lib/game/src/ \
+                         ../tool/res_build/src/ \
                          ./gen_interface/
 
 # This tag can be used to specify the character encoding of the source files
