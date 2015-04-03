@@ -131,7 +131,7 @@ enum : ResourceNameHash {
 	RES_NAME_NULL = ""_resource_name,
 
 	/// Shared shader configuration shader_prelude.
-	RES_NAME_SHADER_CONFIG = "togo/game/gfx/shader-config"_resource_name,
+	RES_NAME_SHADER_CONFIG = "togo/gfx/shader-config"_resource_name,
 };
 
 /// Combined resource tags.
