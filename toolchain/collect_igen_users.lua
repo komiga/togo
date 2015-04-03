@@ -59,6 +59,10 @@ function iterate_dir(dir, select_only, max_depth)
 end
 
 local MATCHERS = {
+	['@defgroup%s+(.+)$'] = function(ctx, lib, data, group_name)
+		assert(not data.doc_group)
+		data.doc_group = group_name
+	end,
 	['@ingroup%s+(.+)$'] = function(ctx, lib, data, group_name)
 		table.insert(data.ingroups, group_name)
 	end,
@@ -106,6 +110,7 @@ function process_file(ctx, lib, path)
 		gen_path = nil,
 		sources_included = false,
 		sources = {},
+		doc_group = nil,
 		ingroups = {},
 	}
 
@@ -141,7 +146,12 @@ function process_file(ctx, lib, path)
 		return false
 	end
 
-	data.doc_group = #data.ingroups > 0 and table_last(data.ingroups) or nil
+	if not data.doc_group then
+		data.doc_group = #data.ingroups > 0 and table_last(data.ingroups) or nil
+		if data.doc_group then
+			print(data.path ..  " => " .. data.doc_group)
+		end
+	end
 	data.ingroups = nil
 	data.sources_included = nil
 	table.insert(ctx.users, data)
