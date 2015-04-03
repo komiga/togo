@@ -148,9 +148,6 @@ function process_file(ctx, lib, path)
 
 	if not data.doc_group then
 		data.doc_group = #data.ingroups > 0 and table_last(data.ingroups) or nil
-		if data.doc_group then
-			print(data.path ..  " => " .. data.doc_group)
-		end
 	end
 	data.ingroups = nil
 	data.sources_included = nil
