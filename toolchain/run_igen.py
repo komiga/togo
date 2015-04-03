@@ -86,7 +86,7 @@ class Interface:
 		self.doc_group = spec["doc_group"]
 		self.doc_path = os.path.join(
 			"doc/gen_interface",
-			re.sub(r'src/togo/(.+)\.(.+)$', r'\1.dox', self.path).replace("/", "_")
+			re.sub(r'(.+)/src/togo/(.+)\..+$', r'\1_\2.dox', self.path).replace("/", "_")
 		)
 
 		self.group = None
