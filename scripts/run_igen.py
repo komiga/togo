@@ -22,7 +22,7 @@ from igen.util import *
 os.stat_float_times(False)
 cindex.Config.set_library_path(IGEN_ROOT)
 
-G.F_TEMPLATE = "toolchain/igen_interface.template"
+G.F_TEMPLATE = "scripts/igen_interface.template"
 G.F_CACHE = "tmp/igen_cache"
 G.F_USERS = "tmp/igen_users"
 
