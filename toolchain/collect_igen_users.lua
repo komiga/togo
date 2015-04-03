@@ -59,7 +59,7 @@ function iterate_dir(dir, select_only, max_depth)
 end
 
 local MATCHERS = {
-	['@defgroup%s+(.+)$'] = function(ctx, lib, data, group_name)
+	['@defgroup%s+(.+)%s+.+$'] = function(ctx, group, data, group_name)
 		assert(not data.doc_group)
 		data.doc_group = group_name
 	end,
