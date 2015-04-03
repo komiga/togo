@@ -1,0 +1,12 @@
+
+/**
+
+@defgroup lib_core_kvs KVS
+@ingroup lib_core
+@details
+
+@note The kvs::find() functions short-circuit if name_hash is the hash identity or if name is empty.
+
+@warning An assertion will fail when requesting the value of a type when the KVS is of a different type.
+
+*/

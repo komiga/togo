@@ -4,8 +4,12 @@
 
 @file
 @brief ResourceManager interface.
-@ingroup resource
-@ingroup resource_manager
+@ingroup lib_game_resource
+@ingroup lib_game_resource_manager
+
+@defgroup lib_game_resource_manager ResourceManager
+@ingroup lib_game_resource
+@details
 */
 
 #pragma once
@@ -19,7 +23,7 @@ namespace togo {
 namespace resource_manager {
 
 /**
-	@addtogroup resource_manager
+	@addtogroup lib_game_resource_manager
 	@{
 */
 
@@ -37,7 +41,7 @@ inline Array<ResourcePackage*> const& packages(
 	return rm._packages;
 }
 
-/** @} */ // end of doc-group resource_manager
+/** @} */ // end of doc-group lib_game_resource_manager
 
 } // namespace resource_manager
 } // namespace togo

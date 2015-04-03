@@ -4,9 +4,13 @@
 
 @file
 @brief Command types.
-@ingroup types
-@ingroup gfx
-@ingroup gfx_command
+@ingroup lib_game_types
+@ingroup lib_game_gfx
+@ingroup lib_game_gfx_command
+
+@defgroup lib_game_gfx_command Command
+@ingroup lib_game_gfx
+@details
 */
 
 #pragma once
@@ -20,7 +24,7 @@ namespace togo {
 namespace gfx {
 
 /**
-	@addtogroup gfx_command
+	@addtogroup lib_game_gfx_command
 	@{
 */
 
@@ -63,7 +67,7 @@ TOGO_GFX_CMD(RenderWorld) {
 
 #undef TOGO_GFX_CMD
 
-/** @} */ // end of doc-group gfx_command
+/** @} */ // end of doc-group lib_game_gfx_command
 
 } // namespace gfx
 } // namespace togo

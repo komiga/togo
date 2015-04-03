@@ -4,7 +4,7 @@
 
 @file
 @brief Hash interface.
-@ingroup hash
+@ingroup lib_core_hash
 */
 
 #pragma once
@@ -24,7 +24,7 @@ namespace togo {
 namespace hash {
 
 /**
-	@addtogroup hash
+	@addtogroup lib_core_hash
 	@{
 */
 
@@ -118,7 +118,7 @@ inline constexpr hash64 calc64_ce(StringRef const& ref) {
 	return hash::calc_generic_ce<hash64>(ref.data, ref.size);
 }
 
-/** @} */ // end of doc-group hash
+/** @} */ // end of doc-group lib_core_hash
 
 } // namespace hash
 

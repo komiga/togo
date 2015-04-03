@@ -4,8 +4,8 @@
 
 @file
 @brief Threading types.
-@ingroup types
-@ingroup threading
+@ingroup lib_core_types
+@ingroup lib_core_threading
 */
 
 #pragma once
@@ -30,16 +30,16 @@
 namespace togo {
 
 /**
-	@addtogroup thread
+	@addtogroup lib_core_thread
 	@{
 */
 
 struct Thread;
 
-/** @} */ // end of doc-group thread
+/** @} */ // end of doc-group lib_core_thread
 
 /**
-	@addtogroup mutex
+	@addtogroup lib_core_mutex
 	@{
 */
 
@@ -81,10 +81,10 @@ struct MutexLock {
 	MutexLock(Mutex& m);
 };
 
-/** @} */ // end of doc-group mutex
+/** @} */ // end of doc-group lib_core_mutex
 
 /**
-	@addtogroup condvar
+	@addtogroup lib_core_condvar
 	@{
 */
 
@@ -102,10 +102,10 @@ struct CondVar {
 	CondVar();
 };
 
-/** @} */ // end of doc-group condvar
+/** @} */ // end of doc-group lib_core_condvar
 
 /**
-	@addtogroup task_manager
+	@addtogroup lib_core_task_manager
 	@{
 */
 
@@ -184,6 +184,6 @@ struct TaskManager {
 	TaskManager(unsigned worker_count, Allocator& allocator);
 };
 
-/** @} */ // end of doc-group task_manager
+/** @} */ // end of doc-group lib_core_task_manager
 
 } // namespace togo

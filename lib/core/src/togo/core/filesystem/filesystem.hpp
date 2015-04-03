@@ -4,7 +4,7 @@
 
 @file
 @brief Filesystem interface.
-@ingroup filesystem
+@ingroup lib_core_filesystem
 */
 
 #pragma once
@@ -20,7 +20,7 @@ namespace togo {
 namespace filesystem {
 
 /**
-	@addtogroup filesystem
+	@addtogroup lib_core_filesystem
 	@{
 */
 
@@ -89,7 +89,7 @@ bool create_directory(StringRef const& path);
 /// The directory must be empty.
 bool remove_directory(StringRef const& path);
 
-/** @} */ // end of doc-group filesystem
+/** @} */ // end of doc-group lib_core_filesystem
 
 } // namespace filesystem
 

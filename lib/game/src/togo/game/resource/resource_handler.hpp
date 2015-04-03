@@ -4,8 +4,12 @@
 
 @file
 @brief ResourceHandler interface.
-@ingroup resource
-@ingroup resource_handler
+@ingroup lib_game_resource
+@ingroup lib_game_resource_handler
+
+@defgroup lib_game_resource_handler ResourceHandler
+@ingroup lib_game_resource
+@details
 */
 
 #pragma once
@@ -24,7 +28,7 @@ namespace togo {
 namespace resource {
 
 /**
-	@addtogroup resource
+	@addtogroup lib_game_resource
 	@{
 */
 
@@ -56,7 +60,7 @@ inline gfx::RenderConfig* load_render_config(
 	return render_config;
 }
 
-/** @} */ // end of doc-group resource
+/** @} */ // end of doc-group lib_game_resource
 
 } // namespace resource
 } // namespace togo

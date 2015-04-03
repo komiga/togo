@@ -4,7 +4,7 @@
 
 @file
 @brief TempAllocator class.
-@ingroup memory
+@ingroup lib_core_memory
 */
 
 #pragma once
@@ -18,7 +18,7 @@
 namespace togo {
 
 /**
-	@addtogroup memory
+	@addtogroup lib_core_memory
 	@{
 */
 
@@ -64,6 +64,6 @@ public:
 	{}
 };
 
-/** @} */ // end of doc-group memory
+/** @} */ // end of doc-group lib_core_memory
 
 } // namespace togo

@@ -4,7 +4,7 @@
 
 @file
 @brief Random interface.
-@ingroup random
+@ingroup lib_core_random
 */
 
 #pragma once
@@ -20,7 +20,7 @@ namespace togo {
 namespace random {
 
 /**
-	@addtogroup random
+	@addtogroup lib_core_random
 	@{
 */
 
@@ -73,7 +73,7 @@ T next_udist(S& s, RealUDist<T> const& u) {
 	return u._base + random::next_sdist<T>(s) * u._range;
 }
 
-/** @} */ // end of doc-group random
+/** @} */ // end of doc-group lib_core_random
 
 } // namespace random
 

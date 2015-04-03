@@ -4,8 +4,16 @@
 
 @file
 @brief PriorityQueue interface.
-@ingroup collection
-@ingroup priority_queue
+@ingroup lib_core_collection
+@ingroup lib_core_priority_queue
+
+@defgroup lib_core_priority_queue PriorityQueue
+@ingroup lib_core_collection
+@details
+
+This implementation is a max-priority queue taking a less-than comparison
+function. The order can be arbitrarily changed by the supplying an inverted
+comparison function so that the collection becomes a min-priority queue.
 */
 
 #pragma once
@@ -47,7 +55,7 @@ inline T const& PriorityQueue<T>::operator[](unsigned const i) const {
 namespace priority_queue {
 
 /**
-	@addtogroup priority_queue
+	@addtogroup lib_core_priority_queue
 	@{
 */
 
@@ -237,7 +245,7 @@ inline void copy(PriorityQueue<T>& dst, PriorityQueue<T> const& src) {
 	dst._less_func = src._less_func;
 }
 
-/** @} */ // end of doc-group priority_queue
+/** @} */ // end of doc-group lib_core_priority_queue
 
 } // namespace priority_queue
 

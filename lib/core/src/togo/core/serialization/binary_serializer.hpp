@@ -4,8 +4,12 @@
 
 @file
 @brief BinarySerializer interface.
-@ingroup serialization
-@ingroup binary_serializer
+@ingroup lib_core_serialization
+@ingroup lib_core_binary_serializer
+
+@defgroup lib_core_binary_serializer BinarySerializer
+@ingroup lib_core_serialization
+@details
 */
 
 #pragma once
@@ -20,7 +24,7 @@
 namespace togo {
 
 /**
-	@addtogroup binary_serializer
+	@addtogroup lib_core_binary_serializer
 	@{
 */
 
@@ -93,6 +97,6 @@ write(serializer_tag, BinaryOutputSerializer& ser, SerBuffer<C> const& buffer) {
 
 /** @endcond */ // INTERNAL
 
-/** @} */ // end of doc-group binary_serializer
+/** @} */ // end of doc-group lib_core_binary_serializer
 
 } // namespace togo

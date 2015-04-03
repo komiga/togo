@@ -1,0 +1,10 @@
+
+/**
+
+@defgroup lib_core_collection Collections
+@ingroup lib_core
+@details
+
+@warning None of these types are thread-safe.
+
+*/

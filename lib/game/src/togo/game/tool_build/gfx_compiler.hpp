@@ -5,6 +5,12 @@
 @file
 @brief GfxCompiler interface.
 @ingroup tool_build_gfx_compiler
+
+@defgroup tool_build_gfx_compiler GfxCompiler
+@ingroup tool_build
+@details
+
+@details
 */
 
 #pragma once

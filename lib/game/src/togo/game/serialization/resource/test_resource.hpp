@@ -4,7 +4,7 @@
 
 @file
 @brief TestResource serialization.
-@ingroup serialization
+@ingroup lib_game_serialization
 */
 
 #pragma once
@@ -16,7 +16,7 @@
 namespace togo {
 
 /**
-	@addtogroup serialization
+	@addtogroup lib_game_serialization
 	@{
 */
 
@@ -35,6 +35,6 @@ serialize(serializer_tag, Ser& ser, TestResource& value_unsafe) {
 
 /** @endcond */ // INTERNAL
 
-/** @} */ // end of doc-group serialization
+/** @} */ // end of doc-group lib_game_serialization
 
 } // namespace togo

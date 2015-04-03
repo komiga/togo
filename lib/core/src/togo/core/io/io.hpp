@@ -4,7 +4,7 @@
 
 @file
 @brief IO interface.
-@ingroup io
+@ingroup lib_core_io
 */
 
 #pragma once
@@ -19,7 +19,7 @@ namespace togo {
 namespace io {
 
 /**
-	@addtogroup io
+	@addtogroup lib_core_io
 	@{
 */
 
@@ -102,7 +102,7 @@ inline IOStatus write_array(
 	return io::write(stream, data, count * sizeof(T));
 }
 
-/** @} */ // end of doc-group io
+/** @} */ // end of doc-group lib_core_io
 
 } // namespace io
 } // namespace togo

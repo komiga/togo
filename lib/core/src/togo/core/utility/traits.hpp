@@ -4,7 +4,7 @@
 
 @file
 @brief Type traits.
-@ingroup utility
+@ingroup lib_core_utility
 */
 
 #pragma once
@@ -14,7 +14,7 @@
 namespace togo {
 
 /**
-	@addtogroup utility
+	@addtogroup lib_core_utility
 	@{
 */
 
@@ -288,6 +288,6 @@ struct enable_enum_bitwise_ops : false_type {};
 template<class>
 struct allow_collection_value_type : false_type {};
 
-/** @} */ // end of doc-group utility
+/** @} */ // end of doc-group lib_core_utility
 
 } // namespace togo

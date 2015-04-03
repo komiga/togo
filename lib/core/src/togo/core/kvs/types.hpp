@@ -4,8 +4,8 @@
 
 @file
 @brief KVS types.
-@ingroup types
-@ingroup kvs
+@ingroup lib_core_types
+@ingroup lib_core_kvs
 */
 
 #pragma once
@@ -22,7 +22,7 @@
 namespace togo {
 
 /**
-	@addtogroup kvs
+	@addtogroup lib_core_kvs
 	@{
 */
 
@@ -168,7 +168,7 @@ struct ParserInfo {
 	char message[512]{'\0'};
 };
 
-/** @} */ // end of doc-group kvs
+/** @} */ // end of doc-group lib_core_kvs
 
 /** @cond INTERNAL */
 template<>

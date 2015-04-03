@@ -1,0 +1,13 @@
+
+/**
+
+@defgroup lib_core_string String
+@ingroup lib_core
+@details
+
+String manipulation (including string::copy()) functions ensure data
+is NUL-terminated. string::size() should always be used to obtain the
+logical size (especially for fixed-capacity arrays, where the size is
+string::size(array) + 1 due to the terminator).
+
+*/

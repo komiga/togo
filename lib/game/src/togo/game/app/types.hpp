@@ -4,8 +4,8 @@
 
 @file
 @brief Application type.
-@ingroup types
-@ingroup app
+@ingroup lib_game_types
+@ingroup lib_game_app
 */
 
 #pragma once
@@ -22,7 +22,7 @@
 namespace togo {
 
 /**
-	@addtogroup app
+	@addtogroup lib_game_app
 	@{
 */
 
@@ -109,6 +109,6 @@ struct App
 	);
 };
 
-/** @} */ // end of doc-group app
+/** @} */ // end of doc-group lib_game_app
 
 } // namespace togo

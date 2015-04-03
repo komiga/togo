@@ -4,7 +4,11 @@
 
 @file
 @brief Core configuration.
-@ingroup config
+@ingroup lib_core_config
+
+@defgroup lib_core_config Configuration
+@ingroup lib_core
+@details
 */
 
 #pragma once
@@ -26,7 +30,7 @@
 namespace togo {
 
 /**
-	@addtogroup config
+	@addtogroup lib_core_config
 	@{
 */
 
@@ -151,6 +155,6 @@ namespace togo {
 
 /// @} // end of name-group Compiler detection
 
-/** @} */ // end of doc-group config
+/** @} */ // end of doc-group lib_core_config
 
 } // namespace togo

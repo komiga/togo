@@ -4,7 +4,7 @@
 
 @file
 @brief Assertion macros and debugging.
-@ingroup error
+@ingroup lib_core_error
 */
 
 #pragma once
@@ -14,7 +14,7 @@
 namespace togo {
 
 /**
-	@addtogroup error
+	@addtogroup lib_core_error
 	@{
 */
 
@@ -54,6 +54,6 @@ void error_abort(unsigned line, char const* file, char const* msg, ...);
 	#define TOGO_DEBUG_ASSERTE(expr) ((void)0)
 #endif
 
-/** @} */ // end of doc-group error
+/** @} */ // end of doc-group lib_core_error
 
 } // namespace togo

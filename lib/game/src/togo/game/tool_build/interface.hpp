@@ -5,6 +5,10 @@
 @file
 @brief tool_build interface.
 @ingroup tool_build_interface
+
+@defgroup tool_build_interface Interface
+@ingroup tool_build
+@details
 */
 
 #pragma once

@@ -4,8 +4,8 @@
 
 @file
 @brief Input types.
-@ingroup types
-@ingroup input
+@ingroup lib_game_types
+@ingroup lib_game_input
 */
 
 #pragma once
@@ -18,7 +18,7 @@
 namespace togo {
 
 /**
-	@addtogroup input
+	@addtogroup lib_game_input
 	@{
 */
 
@@ -269,6 +269,6 @@ template<>
 struct enable_enum_bitwise_ops<KeyMod> : true_type {};
 /** @endcond */ // INTERNAL
 
-/** @} */ // end of doc-group input
+/** @} */ // end of doc-group lib_game_input
 
 } // namespace togo

@@ -4,7 +4,7 @@
 
 @file
 @brief Graphics interface.
-@ingroup gfx
+@ingroup lib_game_gfx
 */
 
 #pragma once
@@ -19,7 +19,7 @@ namespace togo {
 namespace gfx {
 
 /**
-	@addtogroup gfx
+	@addtogroup lib_game_gfx
 	@{
 */
 
@@ -38,7 +38,7 @@ inline gfx::GeneratorNameHash hash_viewport_name(StringRef const& name) {
 	return hash::calc32(name);
 }
 
-/** @} */ // end of doc-group gfx
+/** @} */ // end of doc-group lib_game_gfx
 
 } // namespace gfx
 } // namespace togo

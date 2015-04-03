@@ -4,7 +4,11 @@
 
 @file
 @brief Core types.
-@ingroup types
+@ingroup lib_core_types
+
+@defgroup lib_core_types Types
+@ingroup lib_core
+@details
 */
 
 #pragma once
@@ -17,7 +21,7 @@
 namespace togo {
 
 /**
-	@addtogroup types
+	@addtogroup lib_core_types
 	@{
 */
 
@@ -54,6 +58,6 @@ using hash32 = u32;
 using hash64 = u64;
 /// @}
 
-/** @} */ // end of doc-group types
+/** @} */ // end of doc-group lib_core_types
 
 } // namespace togo

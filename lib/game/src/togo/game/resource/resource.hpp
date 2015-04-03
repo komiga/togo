@@ -4,7 +4,7 @@
 
 @file
 @brief Resource interface.
-@ingroup resource
+@ingroup lib_game_resource
 */
 
 #pragma once
@@ -23,7 +23,7 @@ namespace togo {
 namespace resource {
 
 /**
-	@addtogroup resource
+	@addtogroup lib_game_resource
 	@{
 */
 
@@ -66,7 +66,7 @@ inline ResourcePackageNameHash hash_package_name(StringRef const& name) {
 	return hash::calc32(name);
 }
 
-/** @} */ // end of doc-group resource
+/** @} */ // end of doc-group lib_game_resource
 
 } // namespace resource
 

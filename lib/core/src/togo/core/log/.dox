@@ -1,0 +1,11 @@
+
+/**
+
+@defgroup lib_core_log Logging
+@ingroup lib_core
+@details
+
+These operations are thread-safe. The TOGO_LOG_DEBUG() macros are
+defined only when TOGO_DEBUG is defined.
+
+*/

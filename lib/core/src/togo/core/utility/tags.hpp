@@ -4,7 +4,7 @@
 
 @file
 @brief Variation/placeholder tags.
-@ingroup utility
+@ingroup lib_core_utility
 */
 
 #pragma once
@@ -14,7 +14,7 @@
 namespace togo {
 
 /**
-	@addtogroup utility
+	@addtogroup lib_core_utility
 	@{
 */
 
@@ -34,6 +34,6 @@ enum class bool_tag {};
 
 /// @}
 
-/** @} */ // end of doc-group utility
+/** @} */ // end of doc-group lib_core_utility
 
 } // namespace togo

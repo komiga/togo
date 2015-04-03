@@ -4,9 +4,9 @@
 
 @file
 @brief Object buffer type.
-@ingroup types
-@ingroup io
-@ingroup io_object_buffer
+@ingroup lib_core_types
+@ingroup lib_core_io
+@ingroup lib_core_io_object_buffer
 */
 
 #pragma once
@@ -19,7 +19,7 @@
 namespace togo {
 
 /**
-	@addtogroup io_object_buffer
+	@addtogroup lib_core_io_object_buffer
 	@{
 */
 
@@ -47,6 +47,6 @@ struct ObjectBuffer {
 	ObjectBuffer(Allocator& allocator, u32 const init_capacity);
 };
 
-/** @} */ // end of doc-group io_object_buffer
+/** @} */ // end of doc-group lib_core_io_object_buffer
 
 } // namespace togo

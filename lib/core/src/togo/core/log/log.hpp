@@ -4,7 +4,7 @@
 
 @file
 @brief Logging.
-@ingroup log
+@ingroup lib_core_log
 */
 
 #pragma once
@@ -16,7 +16,7 @@ namespace togo {
 namespace log {
 
 /**
-	@addtogroup log
+	@addtogroup lib_core_log
 	@{
 */
 
@@ -64,7 +64,7 @@ void printf(char const* const msg, ...);
 	#define TOGO_LOG_DEBUGF(msg, ...) (void(0))
 #endif
 
-/** @} */ // end of doc-group log
+/** @} */ // end of doc-group lib_core_log
 
 } // namespace log
 } // namespace togo

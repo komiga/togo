@@ -4,7 +4,11 @@
 
 @file
 @brief GeneratorCompiler interface.
-@ingroup tool_build_gfx_compiler
+@ingroup tool_build_generator_compiler
+
+@defgroup tool_build_generator_compiler GeneratorCompiler
+@ingroup tool_build
+@details
 */
 
 #pragma once
@@ -18,7 +22,7 @@ namespace tool_build {
 namespace generator_compiler {
 
 /**
-	@addtogroup tool_build_gfx_compiler
+	@addtogroup tool_build_generator_compiler
 	@{
 */
 
@@ -28,7 +32,7 @@ extern GeneratorCompiler const test_proxy;
 /// clear generator compiler.
 extern GeneratorCompiler const clear;
 
-/** @} */ // end of doc-group tool_build_gfx_compiler
+/** @} */ // end of doc-group tool_build_generator_compiler
 
 } // namespace generator_compiler
 } // namespace tool_build

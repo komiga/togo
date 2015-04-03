@@ -4,8 +4,12 @@
 
 @file
 @brief Serializer interface.
-@ingroup serialization
-@ingroup serializer
+@ingroup lib_core_serialization
+@ingroup lib_core_serializer
+
+@defgroup lib_core_serializer Serializer
+@ingroup lib_core_serialization
+@details
 */
 
 #pragma once
@@ -36,7 +40,7 @@ togo::detail::unimplemented write(togo::serializer_tag, P&&...);
 namespace togo {
 
 /**
-	@addtogroup serializer
+	@addtogroup lib_core_serializer
 	@{
 */
 
@@ -240,6 +244,6 @@ operator%(
 }
 /** @endcond */ // INTERNAL
 
-/** @} */ // end of doc-group serializer
+/** @} */ // end of doc-group lib_core_serializer
 
 } // namespace togo

@@ -4,8 +4,12 @@
 
 @file
 @brief HashCombiner interface.
-@ingroup hash
-@ingroup hash_combiner
+@ingroup lib_core_hash
+@ingroup lib_core_hash_combiner
+
+@defgroup lib_core_hash_combiner HashCombiner
+@ingroup lib_core_hash
+@details
 */
 
 #pragma once
@@ -20,7 +24,7 @@ namespace togo {
 namespace hash_combiner {
 
 /**
-	@addtogroup hash_combiner
+	@addtogroup lib_core_hash_combiner
 	@{
 */
 
@@ -85,7 +89,7 @@ inline H value(HashCombiner<H> const& combiner) {
 	;
 }
 
-/** @} */ // end of doc-group hash_combiner
+/** @} */ // end of doc-group lib_core_hash_combiner
 
 } // namespace hash_combiner
 } // namespace togo

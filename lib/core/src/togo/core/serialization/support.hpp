@@ -4,7 +4,7 @@
 
 @file
 @brief Serialization support.
-@ingroup serialization
+@ingroup lib_core_serialization
 */
 
 #pragma once
@@ -18,7 +18,7 @@
 namespace togo {
 
 /**
-	@addtogroup serialization
+	@addtogroup lib_core_serialization
 	@{
 */
 
@@ -176,6 +176,6 @@ serialize(serializer_tag, Ser& ser, SerSequence<T>&& value_unsafe) {
 
 /** @endcond */ // INTERNAL
 
-/** @} */ // end of doc-group serialization
+/** @} */ // end of doc-group lib_core_serialization
 
 } // namespace togo

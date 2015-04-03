@@ -4,7 +4,7 @@
 
 @file
 @brief Math interface.
-@ingroup math
+@ingroup lib_core_math
 */
 
 #pragma once
@@ -23,7 +23,7 @@
 namespace togo {
 
 /**
-	@addtogroup math
+	@addtogroup lib_core_math
 	@{
 */
 
@@ -47,6 +47,6 @@ static constexpr float const MC_PI_HALF = 1.5707963267948966192313f;
 /** Mathematical constant τ (tau, 2 * MC_PI). */
 static constexpr float const MC_TAU = 6.2831853071795864769252f;
 
-/** @} */ // end of doc-group math
+/** @} */ // end of doc-group lib_core_math
 
 } // namespace togo

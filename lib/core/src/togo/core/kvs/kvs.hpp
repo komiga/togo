@@ -4,7 +4,7 @@
 
 @file
 @brief KVS interface.
-@ingroup kvs
+@ingroup lib_core_kvs
 */
 
 #pragma once
@@ -51,7 +51,7 @@ namespace {
 namespace kvs {
 
 /**
-	@addtogroup kvs
+	@addtogroup lib_core_kvs
 	@{
 */
 
@@ -367,7 +367,7 @@ inline void pop_back(KVS& kvs) {
 	kvs::resize(kvs, kvs._value.collection.size - 1);
 }
 
-/** @} */ // end of doc-group kvs
+/** @} */ // end of doc-group lib_core_kvs
 
 } // namespace kvs
 

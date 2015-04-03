@@ -4,7 +4,7 @@
 
 @file
 @brief Application interface.
-@ingroup app
+@ingroup lib_game_app
 */
 
 #pragma once
@@ -52,7 +52,7 @@ inline App<Data>::App(
 namespace app {
 
 /**
-	@addtogroup app
+	@addtogroup lib_game_app
 	@{
 */
 
@@ -90,7 +90,7 @@ inline AppBase& init(
 	return app::instance();
 }
 
-/** @} */ // end of doc-group app
+/** @} */ // end of doc-group lib_game_app
 
 } // namespace app
 

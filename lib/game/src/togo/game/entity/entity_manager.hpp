@@ -4,8 +4,12 @@
 
 @file
 @brief EntityManager interface.
-@ingroup entity
-@ingroup entity_manager
+@ingroup lib_game_entity
+@ingroup lib_game_entity_manager
+
+@defgroup lib_game_entity_manager EntityManager
+@ingroup lib_game_entity
+@details
 */
 
 #pragma once
@@ -18,13 +22,13 @@ namespace togo {
 namespace entity_manager {
 
 /**
-	@addtogroup entity_manager
+	@addtogroup lib_game_entity_manager
 	@{
 */
 
 
 
-/** @} */ // end of doc-group entity_manager
+/** @} */ // end of doc-group lib_game_entity_manager
 
 } // namespace entity_manager
 } // namespace togo

@@ -5,6 +5,10 @@
 @file
 @brief tool_build types.
 @ingroup tool_build_types
+
+@defgroup tool_build_types Types
+@ingroup tool_build
+@details
 */
 
 #pragma once

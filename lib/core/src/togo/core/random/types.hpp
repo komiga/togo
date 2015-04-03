@@ -4,8 +4,8 @@
 
 @file
 @brief Random types.
-@ingroup types
-@ingroup random
+@ingroup lib_core_types
+@ingroup lib_core_random
 */
 
 #pragma once
@@ -17,7 +17,7 @@
 namespace togo {
 
 /**
-	@addtogroup random
+	@addtogroup lib_core_random
 	@{
 */
 
@@ -128,6 +128,6 @@ struct RealUDist {
 	constexpr RealUDist(value_type const min, value_type const max);
 };
 
-/** @} */ // end of doc-group random
+/** @} */ // end of doc-group lib_core_random
 
 } // namespace togo

@@ -4,7 +4,7 @@
 
 @file
 @brief Undefine all test logging macros.
-@ingroup log
+@ingroup lib_core_log
 */
 
 namespace togo {

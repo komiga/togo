@@ -4,7 +4,7 @@
 
 @file
 @brief IO interface classes.
-@ingroup io
+@ingroup lib_core_io
 */
 
 #pragma once
@@ -17,7 +17,7 @@
 namespace togo {
 
 /**
-	@addtogroup io
+	@addtogroup lib_core_io
 	@{
 */
 
@@ -89,6 +89,6 @@ public:
 };
 inline IWriter::~IWriter() = default;
 
-/** @} */ // end of doc-group io
+/** @} */ // end of doc-group lib_core_io
 
 } // namespace togo

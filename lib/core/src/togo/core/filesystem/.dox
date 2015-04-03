@@ -1,0 +1,11 @@
+
+/**
+
+@defgroup lib_core_filesystem Filesystem
+@ingroup lib_core
+@details
+
+All paths must be NUL-terminated. All returned/assigned paths are
+NUL-terminated.
+
+*/

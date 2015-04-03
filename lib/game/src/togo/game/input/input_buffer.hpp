@@ -4,8 +4,12 @@
 
 @file
 @brief InputBuffer interface.
-@ingroup input
-@ingroup input_buffer
+@ingroup lib_game_input
+@ingroup lib_game_input_buffer
+
+@defgroup lib_game_input_buffer InputBuffer
+@ingroup lib_game_input
+@details
 */
 
 #pragma once
@@ -31,7 +35,7 @@ inline InputBuffer::InputBuffer(
 namespace input_buffer {
 
 /**
-	@addtogroup input_buffer
+	@addtogroup lib_game_input_buffer
 	@{
 */
 
@@ -40,7 +44,7 @@ inline unsigned num_displays(InputBuffer& ib) {
 	return ib._num_displays;
 }
 
-/** @} */ // end of doc-group input_buffer
+/** @} */ // end of doc-group lib_game_input_buffer
 
 } // namespace input_buffer
 } // namespace togo

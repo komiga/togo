@@ -4,8 +4,12 @@
 
 @file
 @brief FixedArray interface.
-@ingroup collection
-@ingroup fixed_array
+@ingroup lib_core_collection
+@ingroup lib_core_fixed_array
+
+@defgroup lib_core_fixed_array FixedArray
+@ingroup lib_core_collection
+@details
 */
 
 #pragma once
@@ -44,7 +48,7 @@ inline T const& FixedArray<T, N>::operator[](unsigned const i) const {
 namespace fixed_array {
 
 /**
-	@addtogroup fixed_array
+	@addtogroup lib_core_fixed_array
 	@{
 */
 
@@ -164,7 +168,7 @@ inline void copy(FixedArray<T, N>& dst, FixedArray<T, M> const& src) {
 	std::memcpy(dst._data, src._data, src._size * sizeof(T));
 }
 
-/** @} */ // end of doc-group fixed_array
+/** @} */ // end of doc-group lib_core_fixed_array
 
 } // namespace fixed_array
 

@@ -4,7 +4,7 @@
 
 @file
 @brief Definitions for constraints.
-@ingroup utility
+@ingroup lib_core_utility
 */
 
 #pragma once
@@ -12,7 +12,7 @@
 #include <togo/core/config.hpp>
 
 /**
-	@addtogroup utility
+	@addtogroup lib_core_utility
 	@{
 */
 
@@ -88,4 +88,4 @@
 	#define TOGO_CONSTRAIN_UNSIGNED(T)
 #endif
 
-/** @} */ // end of doc-group utility
+/** @} */ // end of doc-group lib_core_utility

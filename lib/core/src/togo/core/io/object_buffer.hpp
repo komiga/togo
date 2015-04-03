@@ -4,7 +4,12 @@
 
 @file
 @brief Object buffer interface.
-@ingroup io_object_buffer
+@ingroup lib_core_io
+@ingroup lib_core_io_object_buffer
+
+@defgroup lib_core_io_object_buffer ObjectBuffer
+@ingroup lib_core_io
+@details
 */
 
 #pragma once
@@ -34,7 +39,7 @@ inline ObjectBuffer<T, S>::ObjectBuffer(
 namespace object_buffer {
 
 /**
-	@addtogroup io_object_buffer
+	@addtogroup lib_core_io_object_buffer
 	@{
 */
 
@@ -139,7 +144,7 @@ inline void write_empty(ObjectBuffer<T, S>& ob, E const type) {
 	++ob._num_objects;
 }
 
-/** @} */ // end of doc-group io_object_buffer
+/** @} */ // end of doc-group lib_core_io_object_buffer
 
 } // namespace object_buffer
 

@@ -4,8 +4,19 @@
 
 @file
 @brief HashMap interface.
-@ingroup collection
-@ingroup hash_map
+@ingroup lib_core_collection
+@ingroup lib_core_hash_map
+
+@defgroup lib_core_hash_map HashMap
+@ingroup lib_core_collection
+@details
+
+@note Iterator access is unordered.
+
+@par
+@note Capacity represents only 0.7 (the load factor) of partition storage.
+When reserving, <code>new_capacity / 0.7</code> space is stored to preserve
+the partition invariant.
 */
 
 #pragma once
@@ -30,7 +41,7 @@ inline HashMap<K, T>::HashMap(Allocator& allocator)
 namespace hash_map {
 
 /**
-	@addtogroup hash_map
+	@addtogroup lib_core_hash_map
 	@{
 */
 
@@ -389,7 +400,7 @@ inline void remove(HashMap<K, T>& hm, HashMapNode<K, T> const* node) {
 #undef TOGO_HASH_MAP_MAX_LOAD
 /** @endcond */ // INTERNAL
 
-/** @} */ // end of doc-group hash_map
+/** @} */ // end of doc-group lib_core_hash_map
 
 } // namespace hash_map
 

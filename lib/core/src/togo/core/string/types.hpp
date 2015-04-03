@@ -4,8 +4,8 @@
 
 @file
 @brief String types.
-@ingroup types
-@ingroup string
+@ingroup lib_core_types
+@ingroup lib_core_string
 */
 
 #pragma once
@@ -20,7 +20,7 @@ template<class T, unsigned N>
 struct FixedArray; // external
 
 /**
-	@addtogroup string
+	@addtogroup lib_core_string
 	@{
 */
 
@@ -50,6 +50,6 @@ struct StringRef {
 	bool empty() const;
 };
 
-/** @} */ // end of doc-group string
+/** @} */ // end of doc-group lib_core_string
 
 } // namespace togo

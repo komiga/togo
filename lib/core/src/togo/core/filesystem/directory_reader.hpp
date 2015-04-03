@@ -4,8 +4,12 @@
 
 @file
 @brief DirectoryReader interface.
-@ingroup filesystem
-@ingroup filesystem_directory_reader
+@ingroup lib_core_filesystem
+@ingroup lib_core_filesystem_directory_reader
+
+@defgroup lib_core_filesystem_directory_reader DirectoryReader
+@ingroup lib_core_filesystem
+@details
 */
 
 #pragma once
@@ -20,7 +24,7 @@ namespace togo {
 namespace directory_reader {
 
 /**
-	@addtogroup filesystem_directory_reader
+	@addtogroup lib_core_filesystem_directory_reader
 	@{
 */
 
@@ -49,7 +53,7 @@ bool read(
 	DirectoryEntry::Type type_mask
 );
 
-/** @} */ // end of doc-group filesystem_directory_reader
+/** @} */ // end of doc-group lib_core_filesystem_directory_reader
 
 } // namespace directory_reader
 

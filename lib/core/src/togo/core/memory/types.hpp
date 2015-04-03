@@ -4,8 +4,8 @@
 
 @file
 @brief Memory types.
-@ingroup types
-@ingroup memory
+@ingroup lib_core_types
+@ingroup lib_core_memory
 */
 
 #pragma once
@@ -15,7 +15,7 @@
 namespace togo {
 
 /**
-	@addtogroup memory
+	@addtogroup lib_core_memory
 	@{
 */
 
@@ -30,6 +30,6 @@ enum : unsigned {
 	SCRATCH_ALLOCATOR_SIZE_DEFAULT = 4 * 1024 * 1024
 };
 
-/** @} */ // end of doc-group memory
+/** @} */ // end of doc-group lib_core_memory
 
 } // namespace togo

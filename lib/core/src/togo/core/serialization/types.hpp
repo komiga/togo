@@ -4,8 +4,8 @@
 
 @file
 @brief Serialization types.
-@ingroup types
-@ingroup serialization
+@ingroup lib_core_types
+@ingroup lib_core_serialization
 */
 
 #pragma once
@@ -19,7 +19,7 @@
 namespace togo {
 
 /**
-	@addtogroup serialization
+	@addtogroup lib_core_serialization
 	@{
 */
 
@@ -97,7 +97,7 @@ struct SerString {
 };
 
 /**
-	@addtogroup serializer
+	@addtogroup lib_core_serializer
 	@{
 */
 
@@ -119,10 +119,10 @@ struct OutputSerializer
 	: BaseSerializer<Impl>
 {};
 
-/** @} */ // end of doc-group serializer
+/** @} */ // end of doc-group lib_core_serializer
 
 /**
-	@addtogroup binary_serializer
+	@addtogroup lib_core_binary_serializer
 	@{
 */
 
@@ -160,8 +160,8 @@ struct BinaryOutputSerializer
 	BinaryOutputSerializer(IWriter& stream);
 };
 
-/** @} */ // end of doc-group binary_serializer
+/** @} */ // end of doc-group lib_core_binary_serializer
 
-/** @} */ // end of doc-group serialization
+/** @} */ // end of doc-group lib_core_serialization
 
 } // namespace togo

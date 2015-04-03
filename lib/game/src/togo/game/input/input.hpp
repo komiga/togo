@@ -4,7 +4,7 @@
 
 @file
 @brief Input interface.
-@ingroup input
+@ingroup lib_game_input
 */
 
 #pragma once
@@ -19,13 +19,13 @@ namespace togo {
 namespace input {
 
 /**
-	@addtogroup input
+	@addtogroup lib_game_input
 	@{
 */
 
 
 
-/** @} */ // end of doc-group input
+/** @} */ // end of doc-group lib_game_input
 
 } // namespace input
 } // namespace togo

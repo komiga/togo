@@ -4,7 +4,7 @@
 
 @file
 @brief Algorithms.
-@ingroup algorithm
+@ingroup lib_core_algorithm
 */
 
 #pragma once
@@ -26,7 +26,7 @@
 namespace togo {
 
 /**
-	@addtogroup algorithm
+	@addtogroup lib_core_algorithm
 	@{
 */
 
@@ -225,7 +225,7 @@ void sort_insertion(
 	}
 }
 
-/** @} */ // end of doc-group algorithm
+/** @} */ // end of doc-group lib_core_algorithm
 
 } // namespace togo
 

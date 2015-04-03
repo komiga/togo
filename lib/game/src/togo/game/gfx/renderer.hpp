@@ -4,8 +4,12 @@
 
 @file
 @brief Renderer interface.
-@ingroup gfx
-@ingroup gfx_renderer
+@ingroup lib_game_gfx
+@ingroup lib_game_gfx_renderer
+
+@defgroup lib_game_gfx_renderer Renderer
+@ingroup lib_game_gfx
+@details
 */
 
 #pragma once
@@ -25,7 +29,7 @@ namespace gfx {
 namespace renderer {
 
 /**
-	@addtogroup gfx_renderer
+	@addtogroup lib_game_gfx_renderer
 	@{
 */
 
@@ -215,7 +219,7 @@ void configure(
 	gfx::RenderConfig const& config
 );
 
-/** @} */ // end of doc-group gfx_renderer
+/** @} */ // end of doc-group lib_game_gfx_renderer
 
 } // namespace renderer
 } // namespace gfx

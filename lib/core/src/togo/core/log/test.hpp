@@ -4,7 +4,7 @@
 
 @file
 @brief Test logging.
-@ingroup log
+@ingroup lib_core_log
 */
 
 #include <togo/core/config.hpp>
@@ -14,7 +14,7 @@ namespace togo {
 namespace log {
 
 /**
-	@addtogroup log
+	@addtogroup lib_core_log
 	@{
 */
 
@@ -52,7 +52,7 @@ namespace log {
 
 #undef TOGO_TEST_LOG_ENABLE
 
-/** @} */ // end of doc-group log
+/** @} */ // end of doc-group lib_core_log
 
 } // namespace log
 } // namespace togo

@@ -4,7 +4,7 @@
 
 @file
 @brief Array serialization.
-@ingroup serialization
+@ingroup lib_core_serialization
 */
 
 #pragma once
@@ -19,7 +19,7 @@
 namespace togo {
 
 /**
-	@addtogroup serialization
+	@addtogroup lib_core_serialization
 	@{
 */
 
@@ -56,6 +56,6 @@ write(serializer_tag, Ser& ser, SerCollection<S, Array<T>, C> const& value) {
 
 /** @endcond */ // INTERNAL
 
-/** @} */ // end of doc-group serialization
+/** @} */ // end of doc-group lib_core_serialization
 
 } // namespace togo

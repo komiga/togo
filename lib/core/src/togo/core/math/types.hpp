@@ -4,8 +4,8 @@
 
 @file
 @brief Math types.
-@ingroup types
-@ingroup math
+@ingroup lib_core_types
+@ingroup lib_core_math
 */
 
 #pragma once
@@ -18,7 +18,7 @@
 namespace togo {
 
 /**
-	@addtogroup math
+	@addtogroup lib_core_math
 	@{
 */
 
@@ -56,6 +56,6 @@ using Mat4x3 = am::linear::mat4x3;
 using Mat4x4 = am::linear::mat4x4;
 /// @}
 
-/** @} */ // end of doc-group math
+/** @} */ // end of doc-group lib_core_math
 
 } // namespace togo

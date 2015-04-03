@@ -4,8 +4,12 @@
 
 @file
 @brief Array interface.
-@ingroup collection
-@ingroup array
+@ingroup lib_core_collection
+@ingroup lib_core_array
+
+@defgroup lib_core_array Array
+@ingroup lib_core_collection
+@details
 */
 
 #pragma once
@@ -94,7 +98,7 @@ inline Array<T>::operator ArrayRef<T const>() const {
 namespace array {
 
 /**
-	@addtogroup array
+	@addtogroup lib_core_array
 	@{
 */
 
@@ -329,7 +333,7 @@ inline void copy(Array<T>& dst, Array<T> const& src) {
 	std::memcpy(dst._data, src._data, src._size * sizeof(T));
 }
 
-/** @} */ // end of doc-group array
+/** @} */ // end of doc-group lib_core_array
 
 } // namespace array
 

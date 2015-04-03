@@ -4,8 +4,12 @@
 
 @file
 @brief ResourcePackage interface.
-@ingroup resource
-@ingroup resource_package
+@ingroup lib_game_resource
+@ingroup lib_game_resource_package
+
+@defgroup lib_game_resource_package ResourcePackage
+@ingroup lib_game_resource
+@details
 */
 
 #pragma once
@@ -19,7 +23,7 @@ namespace togo {
 namespace resource_package {
 
 /**
-	@addtogroup resource_package
+	@addtogroup lib_game_resource_package
 	@{
 */
 
@@ -38,7 +42,7 @@ inline StringRef path(ResourcePackage const& pkg) {
 	return pkg._path;
 }
 
-/** @} */ // end of doc-group resource_package
+/** @} */ // end of doc-group lib_game_resource_package
 
 } // namespace resource_package
 } // namespace togo

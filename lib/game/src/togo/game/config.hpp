@@ -4,7 +4,11 @@
 
 @file
 @brief Game library configuration.
-@ingroup config
+@ingroup lib_game_config
+
+@defgroup lib_game_config Configuration
+@ingroup lib_game
+@details
 */
 
 #pragma once
@@ -14,7 +18,7 @@
 namespace togo {
 
 /**
-	@addtogroup config
+	@addtogroup lib_game_config
 	@{
 */
 
@@ -78,6 +82,6 @@ namespace togo {
 
 /// @} // end of name-group Graphics configuration
 
-/** @} */ // end of doc-group config
+/** @} */ // end of doc-group lib_game_config
 
 } // namespace togo

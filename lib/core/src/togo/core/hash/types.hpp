@@ -4,8 +4,8 @@
 
 @file
 @brief Hash types.
-@ingroup types
-@ingroup hash
+@ingroup lib_core_types
+@ingroup lib_core_hash
 */
 
 #pragma once
@@ -20,7 +20,7 @@
 namespace togo {
 
 /**
-	@addtogroup hash
+	@addtogroup lib_core_hash
 	@{
 */
 
@@ -71,7 +71,7 @@ TOGO_CONSTRAIN_SAME(hash64, am::detail::hash::fnv_hash_type<hash::LENGTH64>);
 } // namespace hash
 
 /**
-	@addtogroup hash_combiner
+	@addtogroup lib_core_hash_combiner
 	@{
 */
 
@@ -100,8 +100,8 @@ using HashCombiner32 = HashCombiner<hash32>;
 /// 64-bit hash combiner.
 using HashCombiner64 = HashCombiner<hash64>;
 
-/** @} */ // end of doc-group hash_combiner
+/** @} */ // end of doc-group lib_core_hash_combiner
 
-/** @} */ // end of doc-group hash
+/** @} */ // end of doc-group lib_core_hash
 
 } // namespace togo

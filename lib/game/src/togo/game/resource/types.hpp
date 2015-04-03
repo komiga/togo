@@ -4,8 +4,8 @@
 
 @file
 @brief Resource types.
-@ingroup types
-@ingroup resource
+@ingroup lib_game_types
+@ingroup lib_game_resource
 */
 
 #pragma once
@@ -24,7 +24,7 @@
 namespace togo {
 
 /**
-	@addtogroup resource
+	@addtogroup lib_game_resource
 	@{
 */
 
@@ -256,7 +256,7 @@ struct ResourceStreamLock {
 };
 
 /**
-	@addtogroup resource_handler
+	@addtogroup lib_game_resource_handler
 	@{
 */
 
@@ -286,10 +286,10 @@ struct ResourceHandler {
 	unload_func_type* func_unload;
 };
 
-/** @} */ // end of doc-group resource_handler
+/** @} */ // end of doc-group lib_game_resource_handler
 
 /**
-	@addtogroup resource_package
+	@addtogroup lib_game_resource_package
 	@{
 */
 
@@ -320,10 +320,10 @@ struct ResourcePackage {
 	);
 };
 
-/** @} */ // end of doc-group resource_package
+/** @} */ // end of doc-group lib_game_resource_package
 
 /**
-	@addtogroup resource_manager
+	@addtogroup lib_game_resource_manager
 	@{
 */
 
@@ -354,8 +354,8 @@ struct ResourceManager {
 	);
 };
 
-/** @} */ // end of doc-group resource_manager
+/** @} */ // end of doc-group lib_game_resource_manager
 
-/** @} */ // end of doc-group resource
+/** @} */ // end of doc-group lib_game_resource
 
 } // namespace togo

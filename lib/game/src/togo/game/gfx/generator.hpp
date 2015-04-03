@@ -4,9 +4,13 @@
 
 @file
 @brief Generator definitions.
-@ingroup types
-@ingroup gfx
-@ingroup gfx_generator
+@ingroup lib_game_types
+@ingroup lib_game_gfx
+@ingroup lib_game_gfx_generator
+
+@defgroup lib_game_gfx_generator Generator
+@ingroup lib_game_gfx
+@details
 */
 
 #pragma once
@@ -19,13 +23,13 @@ namespace gfx {
 namespace generator {
 
 /**
-	@addtogroup gfx_generator
+	@addtogroup lib_game_gfx_generator
 	@{
 */
 
 extern gfx::GeneratorDef const clear;
 
-/** @} */ // end of doc-group gfx_generator
+/** @} */ // end of doc-group lib_game_gfx_generator
 
 } // namespace generator
 } // namespace gfx

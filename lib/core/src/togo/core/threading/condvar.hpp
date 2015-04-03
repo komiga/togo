@@ -4,8 +4,12 @@
 
 @file
 @brief CondVar interface.
-@ingroup threading
-@ingroup condvar
+@ingroup lib_core_threading
+@ingroup lib_core_condvar
+
+@defgroup lib_core_condvar CondVar
+@ingroup lib_core_threading
+@details
 */
 
 #pragma once
@@ -18,7 +22,7 @@ namespace togo {
 namespace condvar {
 
 /**
-	@addtogroup condvar
+	@addtogroup lib_core_condvar
 	@{
 */
 
@@ -61,7 +65,7 @@ inline void wait(CondVar& cv, MutexLock& l) {
 	wait(cv, l._mutex);
 }
 
-/** @} */ // end of doc-group condvar
+/** @} */ // end of doc-group lib_core_condvar
 
 } // namespace condvar
 

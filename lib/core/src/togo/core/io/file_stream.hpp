@@ -4,8 +4,12 @@
 
 @file
 @brief File IO.
-@ingroup io
-@ingroup io_file
+@ingroup lib_core_io
+@ingroup lib_core_io_file
+
+@defgroup lib_core_io_file File IO
+@ingroup lib_core_io
+@details
 */
 
 #pragma once
@@ -25,7 +29,7 @@
 namespace togo {
 
 /**
-	@addtogroup io_file
+	@addtogroup lib_core_io_file
 	@{
 */
 
@@ -115,6 +119,6 @@ private:
 	IOStatus write(void const* data, unsigned size) override;
 };
 
-/** @} */ // end of doc-group io_file
+/** @} */ // end of doc-group lib_core_io_file
 
 } // namespace togo

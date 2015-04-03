@@ -5,6 +5,10 @@
 @file
 @brief ResourceCompiler interface.
 @ingroup tool_build_resource_compiler
+
+@defgroup tool_build_resource_compiler ResourceCompiler
+@ingroup tool_build
+@details
 */
 
 #pragma once

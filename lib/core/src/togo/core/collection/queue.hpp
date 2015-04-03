@@ -4,8 +4,12 @@
 
 @file
 @brief Queue interface.
-@ingroup collection
-@ingroup queue
+@ingroup lib_core_collection
+@ingroup lib_core_queue
+
+@defgroup lib_core_queue Queue
+@ingroup lib_core_collection
+@details
 */
 
 #pragma once
@@ -103,7 +107,7 @@ void grow(Queue<T>& q, u32_fast const min_capacity = 0) {
 } // anonymous namespace
 
 /**
-	@addtogroup queue
+	@addtogroup lib_core_queue
 	@{
 */
 
@@ -221,7 +225,7 @@ inline void copy(Queue<T>& dst, Queue<T> const& src) {
 	dst._size = src._size;
 }
 
-/** @} */ // end of doc-group queue
+/** @} */ // end of doc-group lib_core_queue
 
 } // namespace queue
 

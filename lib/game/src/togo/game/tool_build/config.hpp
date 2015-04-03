@@ -5,6 +5,10 @@
 @file
 @brief Core configuration.
 @ingroup tool_build_config
+
+@defgroup tool_build_config Configuration
+@ingroup tool_build
+@details
 */
 
 #pragma once

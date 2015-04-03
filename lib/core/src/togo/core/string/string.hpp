@@ -4,7 +4,7 @@
 
 @file
 @brief String interface.
-@ingroup string
+@ingroup lib_core_string
 */
 
 #pragma once
@@ -23,7 +23,7 @@ namespace togo {
 namespace string {
 
 /**
-	@addtogroup string
+	@addtogroup lib_core_string
 	@{
 */
 
@@ -179,7 +179,7 @@ inline unsigned ensure_trailing_slash(FixedArray<char, N>& string) {
 	return new_size;
 }
 
-/** @} */ // end of doc-group string
+/** @} */ // end of doc-group lib_core_string
 
 } // namespace string
 

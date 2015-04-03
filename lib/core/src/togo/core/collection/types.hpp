@@ -4,8 +4,8 @@
 
 @file
 @brief Collection types.
-@ingroup types
-@ingroup collection
+@ingroup lib_core_types
+@ingroup lib_core_collection
 */
 
 #pragma once
@@ -22,12 +22,12 @@ template<class T>
 struct ArrayRef; // external
 
 /**
-	@addtogroup collection
+	@addtogroup lib_core_collection
 	@{
 */
 
 /**
-	@addtogroup array
+	@addtogroup lib_core_array
 	@{
 */
 
@@ -58,10 +58,10 @@ struct Array {
 	operator ArrayRef<T const>() const;
 };
 
-/** @} */ // end of doc-group array
+/** @} */ // end of doc-group lib_core_array
 
 /**
-	@addtogroup fixed_array
+	@addtogroup lib_core_fixed_array
 	@{
 */
 
@@ -91,10 +91,10 @@ struct FixedArray {
 	T const& operator[](unsigned const i) const;
 };
 
-/** @} */ // end of doc-group fixed_array
+/** @} */ // end of doc-group lib_core_fixed_array
 
 /**
-	@addtogroup queue
+	@addtogroup lib_core_queue
 	@{
 */
 
@@ -122,10 +122,10 @@ struct Queue {
 	T const& operator[](unsigned const i) const;
 };
 
-/** @} */ // end of doc-group queue
+/** @} */ // end of doc-group lib_core_queue
 
 /**
-	@addtogroup priority_queue
+	@addtogroup lib_core_priority_queue
 	@{
 */
 
@@ -160,10 +160,10 @@ struct PriorityQueue {
 	T const& operator[](unsigned const i) const;
 };
 
-/** @} */ // end of doc-group priority_queue
+/** @} */ // end of doc-group lib_core_priority_queue
 
 /**
-	@addtogroup hash_map
+	@addtogroup lib_core_hash_map
 	@{
 */
 
@@ -201,8 +201,8 @@ struct HashMap {
 	HashMap(Allocator& allocator);
 };
 
-/** @} */ // end of doc-group hash_map
+/** @} */ // end of doc-group lib_core_hash_map
 
-/** @} */ // end of doc-group collection
+/** @} */ // end of doc-group lib_core_collection
 
 } // namespace togo

@@ -4,8 +4,12 @@
 
 @file
 @brief RenderNode interface.
-@ingroup gfx
-@ingroup gfx_render_node
+@ingroup lib_game_gfx
+@ingroup lib_game_gfx_render_node
+
+@defgroup lib_game_gfx_render_node RenderNode
+@ingroup lib_game_gfx
+@details
 */
 
 #pragma once
@@ -21,7 +25,7 @@ namespace gfx {
 namespace render_node {
 
 /**
-	@addtogroup gfx_render_node
+	@addtogroup lib_game_gfx_render_node
 	@{
 */
 
@@ -40,7 +44,7 @@ inline void push(
 	);
 }
 
-/** @} */ // end of doc-group gfx_render_node
+/** @} */ // end of doc-group lib_game_gfx_render_node
 
 } // namespace render_node
 } // namespace gfx

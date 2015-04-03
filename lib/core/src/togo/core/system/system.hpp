@@ -4,7 +4,7 @@
 
 @file
 @brief OS interface.
-@ingroup system
+@ingroup lib_core_system
 */
 
 #pragma once
@@ -19,7 +19,7 @@ namespace togo {
 namespace system {
 
 /**
-	@addtogroup system
+	@addtogroup lib_core_system
 	@{
 */
 
@@ -57,7 +57,7 @@ bool set_environment_variable(
 /// Remove environment variable.
 bool remove_environment_variable(StringRef const& name);
 
-/** @} */ // end of doc-group system
+/** @} */ // end of doc-group lib_core_system
 
 } // namespace system
 } // namespace togo

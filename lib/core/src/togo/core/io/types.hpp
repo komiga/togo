@@ -4,8 +4,8 @@
 
 @file
 @brief IO types.
-@ingroup types
-@ingroup io
+@ingroup lib_core_types
+@ingroup lib_core_io
 */
 
 #pragma once
@@ -15,7 +15,7 @@
 namespace togo {
 
 /**
-	@addtogroup io
+	@addtogroup lib_core_io
 	@{
 */
 
@@ -77,6 +77,6 @@ struct IOStatus {
 	}
 };
 
-/** @} */ // end of doc-group io
+/** @} */ // end of doc-group lib_core_io
 
 } // namespace togo

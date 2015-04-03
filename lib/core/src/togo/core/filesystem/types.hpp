@@ -4,8 +4,8 @@
 
 @file
 @brief Filesystem types.
-@ingroup types
-@ingroup filesystem
+@ingroup lib_core_types
+@ingroup lib_core_filesystem
 */
 
 #pragma once
@@ -26,7 +26,7 @@
 namespace togo {
 
 /**
-	@addtogroup filesystem
+	@addtogroup lib_core_filesystem
 	@{
 */
 
@@ -79,6 +79,6 @@ template<>
 struct enable_enum_bitwise_ops<DirectoryEntry::Type> : true_type {};
 /** @endcond */ // INTERNAL
 
-/** @} */ // end of doc-group filesystem
+/** @} */ // end of doc-group lib_core_filesystem
 
 } // namespace togo

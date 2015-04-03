@@ -4,8 +4,8 @@
 
 @file
 @brief Graphics types.
-@ingroup types
-@ingroup gfx
+@ingroup lib_game_types
+@ingroup lib_game_gfx
 */
 
 #pragma once
@@ -26,7 +26,7 @@ namespace togo {
 namespace gfx {
 
 /**
-	@addtogroup gfx_display
+	@addtogroup lib_game_gfx_display
 	@{
 */
 
@@ -98,10 +98,10 @@ enum class DisplaySwapMode : unsigned {
 /// Graphics display.
 struct Display;
 
-/** @} */ // end of doc-group gfx_display
+/** @} */ // end of doc-group lib_game_gfx_display
 
 /**
-	@addtogroup gfx_renderer
+	@addtogroup lib_game_gfx_renderer
 	@{
 */
 
@@ -519,7 +519,7 @@ struct RenderNode {
 /// Camera.
 struct Camera {};
 
-/** @} */ // end of doc-group gfx_renderer
+/** @} */ // end of doc-group lib_game_gfx_renderer
 
 } // namespace gfx
 

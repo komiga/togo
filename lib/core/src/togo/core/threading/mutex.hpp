@@ -4,8 +4,12 @@
 
 @file
 @brief Mutex interface.
-@ingroup threading
-@ingroup mutex
+@ingroup lib_core_threading
+@ingroup lib_core_mutex
+
+@defgroup lib_core_mutex Mutex
+@ingroup lib_core_threading
+@details
 */
 
 #pragma once
@@ -18,7 +22,7 @@ namespace togo {
 namespace mutex {
 
 /**
-	@addtogroup mutex
+	@addtogroup lib_core_mutex
 	@{
 */
 
@@ -47,7 +51,7 @@ void lock(Mutex& m);
 /// been undone.
 void unlock(Mutex& m);
 
-/** @} */ // end of doc-group mutex
+/** @} */ // end of doc-group lib_core_mutex
 
 } // namespace mutex
 

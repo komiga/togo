@@ -4,7 +4,7 @@
 
 @file
 @brief JumpBlockAllocator class.
-@ingroup memory
+@ingroup lib_core_memory
 */
 
 #pragma once
@@ -17,7 +17,7 @@
 namespace togo {
 
 /**
-	@addtogroup memory
+	@addtogroup lib_core_memory
 	@{
 */
 
@@ -93,6 +93,6 @@ public:
 	void deallocate(void const* const) override {}
 };
 
-/** @} */ // end of doc-group memory
+/** @} */ // end of doc-group lib_core_memory
 
 } // namespace togo

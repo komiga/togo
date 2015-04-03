@@ -4,8 +4,12 @@
 
 @file
 @brief Graphics display interface.
-@ingroup gfx
-@ingroup gfx_display
+@ingroup lib_game_gfx
+@ingroup lib_game_gfx_display
+
+@defgroup lib_game_gfx_display Display
+@ingroup lib_game_gfx
+@details
 */
 
 #pragma once
@@ -21,7 +25,7 @@ namespace gfx {
 namespace display {
 
 /**
-	@addtogroup gfx_display
+	@addtogroup lib_game_gfx_display
 	@{
 */
 
@@ -75,7 +79,7 @@ void swap_buffers(gfx::Display* display);
 /// Destroy graphics display.
 void destroy(gfx::Display* display);
 
-/** @} */ // end of doc-group gfx_display
+/** @} */ // end of doc-group lib_game_gfx_display
 
 } // namespace display
 } // namespace gfx

@@ -4,8 +4,12 @@
 
 @file
 @brief ShaderDef interface.
-@ingroup gfx
-@ingroup gfx_shader_def
+@ingroup lib_game_gfx
+@ingroup lib_game_gfx_shader_def
+
+@defgroup lib_game_gfx_shader_def ShaderDef
+@ingroup lib_game_gfx
+@details
 */
 
 #pragma once
@@ -20,7 +24,7 @@ namespace gfx {
 namespace shader_def {
 
 /**
-	@addtogroup gfx_shader_def
+	@addtogroup lib_game_gfx_shader_def
 	@{
 */
 
@@ -79,7 +83,7 @@ inline void patch_param_block_names(gfx::ShaderDef& def) {
 	}
 }
 
-/** @} */ // end of doc-group gfx_shader_def
+/** @} */ // end of doc-group lib_game_gfx_shader_def
 
 } // namespace shader_def
 } // namespace gfx

@@ -4,8 +4,12 @@
 
 @file
 @brief Thread interface.
-@ingroup threading
-@ingroup thread
+@ingroup lib_core_threading
+@ingroup lib_core_thread
+
+@defgroup lib_core_thread Thread
+@ingroup lib_core_threading
+@details
 */
 
 #pragma once
@@ -19,7 +23,7 @@ namespace togo {
 namespace thread {
 
 /**
-	@addtogroup thread
+	@addtogroup lib_core_thread
 	@{
 */
 
@@ -58,7 +62,7 @@ Thread* create(
 /// execution.
 void* join(Thread* t);
 
-/** @} */ // end of doc-group thread
+/** @} */ // end of doc-group lib_core_thread
 
 } // namespace thread
 } // namespace togo

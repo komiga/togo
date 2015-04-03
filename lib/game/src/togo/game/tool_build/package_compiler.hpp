@@ -5,6 +5,10 @@
 @file
 @brief PackageCompiler interface.
 @ingroup tool_build_package_compiler
+
+@defgroup tool_build_package_compiler PackageCompiler
+@ingroup tool_build
+@details
 */
 
 #pragma once

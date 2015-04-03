@@ -4,7 +4,7 @@
 
 @file
 @brief Utility types.
-@ingroup utility
+@ingroup lib_core_utility
 */
 
 #pragma once
@@ -14,7 +14,7 @@
 namespace togo {
 
 /**
-	@addtogroup utility
+	@addtogroup lib_core_utility
 	@{
 */
 
@@ -22,6 +22,6 @@ namespace togo {
 template<class T>
 struct ArrayRef;
 
-/** @} */ // end of doc-group utility
+/** @} */ // end of doc-group lib_core_utility
 
 } // namespace togo

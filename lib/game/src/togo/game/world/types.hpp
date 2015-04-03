@@ -4,8 +4,8 @@
 
 @file
 @brief World types.
-@ingroup types
-@ingroup world
+@ingroup lib_game_types
+@ingroup lib_game_world
 */
 
 #pragma once
@@ -22,7 +22,7 @@
 namespace togo {
 
 /**
-	@addtogroup world
+	@addtogroup lib_game_world
 	@{
 */
 
@@ -132,6 +132,6 @@ struct WorldManager {
 	);
 };
 
-/** @} */ // end of doc-group world
+/** @} */ // end of doc-group lib_game_world
 
 } // namespace togo

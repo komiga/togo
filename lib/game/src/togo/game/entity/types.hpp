@@ -4,8 +4,8 @@
 
 @file
 @brief Entity types.
-@ingroup types
-@ingroup entity
+@ingroup lib_game_types
+@ingroup lib_game_entity
 */
 
 #pragma once
@@ -19,7 +19,7 @@
 namespace togo {
 
 /**
-	@addtogroup entity
+	@addtogroup lib_game_entity
 	@{
 */
 
@@ -68,6 +68,6 @@ struct EntityManager {
 	);
 };
 
-/** @} */ // end of doc-group entity
+/** @} */ // end of doc-group lib_game_entity
 
 } // namespace togo
