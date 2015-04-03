@@ -29,11 +29,14 @@ function make_inverse_table(t, value)
 	return it
 end
 
-function iterate_dir(dir, select_only)
+function iterate_dir(dir, select_only, max_depth)
 	assert(dir and dir ~= "", "directory parameter is missing or empty")
 	dir = trim_trailing_slash(dir)
 
-	local function yield_tree(base, path)
+	local function yield_tree(base, path, depth)
+		if max_depth ~= nil and depth > max_depth then
+			return
+		end
 		for entry in lfs.dir(base .. path) do
 			if entry ~= "." and entry ~= ".." then
 				entry = path .. "/" .. entry
@@ -42,7 +45,7 @@ function iterate_dir(dir, select_only)
 					coroutine.yield(string.sub(entry, 2), attr)
 				end
 				if attr.mode == "directory" then
-					yield_tree(base, entry)
+					yield_tree(base, entry, depth + 1)
 				end
 			end
 		end
@@ -50,34 +53,35 @@ function iterate_dir(dir, select_only)
 
 	return coroutine.wrap(
 		function()
-			yield_tree(dir, "")
+			yield_tree(dir, "", 1)
 		end
 	)
 end
 
 local MATCHERS = {
-	['@ingroup%s+(.+)$'] = function(ctx, data, group_name)
+	['@ingroup%s+(.+)$'] = function(ctx, lib, data, group_name)
 		table.insert(data.ingroups, group_name)
 	end,
-	['#include.+[<"](.+)[>"]'] = function(ctx, data, include_path)
-		local _, extension = split_path(include_path)
+	['#include.+[<"](.+)[>"]'] = function(ctx, lib, data, path)
+		local _, extension = split_path(path)
 		if extension == "gen_interface" then
 			assert(data.gen_path == nil, "a gen_interface was already included!")
-			data.gen_path = "src/" .. include_path
+			-- data.gen_path = lib.src .. '/' .. path:gsub("^togo/" .. lib.name .. "/", "")
+			data.gen_path = lib.src .. '/' .. path
 			return true
 		end
 	end,
-	['igen%-following%-sources%-included$'] = function(ctx, data, _)
+	['igen%-following%-sources%-included$'] = function(ctx, lib, data, _)
 		data.sources_included = true
 	end,
-	['igen%-source:%s*([^%s]+)$'] = function(ctx, data, path)
+	['igen%-source:%s*([^%s]+)$'] = function(ctx, lib, data, path)
 		table.insert(data.sources, {
-			path = path,
+			path = lib.src_inner .. '/' .. path,
 			included = data.sources_included,
 		})
 	end,
-	['igen%-source%-pattern:%s*([^%s]+)$'] = function(ctx, data, pattern)
-		pattern = string.format("^%s$", pattern)
+	['igen%-source%-pattern:%s*([^%s]+)$'] = function(ctx, lib, data, pattern)
+		pattern = string.format("^%s/%s$", lib.src_inner, pattern)
 		for _, path in pairs(ctx.paths) do
 			local i, _ = string.find(path, pattern)
 			if i ~= nil then
@@ -90,15 +94,14 @@ local MATCHERS = {
 	end,
 }
 
-function process_file(ctx, from, path)
+function process_file(ctx, lib, path)
 	local stream, err = io.open(path, "r")
 	if stream == nil then
 		error("failed to open '" .. path .. "': " .. err)
 	end
-	local path_no_ext = path:gsub("%.[^%.]+$", "")
+	local path_no_ext, _ = split_path(path)
 	local data = {
-		from = from,
-		slug = path_no_ext:gsub("^" .. from .. "/", ""),
+		slug = path_no_ext,
 		path = path,
 		gen_path = nil,
 		sources_included = false,
@@ -107,7 +110,7 @@ function process_file(ctx, from, path)
 	}
 
 	local primary_source = path_no_ext .. ".cpp"
-	if ctx.path_from[primary_source] ~= nil then
+	if ctx.path_exists[primary_source] ~= nil then
 		table.insert(data.sources, {
 			path = primary_source,
 			included = data.sources_included,
@@ -126,7 +129,7 @@ function process_file(ctx, from, path)
 		for pattern, func in pairs(MATCHERS) do
 			local m = string.match(line, pattern)
 			if m ~= nil then
-				continue = func(ctx, data, m) ~= true
+				continue = func(ctx, lib, data, m) ~= true
 				break
 			end
 		end
@@ -138,7 +141,6 @@ function process_file(ctx, from, path)
 		return false
 	end
 
-	data.from = nil
 	data.doc_group = #data.ingroups > 0 and table_last(data.ingroups) or nil
 	data.ingroups = nil
 	data.sources_included = nil
@@ -146,7 +148,7 @@ function process_file(ctx, from, path)
 	return true
 end
 
-local USERS_PATH = "toolchain/igen_users"
+local USERS_PATH = "tmp/igen_users"
 
 function write_users(ctx)
 	local path = USERS_PATH
@@ -159,13 +161,9 @@ function write_users(ctx)
 end
 
 function main(arguments)
-	if #arguments == 0 then
-		print("usage: collect_igen_users dir [dir ...]")
-		return 0
-	end
-
 	local ctx = {
-		path_from = {},
+		libraries = {},
+		path_exists = {},
 		paths = {},
 		user_paths = {},
 		users = {},
@@ -175,24 +173,33 @@ function main(arguments)
 		"hpp",
 	}, true)
 
-	for i = 1, #arguments do
-		local dir = trim_trailing_slash(arguments[i])
+	for lib_name, _ in iterate_dir("lib", "directory", 1) do
+		local dir = "lib/" .. lib_name .. "/src"
+		local lib = {
+			name = lib_name,
+			src = dir,
+			src_inner = dir .. "/togo/" .. lib_name,
+			user_paths = {},
+		}
 		for rel_path, _ in iterate_dir(dir, "file") do
 			local path = dir .. '/' .. rel_path
 			local _, extension = split_path(rel_path)
-			ctx.path_from[path] = dir
+			ctx.path_exists[path] = true
 			table.insert(ctx.paths, path)
 			if ext_filter[extension] then
 				assert(not ctx.user_paths[path], "duplicate path: " .. dir .. ", " .. path)
-				table.insert(ctx.user_paths, path)
+				table.insert(lib.user_paths, path)
 			end
 		end
+		table.sort(lib.user_paths)
+		table.insert(ctx.libraries, lib)
 	end
 	table.sort(ctx.paths)
-	table.sort(ctx.user_paths)
 
-	for _, path in pairs(ctx.user_paths) do
-		process_file(ctx, ctx.path_from[path], path)
+	for _, lib in pairs(ctx.libraries) do
+		for _, path in pairs(lib.user_paths) do
+			process_file(ctx, lib, path)
+		end
 	end
 	write_users(ctx)
 	return 0

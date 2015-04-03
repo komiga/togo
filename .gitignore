@@ -3,10 +3,11 @@ togo.sublime-workspace
 
 *.make
 Makefile
+build/
+tmp/
+
 out/
-lib/
-bin/
+*.exe
+*.elf
 
 *.gen_interface
-toolchain/igen_users
-toolchain/igen_cache

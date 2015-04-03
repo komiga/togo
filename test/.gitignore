@@ -1,10 +1,4 @@
 
-Makefile
-*.make
-out/
-*.exe
-*.elf
-
 data/file_stream.bin
 data/project/package/*.package
 data/project/package/*/.compiled/

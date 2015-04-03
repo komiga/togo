@@ -1,0 +1,62 @@
+
+#include <togo/core/config.hpp>
+#include <togo/core/types.hpp>
+#include <togo/core/error/assert.hpp>
+#include <togo/core/utility/utility.hpp>
+#include <togo/core/utility/tags.hpp>
+#include <togo/core/utility/traits.hpp>
+#include <togo/core/utility/constraints.hpp>
+#include <togo/core/utility/args.hpp>
+#include <togo/core/math/types.hpp>
+#include <togo/core/math/math.hpp>
+#include <togo/core/log/log.hpp>
+#include <togo/core/log/test.hpp>
+#include <togo/core/log/test_unconfigure.hpp>
+#include <togo/core/memory/types.hpp>
+#include <togo/core/memory/memory.hpp>
+#include <togo/core/memory/jump_block_allocator.hpp>
+#include <togo/core/memory/temp_allocator.hpp>
+#include <togo/core/collection/types.hpp>
+#include <togo/core/collection/fixed_array.hpp>
+#include <togo/core/collection/array.hpp>
+#include <togo/core/collection/queue.hpp>
+#include <togo/core/collection/priority_queue.hpp>
+#include <togo/core/collection/hash_map.hpp>
+#include <togo/core/algorithm/sort.hpp>
+#include <togo/core/string/types.hpp>
+#include <togo/core/string/string.hpp>
+#include <togo/core/hash/types.hpp>
+#include <togo/core/hash/hash.hpp>
+#include <togo/core/hash/hash_combiner.hpp>
+#include <togo/core/system/system.hpp>
+#include <togo/core/filesystem/types.hpp>
+#include <togo/core/filesystem/filesystem.hpp>
+#include <togo/core/filesystem/directory_reader.hpp>
+#include <togo/core/random/types.hpp>
+#include <togo/core/random/random.hpp>
+#include <togo/core/threading/types.hpp>
+#include <togo/core/threading/condvar.hpp>
+#include <togo/core/threading/mutex.hpp>
+#include <togo/core/threading/thread.hpp>
+#include <togo/core/threading/task_manager.hpp>
+#include <togo/core/io/types.hpp>
+#include <togo/core/io/io.hpp>
+#include <togo/core/io/proto.hpp>
+#include <togo/core/io/memory_stream.hpp>
+#include <togo/core/io/file_stream.hpp>
+#include <togo/core/io/object_buffer_type.hpp>
+#include <togo/core/io/object_buffer.hpp>
+#include <togo/core/kvs/types.hpp>
+#include <togo/core/kvs/kvs.hpp>
+#include <togo/core/serialization/types.hpp>
+#include <togo/core/serialization/serializer.hpp>
+#include <togo/core/serialization/support.hpp>
+#include <togo/core/serialization/binary_serializer.hpp>
+#include <togo/core/serialization/fixed_array.hpp>
+#include <togo/core/serialization/array.hpp>
+#include <togo/core/serialization/string.hpp>
+#include <togo/core/external/dlmalloc_import.hpp>
+
+signed main() {
+	return 0;
+}

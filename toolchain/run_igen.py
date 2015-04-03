@@ -23,8 +23,8 @@ os.stat_float_times(False)
 cindex.Config.set_library_path(IGEN_ROOT)
 
 G.F_TEMPLATE = "toolchain/igen_interface.template"
-G.F_CACHE = "toolchain/igen_cache"
-G.F_USERS = "toolchain/igen_users"
+G.F_CACHE = "tmp/igen_cache"
+G.F_USERS = "tmp/igen_users"
 
 G.PASS_ANNOTATIONS = [
 	"igen_interface",
@@ -86,7 +86,7 @@ class Interface:
 		self.doc_group = spec["doc_group"]
 		self.doc_path = os.path.join(
 			"doc/gen_interface",
-			re.sub(r'(.+)\.(.+)$', r'\1.dox', self.path).replace("/", "_")
+			re.sub(r'src/togo/(.+)\.(.+)$', r'\1.dox', self.path).replace("/", "_")
 		)
 
 		self.group = None
@@ -126,8 +126,14 @@ class Interface:
 
 	def load(self):
 		def pre_filter(cursor):
+			path = cursor.location.file.name
+			#path = re.sub(
+			#	r'^tmp/include/togo/([^/]+)/(.+)$',
+			#	r'lib/\1/src/\2',
+			#	cursor.location.file.name
+			#)
 			return (
-				True in (s.path == cursor.location.file.name for s in self.sources) and (
+				True in (s.path == path for s in self.sources) and (
 					cursor.raw_comment != None or
 					has_annotation(cursor, G.PASS_ANNOTATIONS)
 				)
@@ -176,7 +182,7 @@ for i in G.interfaces.values():
 
 	print("\ncheck: %s" % (i.gen_path))
 	for source in i.sources:
-		print("  from %s" % (source.path))
+		print("  from %s%s" % (source.path, source.included and " (included)" or ""))
 	i.load()
 	if G.debug and len(i.group.funcs) > 0:
 		print("")
