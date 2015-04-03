@@ -11,6 +11,14 @@ function togo.library_config(name)
 	togo.link_library(name)
 end
 
+function togo.tool_config(name)
+	configuration {}
+		includedirs {
+			G"${TOGO_ROOT}/tool/" .. name .. "/src/",
+		}
+	togo.link_library("tool_" .. name)
+end
+
 function togo.link_library(name)
 	name = "togo_" .. name
 	if not precore.env_project()["NO_LINK"] then
@@ -73,14 +81,39 @@ function togo.make_tool(name, configs, env)
 	table.insert(configs, 2, "togo.base")
 
 	env = env or {}
-	env["TOGO_TOOL"] = true
+	local lib_env = precore.internal.env_set({
+		TOGO_TOOL_LIB = true,
+		NO_LINK = true,
+	}, env)
+	local lib_proj = precore.make_project(
+		"tool_" .. name .. "_lib",
+		"C++", "StaticLib",
+		"${TOGO_BUILD}/lib/",
+		"${TOGO_BUILD}/out/${NAME}/",
+		lib_env, configs
+	)
 
+	configuration {"debug"}
+		targetsuffix("_d")
+
+	configuration {}
+		targetname("togo_tool_" .. name)
+		files {
+			"src/**.cpp",
+		}
+		excludes {
+			"src/**/main.cpp"
+		}
+
+	local app_env = precore.internal.env_set({
+		TOGO_TOOL = true,
+	}, env)
 	precore.make_project(
 		"tool_" .. name,
 		"C++", "ConsoleApp",
-		G"${TOGO_BUILD}/bin/",
-		G"${TOGO_BUILD}/out/tool_${NAME}/",
-		env, configs
+		"${TOGO_BUILD}/bin/",
+		"${TOGO_BUILD}/out/${NAME}/",
+		app_env, configs
 	)
 
 	configuration {"linux"}
@@ -89,7 +122,7 @@ function togo.make_tool(name, configs, env)
 	configuration {}
 		targetname(name)
 		files {
-			"src/**.cpp",
+			"src/**/main.cpp",
 		}
 end
 
@@ -236,12 +269,12 @@ for _, p in pairs(glob) do
 		table.insert(togo.libs, name)
 	end
 end
---[[
+
 glob = os.matchdirs(G"${TOGO_ROOT}/tool/*")
 for _, p in pairs(glob) do
 	local name = path.getname(p)
 	table.insert(togo.tools, name)
-end--]]
+end
 
 precore.make_config_scoped("togo.projects", {
 	once = true,
