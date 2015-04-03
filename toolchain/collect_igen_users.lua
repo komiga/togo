@@ -63,29 +63,28 @@ local MATCHERS = {
 		assert(not data.doc_group)
 		data.doc_group = group_name
 	end,
-	['@ingroup%s+(.+)$'] = function(ctx, lib, data, group_name)
+	['@ingroup%s+(.+)$'] = function(ctx, group, data, group_name)
 		table.insert(data.ingroups, group_name)
 	end,
-	['#include.+[<"](.+)[>"]'] = function(ctx, lib, data, path)
+	['#include.+[<"](.+)[>"]'] = function(ctx, group, data, path)
 		local _, extension = split_path(path)
 		if extension == "gen_interface" then
 			assert(data.gen_path == nil, "a gen_interface was already included!")
-			-- data.gen_path = lib.src .. '/' .. path:gsub("^togo/" .. lib.name .. "/", "")
-			data.gen_path = lib.src .. '/' .. path
+			data.gen_path = group.src .. '/' .. path
 			return true
 		end
 	end,
-	['igen%-following%-sources%-included$'] = function(ctx, lib, data, _)
+	['igen%-following%-sources%-included$'] = function(ctx, group, data, _)
 		data.sources_included = true
 	end,
-	['igen%-source:%s*([^%s]+)$'] = function(ctx, lib, data, path)
+	['igen%-source:%s*([^%s]+)$'] = function(ctx, group, data, path)
 		table.insert(data.sources, {
-			path = lib.src_inner .. '/' .. path,
+			path = group.src_inner .. '/' .. path,
 			included = data.sources_included,
 		})
 	end,
-	['igen%-source%-pattern:%s*([^%s]+)$'] = function(ctx, lib, data, pattern)
-		pattern = string.format("^%s/%s$", lib.src_inner, pattern)
+	['igen%-source%-pattern:%s*([^%s]+)$'] = function(ctx, group, data, pattern)
+		pattern = string.format("^%s/%s$", group.src_inner, pattern)
 		for _, path in pairs(ctx.paths) do
 			local i, _ = string.find(path, pattern)
 			if i ~= nil then
@@ -98,7 +97,7 @@ local MATCHERS = {
 	end,
 }
 
-function process_file(ctx, lib, path)
+function process_file(ctx, group, path)
 	local stream, err = io.open(path, "r")
 	if stream == nil then
 		error("failed to open '" .. path .. "': " .. err)
@@ -134,7 +133,7 @@ function process_file(ctx, lib, path)
 		for pattern, func in pairs(MATCHERS) do
 			local m = string.match(line, pattern)
 			if m ~= nil then
-				continue = func(ctx, lib, data, m) ~= true
+				continue = func(ctx, group, data, m) ~= true
 				break
 			end
 		end
@@ -167,9 +166,22 @@ function write_users(ctx)
 	stream:close()
 end
 
+function collect_groups(ctx, path, src_inner_prefix)
+	for name, _ in iterate_dir(path, "directory", 1) do
+		local src = path .. "/" .. name .. "/src"
+		local group = {
+			name = name,
+			src = src,
+			src_inner = src .. "/togo/" .. src_inner_prefix .. name,
+			user_paths = {},
+		}
+		table.insert(ctx.groups, group)
+	end
+end
+
 function main(arguments)
 	local ctx = {
-		libraries = {},
+		groups = {},
 		path_exists = {},
 		paths = {},
 		user_paths = {},
@@ -180,32 +192,26 @@ function main(arguments)
 		"hpp",
 	}, true)
 
-	for lib_name, _ in iterate_dir("lib", "directory", 1) do
-		local dir = "lib/" .. lib_name .. "/src"
-		local lib = {
-			name = lib_name,
-			src = dir,
-			src_inner = dir .. "/togo/" .. lib_name,
-			user_paths = {},
-		}
-		for rel_path, _ in iterate_dir(dir, "file") do
-			local path = dir .. '/' .. rel_path
+	collect_groups(ctx, "lib", "")
+	collect_groups(ctx, "tool", "tool_")
+	for _, group in pairs(ctx.groups) do
+		for rel_path, _ in iterate_dir(group.src, "file") do
+			local path = group.src .. '/' .. rel_path
 			local _, extension = split_path(rel_path)
 			ctx.path_exists[path] = true
 			table.insert(ctx.paths, path)
 			if ext_filter[extension] then
-				assert(not ctx.user_paths[path], "duplicate path: " .. dir .. ", " .. path)
-				table.insert(lib.user_paths, path)
+				assert(not ctx.user_paths[path], "duplicate path: " .. group.src .. ", " .. path)
+				table.insert(group.user_paths, path)
 			end
 		end
-		table.sort(lib.user_paths)
-		table.insert(ctx.libraries, lib)
+		table.sort(group.user_paths)
 	end
 	table.sort(ctx.paths)
 
-	for _, lib in pairs(ctx.libraries) do
-		for _, path in pairs(lib.user_paths) do
-			process_file(ctx, lib, path)
+	for _, group in pairs(ctx.groups) do
+		for _, path in pairs(group.user_paths) do
+			process_file(ctx, group, path)
 		end
 	end
 	write_users(ctx)
