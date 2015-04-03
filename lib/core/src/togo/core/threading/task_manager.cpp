@@ -19,7 +19,7 @@
 
 #undef TOGO_TEST_LOG_ENABLE
 #if defined(TOGO_TEST_TASK_MANAGER)
-	#define TOGO_TEST_LOG_ENABLE 
+	#define TOGO_TEST_LOG_ENABLE
 #endif
 #include <togo/core/log/test.hpp>
 
