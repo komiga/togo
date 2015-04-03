@@ -50,20 +50,4 @@ return {
 		}),
 	}),
 	M("app", {}),
-	T("tool_build", {
-		N("resource_compiler"),
-		N("package_compiler"),
-		N("compiler_manager"),
-		N("generator_compiler"),
-		N("gfx_compiler"),
-		N("interface", {
-			N("command_help"),
-			N("command_list"),
-			N("command_create"),
-			N("command_sync"),
-			N("command_compile"),
-			N("command_pack"),
-			N("command_compact"),
-		}),
-	}),
 }
