@@ -67,14 +67,21 @@
 			]
 		},
 		{
-			"name": "- Tool: game/tool_build",
-			"path": "./lib/game/src/togo/game/tool_build/",
+			"name": "Tool: res_build",
+			"path": "./tool/res_build/",
 			"file_exclude_patterns": [
 				"*.gen_interface"
 			]
 		},
 		{
-			"name": "- Test",
+			"name": "— tool/res_build",
+			"path": "./tool/res_build/src/togo/tool_res_build/",
+			"file_exclude_patterns": [
+				"*.gen_interface"
+			]
+		},
+		{
+			"name": "Test",
 			"path": "./test/",
 			"folder_exclude_patterns": [
 				"out"
