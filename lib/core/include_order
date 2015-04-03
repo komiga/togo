@@ -1,0 +1,82 @@
+
+return {
+	M("error", {
+		N("assert"),
+	}),
+	M("utility", {
+		N("tags"),
+		N("traits"),
+		N("constraints"),
+		N("args"),
+	}),
+	M("math", {}),
+	M("log", {
+		N("test"),
+		N("test_unconfigure"),
+	}),
+	M("memory", {
+		N("jump_block_allocator"),
+		N("temp_allocator"),
+	}),
+	M("collection", {
+		N("fixed_array"),
+		N("array"),
+		N("queue"),
+		N("priority_queue"),
+		N("hash_map"),
+	}),
+	M("algorithm", {
+		N("sort"),
+	}),
+	M("string", {}),
+	M("hash", {
+		N("hash_combiner"),
+	}),
+	M("system", {
+		I("system", {
+			N("linux"),
+		}),
+	}),
+	M("filesystem", {
+		I("filesystem", {
+			N("linux"),
+		}),
+		I("directory_reader", {
+			N("posix"),
+		}),
+	}),
+	M("random", {}),
+	M("threading", {
+		I("condvar", {
+			N("posix"),
+		}),
+		I("mutex", {
+			N("posix"),
+		}),
+		I("thread", {
+			N("posix"),
+		}),
+		N("task_manager"),
+	}),
+	M("io", {
+		N("proto"),
+		N("memory_stream"),
+		I("file_stream", {
+			N("posix"),
+		}),
+		N("object_buffer_type"),
+		N("object_buffer"),
+	}),
+	M("kvs", {}),
+	M("serialization", {
+		N("serializer"),
+		N("support"),
+		N("binary_serializer"),
+		N("fixed_array"),
+		N("array"),
+		N("string"),
+	}),
+	M("external", {
+		N("dlmalloc_import"),
+	}),
+}

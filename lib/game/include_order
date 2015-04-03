@@ -1,0 +1,69 @@
+
+return {
+	M("entity", {
+		N("entity_manager"),
+	}),
+	M("world", {
+		N("world_manager"),
+	}),
+	M("gfx", {
+		I("gfx", {
+			N("common"),
+			N("opengl_common"),
+			N("glfw_common"),
+			N("glfw"),
+			N("sdl_common"),
+			N("sdl"),
+		}),
+	}),
+	M("display", {
+		I("display", {
+			N("glfw"),
+			N("sdl"),
+		}),
+	}),
+	M("command"),
+	M("generator"),
+	M("render_node"),
+	M("shader_def"),
+	M("renderer", {
+		I("renderer", {
+			N("opengl"),
+		}),
+	}),
+	M("input", {
+		N("input_buffer"),
+	}),
+	M("resource", {
+		N("resource_handler"),
+		N("resource_package"),
+		N("resource_manager"),
+	}),
+	M("serialization", {
+		N("gfx", {
+			N("shader_def"),
+			N("render_config"),
+		}),
+		N("resource", {
+			N("resource_metadata"),
+			N("test_resource"),
+		}),
+	}),
+	M("app", {}),
+	T("tool_build", {
+		N("resource_compiler"),
+		N("package_compiler"),
+		N("compiler_manager"),
+		N("generator_compiler"),
+		N("gfx_compiler"),
+		N("interface", {
+			N("command_help"),
+			N("command_list"),
+			N("command_create"),
+			N("command_sync"),
+			N("command_compile"),
+			N("command_pack"),
+			N("command_compact"),
+		}),
+	}),
+}
