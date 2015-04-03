@@ -3,9 +3,9 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
+#include <togo/game/gfx/gfx.hpp>
 #include <togo/tool_res_build/config.hpp>
 #include <togo/tool_res_build/types.hpp>
-#include <togo/game/gfx/gfx.hpp>
 #include <togo/tool_res_build/generator_compiler.hpp>
 
 namespace togo {

@@ -3,8 +3,6 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
-#include <togo/tool_res_build/config.hpp>
-#include <togo/tool_res_build/types.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/memory/memory.hpp>
@@ -21,6 +19,8 @@
 #include <togo/game/gfx/gfx.hpp>
 #include <togo/game/gfx/renderer/types.hpp>
 #include <togo/game/serialization/gfx/render_config.hpp>
+#include <togo/tool_res_build/config.hpp>
+#include <togo/tool_res_build/types.hpp>
 #include <togo/tool_res_build/resource_compiler.hpp>
 #include <togo/tool_res_build/compiler_manager.hpp>
 #include <togo/tool_res_build/gfx_compiler.hpp>

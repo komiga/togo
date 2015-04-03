@@ -13,10 +13,10 @@
 
 #pragma once
 
-#include <togo/tool_res_build/config.hpp>
-#include <togo/tool_res_build/types.hpp>
 #include <togo/core/string/types.hpp>
 #include <togo/game/resource/types.hpp>
+#include <togo/tool_res_build/config.hpp>
+#include <togo/tool_res_build/types.hpp>
 #include <togo/tool_res_build/compiler_manager.gen_interface>
 
 namespace togo {

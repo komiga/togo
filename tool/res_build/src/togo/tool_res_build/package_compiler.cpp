@@ -3,8 +3,6 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
-#include <togo/tool_res_build/config.hpp>
-#include <togo/tool_res_build/types.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/utility/traits.hpp>
 #include <togo/core/log/log.hpp>
@@ -23,6 +21,8 @@
 #include <togo/core/serialization/string.hpp>
 #include <togo/game/resource/resource.hpp>
 #include <togo/game/serialization/resource/resource_metadata.hpp>
+#include <togo/tool_res_build/config.hpp>
+#include <togo/tool_res_build/types.hpp>
 #include <togo/tool_res_build/package_compiler.hpp>
 
 namespace togo {
