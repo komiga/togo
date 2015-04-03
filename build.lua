@@ -27,16 +27,16 @@ function togo.make_library(name, configs, env)
 	table.insert(configs, 1, "togo.strict")
 	table.insert(configs, 2, "togo.base")
 
-	env = env or {}
-	env["NAME"] = name
-	env["TOGO_LIBRARY"] = true
-	env["NO_LINK"] = true
+	env = precore.internal.env_set({
+		TOGO_LIBRARY = true,
+		NO_LINK = true,
+	}, env or {})
 
 	local p = precore.make_project(
 		"lib_" .. name,
 		"C++", "StaticLib",
-		G"${TOGO_BUILD}/lib/",
-		G"${TOGO_BUILD}/out/${NAME}/",
+		"${TOGO_BUILD}/lib/",
+		"${TOGO_BUILD}/out/${NAME}/",
 		env, configs
 	)
 
@@ -44,15 +44,9 @@ function togo.make_library(name, configs, env)
 		targetsuffix("_d")
 
 	configuration {}
-		targetname(S"togo_${NAME}")
-		includedirs {
-			"src/",
-		}
+		targetname("togo_" .. name)
 		files {
 			"src/**.cpp",
-		}
-		excludes {
-			S"src/togo/${NAME}/tool_*/**",
 		}
 
 	if os.isfile("test/build.lua") then
@@ -104,9 +98,9 @@ function togo.make_test(group, name, srcglob, configs)
 	table.insert(configs, 1, "togo.strict")
 	table.insert(configs, 2, "togo.base")
 
-	local env = {}
-	env["TOGO_TEST"] = true
-
+	local env = {
+		TOGO_TEST = true,
+	}
 	precore.make_project(
 		group .. "_" .. name,
 		"C++", "ConsoleApp",
@@ -196,7 +190,7 @@ precore.make_config("togo.base", nil, {
 {project = function(p)
 	configuration {}
 		libdirs {
-			G"${TOGO_BUILD}/lib/",
+			S"${TOGO_BUILD}/lib/",
 		}
 
 	configuration {"linux"}
@@ -263,13 +257,17 @@ precore.make_config_scoped("togo.projects", {
 		}
 	)
 
-	local env = {}
-	env["NO_LINK"] = true
+	local env = {
+		NO_LINK = true,
+	}
 	local configs = {
 		"togo.strict",
 	}
 	for _, name in pairs(togo.libs) do
-		table.insert(configs, "togo.lib." .. name .. ".dep")
+		table.insert(configs, 1, "togo.lib." .. name .. ".dep")
+	end
+	for _, name in pairs(togo.tools) do
+		table.insert(configs, 1, "togo.tool." .. name .. ".dep")
 	end
 
 	precore.make_project(
