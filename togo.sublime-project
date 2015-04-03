@@ -8,11 +8,11 @@
 				"doc",
 				"dep",
 				"toolchain",
-				"src",
-				"test",
-				"out",
 				"lib",
-				"bin"
+				"tool",
+				"test",
+				"tmp",
+				"build"
 			],
 			"file_exclude_patterns": [
 				"Makefile",
@@ -39,18 +39,36 @@
 			"path": "./toolchain/"
 		},
 		{
-			"name": "- Source",
-			"path": "./src/togo/",
+			"name": "- Lib: core",
+			"path": "./lib/core/",
 			"folder_exclude_patterns": [
-				"tool_build"
-			],
+				"src"
+			]
+		},
+		{
+			"name": "-- core/src",
+			"path": "./lib/core/src/togo/core/",
 			"file_exclude_patterns": [
 				"*.gen_interface"
 			]
 		},
 		{
-			"name": "- Source: tool_build",
-			"path": "./src/togo/tool_build/",
+			"name": "- Lib: game",
+			"path": "./lib/game/",
+			"folder_exclude_patterns": [
+				"src/"
+			]
+		},
+		{
+			"name": "-- game/src",
+			"path": "./lib/game/src/togo/game/",
+			"file_exclude_patterns": [
+				"*.gen_interface"
+			]
+		},
+		{
+			"name": "- Tool: game/tool_build",
+			"path": "./lib/game/src/togo/game/tool_build/",
 			"file_exclude_patterns": [
 				"*.gen_interface"
 			]
