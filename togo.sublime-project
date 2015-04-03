@@ -20,7 +20,7 @@
 			]
 		},
 		{
-			"name": "- Documentation",
+			"name": "Documentation",
 			"path": "./doc/",
 			"folder_exclude_patterns": [
 				"html",
@@ -28,39 +28,39 @@
 			]
 		},
 		{
-			"name": "- Dependencies",
+			"name": "Dependencies",
 			"path": "./dep/",
 			"folder_exclude_patterns": [
 				"*"
 			]
 		},
 		{
-			"name": "- Toolchain",
+			"name": "Toolchain",
 			"path": "./toolchain/"
 		},
 		{
-			"name": "- Lib: core",
+			"name": "Library: core",
 			"path": "./lib/core/",
 			"folder_exclude_patterns": [
 				"src"
 			]
 		},
 		{
-			"name": "-- core/src",
+			"name": "— lib/core",
 			"path": "./lib/core/src/togo/core/",
 			"file_exclude_patterns": [
 				"*.gen_interface"
 			]
 		},
 		{
-			"name": "- Lib: game",
+			"name": "Library: game",
 			"path": "./lib/game/",
 			"folder_exclude_patterns": [
 				"src/"
 			]
 		},
 		{
-			"name": "-- game/src",
+			"name": "— lib/game",
 			"path": "./lib/game/src/togo/game/",
 			"file_exclude_patterns": [
 				"*.gen_interface"
