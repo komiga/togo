@@ -313,8 +313,8 @@ precore.make_config_scoped("togo.projects", {
 	configuration {"gmake"}
 		prebuildcommands {
 			"$(SILENT) mkdir -p ./tmp",
-			"$(SILENT) ./toolchain/collect_igen_users",
-			"$(SILENT) ./toolchain/run_igen.py -- $(ALL_CXXFLAGS)",
+			"$(SILENT) ./scripts/collect_igen_users",
+			"$(SILENT) ./scripts/run_igen.py -- $(ALL_CXXFLAGS)",
 			"$(SILENT) exit 0",
 		}
 end}})

@@ -7,7 +7,7 @@
 			"folder_exclude_patterns": [
 				"doc",
 				"dep",
-				"toolchain",
+				"scripts",
 				"lib",
 				"tool",
 				"test",
@@ -35,8 +35,8 @@
 			]
 		},
 		{
-			"name": "Toolchain",
-			"path": "./toolchain/"
+			"name": "Scripts",
+			"path": "./scripts/"
 		},
 		{
 			"name": "Library: core",
