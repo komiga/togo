@@ -23,10 +23,10 @@
 #include <togo/game/resource/resource_handler.hpp>
 #include <togo/game/resource/resource_package.hpp>
 #include <togo/game/resource/resource_manager.hpp>
-#include <togo/game/serialization/resource/resource_metadata.hpp>
-#include <togo/game/serialization/resource/test_resource.hpp>
 #include <togo/game/serialization/gfx/shader_def.hpp>
 #include <togo/game/serialization/gfx/render_config.hpp>
+#include <togo/game/serialization/resource/resource_metadata.hpp>
+#include <togo/game/serialization/resource/test_resource.hpp>
 #include <togo/game/app/types.hpp>
 #include <togo/game/app/app.hpp>
 
