@@ -1,0 +1,4 @@
+
+project/package/*.package
+project/package/*/.compiled/
+project/package/*/.package/
