@@ -25,7 +25,8 @@ shared_source = ```
 	#define Vec3 vec3
 	#define Vec4 vec4
 
-	#define MC_PI 3.1415926535897932384626f
+	#define MC_PI  3.1415926535897932384626f
+	#define MC_TAU 6.2831853071795864769252f
 	#define MAIN void main()
 
 	#if (__VERSION__ >= 420) || defined(GL_ARB_shading_language_420pack)
