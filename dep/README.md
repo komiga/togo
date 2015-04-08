@@ -1,12 +1,16 @@
 
 ## Dependencies!
 
-Symlink/clone/download the following libraries here (take care they go
-into the proper directories):
+Symlink/clone/download the following libraries (take care they go into the
+proper directories).
+
+### core
 
 * [All the Maths‽](https://github.com/komiga/am) into `am/`:
 
   `git clone git://github.com/komiga/am.git am/`
+
+### game
 
 * [GLEW](http://glew.sourceforge.net/index.html) **1.11.0** into `glew/`
 
