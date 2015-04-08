@@ -4,15 +4,29 @@
 
 @file
 @brief Test support.
+@ingroup support_test
+
+@defgroup support_test Test
 @ingroup support
+@details
 */
 
 #pragma once
 
 #include <togo/core/memory/memory.hpp>
 
-#if !defined(TOGO_TEST_SCRATCH_SIZE)
-	#define TOGO_TEST_SCRATCH_SIZE togo::SCRATCH_ALLOCATOR_SIZE_DEFAULT
+/**
+	@addtogroup support_test
+	@{
+*/
+
+#if defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
+	/// The scratch size to init with.
+	///
+	/// Defaults to togo::SCRATCH_ALLOCATOR_SIZE_DEFAULT.
+	#define TOGO_SUPPORT_MEMINIT_SCRATCH_SIZE
+#elif !defined(TOGO_SUPPORT_MEMINIT_SCRATCH_SIZE)
+	#define TOGO_SUPPORT_MEMINIT_SCRATCH_SIZE togo::SCRATCH_ALLOCATOR_SIZE_DEFAULT
 #endif
 
 /// Memory system initializer.
@@ -26,7 +40,7 @@ struct MemoryInitializer {
 	MemoryInitializer& operator=(MemoryInitializer&&) = delete;
 
 	MemoryInitializer() {
-		togo::memory::init(TOGO_TEST_SCRATCH_SIZE);
+		togo::memory::init(TOGO_SUPPORT_MEMINIT_SCRATCH_SIZE);
 	}
 
 	~MemoryInitializer() {
@@ -35,6 +49,8 @@ struct MemoryInitializer {
 };
 
 /// Ensure initialization of a static MemoryInitializer.
-static void memory_init() {
+void memory_init() {
 	static MemoryInitializer const _ci{};
 }
+
+/** @} */ // end of doc-group support_test
