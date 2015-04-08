@@ -1,11 +1,7 @@
 
-## togo - a data-oriented game engine
+## What be it?
 
-**togo** is a game engine with data-oriented design (DOD) at its heart.
-
-It takes significant inspiration from [bitsquid](http://bitsquid.se), who
-have [written about](http://bitsquid.blogspot.com) their design in great
-detail.
+**togo** is a collection of libraries with data-oriented design at heart.
 
 ## Core design
 
@@ -14,49 +10,63 @@ Interfaces are kept separate from types to reduce compilation time, and most
 data structures are “open” in that they can be modified by anything. It aims
 to make friends with the cache through careful data design & utilization.
 
-togo minimally uses the C++ stdlib. It supplies its own collections and
+togo uses the C++ stdlib only minimally. It supplies its own collections and
 allocators (in which the stdlib is… lacking) and most other constructs.
 If we can write it, we probably do, primarily because the implementation will
 then be license-free, consistent, easier to debug, and aligned with togo's
 design.
 
-Core systems are decoupled for locality, flexibility in storage, and
-encapsulation. Systems are easier to understand and *much* easier to maintain
-when they are decoupled — i.e., when they have few explicit dependencies on
-other systems. To this end, systems expose data through event streams or
-polling to higher-level systems, which connect the low-level systems in a more
-intelligent and flexible manner than coupled systems could.
+Systems are decoupled for locality, flexibility in storage, and encapsulation.
+Systems are easier to understand and *much* easier to maintain when they are
+decoupled — i.e., when they have few explicit dependencies on other systems.
 
-togo is in infancy and is not expecting to be The One True Engine.
+## Components
+
+### Library: core
+
+Basic support library. All other libraries depend on it.
+
+Dependencies:
+
+1. [All the Maths‽](https://github.com/komiga/am) (HEAD)
+
+### Library: game
+
+A library for game development.
+
+This library takes significant inspiration from [bitsquid](http://bitsquid.se),
+who have [written about](https://github.com/niklasfrykholm/blog) their design
+in great detail.
+
+Dependencies:
+
+1. [GLEW](http://glew.sourceforge.net/index.html) **1.11.0**
+2. Graphics backend (one of):
+  1. [SDL](http://libsdl.org/download-2.0.php) **2.0.3**
+  2. [GLFW](http://www.glfw.org/download.html) **3.0.4**
+
+### Tool: res_build
+
+Resource package compiler for the game library. Interface is available as a
+static library for extension/automation.
 
 ## Platforms
 
 togo is developed under Linux and currently only supports Linux. Its primary
-implementations utilize POSIX and the C standard library (by way of the C++
-standard library).
-
-## Dependencies
-
-togo uses:
-
-1. [All the Maths‽](https://github.com/komiga/am) (HEAD)
-2. [GLEW](http://glew.sourceforge.net/index.html) **1.11.0**
-3. Graphics backend (one of):
-  1. [SDL](http://libsdl.org/download-2.0.php) **2.0.3**
-  2. [GLFW](http://www.glfw.org/download.html) **3.0.4**
-
-See `dep/README.md` for dependency setup.
+interface implementations utilize POSIX and the C Standard Library (by way of
+the C++ Standard Library, of which only little is used).
 
 ## Building
 
-togo is a compiled static library (by default).
+togo libraries are compiled static libraries (by default).
 
 All features support Clang 3.5+ with libc++ (roughly at SVN head) on
 Ubuntu 14.04 x86_64. GCC and libstdc++ might possibly work, but they
 are untested.
 
-Once dependencies are setup (see `dep/README.md`), the library and tests can be
-compiled using plash's standard project protocol: http://komiga.com/pp-cpp
+See `dep/README.md` for dependency setup. Libraries, tools, and tests can
+then be compiled using plash's standard project protocol:
+http://komiga.com/pp-cpp
 
 ## License
 
