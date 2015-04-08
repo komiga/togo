@@ -4,7 +4,7 @@
 #include <togo/core/collection/array.hpp>
 #include <togo/core/algorithm/sort.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 #include <algorithm>
 #include <random>

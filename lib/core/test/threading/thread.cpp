@@ -3,7 +3,7 @@
 #include <togo/core/log/log.hpp>
 #include <togo/core/threading/thread.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 using namespace togo;
 

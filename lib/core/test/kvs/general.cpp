@@ -5,7 +5,7 @@
 #include <togo/core/string/string.hpp>
 #include <togo/core/kvs/kvs.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 #include <cstring>
 

@@ -4,7 +4,7 @@
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/collection/array.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 using namespace togo;
 

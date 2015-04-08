@@ -16,7 +16,7 @@
 #include <togo/core/serialization/array.hpp>
 #include <togo/core/serialization/string.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 using namespace togo;
 

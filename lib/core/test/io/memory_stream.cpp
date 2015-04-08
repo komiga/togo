@@ -5,7 +5,7 @@
 #include <togo/core/io/io.hpp>
 #include <togo/core/io/memory_stream.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 #include "./common.hpp"
 
 using namespace togo;

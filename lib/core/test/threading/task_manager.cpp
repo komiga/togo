@@ -7,7 +7,7 @@
 #include <togo/core/threading/thread.hpp>
 #include <togo/core/threading/task_manager.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 using namespace togo;
 

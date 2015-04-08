@@ -5,7 +5,7 @@
 #include <togo/core/threading/mutex.hpp>
 #include <togo/core/threading/thread.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 #include <cstring>
 #include <cstdio>

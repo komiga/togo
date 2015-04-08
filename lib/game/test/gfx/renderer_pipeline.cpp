@@ -22,7 +22,7 @@
 #include <togo/game/resource/resource_manager.hpp>
 #include <togo/game/app/app.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 #include <cmath>
 #include <initializer_list>

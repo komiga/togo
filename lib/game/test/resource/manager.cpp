@@ -12,7 +12,7 @@
 #include <togo/game/resource/resource_handler.hpp>
 #include <togo/game/resource/resource_manager.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 using namespace togo;
 

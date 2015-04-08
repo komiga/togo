@@ -5,7 +5,7 @@
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/collection/priority_queue.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 using namespace togo;
 

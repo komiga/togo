@@ -6,7 +6,7 @@
 #include <togo/game/input/input.hpp>
 #include <togo/game/app/app.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 using namespace togo;
 

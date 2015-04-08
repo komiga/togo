@@ -7,7 +7,7 @@
 #include <togo/core/io/memory_stream.hpp>
 #include <togo/core/kvs/kvs.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 using namespace togo;
 

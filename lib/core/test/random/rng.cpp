@@ -8,7 +8,7 @@
 #include <cmath>
 //#include <random>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 using namespace togo;
 

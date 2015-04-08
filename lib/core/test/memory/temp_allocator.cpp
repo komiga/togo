@@ -3,7 +3,7 @@
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/memory/temp_allocator.hpp>
 
-#include <togo-test/helpers.hpp>
+#include <togo/support/test.hpp>
 
 using namespace togo;
 
