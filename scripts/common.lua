@@ -30,6 +30,10 @@ function make_inverse_table(t, value)
 	return it
 end
 
+function printf(msg, ...)
+	print(string.format(msg, ...))
+end
+
 function iterate_dir(dir, select_only, max_depth)
 	assert(dir and dir ~= "", "directory parameter is missing or empty")
 	dir = trim_trailing_slash(dir)
