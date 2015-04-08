@@ -1,3 +1,11 @@
+#line 2 "togo/support/test.hpp"
+/**
+@copyright MIT license; see @ref index or the accompanying LICENSE file.
+
+@file
+@brief Test support.
+@ingroup support
+*/
 
 #pragma once
 
@@ -7,6 +15,10 @@
 	#define TOGO_TEST_SCRATCH_SIZE togo::SCRATCH_ALLOCATOR_SIZE_DEFAULT
 #endif
 
+/// Memory system initializer.
+///
+/// Calls togo::memory::init() on construction and togo::memory::shutdown()
+/// on destruction.
 struct MemoryInitializer {
 	MemoryInitializer(MemoryInitializer const&) = delete;
 	MemoryInitializer& operator=(MemoryInitializer const&) = delete;
@@ -22,6 +34,7 @@ struct MemoryInitializer {
 	}
 };
 
+/// Ensure initialization of a static MemoryInitializer.
 static void memory_init() {
 	static MemoryInitializer const _ci{};
 }
