@@ -68,6 +68,9 @@ See `dep/README.md` for dependency setup. Libraries, tools, and tests can
 then be compiled using plash's standard project protocol:
 http://komiga.com/pp-cpp
 
+The only difference from the project protocol is `scripts/premake` in place of
+premake, which enforces recipe order to allow the use of GNU make's `--jobs`.
+
 ## License
 
 togo carries the MIT license, which can be found both below and in the
