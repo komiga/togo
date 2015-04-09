@@ -24,6 +24,44 @@
 #include <cstring>
 
 namespace togo {
+namespace queue {
+
+namespace {
+
+template<class T>
+void set_capacity(Queue<T>& q, u32_fast const new_capacity) {
+	if (new_capacity <= q._size) {
+		return;
+	}
+	u32_fast const old_capacity = array::size(q._data);
+	array::resize(q._data, new_capacity);
+	if (q._head + q._size > old_capacity) {
+		// Push items from head to the end of the array
+		u32_fast const to_end_count = old_capacity - q._head;
+		std::memmove(
+			array::begin(q._data) + new_capacity - to_end_count,
+			array::begin(q._data) + q._head,
+			to_end_count * sizeof(T)
+		);
+		q._head += new_capacity - old_capacity;
+	}
+}
+
+template<class T>
+void grow(Queue<T>& q, u32_fast const min_capacity = 0) {
+	u32_fast new_capacity = array::size(q._data) * 2 + 8;
+	if (new_capacity < min_capacity) {
+		new_capacity = min_capacity;
+	}
+	set_capacity(q, new_capacity);
+}
+
+} // anonymous namespace
+
+/**
+	@addtogroup lib_core_queue
+	@{
+*/
 
 /// Construct with allocator for storage.
 ///
@@ -71,45 +109,6 @@ inline T const& Queue<T>::operator[](unsigned const i) const {
 	TOGO_DEBUG_ASSERTE(i < _size);
 	return _data[(_head + i) % array::size(_data)];
 }
-
-namespace queue {
-
-namespace {
-
-template<class T>
-void set_capacity(Queue<T>& q, u32_fast const new_capacity) {
-	if (new_capacity <= q._size) {
-		return;
-	}
-	u32_fast const old_capacity = array::size(q._data);
-	array::resize(q._data, new_capacity);
-	if (q._head + q._size > old_capacity) {
-		// Push items from head to the end of the array
-		u32_fast const to_end_count = old_capacity - q._head;
-		std::memmove(
-			array::begin(q._data) + new_capacity - to_end_count,
-			array::begin(q._data) + q._head,
-			to_end_count * sizeof(T)
-		);
-		q._head += new_capacity - old_capacity;
-	}
-}
-
-template<class T>
-void grow(Queue<T>& q, u32_fast const min_capacity = 0) {
-	u32_fast new_capacity = array::size(q._data) * 2 + 8;
-	if (new_capacity < min_capacity) {
-		new_capacity = min_capacity;
-	}
-	set_capacity(q, new_capacity);
-}
-
-} // anonymous namespace
-
-/**
-	@addtogroup lib_core_queue
-	@{
-*/
 
 /// Number of items.
 template<class T>
@@ -228,5 +227,4 @@ inline void copy(Queue<T>& dst, Queue<T> const& src) {
 /** @} */ // end of doc-group lib_core_queue
 
 } // namespace queue
-
 } // namespace togo

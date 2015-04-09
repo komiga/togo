@@ -26,6 +26,12 @@ comparison function so that the collection becomes a min-priority queue.
 #include <togo/core/collection/array.hpp>
 
 namespace togo {
+namespace priority_queue {
+
+/**
+	@addtogroup lib_core_priority_queue
+	@{
+*/
 
 /// Construct with allocator for storage.
 ///
@@ -51,13 +57,6 @@ template<class T>
 inline T const& PriorityQueue<T>::operator[](unsigned const i) const {
 	return _data[i];
 }
-
-namespace priority_queue {
-
-/**
-	@addtogroup lib_core_priority_queue
-	@{
-*/
 
 /// Number of items.
 template<class T>
@@ -248,29 +247,4 @@ inline void copy(PriorityQueue<T>& dst, PriorityQueue<T> const& src) {
 /** @} */ // end of doc-group lib_core_priority_queue
 
 } // namespace priority_queue
-
-/** @cond INTERNAL */
-
-// ADL support
-
-template<class T>
-inline T* begin(PriorityQueue<T>& pq) {
-	return priority_queue::begin(pq);
-}
-template<class T>
-inline T const* begin(PriorityQueue<T> const& pq) {
-	return priority_queue::begin(pq);
-}
-
-template<class T>
-inline T* end(PriorityQueue<T>& pq) {
-	return priority_queue::end(pq);
-}
-template<class T>
-inline T const* end(PriorityQueue<T> const& pq) {
-	return priority_queue::end(pq);
-}
-
-/** @endcond */ // INTERNAL
-
 } // namespace togo

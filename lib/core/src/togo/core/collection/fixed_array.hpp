@@ -23,6 +23,12 @@
 #include <cstring>
 
 namespace togo {
+namespace fixed_array {
+
+/**
+	@addtogroup lib_core_fixed_array
+	@{
+*/
 
 /// Construct.
 template<class T, unsigned N>
@@ -44,13 +50,6 @@ inline T const& FixedArray<T, N>::operator[](unsigned const i) const {
 	TOGO_DEBUG_ASSERTE(i < _size);
 	return _data[i];
 }
-
-namespace fixed_array {
-
-/**
-	@addtogroup lib_core_fixed_array
-	@{
-*/
 
 /// Number of items.
 template<class T, unsigned N>
@@ -171,29 +170,4 @@ inline void copy(FixedArray<T, N>& dst, FixedArray<T, M> const& src) {
 /** @} */ // end of doc-group lib_core_fixed_array
 
 } // namespace fixed_array
-
-/** @cond INTERNAL */
-
-// ADL support
-
-template<class T, unsigned N>
-inline T* begin(FixedArray<T, N>& a) {
-	return fixed_array::begin(a);
-}
-template<class T, unsigned N>
-inline T const* begin(FixedArray<T, N> const& a) {
-	return fixed_array::begin(a);
-}
-
-template<class T, unsigned N>
-inline T* end(FixedArray<T, N>& a) {
-	return fixed_array::end(a);
-}
-template<class T, unsigned N>
-inline T const* end(FixedArray<T, N> const& a) {
-	return fixed_array::end(a);
-}
-
-/** @endcond */ // INTERNAL
-
 } // namespace togo

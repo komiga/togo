@@ -24,6 +24,12 @@
 #include <cstring>
 
 namespace togo {
+namespace array {
+
+/**
+	@addtogroup lib_core_array
+	@{
+*/
 
 template<class T>
 inline Array<T>::~Array() {
@@ -94,13 +100,6 @@ template<class T>
 inline Array<T>::operator ArrayRef<T const>() const {
 	return array_ref(_size, _data);
 }
-
-namespace array {
-
-/**
-	@addtogroup lib_core_array
-	@{
-*/
 
 /// Number of items.
 template<class T>
@@ -336,29 +335,4 @@ inline void copy(Array<T>& dst, Array<T> const& src) {
 /** @} */ // end of doc-group lib_core_array
 
 } // namespace array
-
-/** @cond INTERNAL */
-
-// ADL support
-
-template<class T>
-inline T* begin(Array<T>& a) {
-	return array::begin(a);
-}
-template<class T>
-inline T const* begin(Array<T> const& a) {
-	return array::begin(a);
-}
-
-template<class T>
-inline T* end(Array<T>& a) {
-	return array::end(a);
-}
-template<class T>
-inline T const* end(Array<T> const& a) {
-	return array::end(a);
-}
-
-/** @endcond */ // INTERNAL
-
 } // namespace togo

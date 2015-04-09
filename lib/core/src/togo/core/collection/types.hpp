@@ -31,6 +31,8 @@ struct ArrayRef; // external
 	@{
 */
 
+namespace array {
+
 /// Dynamic array of POD objects.
 template<class T>
 struct Array {
@@ -58,12 +60,18 @@ struct Array {
 	operator ArrayRef<T const>() const;
 };
 
+} // namespace array
+
+using array::Array;
+
 /** @} */ // end of doc-group lib_core_array
 
 /**
 	@addtogroup lib_core_fixed_array
 	@{
 */
+
+namespace fixed_array {
 
 /// Fixed-capacity array of POD objects.
 template<class T, unsigned N>
@@ -91,12 +99,18 @@ struct FixedArray {
 	T const& operator[](unsigned const i) const;
 };
 
+} // namespace fixed_array
+
+using fixed_array::FixedArray;
+
 /** @} */ // end of doc-group lib_core_fixed_array
 
 /**
 	@addtogroup lib_core_queue
 	@{
 */
+
+namespace queue {
 
 /// Dynamic double-ended queue of POD objects.
 template<class T>
@@ -122,12 +136,18 @@ struct Queue {
 	T const& operator[](unsigned const i) const;
 };
 
+} // namespace queue
+
+using queue::Queue;
+
 /** @} */ // end of doc-group lib_core_queue
 
 /**
 	@addtogroup lib_core_priority_queue
 	@{
 */
+
+namespace priority_queue {
 
 /// Priority queue of POD objects.
 template<class T>
@@ -160,12 +180,18 @@ struct PriorityQueue {
 	T const& operator[](unsigned const i) const;
 };
 
+} // namespace priority_queue
+
+using priority_queue::PriorityQueue;
+
 /** @} */ // end of doc-group lib_core_priority_queue
 
 /**
 	@addtogroup lib_core_hash_map
 	@{
 */
+
+namespace hash_map {
 
 /// HashMap node.
 template<class K, class T>
@@ -200,6 +226,11 @@ struct HashMap {
 
 	HashMap(Allocator& allocator);
 };
+
+} // namespace hash_map
+
+using hash_map::HashMapNode;
+using hash_map::HashMap;
 
 /** @} */ // end of doc-group lib_core_hash_map
 

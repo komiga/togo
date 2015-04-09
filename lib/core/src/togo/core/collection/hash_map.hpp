@@ -30,14 +30,6 @@ the partition invariant.
 #include <togo/core/collection/array.hpp>
 
 namespace togo {
-
-/// Construct with allocator for storage.
-template<class K, class T>
-inline HashMap<K, T>::HashMap(Allocator& allocator)
-	: _head(allocator)
-	, _data(allocator)
-{}
-
 namespace hash_map {
 
 /**
@@ -48,6 +40,13 @@ namespace hash_map {
 /** @cond INTERNAL */
 #define TOGO_HASH_MAP_MAX_LOAD 0.70f
 /** @endcond */ // INTERNAL
+
+/// Construct with allocator for storage.
+template<class K, class T>
+inline HashMap<K, T>::HashMap(Allocator& allocator)
+	: _head(allocator)
+	, _data(allocator)
+{}
 
 /// Number of partitions.
 template<class K, class T>
@@ -403,29 +402,4 @@ inline void remove(HashMap<K, T>& hm, HashMapNode<K, T> const* node) {
 /** @} */ // end of doc-group lib_core_hash_map
 
 } // namespace hash_map
-
-/** @cond INTERNAL */
-
-// ADL support
-
-template<class K, class T>
-inline HashMapNode<K, T>* begin(HashMap<K, T>& hm) {
-	return hash_map::begin(hm);
-}
-template<class K, class T>
-inline HashMapNode<K, T> const* begin(HashMap<K, T> const& hm) {
-	return hash_map::begin(hm);
-}
-
-template<class K, class T>
-inline HashMapNode<K, T>* end(HashMap<K, T>& hm) {
-	return hash_map::end(hm);
-}
-template<class K, class T>
-inline HashMapNode<K, T> const* end(HashMap<K, T> const& hm) {
-	return hash_map::end(hm);
-}
-
-/** @endcond */ // INTERNAL
-
 } // namespace togo
