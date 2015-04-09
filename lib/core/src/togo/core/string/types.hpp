@@ -16,8 +16,10 @@
 namespace togo {
 
 // Forward declarations
-template<class T, unsigned N>
-struct FixedArray; // external
+namespace fixed_array {
+	template<class T, unsigned N>
+	struct FixedArray; // external
+} // namespace fixed_array
 
 /**
 	@addtogroup lib_core_string
@@ -31,7 +33,6 @@ struct StringRef {
 	/// String size (not including terminating NUL if there is one).
 	unsigned size;
 
-
 	StringRef(StringRef const&) = default;
 	StringRef& operator=(StringRef const&) = default;
 	StringRef(StringRef&&) = default;
@@ -43,7 +44,7 @@ struct StringRef {
 	template<unsigned N>
 	constexpr StringRef(char const (&data)[N]);
 	template<unsigned N>
-	StringRef(FixedArray<char, N> const& array);
+	StringRef(fixed_array::FixedArray<char, N> const& array);
 
 	bool valid() const;
 	bool any() const;
