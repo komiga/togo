@@ -1,0 +1,12 @@
+#!/bin/bash
+
+premake4 $@
+
+if [[ -f Makefile ]]; then
+	sed -i \
+		-e 's/lib_core:/& | igen/' \
+		-e 's/lib_game:/& | lib_core/' \
+		-e 's/tool_res_build_lib:/& | lib_game/' \
+		-e 's/tool_res_build:/& | tool_res_build_lib/' \
+		Makefile
+fi
