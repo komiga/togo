@@ -36,7 +36,7 @@ inline Queue<T>::Queue(Allocator& allocator)
 	, _size(0)
 {}
 
-// Move constructor.
+/// Move constructor.
 template<class T>
 inline Queue<T>::Queue(Queue<T>&& other)
 	: _data(rvalue_ref(other._data))
@@ -47,7 +47,7 @@ inline Queue<T>::Queue(Queue<T>&& other)
 	other._size = 0;
 }
 
-// Move assignment operator.
+/// Move assignment operator.
 template<class T>
 inline Queue<T>& Queue<T>::operator=(Queue<T>&& other) {
 	_data = rvalue_ref(other._data);
