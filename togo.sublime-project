@@ -42,7 +42,14 @@
 			"name": "Library: core",
 			"path": "./lib/core/",
 			"folder_exclude_patterns": [
-				"src"
+				"src",
+				"out"
+			],
+			"file_exclude_patterns": [
+				"Makefile",
+				"*.make",
+				"*.exe",
+				"*.elf"
 			]
 		},
 		{
@@ -56,7 +63,14 @@
 			"name": "Library: game",
 			"path": "./lib/game/",
 			"folder_exclude_patterns": [
-				"src/"
+				"src",
+				"out"
+			],
+			"file_exclude_patterns": [
+				"Makefile",
+				"*.make",
+				"*.exe",
+				"*.elf"
 			]
 		},
 		{
@@ -69,8 +83,11 @@
 		{
 			"name": "Tool: res_build",
 			"path": "./tool/res_build/",
+			"folder_exclude_patterns": [
+				"src"
+			],
 			"file_exclude_patterns": [
-				"*.gen_interface"
+				"*.make"
 			]
 		},
 		{
@@ -78,19 +95,6 @@
 			"path": "./tool/res_build/src/togo/tool_res_build/",
 			"file_exclude_patterns": [
 				"*.gen_interface"
-			]
-		},
-		{
-			"name": "Test",
-			"path": "./test/",
-			"folder_exclude_patterns": [
-				"out"
-			],
-			"file_exclude_patterns": [
-				"Makefile",
-				"*.make",
-				"*.exe",
-				"*.elf"
 			]
 		}
 	],
