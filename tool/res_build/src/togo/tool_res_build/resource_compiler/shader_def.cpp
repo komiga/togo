@@ -313,7 +313,7 @@ static bool compile(
 
 	{// Read source
 	ParserInfo pinfo;
-	bool const read_success = kvs::read(k_root, in_stream, pinfo);
+	bool const read_success = kvs::read_text(k_root, in_stream, pinfo);
 	if (!read_success) {
 		TOGO_LOG_ERRORF(
 			"failed to read shader_def: [%2u,%2u]: %s\n",

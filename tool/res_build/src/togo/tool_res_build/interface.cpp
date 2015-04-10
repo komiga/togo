@@ -147,7 +147,7 @@ void interface::read_project(
 
 	{// Read package list
 	KVS k_root{};
-	TOGO_ASSERTE(kvs::read_file(k_root, ".project/packages"));
+	TOGO_ASSERTE(kvs::read_text_file(k_root, ".project/packages"));
 	KVS const* const k_packages = kvs::find(k_root, "packages");
 	TOGO_ASSERT(
 		k_packages && kvs::is_array(*k_packages),
@@ -177,7 +177,7 @@ void interface::write_project(
 	for (auto const* pkg : packages) {
 		kvs::push_back(k_packages, KVS{package_compiler::name(*pkg)});
 	}
-	TOGO_ASSERTE(kvs::write_file(k_root, ".project/packages"));
+	TOGO_ASSERTE(kvs::write_text_file(k_root, ".project/packages"));
 	}
 }
 

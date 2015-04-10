@@ -136,7 +136,7 @@ bool package_compiler::create_stub(
 	KVS k_properties{KVSType::node};
 	kvs::push_back(k_properties, KVS{"name", name});
 	kvs::push_back(k_properties, KVS{"build_parity", false, bool_tag{}});
-	if (!kvs::write_file(k_properties, ".package/properties")) {
+	if (!kvs::write_text_file(k_properties, ".package/properties")) {
 		TOGO_LOG_ERRORF(
 			"failed to create properties for package at '%.*s'\n",
 			path.size, path.data
@@ -322,7 +322,7 @@ void package_compiler::read(PackageCompiler& pkg) {
 	{// Read properties
 	KVS k_root{};
 	TOGO_ASSERTF(
-		kvs::read_file(k_root, ".package/properties"),
+		kvs::read_text_file(k_root, ".package/properties"),
 		"'%.*s': failed to read package properties",
 		path.size, path.data
 	);
@@ -434,7 +434,7 @@ bool package_compiler::write_properties(PackageCompiler& pkg) {
 	KVS k_properties{KVSType::node};
 	kvs::push_back(k_properties, KVS{"name", pkg._name});
 	kvs::push_back(k_properties, KVS{"build_parity", pkg._build_parity, bool_tag{}});
-	if (!kvs::write_file(k_properties, ".package/properties")) {
+	if (!kvs::write_text_file(k_properties, ".package/properties")) {
 		TOGO_LOG_ERRORF(
 			"failed to write properties for package at '%.*s'\n",
 			path.size, path.data
