@@ -25,6 +25,7 @@
 #include <togo/game/resource/resource_handler.gen_interface>
 
 namespace togo {
+namespace game {
 namespace resource {
 
 /**
@@ -63,4 +64,5 @@ inline gfx::RenderConfig* load_render_config(
 /** @} */ // end of doc-group lib_game_resource
 
 } // namespace resource
+} // namespace game
 } // namespace togo

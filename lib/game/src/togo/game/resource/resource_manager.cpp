@@ -15,6 +15,7 @@
 #include <togo/game/resource/resource_manager.hpp>
 
 namespace togo {
+namespace game {
 
 namespace resource_manager {
 
@@ -298,4 +299,5 @@ ResourceValue resource_manager::find_resource(
 	return node ? node->value.value : nullptr;
 }
 
+} // namespace game
 } // namespace togo

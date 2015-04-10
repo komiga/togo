@@ -11,6 +11,7 @@
 #include <GL/glew.h>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 // Defined in gfx/renderer/opengl
@@ -24,4 +25,5 @@ char const* gl_get_error();
 #define TOGO_GLCE_X(expr_) do { (expr_); TOGO_GLCE(); } while (false)
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

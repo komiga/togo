@@ -17,6 +17,8 @@
 
 namespace togo {
 
+namespace game {
+
 /**
 	@addtogroup lib_game_input
 	@{
@@ -264,11 +266,13 @@ union InputEvent {
 	DisplayResizeEvent const display_resize;
 };
 
+/** @} */ // end of doc-group lib_game_input
+
+} // namespace game
+
 /** @cond INTERNAL */
 template<>
-struct enable_enum_bitwise_ops<KeyMod> : true_type {};
+struct enable_enum_bitwise_ops<game::KeyMod> : true_type {};
 /** @endcond */ // INTERNAL
-
-/** @} */ // end of doc-group lib_game_input
 
 } // namespace togo

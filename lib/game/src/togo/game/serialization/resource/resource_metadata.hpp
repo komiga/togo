@@ -14,6 +14,7 @@
 #include <togo/game/resource/types.hpp>
 
 namespace togo {
+namespace game {
 
 /**
 	@addtogroup lib_game_serialization
@@ -40,4 +41,5 @@ serialize(serializer_tag, Ser& ser, ResourceMetadata& value_unsafe) {
 
 /** @} */ // end of doc-group lib_game_serialization
 
+} // namespace game
 } // namespace togo

@@ -13,6 +13,7 @@
 #include <GL/glew.h>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 enum : GLuint {
@@ -144,4 +145,5 @@ struct OpenGLRendererImpl {
 using RendererImpl = OpenGLRendererImpl;
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

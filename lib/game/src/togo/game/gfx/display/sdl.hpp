@@ -10,6 +10,7 @@
 #include <SDL2/SDL_video.h>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 struct SDLDisplayImpl {
@@ -20,4 +21,5 @@ struct SDLDisplayImpl {
 using DisplayImpl = SDLDisplayImpl;
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

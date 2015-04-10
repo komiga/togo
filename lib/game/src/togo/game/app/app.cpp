@@ -21,6 +21,7 @@
 #include <togo/game/app/app.hpp>
 
 namespace togo {
+namespace game {
 
 namespace app {
 
@@ -239,4 +240,5 @@ void app::render_world(
 	);
 }
 
+} // namespace game
 } // namespace togo

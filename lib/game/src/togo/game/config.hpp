@@ -16,6 +16,7 @@
 #include <togo/core/config.hpp>
 
 namespace togo {
+namespace game {
 
 /**
 	@addtogroup lib_game_config
@@ -84,4 +85,5 @@ namespace togo {
 
 /** @} */ // end of doc-group lib_game_config
 
+} // namespace game
 } // namespace togo

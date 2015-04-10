@@ -14,6 +14,7 @@
 #include <cstring>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 /// Push command.
@@ -54,4 +55,5 @@ void render_node::push(
 }
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

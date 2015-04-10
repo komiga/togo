@@ -11,6 +11,7 @@
 #include <togo/game/entity/entity_manager.hpp>
 
 namespace togo {
+namespace game {
 
 namespace {
 enum : unsigned {
@@ -83,4 +84,5 @@ void entity_manager::shutdown(EntityManager& em) {
 	em._num_alive = 0;
 }
 
+} // namespace game
 } // namespace togo

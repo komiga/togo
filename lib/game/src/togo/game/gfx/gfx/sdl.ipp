@@ -15,6 +15,7 @@
 #include <SDL2/SDL_error.h>
 
 namespace togo {
+namespace game {
 
 namespace {
 	enum {
@@ -44,4 +45,5 @@ void gfx::shutdown() {
 	SDL_Quit();
 }
 
+} // namespace game
 } // namespace togo

@@ -21,6 +21,7 @@
 #include <togo/game/gfx/types.hpp>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 /**
@@ -70,4 +71,5 @@ TOGO_GFX_CMD(RenderWorld) {
 /** @} */ // end of doc-group lib_game_gfx_command
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

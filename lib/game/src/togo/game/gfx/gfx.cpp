@@ -15,6 +15,7 @@
 #endif
 
 namespace togo {
+namespace game {
 
 namespace gfx {
 
@@ -55,4 +56,5 @@ void gfx::shutdown() {
 	_gfx_globals.initialized = false;
 }
 
+} // namespace game
 } // namespace togo

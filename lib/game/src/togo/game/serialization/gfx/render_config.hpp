@@ -16,6 +16,7 @@
 #include <togo/game/gfx/renderer/types.hpp>
 
 namespace togo {
+namespace game {
 
 /**
 	@addtogroup lib_game_serialization
@@ -27,6 +28,8 @@ namespace togo {
 enum : u32 {
 	SER_FORMAT_VERSION_RENDER_CONFIG = 3,
 };
+
+namespace gfx {
 
 template<class Ser>
 inline void
@@ -86,8 +89,11 @@ serialize(serializer_tag, Ser& ser, gfx::RenderConfig& value_unsafe) {
 	// sequential order. Units must be fixed up externally.
 }
 
+} // namespace gfx
+
 /** @endcond */ // INTERNAL
 
 /** @} */ // end of doc-group lib_game_serialization
 
+} // namespace game
 } // namespace togo

@@ -20,6 +20,7 @@
 #include <togo/game/resource/types.hpp>
 
 namespace togo {
+namespace game {
 
 /**
 	@addtogroup lib_game_app
@@ -111,4 +112,5 @@ struct App
 
 /** @} */ // end of doc-group lib_game_app
 
+} // namespace game
 } // namespace togo

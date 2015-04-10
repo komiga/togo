@@ -18,6 +18,7 @@
 #include <togo/core/log/test.hpp>
 
 namespace togo {
+namespace game {
 
 InputBuffer::~InputBuffer() {
 	for (auto& display : _displays) {
@@ -222,4 +223,5 @@ bool input_buffer::poll(
 	return true;
 }
 
+} // namespace game
 } // namespace togo

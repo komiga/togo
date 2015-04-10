@@ -20,6 +20,7 @@
 #include <togo/game/gfx/types.hpp>
 
 namespace togo {
+namespace game {
 namespace gfx {
 namespace shader_def {
 
@@ -87,4 +88,5 @@ inline void patch_param_block_names(gfx::ShaderDef& def) {
 
 } // namespace shader_def
 } // namespace gfx
+} // namespace game
 } // namespace togo

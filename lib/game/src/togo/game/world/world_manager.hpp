@@ -19,6 +19,7 @@
 #include <togo/game/world/world_manager.gen_interface>
 
 namespace togo {
+namespace game {
 namespace world_manager {
 
 /**
@@ -31,4 +32,5 @@ namespace world_manager {
 /** @} */ // end of doc-group lib_game_world_manager
 
 } // namespace world_manager
+} // namespace game
 } // namespace togo

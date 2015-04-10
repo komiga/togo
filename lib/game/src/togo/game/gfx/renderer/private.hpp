@@ -11,6 +11,7 @@
 #include <togo/game/gfx/renderer/types.hpp>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 template<class R>
@@ -95,4 +96,5 @@ void free(gfx::ResourceArray<R, N>& ra, R& res) {
 } // namespace resource_array
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

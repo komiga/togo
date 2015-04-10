@@ -21,6 +21,7 @@
 #include <togo/game/app/app.gen_interface>
 
 namespace togo {
+namespace game {
 
 template<class Data>
 void AppModel<Data>::destruct(App<Data>& app) {
@@ -94,4 +95,5 @@ inline AppBase& init(
 
 } // namespace app
 
+} // namespace game
 } // namespace togo

@@ -14,6 +14,7 @@
 #include <GLFW/glfw3.h>
 
 namespace togo {
+namespace game {
 
 void gfx::init_impl(
 	unsigned context_major,
@@ -36,4 +37,5 @@ void gfx::shutdown_impl() {
 	glfwTerminate();
 }
 
+} // namespace game
 } // namespace togo

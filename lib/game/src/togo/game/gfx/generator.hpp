@@ -19,6 +19,7 @@
 #include <togo/game/gfx/types.hpp>
 
 namespace togo {
+namespace game {
 namespace gfx {
 namespace generator {
 
@@ -33,4 +34,5 @@ extern gfx::GeneratorDef const clear;
 
 } // namespace generator
 } // namespace gfx
+} // namespace game
 } // namespace togo

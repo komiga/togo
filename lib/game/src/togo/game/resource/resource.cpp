@@ -11,6 +11,7 @@
 #include <togo/game/resource/resource.hpp>
 
 namespace togo {
+namespace game {
 
 struct TagLessThan {
 	inline bool operator()(
@@ -124,4 +125,5 @@ void resource::set_compiled_path(
 	fixed_array::back(path._data) = '\0';
 }
 
+} // namespace game
 } // namespace togo

@@ -14,6 +14,7 @@
 #include <togo/game/serialization/resource/test_resource.hpp>
 
 namespace togo {
+namespace game {
 
 namespace resource_handler {
 namespace test_resource {
@@ -64,4 +65,5 @@ void resource_handler::register_test(
 	resource_manager::register_handler(rm, handler);
 }
 
+} // namespace game
 } // namespace togo

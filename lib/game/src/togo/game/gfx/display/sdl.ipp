@@ -20,6 +20,7 @@
 #include <SDL2/SDL_events.h>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 gfx::Display* display::create(
@@ -426,4 +427,5 @@ void display::process_events(InputBuffer& ib) {
 }
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

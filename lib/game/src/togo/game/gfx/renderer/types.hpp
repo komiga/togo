@@ -19,6 +19,7 @@
 #endif
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 template<class R>
@@ -131,4 +132,5 @@ struct Renderer {
 };
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

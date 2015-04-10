@@ -21,6 +21,7 @@
 #include <cmath>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 gfx::Display* display::create(
@@ -406,4 +407,5 @@ void display::process_events(InputBuffer&) {
 }
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

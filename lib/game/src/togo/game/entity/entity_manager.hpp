@@ -19,6 +19,7 @@
 #include <togo/game/entity/entity_manager.gen_interface>
 
 namespace togo {
+namespace game {
 namespace entity_manager {
 
 /**
@@ -31,4 +32,5 @@ namespace entity_manager {
 /** @} */ // end of doc-group lib_game_entity_manager
 
 } // namespace entity_manager
+} // namespace game
 } // namespace togo

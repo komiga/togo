@@ -13,6 +13,7 @@
 #include <togo/game/world/world_manager.hpp>
 
 namespace togo {
+namespace game {
 
 namespace {
 enum : unsigned {
@@ -145,4 +146,5 @@ void world_manager::shutdown(WorldManager& wm) {
 	hash_map::clear(wm._component_manager_defs);
 }
 
+} // namespace game
 } // namespace togo

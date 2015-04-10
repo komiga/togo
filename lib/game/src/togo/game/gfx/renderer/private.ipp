@@ -12,6 +12,7 @@
 #include <togo/game/gfx/renderer/private.hpp>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 void renderer::init_base(gfx::Renderer* const renderer) {
@@ -63,4 +64,5 @@ void renderer::configure_base(
 }
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

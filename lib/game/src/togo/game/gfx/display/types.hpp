@@ -19,6 +19,7 @@
 #endif
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 struct Display {
@@ -68,4 +69,5 @@ struct Display {
 };
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

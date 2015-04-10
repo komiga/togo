@@ -16,6 +16,7 @@
 #include <togo/game/gfx/renderer/opengl.hpp>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 char const* gl_get_error() {
@@ -602,4 +603,5 @@ void renderer::configure(
 }
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

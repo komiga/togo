@@ -21,14 +21,21 @@
 
 namespace togo {
 
+// Forward declarations
+namespace game {
+	struct WorldManager;
+	struct WorldInstance;
+} // namespace game
+
+template<>
+struct allow_collection_value_type<game::WorldInstance> : true_type {};
+
+namespace game {
+
 /**
 	@addtogroup lib_game_world
 	@{
 */
-
-struct WorldID;
-struct WorldInstance;
-struct WorldManager;
 
 /// Component name hash.
 using ComponentNameHash = hash32;
@@ -110,9 +117,6 @@ struct WorldInstance {
 	);
 };
 
-template<>
-struct allow_collection_value_type<WorldInstance> : true_type {};
-
 /// World manager.
 struct WorldManager {
 	HashMap<ComponentNameHash, ComponentManagerDef> _component_manager_defs;
@@ -133,5 +137,7 @@ struct WorldManager {
 };
 
 /** @} */ // end of doc-group lib_game_world
+
+} // namespace game
 
 } // namespace togo

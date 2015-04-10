@@ -22,6 +22,7 @@
 #include <togo/core/io/file_stream.hpp>
 
 namespace togo {
+namespace game {
 
 /**
 	@addtogroup lib_game_resource
@@ -358,4 +359,5 @@ struct ResourceManager {
 
 /** @} */ // end of doc-group lib_game_resource
 
+} // namespace game
 } // namespace togo

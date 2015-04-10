@@ -17,6 +17,7 @@
 	if (!(expr)) { goto glfw_error; }
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 inline void glfw_config_setup(gfx::DisplayConfig const& config) {
@@ -41,4 +42,5 @@ inline void glfw_config_setup(gfx::DisplayConfig const& config) {
 }
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

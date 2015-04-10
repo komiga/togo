@@ -21,6 +21,7 @@
 #include <togo/game/input/input_buffer.gen_interface>
 
 namespace togo {
+namespace game {
 
 /// Construct with allocator for storage.
 inline InputBuffer::InputBuffer(
@@ -47,4 +48,5 @@ inline unsigned num_displays(InputBuffer& ib) {
 /** @} */ // end of doc-group lib_game_input_buffer
 
 } // namespace input_buffer
+} // namespace game
 } // namespace togo

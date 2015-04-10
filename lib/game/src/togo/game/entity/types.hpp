@@ -17,6 +17,7 @@
 #include <togo/core/hash/types.hpp>
 
 namespace togo {
+namespace game {
 
 /**
 	@addtogroup lib_game_entity
@@ -70,4 +71,5 @@ struct EntityManager {
 
 /** @} */ // end of doc-group lib_game_entity
 
+} // namespace game
 } // namespace togo

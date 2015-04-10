@@ -20,6 +20,7 @@
 #include <togo/game/serialization/gfx/shader_def.hpp>
 
 namespace togo {
+namespace game {
 
 namespace resource_handler {
 namespace shader_prelude {
@@ -90,4 +91,5 @@ void resource_handler::register_shader_prelude(
 	resource_manager::register_handler(rm, handler);
 }
 
+} // namespace game
 } // namespace togo

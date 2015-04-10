@@ -17,6 +17,7 @@
 	if ((expr)) { goto sdl_error; }
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 inline void sdl_config_setup(gfx::DisplayConfig const& config) {
@@ -46,4 +47,5 @@ sdl_error:
 }
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

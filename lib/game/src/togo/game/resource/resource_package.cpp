@@ -22,6 +22,7 @@
 #include <togo/game/serialization/resource/resource_metadata.hpp>
 
 namespace togo {
+namespace game {
 
 ResourcePackage::ResourcePackage(
 	StringRef const& name,
@@ -150,4 +151,5 @@ void resource_package::close_resource_stream(
 	pkg._open_resource_id = 0;
 }
 
+} // namespace game
 } // namespace togo

@@ -19,6 +19,7 @@
 #include <togo/game/resource/resource.gen_interface>
 
 namespace togo {
+namespace game {
 
 namespace resource {
 
@@ -51,7 +52,7 @@ inline ResourceTagsHash hash_tags(
 
 /// Calculate hash of resource tags.
 inline ResourceTagsHash hash_tags(
-	togo::ResourcePathParts::Tag const* const tags,
+	ResourcePathParts::Tag const* const tags,
 	unsigned const num_tags
 ) {
 	ResourceTagsHashCombiner combiner{};
@@ -107,4 +108,5 @@ inline IReader& ResourceStreamLock::stream() {
 	return *_stream;
 }
 
+} // namespace game
 } // namespace togo

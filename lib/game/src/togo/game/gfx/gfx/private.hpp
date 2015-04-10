@@ -8,6 +8,7 @@
 #include <togo/game/config.hpp>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 void init_impl(
@@ -18,4 +19,5 @@ void init_impl(
 void shutdown_impl();
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

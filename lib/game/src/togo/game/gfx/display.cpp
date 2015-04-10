@@ -17,6 +17,7 @@
 #endif
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 Display::~Display() {
@@ -68,4 +69,5 @@ void display::detach_from_input_buffer(gfx::Display* display) {
 }
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

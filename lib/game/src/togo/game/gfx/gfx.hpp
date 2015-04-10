@@ -16,6 +16,7 @@
 #include <togo/game/gfx/gfx.gen_interface>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 /**
@@ -41,4 +42,5 @@ inline gfx::GeneratorNameHash hash_viewport_name(StringRef const& name) {
 /** @} */ // end of doc-group lib_game_gfx
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

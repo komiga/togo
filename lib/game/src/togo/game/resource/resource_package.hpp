@@ -20,6 +20,7 @@
 #include <togo/game/resource/resource_package.gen_interface>
 
 namespace togo {
+namespace game {
 namespace resource_package {
 
 /**
@@ -45,4 +46,5 @@ inline StringRef path(ResourcePackage const& pkg) {
 /** @} */ // end of doc-group lib_game_resource_package
 
 } // namespace resource_package
+} // namespace game
 } // namespace togo

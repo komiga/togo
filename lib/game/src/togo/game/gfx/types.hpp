@@ -23,6 +23,8 @@
 #include <initializer_list>
 
 namespace togo {
+
+namespace game {
 namespace gfx {
 
 /**
@@ -522,13 +524,14 @@ struct Camera {};
 /** @} */ // end of doc-group lib_game_gfx_renderer
 
 } // namespace gfx
+} // namespace game
 
 /** @cond INTERNAL */
 template<>
-struct enable_enum_bitwise_ops<gfx::DisplayConfigFlags> : true_type {};
+struct enable_enum_bitwise_ops<game::gfx::DisplayConfigFlags> : true_type {};
 
 template<>
-struct enable_enum_bitwise_ops<gfx::DisplayFlags> : true_type {};
+struct enable_enum_bitwise_ops<game::gfx::DisplayFlags> : true_type {};
 /** @endcond */ // INTERNAL
 
 } // namespace togo

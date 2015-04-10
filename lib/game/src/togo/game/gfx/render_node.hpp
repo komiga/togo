@@ -21,6 +21,7 @@
 #include <togo/game/gfx/render_node.gen_interface>
 
 namespace togo {
+namespace game {
 namespace gfx {
 namespace render_node {
 
@@ -48,4 +49,5 @@ inline void push(
 
 } // namespace render_node
 } // namespace gfx
+} // namespace game
 } // namespace togo

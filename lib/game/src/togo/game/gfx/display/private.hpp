@@ -10,6 +10,7 @@
 #include <togo/game/input/types.hpp>
 
 namespace togo {
+namespace game {
 namespace gfx {
 namespace display {
 
@@ -24,4 +25,5 @@ void process_events(InputBuffer& ib);
 
 } // namespace display
 } // namespace gfx
+} // namespace game
 } // namespace togo

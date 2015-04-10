@@ -16,6 +16,7 @@
 #include <togo/game/input/input.gen_interface>
 
 namespace togo {
+namespace game {
 namespace input {
 
 /**
@@ -28,4 +29,5 @@ namespace input {
 /** @} */ // end of doc-group lib_game_input
 
 } // namespace input
+} // namespace game
 } // namespace togo

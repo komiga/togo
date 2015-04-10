@@ -16,6 +16,7 @@
 #include <togo/game/gfx/types.hpp>
 
 namespace togo {
+namespace game {
 
 /**
 	@addtogroup lib_game_serialization
@@ -27,6 +28,8 @@ namespace togo {
 enum : u32 {
 	SER_FORMAT_VERSION_SHADER_DEF = 2,
 };
+
+namespace gfx {
 
 template<class Ser>
 inline void
@@ -53,8 +56,11 @@ serialize(serializer_tag, Ser& ser, gfx::ShaderDef& value_unsafe) {
 	;
 }
 
+} // namespace gfx
+
 /** @endcond */ // INTERNAL
 
 /** @} */ // end of doc-group lib_game_serialization
 
+} // namespace game
 } // namespace togo

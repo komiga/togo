@@ -12,6 +12,7 @@
 #include <GLFW/glfw3.h>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 struct GLFWDisplayImpl {
@@ -21,4 +22,5 @@ struct GLFWDisplayImpl {
 using DisplayImpl = GLFWDisplayImpl;
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

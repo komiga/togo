@@ -9,6 +9,7 @@
 #include <togo/game/input/input.hpp>
 
 namespace togo {
+namespace game {
 
 /// Whether key has been pressed for display.
 bool input::key_pressed(gfx::Display* display, KeyCode const code) {
@@ -42,4 +43,5 @@ Vec2 input::mouse_position(gfx::Display* display) {
 	};
 }
 
+} // namespace game
 } // namespace togo

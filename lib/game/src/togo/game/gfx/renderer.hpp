@@ -25,6 +25,7 @@
 #include <initializer_list>
 
 namespace togo {
+namespace game {
 namespace gfx {
 namespace renderer {
 
@@ -223,4 +224,5 @@ void configure(
 
 } // namespace renderer
 } // namespace gfx
+} // namespace game
 } // namespace togo

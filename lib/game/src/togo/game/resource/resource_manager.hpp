@@ -20,6 +20,7 @@
 #include <togo/game/resource/resource_manager.gen_interface>
 
 namespace togo {
+namespace game {
 namespace resource_manager {
 
 /**
@@ -44,4 +45,5 @@ inline Array<ResourcePackage*> const& packages(
 /** @} */ // end of doc-group lib_game_resource_manager
 
 } // namespace resource_manager
+} // namespace game
 } // namespace togo

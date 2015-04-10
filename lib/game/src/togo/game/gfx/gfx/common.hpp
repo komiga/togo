@@ -12,6 +12,7 @@
 #include <GL/glew.h>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 struct Globals {
@@ -38,4 +39,5 @@ inline void glew_init() {
 }
 
 } // namespace gfx
+} // namespace game
 } // namespace togo

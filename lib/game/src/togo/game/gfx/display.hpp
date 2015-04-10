@@ -21,6 +21,7 @@
 #include <togo/game/gfx/display.gen_interface>
 
 namespace togo {
+namespace game {
 namespace gfx {
 namespace display {
 
@@ -83,4 +84,5 @@ void destroy(gfx::Display* display);
 
 } // namespace display
 } // namespace gfx
+} // namespace game
 } // namespace togo

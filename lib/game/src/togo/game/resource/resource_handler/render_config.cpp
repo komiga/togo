@@ -17,6 +17,7 @@
 #include <togo/game/serialization/gfx/render_config.hpp>
 
 namespace togo {
+namespace game {
 
 namespace resource_handler {
 namespace render_config {
@@ -78,4 +79,5 @@ void resource_handler::register_render_config(
 	resource_manager::register_handler(rm, handler);
 }
 
+} // namespace game
 } // namespace togo

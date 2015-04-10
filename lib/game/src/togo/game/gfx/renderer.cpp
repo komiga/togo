@@ -25,6 +25,7 @@
 #include <cstring>
 
 namespace togo {
+namespace game {
 namespace gfx {
 
 Renderer::Renderer(
@@ -317,4 +318,5 @@ void renderer::render_world(
 }
 
 } // namespace gfx
+} // namespace game
 } // namespace togo
