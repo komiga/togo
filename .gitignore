@@ -6,7 +6,6 @@ Makefile
 build/
 tmp/
 
-out/
 *.exe
 *.elf
 
