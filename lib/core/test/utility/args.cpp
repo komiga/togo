@@ -23,7 +23,7 @@ signed main(signed argc, char* argv[]) {
 
 	{
 		MemoryStream out_stream{memory::default_allocator(), 1024};
-		TOGO_ASSERTE(kvs::write(k_options, out_stream));
+		TOGO_ASSERTE(kvs::write_text(k_options, out_stream));
 		TOGO_LOGF(
 			"#### options (%u): `%.*s`: <%.*s>\n",
 			static_cast<unsigned>(out_stream.size()),
@@ -33,7 +33,7 @@ signed main(signed argc, char* argv[]) {
 		);
 		out_stream.clear();
 
-		TOGO_ASSERTE(kvs::write(k_command_options, out_stream));
+		TOGO_ASSERTE(kvs::write_text(k_command_options, out_stream));
 		TOGO_LOGF(
 			"#### command options (%u): `%.*s` <%.*s>\n",
 			static_cast<unsigned>(out_stream.size()),
@@ -43,7 +43,7 @@ signed main(signed argc, char* argv[]) {
 		);
 		out_stream.clear();
 
-		TOGO_ASSERTE(kvs::write(k_command, out_stream));
+		TOGO_ASSERTE(kvs::write_text(k_command, out_stream));
 		TOGO_LOGF(
 			"#### command (%u): `%.*s` <%.*s>\n",
 			static_cast<unsigned>(out_stream.size()),

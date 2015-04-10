@@ -96,9 +96,9 @@ void test_str(KVS& root, StringRef const& data, bool const expected = true) {
 		data.size,
 		data.data
 	);
-	if (kvs::read(root, in_stream, pinfo)) {
+	if (kvs::read_text(root, in_stream, pinfo)) {
 		MemoryStream out_stream{memory::default_allocator(), data.size + 128};
-		TOGO_ASSERTE(kvs::write(root, out_stream));
+		TOGO_ASSERTE(kvs::write_text(root, out_stream));
 		TOGO_LOGF(
 			"root rewritten (%u): <%.*s>\n",
 			static_cast<unsigned>(out_stream.size()),

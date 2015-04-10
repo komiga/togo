@@ -16,9 +16,9 @@ using namespace togo;
 
 void echo(KVS& root, StringRef const& path) {
 	TOGO_LOGF("#### reading file: '%.*s'\n", path.size, path.data);
-	if (kvs::read_file(root, path)) {
+	if (kvs::read_text_file(root, path)) {
 		MemoryStream out_stream{memory::default_allocator(), 2048};
-		TOGO_ASSERTE(kvs::write(root, out_stream));
+		TOGO_ASSERTE(kvs::write_text(root, out_stream));
 		unsigned const size = static_cast<unsigned>(out_stream.size());
 		TOGO_LOGF(
 			"#### rewritten (%u): <%.*s>\n",
