@@ -1,5 +1,5 @@
 
-dofile("precore_import.lua")
+dofile("scripts/precore_import.lua")
 
 local _, G, R = precore.helpers()
 
