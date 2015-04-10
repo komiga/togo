@@ -37,12 +37,12 @@ struct Display {
 
 	DisplayImpl _impl;
 
-	Display(Display&&) = default;
-	Display& operator=(Display&&) = default;
-
 	Display() = delete;
 	Display(Display const&) = delete;
 	Display& operator=(Display const&) = delete;
+
+	Display(Display&&) = default;
+	Display& operator=(Display&&) = default;
 
 	~Display();
 	Display(
