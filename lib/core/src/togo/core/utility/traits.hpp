@@ -263,8 +263,7 @@ using is_integral = constant_type<
 	is_signed<T>::value
 >;
 
-/// Boolean constant of true if T is an integral or
-/// floating-point type.
+/// Boolean constant of true if T is an integral or floating-point type.
 template<class T>
 using is_arithmetic = constant_type<
 	bool,
