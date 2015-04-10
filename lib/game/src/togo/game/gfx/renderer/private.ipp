@@ -3,8 +3,6 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
-#pragma once
-
 #include <togo/game/config.hpp>
 #include <togo/game/gfx/types.hpp>
 #include <togo/game/gfx/generator.hpp>
