@@ -42,13 +42,14 @@ class FileReader
 public:
 	FileStreamData _data{};
 
-	~FileReader() override;
-	FileReader() = default;
-
 	FileReader(FileReader const&) = delete;
 	FileReader(FileReader&&) = delete;
 	FileReader& operator=(FileReader const&) = delete;
 	FileReader& operator=(FileReader&&) = delete;
+
+	FileReader() = default;
+
+	~FileReader() override;
 
 	/// Whether stream is open.
 	bool is_open() const;
@@ -84,13 +85,14 @@ class FileWriter
 public:
 	FileStreamData _data{};
 
-	~FileWriter() override;
-	FileWriter() = default;
-
 	FileWriter(FileWriter const&) = delete;
 	FileWriter(FileWriter&&) = delete;
 	FileWriter& operator=(FileWriter const&) = delete;
 	FileWriter& operator=(FileWriter&&) = delete;
+
+	FileWriter() = default;
+
+	~FileWriter() override;
 
 	/// Whether stream is open.
 	bool is_open() const;

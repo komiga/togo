@@ -34,8 +34,8 @@ struct StringRef {
 	unsigned size;
 
 	StringRef(StringRef const&) = default;
-	StringRef& operator=(StringRef const&) = default;
 	StringRef(StringRef&&) = default;
+	StringRef& operator=(StringRef const&) = default;
 	StringRef& operator=(StringRef&&) = default;
 
 	StringRef();

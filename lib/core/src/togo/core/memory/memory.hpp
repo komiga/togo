@@ -68,12 +68,12 @@ public:
 	/// Size value returned by unsupported operations.
 	SIZE_NOT_TRACKED = static_cast<u32>(-1);
 
+	Allocator(Allocator const&) = delete;
+	Allocator& operator=(Allocator const&) = delete;
+
 	Allocator() = default;
 	Allocator(Allocator&&) = default;
 	Allocator& operator=(Allocator&&) = default;
-
-	Allocator(Allocator const&) = delete;
-	Allocator& operator=(Allocator const&) = delete;
 
 	/// Allocators should assert that they have no active allocations
 	/// in the destructor.

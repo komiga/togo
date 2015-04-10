@@ -42,13 +42,13 @@ enum : s64 {
 struct XS64M {
 	u64 _v;
 
+	XS64M() = delete;
+
 	~XS64M() = default;
 	XS64M(XS64M&&) = default;
 	XS64M(XS64M const&) = default;
 	XS64M& operator=(XS64M&&) = default;
 	XS64M& operator=(XS64M const&) = default;
-
-	XS64M() = delete;
 
 	XS64M(u64 const seed);
 };
@@ -57,13 +57,13 @@ struct XS64M {
 struct XS128A {
 	u64 _v[2];
 
+	XS128A() = delete;
+
 	~XS128A() = default;
 	XS128A(XS128A&&) = default;
 	XS128A(XS128A const&) = default;
 	XS128A& operator=(XS128A&&) = default;
 	XS128A& operator=(XS128A const&) = default;
-
-	XS128A() = delete;
 
 	XS128A(u64 const seed);
 };
@@ -73,13 +73,13 @@ struct XS1024M {
 	u64 _v[16];
 	unsigned _i;
 
+	XS1024M() = delete;
+
 	~XS1024M() = default;
 	XS1024M(XS1024M&&) = default;
 	XS1024M(XS1024M const&) = default;
 	XS1024M& operator=(XS1024M&&) = default;
 	XS1024M& operator=(XS1024M const&) = default;
-
-	XS1024M() = delete;
 
 	XS1024M(u64 const seed);
 };
@@ -96,13 +96,13 @@ struct IntUDist {
 	u64 _ratio;
 	u64 _bound;
 
+	IntUDist() = delete;
+
 	~IntUDist() = default;
 	IntUDist(IntUDist&&) = default;
 	IntUDist(IntUDist const&) = default;
 	IntUDist& operator=(IntUDist&&) = default;
 	IntUDist& operator=(IntUDist const&) = default;
-
-	IntUDist() = delete;
 
 	constexpr IntUDist(value_type const min, value_type const max);
 };
@@ -117,13 +117,13 @@ struct RealUDist {
 	value_type _base;
 	value_type _range;
 
+	RealUDist() = delete;
+
 	~RealUDist() = default;
 	RealUDist(RealUDist&&) = default;
 	RealUDist(RealUDist const&) = default;
 	RealUDist& operator=(RealUDist&&) = default;
 	RealUDist& operator=(RealUDist const&) = default;
-
-	RealUDist() = delete;
 
 	constexpr RealUDist(value_type const min, value_type const max);
 };

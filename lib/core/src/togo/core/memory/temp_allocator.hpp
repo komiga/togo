@@ -48,8 +48,8 @@ private:
 
 public:
 	TempAllocator(TempAllocator&&) = delete;
-	TempAllocator& operator=(TempAllocator&&) = delete;
 	TempAllocator(TempAllocator const&) = delete;
+	TempAllocator& operator=(TempAllocator&&) = delete;
 	TempAllocator& operator=(TempAllocator const&) = delete;
 
 	~TempAllocator() = default;

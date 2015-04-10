@@ -86,12 +86,12 @@ struct FixedArray {
 	u32_fast _size;
 	T _data[N];
 
-	~FixedArray() = default;
-
 	FixedArray(FixedArray<T, N> const&) = delete;
 	FixedArray(FixedArray<T, N>&&) = delete;
 	FixedArray& operator=(FixedArray<T, N> const&) = delete;
 	FixedArray& operator=(FixedArray<T, N>&&) = delete;
+
+	~FixedArray() = default;
 
 	FixedArray();
 
@@ -121,11 +121,11 @@ struct Queue {
 	u32_fast _head;
 	u32_fast _size;
 
-	~Queue() = default;
-
 	Queue() = delete;
 	Queue(Queue<T> const&) = delete;
 	Queue& operator=(Queue<T> const&) = delete;
+
+	~Queue() = default;
 
 	Queue(Allocator& allocator);
 
@@ -163,13 +163,13 @@ struct PriorityQueue {
 	Array<T> _data;
 	less_func_type* _less_func;
 
-	~PriorityQueue() = default;
-	PriorityQueue(PriorityQueue<T>&&) = default;
-	PriorityQueue& operator=(PriorityQueue<T>&&) = default;
-
 	PriorityQueue() = delete;
 	PriorityQueue(PriorityQueue<T> const&) = delete;
 	PriorityQueue& operator=(PriorityQueue<T> const&) = delete;
+
+	~PriorityQueue() = default;
+	PriorityQueue(PriorityQueue<T>&&) = default;
+	PriorityQueue& operator=(PriorityQueue<T>&&) = default;
 
 	PriorityQueue(
 		PriorityQueue<T>::less_func_type& less_func,
@@ -216,13 +216,13 @@ struct HashMap {
 	Array<u32> _head;
 	Array<HashMapNode<K, T>> _data;
 
-	~HashMap() = default;
-	HashMap(HashMap<K, T>&&) = default;
-	HashMap& operator=(HashMap<K, T>&&) = default;
-
 	HashMap() = delete;
 	HashMap(HashMap<K, T> const&) = delete;
 	HashMap& operator=(HashMap<K, T> const&) = delete;
+
+	~HashMap() = default;
+	HashMap(HashMap<K, T>&&) = default;
+	HashMap& operator=(HashMap<K, T>&&) = default;
 
 	HashMap(Allocator& allocator);
 };

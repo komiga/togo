@@ -56,12 +56,12 @@ struct Mutex {
 	MutexType _type;
 	MutexImpl _impl;
 
+	Mutex(Mutex const&) = delete;
+	Mutex& operator=(Mutex const&) = delete;
+
 	~Mutex() = default;
 	Mutex(Mutex&&) = default;
 	Mutex& operator=(Mutex&&) = default;
-
-	Mutex(Mutex const&) = delete;
-	Mutex& operator=(Mutex const&) = delete;
 
 	Mutex(MutexType const type = MutexType::normal);
 };
@@ -70,12 +70,12 @@ struct Mutex {
 struct MutexLock {
 	Mutex& _mutex;
 
-	MutexLock(MutexLock&&) = default;
-	MutexLock& operator=(MutexLock&&) = default;
-
 	MutexLock() = delete;
 	MutexLock(MutexLock const&) = delete;
 	MutexLock& operator=(MutexLock const&) = delete;
+
+	MutexLock(MutexLock&&) = default;
+	MutexLock& operator=(MutexLock&&) = default;
 
 	~MutexLock();
 	MutexLock(Mutex& m);
@@ -92,12 +92,12 @@ struct MutexLock {
 struct CondVar {
 	CondVarImpl _impl;
 
+	CondVar(CondVar const&) = delete;
+	CondVar& operator=(CondVar const&) = delete;
+
 	~CondVar() = default;
 	CondVar(CondVar&&) = default;
 	CondVar& operator=(CondVar&&) = default;
-
-	CondVar(CondVar const&) = delete;
-	CondVar& operator=(CondVar const&) = delete;
 
 	CondVar();
 };
@@ -159,12 +159,12 @@ struct TaskManager {
 	unsigned _flags;
 	u32 _id_gen;
 
-	TaskManager(TaskManager&&) = default;
-	TaskManager& operator=(TaskManager&&) = default;
-
 	TaskManager() = delete;
 	TaskManager(TaskManager const&) = delete;
 	TaskManager& operator=(TaskManager const&) = delete;
+
+	TaskManager(TaskManager&&) = default;
+	TaskManager& operator=(TaskManager&&) = default;
 
 	/// Destroy.
 	///

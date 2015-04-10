@@ -41,15 +41,15 @@ public:
 	Array<u8> _data;
 	u64 _position;
 
-	~MemoryStream() override;
-
-	/// Construct with allocator and initial capacity (in bytes).
-	MemoryStream(Allocator& allocator, u32 const init_capacity);
-
 	MemoryStream(MemoryStream const&) = delete;
 	MemoryStream(MemoryStream&&) = delete;
 	MemoryStream& operator=(MemoryStream const&) = delete;
 	MemoryStream& operator=(MemoryStream&&) = delete;
+
+	~MemoryStream() override;
+
+	/// Construct with allocator and initial capacity (in bytes).
+	MemoryStream(Allocator& allocator, u32 const init_capacity);
 
 	/// Size.
 	u32_fast size() noexcept {
@@ -92,6 +92,11 @@ public:
 	u8 const* _data;
 	u64 _position;
 
+	MemoryReader(MemoryReader const&) = delete;
+	MemoryReader(MemoryReader&&) = delete;
+	MemoryReader& operator=(MemoryReader const&) = delete;
+	MemoryReader& operator=(MemoryReader&&) = delete;
+
 	~MemoryReader() override;
 
 	/// Construct with buffer.
@@ -99,11 +104,6 @@ public:
 
 	/// Construct with string reference.
 	MemoryReader(StringRef const& ref);
-
-	MemoryReader(MemoryReader const&) = delete;
-	MemoryReader(MemoryReader&&) = delete;
-	MemoryReader& operator=(MemoryReader const&) = delete;
-	MemoryReader& operator=(MemoryReader&&) = delete;
 
 	/// Size.
 	u32_fast size() noexcept {

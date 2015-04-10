@@ -34,12 +34,12 @@ private:
 	Mutex _op_mutex;
 
 public:
-	HeapAllocator(HeapAllocator&&) = default;
-	HeapAllocator& operator=(HeapAllocator&&) = default;
-
 	HeapAllocator() = delete;
 	HeapAllocator(HeapAllocator const&) = delete;
 	HeapAllocator& operator=(HeapAllocator const&) = delete;
+
+	HeapAllocator(HeapAllocator&&) = default;
+	HeapAllocator& operator=(HeapAllocator&&) = default;
 
 	~HeapAllocator() override {
 		TOGO_ASSERT(_num_allocations == 0, "allocator destroyed with active allocations");

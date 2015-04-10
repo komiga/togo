@@ -55,8 +55,8 @@ private:
 
 public:
 	JumpBlockAllocator(JumpBlockAllocator&&) = delete;
-	JumpBlockAllocator& operator=(JumpBlockAllocator&&) = delete;
 	JumpBlockAllocator(JumpBlockAllocator const&) = delete;
+	JumpBlockAllocator& operator=(JumpBlockAllocator&&) = delete;
 	JumpBlockAllocator& operator=(JumpBlockAllocator const&) = delete;
 
 	/// Deallocates any scratch-allocated blocks.

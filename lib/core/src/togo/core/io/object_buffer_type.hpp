@@ -36,13 +36,13 @@ struct ObjectBuffer {
 	unsigned _num_objects;
 	bool _consume_mode;
 
-	~ObjectBuffer() = default;
-
 	ObjectBuffer() = delete;
 	ObjectBuffer(ObjectBuffer const&) = delete;
 	ObjectBuffer(ObjectBuffer&&) = delete;
 	ObjectBuffer& operator=(ObjectBuffer const&) = delete;
 	ObjectBuffer& operator=(ObjectBuffer&&) = delete;
+
+	~ObjectBuffer() = default;
 
 	ObjectBuffer(Allocator& allocator, u32 const init_capacity);
 };
