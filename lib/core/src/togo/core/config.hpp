@@ -102,6 +102,18 @@ namespace togo {
 	#define TOGO_ARCH_X86
 	/// Defined if the target processor is x86_64.
 	#define TOGO_ARCH_X86_64
+
+	/// Little endian.
+	#define TOGO_ENDIAN_LITTLE 0
+	/// Big endian.
+	#define TOGO_ENDIAN_BIG 1
+	/// Defined to the system's endian.
+	#define TOGO_ENDIAN_SYSTEM
+
+	/// Defined if the system is little endian.
+	#define TOGO_ENDIAN_IS_LITTLE
+	/// Defined if the system is big endian.
+	#define TOGO_ENDIAN_IS_BIG
 #else
 	#if defined(__linux__)
 		#define TOGO_PLATFORM_LINUX
@@ -127,6 +139,26 @@ namespace togo {
 		#define TOGO_ARCH_X86
 	#else
 		#error "unrecognized processor architecture"
+	#endif
+
+	#define TOGO_ENDIAN_LITTLE	0
+	#define TOGO_ENDIAN_BIG		1
+
+	#if defined(_WIN32)								\
+	|| defined(__i386__)							\
+	|| defined(__ia64__)							\
+	|| defined(__x86_64__)							\
+	|| defined(__SYMBIAN32__)						\
+	|| defined(__LITTLE_ENDIAN__)					\
+	|| (defined(__alpha__) || defined(__alpha))		\
+	|| (defined(__arm__) || defined(ARM))			\
+	|| (defined(__mips__) && defined(__MIPSEL__))
+
+		#define TOGO_ENDIAN_SYSTEM TOGO_ENDIAN_LITTLE
+		#define TOGO_ENDIAN_IS_LITTLE
+	#else
+		#define TOGO_ENDIAN_SYSTEM TOGO_ENDIAN_BIG
+		#define TOGO_ENDIAN_IS_BIG
 	#endif
 #endif // defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
 
