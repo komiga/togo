@@ -138,7 +138,7 @@ function togo.make_test(group, name, srcglob, configs)
 		group .. "_" .. name,
 		"C++", "ConsoleApp",
 		"./",
-		"out/",
+		"../build/${NAME}/",
 		env, configs
 	)
 	if not srcglob then
