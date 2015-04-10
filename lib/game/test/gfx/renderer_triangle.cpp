@@ -23,7 +23,8 @@
 #include <initializer_list>
 
 using namespace togo;
-using namespace togo::gfx::hash_literals;
+using namespace togo::game;
+using namespace togo::game::gfx::hash_literals;
 
 struct Vertex {
 	Vec2 pos;

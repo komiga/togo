@@ -10,6 +10,7 @@
 #include <initializer_list>
 
 using namespace togo;
+using namespace togo::game;
 
 void test_path(
 	ResourcePathParts& pp,

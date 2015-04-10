@@ -15,6 +15,7 @@
 #include <togo/support/test.hpp>
 
 using namespace togo;
+using namespace togo::game;
 
 enum : ResourceNameHash {
 	PKG1_TEST_NON_EXISTENT = "non_existent"_resource_name,

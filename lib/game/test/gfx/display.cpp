@@ -10,6 +10,7 @@
 #include <togo/support/test.hpp>
 
 using namespace togo;
+using namespace togo::game;
 
 signed main() {
 	memory_init();

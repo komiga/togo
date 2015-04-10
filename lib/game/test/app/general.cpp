@@ -9,6 +9,7 @@
 #include <togo/support/test.hpp>
 
 using namespace togo;
+using namespace togo::game;
 
 struct TestAppData {
 	unsigned x{42};
