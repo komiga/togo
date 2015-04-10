@@ -3,14 +3,14 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
+#include <togo/tool_res_build/config.hpp>
+#include <togo/tool_res_build/types.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/collection/fixed_array.hpp>
 #include <togo/core/collection/array.hpp>
 #include <togo/core/collection/hash_map.hpp>
 #include <togo/game/resource/resource.hpp>
-#include <togo/tool_res_build/config.hpp>
-#include <togo/tool_res_build/types.hpp>
 #include <togo/tool_res_build/resource_compiler.hpp>
 #include <togo/tool_res_build/package_compiler.hpp>
 #include <togo/tool_res_build/compiler_manager.hpp>

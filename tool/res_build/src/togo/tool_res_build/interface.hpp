@@ -16,10 +16,10 @@
 // igen-following-sources-included
 // igen-source-pattern: interface/.+ipp
 
-#include <togo/core/string/types.hpp>
-#include <togo/core/kvs/types.hpp>
 #include <togo/tool_res_build/config.hpp>
 #include <togo/tool_res_build/types.hpp>
+#include <togo/core/string/types.hpp>
+#include <togo/core/kvs/types.hpp>
 #include <togo/tool_res_build/interface.gen_interface>
 
 namespace togo {

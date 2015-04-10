@@ -3,11 +3,11 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
+#include <togo/tool_res_build/config.hpp>
+#include <togo/tool_res_build/types.hpp>
 #include <togo/core/utility/args.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/kvs/kvs.hpp>
-#include <togo/tool_res_build/config.hpp>
-#include <togo/tool_res_build/types.hpp>
 #include <togo/tool_res_build/interface.hpp>
 
 using namespace togo;

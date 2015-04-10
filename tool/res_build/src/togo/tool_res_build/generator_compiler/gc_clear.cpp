@@ -3,6 +3,8 @@
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
+#include <togo/tool_res_build/config.hpp>
+#include <togo/tool_res_build/types.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/hash/hash.hpp>
@@ -11,8 +13,6 @@
 #include <togo/core/serialization/support.hpp>
 #include <togo/core/serialization/binary_serializer.hpp>
 #include <togo/game/gfx/gfx.hpp>
-#include <togo/tool_res_build/config.hpp>
-#include <togo/tool_res_build/types.hpp>
 #include <togo/tool_res_build/generator_compiler.hpp>
 
 namespace togo {

@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include <togo/tool_res_build/config.hpp>
 #include <togo/core/types.hpp>
 #include <togo/core/memory/types.hpp>
 #include <togo/core/collection/types.hpp>
@@ -22,7 +23,6 @@
 #include <togo/core/serialization/types.hpp>
 #include <togo/game/gfx/types.hpp>
 #include <togo/game/resource/types.hpp>
-#include <togo/tool_res_build/config.hpp>
 
 namespace togo {
 namespace tool_res_build {
