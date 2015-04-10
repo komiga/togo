@@ -18,6 +18,16 @@ namespace togo {
 	@{
 */
 
+/// Endianness.
+enum class Endian : unsigned {
+	/// Little endian.
+	little = TOGO_ENDIAN_LITTLE,
+	/// Big endian.
+	big = TOGO_ENDIAN_BIG,
+	/// System endian.
+	system = TOGO_ENDIAN_SYSTEM,
+};
+
 /// Array reference.
 template<class T>
 struct ArrayRef;
