@@ -38,7 +38,6 @@ signed main(signed argc, char* argv[]) {
 	}
 
 l_exit:
-
 	memory::shutdown();
 	return ec;
 }

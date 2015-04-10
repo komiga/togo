@@ -23,6 +23,8 @@ namespace tool_res_build {
 	@{
 */
 
+using namespace togo::game;
+
 /// tool_res_build information text.
 #define TOGO_TOOL_RES_BUILD_INFO_TEXT \
 	"togo res_build 0.00"
