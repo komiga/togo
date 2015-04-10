@@ -72,5 +72,6 @@ togo.make_tests("threading", {
 
 togo.make_tests("utility", {
 	["general"] = {nil, configs},
+	["endian"] = {nil, configs},
 	["args"] = {nil, configs},
 })
