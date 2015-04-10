@@ -103,6 +103,7 @@ struct PackageCompiler {
 	PackageCompiler& operator=(PackageCompiler&&) = delete;
 
 	~PackageCompiler() = default;
+
 	PackageCompiler(
 		StringRef const& path,
 		Allocator& allocator
@@ -164,6 +165,7 @@ struct GfxCompiler {
 	GfxCompiler& operator=(GfxCompiler&&) = delete;
 
 	~GfxCompiler() = default;
+
 	GfxCompiler(Allocator& allocator);
 };
 
