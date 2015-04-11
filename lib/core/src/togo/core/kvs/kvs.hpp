@@ -10,6 +10,7 @@
 #pragma once
 
 // igen-source: kvs/io_text.cpp
+// igen-source: kvs/io_binary.cpp
 
 #include <togo/core/config.hpp>
 #include <togo/core/types.hpp>

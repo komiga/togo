@@ -72,6 +72,7 @@ return {
 	M("kvs", {
 		I("io", {
 			N("parser"),
+			N("binary"),
 		}),
 	}),
 	M("serialization", {
