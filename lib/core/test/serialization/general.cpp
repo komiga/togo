@@ -28,8 +28,13 @@ signed main() {
 	TOGO_LOGF("RNG seed: %ld\n", seed);
 
 	MemoryStream stream{memory::default_allocator(), 2048};
-	BinaryOutputSerializer oser{stream};
-	BinaryInputSerializer iser{stream};
+
+	auto const endian_foreign = Endian::system == Endian::little
+		? Endian::big
+		: Endian::little
+	;
+	BinaryOutputSerializer oser{stream, endian_foreign};
+	BinaryInputSerializer iser{stream, endian_foreign};
 
 	// Arithmetic
 	{
