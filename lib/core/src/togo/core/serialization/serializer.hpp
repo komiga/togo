@@ -15,8 +15,8 @@
 #pragma once
 
 #include <togo/core/config.hpp>
-#include <togo/core/utility/utility.hpp>
 #include <togo/core/utility/traits.hpp>
+#include <togo/core/utility/utility.hpp>
 #include <togo/core/serialization/types.hpp>
 
 /** @cond INTERNAL */

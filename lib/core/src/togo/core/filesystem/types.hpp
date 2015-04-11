@@ -12,8 +12,8 @@
 
 #include <togo/core/config.hpp>
 #include <togo/core/types.hpp>
-#include <togo/core/utility/utility.hpp>
 #include <togo/core/utility/traits.hpp>
+#include <togo/core/utility/utility.hpp>
 #include <togo/core/collection/types.hpp>
 #include <togo/core/string/types.hpp>
 
