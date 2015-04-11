@@ -13,35 +13,48 @@ using namespace togo;
 
 namespace {
 
-union FloatInt {
-	float f;
+union FloatInt32 {
+	f32 f;
 	u32 i;
 };
 
-bool float_exact(float const x, float const y) {
-	FloatInt const xu{x};
-	FloatInt const yu{y};
+union FloatInt64 {
+	f64 f;
+	u64 i;
+};
+
+bool float_exact_32(f32 const x, f32 const y) {
+	FloatInt32 const xu{x};
+	FloatInt32 const yu{y};
+	return xu.i == yu.i;
+}
+
+bool float_exact_64(f64 const x, f64 const y) {
+	FloatInt64 const xu{x};
+	FloatInt64 const yu{y};
 	return xu.i == yu.i;
 }
 
 static u8 const partial_out[5]{0, 8, 16, 32, 64};
 
 struct TestStreamState {
-	u8  v8 {8};
-	u16 v16{16};
-	u32 v32{32};
-	u64 v64{64};
-	float vfloat{-32.0f};
+	u8  i8 {8};
+	u16 i16{16};
+	u32 i32{32};
+	u64 i64{64};
+	f32 f32{-32.0f};
+	f64 f64{-64.0f};
 	u32 array[10]{0};
 };
 
 enum : signed {
 	SIZE_VALUES
-		= sizeof(TestStreamState::v8)
-		+ sizeof(TestStreamState::v16)
-		+ sizeof(TestStreamState::v32)
-		+ sizeof(TestStreamState::v64)
-		+ sizeof(TestStreamState::vfloat)
+		= sizeof(TestStreamState::i8)
+		+ sizeof(TestStreamState::i16)
+		+ sizeof(TestStreamState::i32)
+		+ sizeof(TestStreamState::i64)
+		+ sizeof(TestStreamState::f32)
+		+ sizeof(TestStreamState::f64)
 	,
 	SIZE_ARRAY = sizeof(TestStreamState::array),
 	SIZE_BOTH = SIZE_VALUES + SIZE_ARRAY
@@ -52,11 +65,12 @@ enum : signed {
 void test_reader(IReader& stream, bool const seekable) {
 	TestStreamState s{};
 	std::memset(&s, 0, sizeof(TestStreamState));
-	TOGO_ASSERTE(io::read_value(stream, s.v8 ) && s.v8  ==  8);
-	TOGO_ASSERTE(io::read_value(stream, s.v16) && s.v16 == 16);
-	TOGO_ASSERTE(io::read_value(stream, s.v32) && s.v32 == 32);
-	TOGO_ASSERTE(io::read_value(stream, s.v64) && s.v64 == 64);
-	TOGO_ASSERTE(io::read_value(stream, s.vfloat) && float_exact(s.vfloat, -32.0f));
+	TOGO_ASSERTE(io::read_value(stream, s.i8 ) && s.i8  ==  8);
+	TOGO_ASSERTE(io::read_value(stream, s.i16) && s.i16 == 16);
+	TOGO_ASSERTE(io::read_value(stream, s.i32) && s.i32 == 32);
+	TOGO_ASSERTE(io::read_value(stream, s.i64) && s.i64 == 64);
+	TOGO_ASSERTE(io::read_value(stream, s.f32) && float_exact_32(s.f32, -32.0f));
+	TOGO_ASSERTE(io::read_value(stream, s.f64) && float_exact_64(s.f64, -64.0f));
 
 	if (seekable) {
 		TOGO_ASSERTE(io::position(dynamic_cast<IStreamSeekable&>(stream)) == SIZE_VALUES);
@@ -93,11 +107,12 @@ void test_reader(IReader& stream, bool const seekable) {
 
 void test_writer(IWriter& stream, bool const seekable) {
 	TestStreamState s{};
-	TOGO_ASSERTE(io::write_value(stream, s.v8 ));
-	TOGO_ASSERTE(io::write_value(stream, s.v16));
-	TOGO_ASSERTE(io::write_value(stream, s.v32));
-	TOGO_ASSERTE(io::write_value(stream, s.v64));
-	TOGO_ASSERTE(io::write_value(stream, s.vfloat));
+	TOGO_ASSERTE(io::write_value(stream, s.i8 ));
+	TOGO_ASSERTE(io::write_value(stream, s.i16));
+	TOGO_ASSERTE(io::write_value(stream, s.i32));
+	TOGO_ASSERTE(io::write_value(stream, s.i64));
+	TOGO_ASSERTE(io::write_value(stream, s.f32));
+	TOGO_ASSERTE(io::write_value(stream, s.f64));
 
 	if (seekable) {
 		TOGO_ASSERTE(io::position(dynamic_cast<IStreamSeekable&>(stream)) == SIZE_VALUES);
