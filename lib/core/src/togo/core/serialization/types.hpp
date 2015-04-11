@@ -12,6 +12,7 @@
 
 #include <togo/core/config.hpp>
 #include <togo/core/types.hpp>
+#include <togo/core/utility/types.hpp>
 #include <togo/core/utility/traits.hpp>
 
 #include <type_traits>
@@ -131,6 +132,7 @@ struct BinaryInputSerializer
 	: InputSerializer<BinaryInputSerializer>
 {
 	IReader& _stream;
+	Endian _endian;
 
 	BinaryInputSerializer() = delete;
 
@@ -140,7 +142,7 @@ struct BinaryInputSerializer
 	BinaryInputSerializer& operator=(BinaryInputSerializer const&) = default;
 	BinaryInputSerializer& operator=(BinaryInputSerializer&&) = default;
 
-	BinaryInputSerializer(IReader& stream);
+	BinaryInputSerializer(IReader& stream, Endian endian = Endian::little);
 };
 
 /// Binary output serializer.
@@ -148,6 +150,7 @@ struct BinaryOutputSerializer
 	: OutputSerializer<BinaryOutputSerializer>
 {
 	IWriter& _stream;
+	Endian _endian;
 
 	BinaryOutputSerializer() = delete;
 
@@ -157,7 +160,7 @@ struct BinaryOutputSerializer
 	BinaryOutputSerializer& operator=(BinaryOutputSerializer const&) = default;
 	BinaryOutputSerializer& operator=(BinaryOutputSerializer&&) = default;
 
-	BinaryOutputSerializer(IWriter& stream);
+	BinaryOutputSerializer(IWriter& stream, Endian endian = Endian::little);
 };
 
 /** @} */ // end of doc-group lib_core_binary_serializer

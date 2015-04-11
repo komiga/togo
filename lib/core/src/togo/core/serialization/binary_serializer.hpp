@@ -17,6 +17,7 @@
 #include <togo/core/config.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/utility/traits.hpp>
+#include <togo/core/utility/utility.hpp>
 #include <togo/core/io/io.hpp>
 #include <togo/core/serialization/types.hpp>
 #include <togo/core/serialization/support.hpp>
@@ -29,13 +30,15 @@ namespace togo {
 */
 
 /// Construct with stream.
-inline BinaryInputSerializer::BinaryInputSerializer(IReader& stream)
+inline BinaryInputSerializer::BinaryInputSerializer(IReader& stream, Endian endian)
 	: _stream(stream)
+	, _endian(endian)
 {}
 
 /// Construct with stream.
-inline BinaryOutputSerializer::BinaryOutputSerializer(IWriter& stream)
+inline BinaryOutputSerializer::BinaryOutputSerializer(IWriter& stream, Endian endian)
 	: _stream(stream)
+	, _endian(endian)
 {}
 
 /** @cond INTERNAL */
@@ -45,13 +48,13 @@ inline BinaryOutputSerializer::BinaryOutputSerializer(IWriter& stream)
 template<class T>
 inline enable_if<is_arithmetic<T>::value>
 read(serializer_tag, BinaryInputSerializer& ser, T& value) {
-	TOGO_ASSERTE(io::read_value(ser._stream, value));
+	TOGO_ASSERTE(io::read_value_endian(ser._stream, value, ser._endian));
 }
 
 template<class T>
 inline enable_if<is_arithmetic<T>::value>
 write(serializer_tag, BinaryOutputSerializer& ser, T const& value) {
-	TOGO_ASSERTE(io::write_value(ser._stream, value));
+	TOGO_ASSERTE(io::write_value_endian(ser._stream, value, ser._endian));
 }
 
 // arithmetic sequence
@@ -59,13 +62,13 @@ write(serializer_tag, BinaryOutputSerializer& ser, T const& value) {
 template<class T>
 inline enable_if<is_arithmetic<T>::value>
 read(serializer_tag, BinaryInputSerializer& ser, SerSequence<T>&& seq) {
-	TOGO_ASSERTE(io::read_array(ser._stream, seq.ptr, seq.size));
+	TOGO_ASSERTE(io::read_array_endian(ser._stream, array_ref(seq.size, seq.ptr), ser._endian));
 }
 
 template<class T>
 inline enable_if<is_arithmetic<T>::value>
 write(serializer_tag, BinaryOutputSerializer& ser, SerSequence<T> const& seq) {
-	TOGO_ASSERTE(io::write_array(ser._stream, seq.ptr, seq.size));
+	TOGO_ASSERTE(io::write_array_endian(ser._stream, array_cref(seq.size, seq.ptr), ser._endian));
 }
 
 // explicitly binary-serializable sequence
