@@ -13,6 +13,7 @@
 #include <togo/core/types.hpp>
 #include <togo/core/utility/types.hpp>
 #include <togo/core/utility/constraints.hpp>
+#include <togo/core/utility/endian.hpp>
 #include <togo/core/io/types.hpp>
 #include <togo/core/io/proto.hpp>
 
@@ -93,6 +94,64 @@ template<class T>
 inline IOStatus write_array(IWriter& stream, ArrayRef<T const> const& data) {
 	TOGO_CONSTRAIN_ARITHMETIC(T);
 	return io::write(stream, begin(data), data.size() * sizeof(T));
+}
+
+/// Read an arithmetic value from endian.
+///
+/// If endian differs from the system, value is byte-reversed after reading.
+template<class T>
+inline IOStatus read_value_endian(IReader& stream, T& value, Endian const endian) {
+	TOGO_CONSTRAIN_ARITHMETIC(T);
+	auto status = io::read(stream, &value, sizeof(T));
+	reverse_bytes_if(value, endian);
+	return status;
+}
+
+/// Write an arithmetic value to endian.
+///
+/// If endian differs from the system, value is written byte-reversed.
+template<class T>
+inline IOStatus write_value_endian(IWriter& stream, T value, Endian const endian) {
+	TOGO_CONSTRAIN_ARITHMETIC(T);
+	reverse_bytes_if(value, endian);
+	return io::write(stream, &value, sizeof(T));
+}
+
+/// Read an arithmetic array from endian.
+///
+/// If endian differs from the system, values are byte-reversed after reading.
+template<class T>
+inline IOStatus read_array_endian(
+	IReader& stream,
+	ArrayRef<T> const& data,
+	Endian const endian
+) {
+	TOGO_CONSTRAIN_ARITHMETIC(T);
+	auto status = io::read_array(stream, data);
+	reverse_bytes_if(data, endian);
+	return status;
+}
+
+/// Write an arithmetic array.
+///
+/// If endian differs from the system, values are written byte-reversed.
+template<class T>
+inline IOStatus write_array_endian(
+	IWriter& stream,
+	ArrayRef<T const> const& data,
+	Endian const endian
+) {
+	TOGO_CONSTRAIN_ARITHMETIC(T);
+	if (endian == Endian::system) {
+		return io::write_array(stream, data);
+	}
+	T value;
+	IOStatus status{IOStatus::flag_none};
+	for (auto it = begin(data); it != end(data) && status; ++it) {
+		value = reverse_bytes_copy(*it);
+		status = io::write_value(stream, value);
+	}
+	return status;
 }
 
 /** @} */ // end of doc-group lib_core_io
