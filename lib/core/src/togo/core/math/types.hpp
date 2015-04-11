@@ -23,7 +23,7 @@ namespace togo {
 */
 
 /** @name Vector types */ /// @{
-/// 2-dimensional vector.
+/// 1-dimensional vector.
 using Vec1 = am::linear::vec1;
 /// 2-dimensional vector.
 using Vec2 = am::linear::vec2;
