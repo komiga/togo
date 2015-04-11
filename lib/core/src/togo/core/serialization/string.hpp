@@ -82,7 +82,6 @@ read(serializer_tag, Ser& ser, SerString<S, char[N]>&& value) {
 	S size{};
 	ser % size;
 
-	// NB: Assertion in resize() will cover invalid sizes
 	TOGO_ASSERTE(size < N);
 	ser % make_ser_buffer(str, size);
 	str[size] = '\0';
