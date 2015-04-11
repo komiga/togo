@@ -25,6 +25,19 @@ namespace togo {
 
 /** @cond INTERNAL */
 
+// StringRef
+
+template<class Ser, class S, bool C>
+inline void
+write(serializer_tag, Ser& ser, SerString<S, StringRef, C> const& value) {
+	auto const& str = value.ref;
+	TOGO_DEBUG_ASSERTE(std::numeric_limits<S>::max() >= str.size);
+	ser
+		% static_cast<S>(str.size)
+		% make_ser_buffer(str.data, str.size)
+	;
+}
+
 // FixedArray<char, N>
 
 template<class Ser, class S, unsigned N>
