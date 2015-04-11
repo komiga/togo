@@ -273,6 +273,24 @@ inline ArrayRef<T> array_ref(unsigned const size, T* const data) {
 	return ArrayRef<T>{data, data + size};
 }
 
+/// Make reference to array.
+template<class T, unsigned N>
+inline ArrayRef<T> array_ref(T (&data)[N]) {
+	return ArrayRef<T>{data, data + N};
+}
+
+/// Make reference to const array.
+template<class T>
+inline ArrayRef<T const> array_cref(unsigned const size, T const* const data) {
+	return ArrayRef<T const>{data, data + size};
+}
+
+/// Make reference to const array.
+template<class T, unsigned N>
+inline ArrayRef<T const> array_cref(T const (&data)[N]) {
+	return ArrayRef<T const>{data, data + N};
+}
+
 /** @cond INTERNAL */
 template<class T>
 inline T* begin(ArrayRef<T> const& ar) { return ar._begin; }
