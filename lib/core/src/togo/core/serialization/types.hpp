@@ -49,8 +49,9 @@ struct SerProxy {
 	);
 	static_assert(
 		is_arithmetic<T>::value ||
-		std::is_enum<T>::value,
-		"value type (T) must be an arithmetic or enum type"
+		std::is_enum<T>::value ||
+		is_same<remove_cv<T>, bool>::value,
+		"value type (T) must be an arithmetic, enum, or boolean type"
 	);
 
 	T& ref;
