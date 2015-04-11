@@ -77,6 +77,7 @@ return {
 		N("fixed_array"),
 		N("array"),
 		N("string"),
+		N("vector"),
 	}),
 	M("external", {
 		N("dlmalloc_import"),
