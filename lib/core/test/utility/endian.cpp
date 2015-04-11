@@ -25,9 +25,9 @@ constexpr auto ENSURE_SWAP
 template<class T>
 void do_test(T const value, T const check) {
 	using I = typename int_type<T>::type;
-	auto const a = reverse_bytes(value);
-	auto const b = reverse_bytes_if(value, ENSURE_SWAP);
-	auto const c = reverse_bytes_if(value, Endian::system);
+	auto const a = reverse_bytes_copy(value);
+	auto const b = reverse_bytes_copy_if(value, ENSURE_SWAP);
+	auto const c = reverse_bytes_copy_if(value, Endian::system);
 
 	u64 const up_value = IC(value);
 	u64 const up_check = IC(check);
