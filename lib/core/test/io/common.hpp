@@ -76,7 +76,7 @@ void test_reader(IReader& stream, bool const seekable) {
 		TOGO_ASSERTE(io::position(dynamic_cast<IStreamSeekable&>(stream)) == SIZE_VALUES);
 	}
 
-	TOGO_ASSERTE(io::read_array(stream, s.array, array_extent(&TestStreamState::array)));
+	TOGO_ASSERTE(io::read_array(stream, array_ref(s.array)));
 	u32 bit = 1 << 7;
 	for (u32& v : s.array) {
 		TOGO_ASSERTE(v == bit);
@@ -123,7 +123,7 @@ void test_writer(IWriter& stream, bool const seekable) {
 		v = bit;
 		bit <<= 1;
 	}
-	TOGO_ASSERTE(io::write_array(stream, s.array, array_extent(&TestStreamState::array)));
+	TOGO_ASSERTE(io::write_array(stream, array_cref(s.array)));
 
 	if (seekable) {
 		IStreamSeekable& stream_seekable = dynamic_cast<IStreamSeekable&>(stream);
