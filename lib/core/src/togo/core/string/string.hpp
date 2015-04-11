@@ -236,4 +236,12 @@ inline bool StringRef::empty() const {
 	return size == 0;
 }
 
+/** @cond INTERNAL */
+inline char const* begin(StringRef const& str) { return str.data; }
+inline char const* cbegin(StringRef const& str) { return str.data; }
+
+inline char const* end(StringRef const& str) { return str.data + str.size; }
+inline char const* cend(StringRef const& str) { return str.data + str.size; }
+/** @endcond */ // INTERNAL
+
 } // namespace togo
