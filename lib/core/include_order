@@ -69,7 +69,11 @@ return {
 		N("object_buffer_type"),
 		N("object_buffer"),
 	}),
-	M("kvs", {}),
+	M("kvs", {
+		I("io", {
+			N("parser"),
+		}),
+	}),
 	M("serialization", {
 		N("serializer"),
 		N("support"),
