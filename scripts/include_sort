@@ -1,0 +1,3 @@
+#!/bin/bash
+
+include_sort scripts/include_sort.config $@
