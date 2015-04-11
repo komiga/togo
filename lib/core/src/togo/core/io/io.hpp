@@ -11,6 +11,7 @@
 
 #include <togo/core/config.hpp>
 #include <togo/core/types.hpp>
+#include <togo/core/utility/types.hpp>
 #include <togo/core/utility/constraints.hpp>
 #include <togo/core/io/types.hpp>
 #include <togo/core/io/proto.hpp>
@@ -82,24 +83,16 @@ inline IOStatus write_value(IWriter& stream, T const& value) {
 
 /// Read an arithmetic array.
 template<class T>
-inline IOStatus read_array(
-	IReader& stream,
-	T* const data,
-	unsigned const num_items
-) {
+inline IOStatus read_array(IReader& stream, ArrayRef<T> const& data) {
 	TOGO_CONSTRAIN_ARITHMETIC(T);
-	return io::read(stream, data, num_items * sizeof(T));
+	return io::read(stream, begin(data), data.size() * sizeof(T));
 }
 
 /// Write an arithmetic array.
 template<class T>
-inline IOStatus write_array(
-	IWriter& stream,
-	T const* const data,
-	unsigned const num_items
-) {
+inline IOStatus write_array(IWriter& stream, ArrayRef<T const> const& data) {
 	TOGO_CONSTRAIN_ARITHMETIC(T);
-	return io::write(stream, data, num_items * sizeof(T));
+	return io::write(stream, begin(data), data.size() * sizeof(T));
 }
 
 /** @} */ // end of doc-group lib_core_io
