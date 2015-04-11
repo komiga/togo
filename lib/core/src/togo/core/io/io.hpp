@@ -85,10 +85,10 @@ template<class T>
 inline IOStatus read_array(
 	IReader& stream,
 	T* const data,
-	unsigned const count
+	unsigned const num_items
 ) {
 	TOGO_CONSTRAIN_ARITHMETIC(T);
-	return io::read(stream, data, count * sizeof(T));
+	return io::read(stream, data, num_items * sizeof(T));
 }
 
 /// Write an arithmetic array.
@@ -96,10 +96,10 @@ template<class T>
 inline IOStatus write_array(
 	IWriter& stream,
 	T const* const data,
-	unsigned const count
+	unsigned const num_items
 ) {
 	TOGO_CONSTRAIN_ARITHMETIC(T);
-	return io::write(stream, data, count * sizeof(T));
+	return io::write(stream, data, num_items * sizeof(T));
 }
 
 /** @} */ // end of doc-group lib_core_io
