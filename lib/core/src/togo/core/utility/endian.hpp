@@ -13,6 +13,7 @@
 #include <togo/core/types.hpp>
 #include <togo/core/utility/types.hpp>
 #include <togo/core/utility/traits.hpp>
+#include <togo/core/utility/constraints.hpp>
 
 #include <type_traits>
 
@@ -71,37 +72,70 @@ namespace {
 	#pragma GCC diagnostic ignored "-Wold-style-cast"
 #endif
 
-template<class T, class P>
-union rb_proxy {
-	T value;
-	P integer;
-};
-
 template<class T, unsigned = sizeof(T)>
 struct reverse_bytes_impl;
 
 template<class T>
+struct reverse_bytes_impl<T, 1> {
+	struct Proxy {
+		T value;
+	};
+
+	inline static void do_value(Proxy& /*p*/) {}
+};
+
+template<class T>
 struct reverse_bytes_impl<T, 2> {
-	inline static T f(rb_proxy<T, u16>&& p) {
-		p.integer = TOGO_BSWAP_16(p.integer);
-		return p.value;
+	union Proxy {
+		T value;
+		u16 proxy;
+	};
+
+	inline static void do_value(Proxy& p) {
+		p.proxy = TOGO_BSWAP_16(p.proxy);
 	}
 };
 
 template<class T>
 struct reverse_bytes_impl<T, 4> {
-	inline static T f(rb_proxy<T, u32>&& p) {
-		p.integer = TOGO_BSWAP_32(p.integer);
-		return p.value;
+	union Proxy {
+		T value;
+		u32 proxy;
+	};
+
+	inline static void do_value(Proxy& p) {
+		p.proxy = TOGO_BSWAP_32(p.proxy);
 	}
 };
 
 template<class T>
 struct reverse_bytes_impl<T, 8> {
-	inline static T f(rb_proxy<T, u64>&& p) {
-		p.integer = TOGO_BSWAP_64(p.integer);
-		return p.value;
+	union Proxy {
+		T value;
+		u64 proxy;
+	};
+
+	inline static void do_value(Proxy& p) {
+		p.proxy = TOGO_BSWAP_64(p.proxy);
 	}
+};
+
+template<class T, unsigned = sizeof(T)>
+struct reverse_bytes_array_impl {
+	inline static void do_array(ArrayRef<T> const& data) {
+		using impl_type = reverse_bytes_impl<T>;
+		typename impl_type::Proxy proxy;
+		for (auto it = begin(data); it != end(data); ++it) {
+			proxy.value = *it;
+			impl_type::do_value(proxy);
+			*it = proxy.value;
+		}
+	}
+};
+
+template<class T>
+struct reverse_bytes_array_impl<T, 1> {
+	inline static void do_array(ArrayRef<T> const&) {}
 };
 
 #if defined(TOGO_COMPILER_CLANG) || defined(TOGO_COMPILER_GCC)
@@ -115,22 +149,55 @@ struct reverse_bytes_impl<T, 8> {
 
 /// Reverse bytes of arithmetic value.
 template<class T>
-inline T reverse_bytes(T const value) {
-	static_assert(
-		sizeof(T) > 1 &&
-		is_arithmetic<T>::value,
-		"T must be an arithmetic type of size 2 <= 2^n <= 8"
-	);
-	return reverse_bytes_impl<T>::f({value});
+inline void reverse_bytes(T& value) {
+	TOGO_CONSTRAIN_ARITHMETIC(T);
+	using impl_type = reverse_bytes_impl<T>;
+	typename impl_type::Proxy proxy{value};
+	impl_type::do_value(proxy);
+	value = proxy.value;
 }
 
 /// Reverse bytes of arithmetic value if endian differs from the system.
 template<class T>
-inline T reverse_bytes_if(T value, Endian const endian) {
-	return endian == Endian::system
-		? value
-		: reverse_bytes(value)
-	;
+inline void reverse_bytes_if(T& value, Endian const endian) {
+	if (endian != Endian::system) {
+		reverse_bytes(value);
+	}
+}
+
+/// Reverse bytes of arithmetic value.
+template<class T>
+inline T reverse_bytes_copy(T value) {
+	TOGO_CONSTRAIN_ARITHMETIC(T);
+	using impl_type = reverse_bytes_impl<T>;
+	typename impl_type::Proxy proxy{value};
+	impl_type::do_value(proxy);
+	return proxy.value;
+}
+
+/// Reverse bytes of arithmetic value if endian differs from the system.
+template<class T>
+inline T reverse_bytes_copy_if(T value, Endian const endian) {
+	if (endian != Endian::system) {
+		reverse_bytes(value);
+	}
+	return value;
+}
+
+/// Reverse bytes of arithmetic values in array.
+template<class T>
+inline void reverse_bytes(ArrayRef<T> const& data) {
+	TOGO_CONSTRAIN_ARITHMETIC(T);
+	reverse_bytes_array_impl<T>::do_array(data);
+}
+
+/// Reverse bytes of arithmetic values in array if endian differs from the
+/// system.
+template<class T>
+inline void reverse_bytes_if(ArrayRef<T> const& value, Endian const endian) {
+	if (endian != Endian::system) {
+		reverse_bytes(value);
+	}
 }
 
 /// @}
