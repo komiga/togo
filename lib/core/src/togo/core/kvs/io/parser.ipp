@@ -528,6 +528,8 @@ static bool parser_read_string_block(Parser& p) {
 				array::resize(p.buffer, array::size(p.buffer) - 2);
 				return true;
 			}
+		} else {
+			count = 0;
 		}
 		parser_buffer_add(p);
 	}
