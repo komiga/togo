@@ -126,17 +126,17 @@ public:
 	KVS(KVSType const type);
 
 // value ctors
-	KVS(s64 const value);
-	KVS(s32 const value);
-	KVS(f64 const value);
-	KVS(bool const value, bool_tag const);
+	explicit KVS(s64 const value);
+	explicit KVS(s32 const value);
+	explicit KVS(f64 const value);
+	explicit KVS(bool const value, bool_tag const);
 
-	KVS(StringRef const& value);
+	explicit KVS(StringRef const& value);
 
-	KVS(Vec1 const& value);
-	KVS(Vec2 const& value);
-	KVS(Vec3 const& value);
-	KVS(Vec4 const& value);
+	explicit KVS(Vec1 const& value);
+	explicit KVS(Vec2 const& value);
+	explicit KVS(Vec3 const& value);
+	explicit KVS(Vec4 const& value);
 
 // with-name ctors
 	KVS(StringRef const& name, null_tag const);
