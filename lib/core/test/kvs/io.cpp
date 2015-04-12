@@ -91,19 +91,19 @@ void test_str(KVS& root, StringRef const& data, bool const expected = true) {
 	ParserInfo pinfo;
 	MemoryReader in_stream{data};
 	TOGO_LOGF(
-		"reading (%u): <%.*s>\n",
-		data.size,
-		data.size,
-		data.data
+		"reading (%3u): <%.*s>\n",
+		data.size, data.size, data.data
 	);
 	if (kvs::read_text(root, in_stream, pinfo)) {
 		MemoryStream out_stream{memory::default_allocator(), data.size + 128};
 		TOGO_ASSERTE(kvs::write_text(root, out_stream));
+		unsigned size = static_cast<unsigned>(out_stream.size());
+		if (size > 0) {
+			--size;
+		}
 		TOGO_LOGF(
-			"root rewritten (%u): <%.*s>\n",
-			static_cast<unsigned>(out_stream.size()),
-			static_cast<unsigned>(out_stream.size()),
-			array::begin(out_stream.data())
+			"root rewritten (%3u): <%.*s>\n",
+			size, size, array::begin(out_stream.data())
 		);
 	} else {
 		TOGO_LOGF(
