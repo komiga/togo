@@ -21,6 +21,12 @@ static constexpr char const
 	S_DECIMAL[] = "x = 3.1415926",
 	S_BOOLEAN_FALSE[] = "x = false",
 	S_BOOLEAN_TRUE[] = "x = true",
+	S_STRING1[] = "x = `````string1```",
+	S_STRING2[] = "x = \"```string2```\"",
+	S_STRING3[] = "x = \"0string3\"",
+	S_STRING4[] = "x = \".string4\"",
+	S_STRING5[] = "x = \"\"",
+	S_STRING6[] = "x = ``````",
 	S_STRING_QNONE[] = "x = non-quoted",
 	S_STRING_QDOUBLE[] = "x = \"double-quoted\"",
 	S_STRING_QBLOCK[] = "x = ```block-quoted```",
@@ -39,6 +45,9 @@ static constexpr char const
 	S_ARRAY_COMP[] = "c = [0 1, 2; 3\n4]",
 	S_ARRAY_COMP_NODE[] = "c = [{}{} {}, {}; {}\n{}]",
 	S_ARRAY_COMP_ARRAY[] = "c = [[][] [], []; []\n[]]",
+
+	S_NAME1[] = "\"name1\" = null",
+	S_NAME2[] = "```name2``` = null",
 
 	S_COMMENT1[] = "//",
 	S_COMMENT2[] = "/**/",
@@ -158,6 +167,42 @@ signed main() {
 		TOGO_ASSERTE(kvs::is_boolean(kvs::back(root)));
 		TOGO_ASSERTE(kvs::boolean(kvs::back(root)) == true);
 
+		test_str(root, S_STRING1);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
+		ref = kvs::string_ref(kvs::back(root));
+		TOGO_ASSERTE(string::compare_equal(ref, "``string1"));
+
+		test_str(root, S_STRING2);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
+		ref = kvs::string_ref(kvs::back(root));
+		TOGO_ASSERTE(string::compare_equal(ref, "```string2```"));
+
+		test_str(root, S_STRING3);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
+		ref = kvs::string_ref(kvs::back(root));
+		TOGO_ASSERTE(string::compare_equal(ref, "0string3"));
+
+		test_str(root, S_STRING4);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
+		ref = kvs::string_ref(kvs::back(root));
+		TOGO_ASSERTE(string::compare_equal(ref, ".string4"));
+
+		test_str(root, S_STRING5);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
+		ref = kvs::string_ref(kvs::back(root));
+		TOGO_ASSERTE(string::compare_equal(ref, ""));
+
+		test_str(root, S_STRING6);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
+		ref = kvs::string_ref(kvs::back(root));
+		TOGO_ASSERTE(string::compare_equal(ref, ""));
+
 		test_str(root, S_STRING_QNONE);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
@@ -276,6 +321,19 @@ signed main() {
 			TOGO_ASSERTE(kvs::is_array(child));
 			TOGO_ASSERTE(kvs::empty(child));
 		}
+	}
+
+	// Names
+	{
+		KVS root;
+
+		test_str(root, S_NAME1);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(string::compare_equal(kvs::name_ref(kvs::back(root)), "name1"));
+
+		test_str(root, S_NAME2);
+		TOGO_ASSERTE(kvs::size(root) == 1);
+		TOGO_ASSERTE(string::compare_equal(kvs::name_ref(kvs::back(root)), "name2"));
 	}
 
 	// Comments
