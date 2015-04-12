@@ -246,7 +246,7 @@ static bool read_pipe(
 			unit_name = kvs::string_ref(*k_generator_unit);
 			gfx::GeneratorUnit gen_unit{
 				gfx::hash_generator_name(unit_name),
-				const_cast<KVS*>(k_generator_unit),
+				const_cast<KVS*>(&k_generator),
 				nullptr
 			};
 			if (!gfx_compiler::find_generator_compiler(gfx_compiler, gen_unit.name_hash)) {
