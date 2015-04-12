@@ -6,10 +6,10 @@
 #include <togo/core/config.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/log/log.hpp>
-#include <togo/core/string/string.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/memory/temp_allocator.hpp>
 #include <togo/core/collection/array.hpp>
+#include <togo/core/string/string.hpp>
 #include <togo/core/io/types.hpp>
 #include <togo/core/io/io.hpp>
 #include <togo/core/io/file_stream.hpp>

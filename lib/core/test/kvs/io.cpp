@@ -3,8 +3,8 @@
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/math/math.hpp>
 #include <togo/core/log/log.hpp>
-#include <togo/core/string/string.hpp>
 #include <togo/core/collection/array.hpp>
+#include <togo/core/string/string.hpp>
 #include <togo/core/io/memory_stream.hpp>
 #include <togo/core/kvs/kvs.hpp>
 
