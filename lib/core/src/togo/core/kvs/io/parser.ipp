@@ -616,6 +616,12 @@ static void parser_stage_name(Parser& p) {
 		}
 		break;
 
+	case '`':
+		if (parser_read_string_block(p)) {
+			goto l_push_new;
+		}
+		break;
+
 	default:
 		if (parser_is_identifier_lead(p)) {
 			if (parser_read_string(p)) {
