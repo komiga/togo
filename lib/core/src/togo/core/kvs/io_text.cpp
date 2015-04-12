@@ -6,6 +6,7 @@
 #include <togo/core/config.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/log/log.hpp>
+#include <togo/core/string/string.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/memory/temp_allocator.hpp>
 #include <togo/core/collection/array.hpp>
@@ -178,6 +179,56 @@ static bool kvs_write_collection(
 	return true;
 }
 
+inline static unsigned quote_level(StringRef const& str) {
+	unsigned level = str.empty() ? 1 : 0;
+	if (str.size >= 1) {
+		if (is_number_lead(static_cast<signed>(str.data[0]))) {
+			level = 1;
+		}
+	}
+	auto const it_end = end(str);
+	for (auto it = begin(str); it != it_end && level < 2; ++it) {
+		switch (*it) {
+		case '\t':
+		case ' ':
+		case ',': case ';':
+		case '=':
+		case '{': case '}':
+		case '[': case ']':
+		case '(': case ')':
+		case '/':
+		case '`':
+			level = 1;
+			break;
+
+		case '\"': // fall-through
+		case '\n':
+			level = 2;
+			break;
+		}
+	}
+	return level;
+}
+
+inline static bool write_quote(IWriter& stream, unsigned level) {
+	switch (level) {
+	case 0: break;
+	case 1: RETURN_ERROR(io::write_value(stream, '\"')); break;
+	case 2: RETURN_ERROR(io::write(stream, "```", 3)); break;
+	}
+	return true;
+}
+
+inline static bool write_string(IWriter& stream, StringRef const& str) {
+	unsigned const level = quote_level(str);
+	RETURN_ERROR(
+		write_quote(stream, level) &&
+		io::write(stream, str.data, str.size) &&
+		write_quote(stream, level)
+	);
+	return true;
+}
+
 static bool kvs_write(
 	KVS const& kvs,
 	IWriter& stream,
@@ -188,7 +239,7 @@ static bool kvs_write(
 	RETURN_ERROR(write_tabs(stream, tabs));
 	if (!is_root && parent_type == KVSType::node) {
 		RETURN_ERROR(
-			io::write(stream, kvs::name(kvs), kvs::name_size(kvs)) &&
+			write_string(stream, kvs::name_ref(kvs)) &&
 			io::write(stream, " = ", 3)
 		);
 	}
@@ -214,11 +265,7 @@ static bool kvs_write(
 		break;
 
 	case KVSType::string:
-		RETURN_ERROR(
-			io::write_value(stream, '\"') &&
-			io::write(stream, kvs::string(kvs), kvs::string_size(kvs)) &&
-			io::write_value(stream, '\"')
-		);
+		RETURN_ERROR(write_string(stream, kvs::string_ref(kvs)));
 		break;
 
 	case KVSType::vec1:

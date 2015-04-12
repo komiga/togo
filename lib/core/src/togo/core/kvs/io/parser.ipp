@@ -172,13 +172,17 @@ inline static bool parser_is_completer(Parser const& p) {
 	;
 }
 
-inline static bool parser_is_number_lead(Parser const& p) {
+inline static bool is_number_lead(signed c) {
 	return
-		(p.c >= '0' && p.c <= '9') ||
-		p.c == '-' ||
-		p.c == '+' ||
-		p.c == '.'
+		(c >= '0' && c <= '9') ||
+		c == '-' ||
+		c == '+' ||
+		c == '.'
 	;
+}
+
+inline static bool parser_is_number_lead(Parser const& p) {
+	return is_number_lead(p.c);
 }
 
 static void parser_buffer_add(Parser& p) {
