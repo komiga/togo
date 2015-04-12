@@ -3,6 +3,7 @@
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/math/math.hpp>
 #include <togo/core/log/log.hpp>
+#include <togo/core/string/string.hpp>
 #include <togo/core/collection/array.hpp>
 #include <togo/core/io/memory_stream.hpp>
 #include <togo/core/kvs/kvs.hpp>
@@ -10,7 +11,6 @@
 #include <togo/support/test.hpp>
 
 #include <cmath>
-#include <cstring>
 
 using namespace togo;
 
@@ -21,7 +21,7 @@ static constexpr char const
 	S_DECIMAL[] = "x = 3.1415926",
 	S_BOOLEAN_FALSE[] = "x = false",
 	S_BOOLEAN_TRUE[] = "x = true",
-	S_STRING[] = "x = unquoted",
+	S_STRING_QNONE[] = "x = non-quoted",
 	S_STRING_QDOUBLE[] = "x = \"double-quoted\"",
 	S_STRING_QBLOCK[] = "x = ```block-quoted```",
 	S_VEC1[] = "x = (0)",
@@ -132,6 +132,8 @@ signed main() {
 	// Values
 	{
 		KVS root;
+		StringRef ref;
+
 		test_str(root, S_NULL);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_null(kvs::back(root)));
@@ -156,23 +158,23 @@ signed main() {
 		TOGO_ASSERTE(kvs::is_boolean(kvs::back(root)));
 		TOGO_ASSERTE(kvs::boolean(kvs::back(root)) == true);
 
-		test_str(root, S_STRING);
+		test_str(root, S_STRING_QNONE);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
-		StringRef ref = kvs::string_ref(kvs::back(root));
-		TOGO_ASSERTE(std::strncmp("unquoted", ref.data, ref.size) == 0);
+		ref = kvs::string_ref(kvs::back(root));
+		TOGO_ASSERTE(string::compare_equal(ref, "non-quoted"));
 
 		test_str(root, S_STRING_QDOUBLE);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
 		ref = kvs::string_ref(kvs::back(root));
-		TOGO_ASSERTE(std::strncmp("double-quoted", ref.data, ref.size) == 0);
+		TOGO_ASSERTE(string::compare_equal(ref, "double-quoted"));
 
 		test_str(root, S_STRING_QBLOCK);
 		TOGO_ASSERTE(kvs::size(root) == 1);
 		TOGO_ASSERTE(kvs::is_string(kvs::back(root)));
 		ref = kvs::string_ref(kvs::back(root));
-		TOGO_ASSERTE(std::strncmp("block-quoted", ref.data, ref.size) == 0);
+		TOGO_ASSERTE(string::compare_equal(ref, "block-quoted"));
 
 		test_str(root, S_VEC1);
 		TOGO_ASSERTE(kvs::size(root) == 1);
