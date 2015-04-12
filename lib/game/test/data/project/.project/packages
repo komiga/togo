@@ -1,5 +1,5 @@
 packages = [
-	"test1"
-	"test2"
-	"test_data"
+	test1
+	test2
+	test_data
 ]
