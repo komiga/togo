@@ -456,7 +456,6 @@ static bool parser_read_string(Parser& p) {
 
 		case '\\':
 		case '{': case '[':
-		case '+': case '-':
 		case '\'':
 		case '"':
 		case '`':
