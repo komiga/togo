@@ -79,7 +79,7 @@ static bool read_pipe(
 		return false;
 	}
 
-	fixed_array::resize(render_config.pipes, fixed_array::size(render_config.pipes) + 1);
+	fixed_array::increase_size(render_config.pipes, 1);
 	gfx::Pipe& pipe = fixed_array::back(render_config.pipes);
 
 	// Read name
@@ -176,7 +176,7 @@ static bool read_pipe(
 			return false;
 		}
 
-		fixed_array::resize(pipe.layers, fixed_array::size(pipe.layers) + 1);
+		fixed_array::increase_size(pipe.layers, 1);
 		gfx::Layer& layer = fixed_array::back(pipe.layers);
 
 		// Read name
@@ -325,7 +325,7 @@ static bool read_viewport(
 
 	// TODO: Read resources
 
-	fixed_array::resize(render_config.viewports, fixed_array::size(render_config.viewports) + 1);
+	fixed_array::increase_size(render_config.viewports, 1);
 	gfx::Viewport& viewport = fixed_array::back(render_config.viewports);
 
 	// Read name
