@@ -342,7 +342,7 @@ static bool read_viewport(
 		: hash::calc32(kvs::string_ref(*k_vp_output_dst))
 	;
 
-	{// Check pipe existence
+	// Check pipe existence
 	k_pipe = kvs::find(k_pipes, kvs::string_ref(*k_vp_pipe));
 	if (!is_kvs_valid_and_nonempty(k_pipe, KVSType::node)) {
 		TOGO_LOG_ERRORF(
@@ -352,7 +352,10 @@ static bool read_viewport(
 			kvs::name_size(k_viewport), kvs::name(k_viewport)
 		);
 		return false;
-	}}
+	}
+
+	// Use pipe name hash until pipes are read
+	viewport.pipe = hash::calc32(kvs::string_ref(*k_vp_pipe));
 
 	return true;
 }
@@ -441,6 +444,15 @@ static bool compile(
 	}
 
 	// TODO: Validate render resource references in pipes
+	// Correct pipe indices
+	for (auto& viewport : render_config->viewports) {
+		for (unsigned i = 0; i < fixed_array::size(render_config->pipes); ++i) {
+			if (viewport.pipe == render_config->pipes[i].name_hash) {
+				viewport.pipe = i;
+				break;
+			}
+		}
+	}
 
 	{// Serialize resource
 	BinaryOutputSerializer ser{out_stream};
