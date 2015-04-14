@@ -324,6 +324,17 @@ static bool read_viewport(
 			kvs::name_size(k_viewport), kvs::name(k_viewport)
 		);
 		return false;
+	} else if (
+		k_vp_output_dst &&
+		kvs::is_type(*k_vp_output_dst, KVSType::string) &&
+		kvs::string_size(*k_vp_output_dst) == 0
+	) {
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"output_dst must be non-empty as a string for viewport '%.*s'\n",
+			kvs::name_size(k_viewport), kvs::name(k_viewport)
+		);
+		return false;
 	}
 
 	KVS const* const k_vp_pipe = kvs::find(k_viewport, "pipe");
@@ -349,7 +360,7 @@ static bool read_viewport(
 
 	// Read output_dst
 	viewport.output_dst
-		= (kvs::is_null(*k_vp_output_dst) || kvs::string_size(*k_vp_output_dst) == 0)
+		= kvs::is_null(*k_vp_output_dst)
 		? hash::IDENTITY32
 		: hash::calc32(kvs::string_ref(*k_vp_output_dst))
 	;
