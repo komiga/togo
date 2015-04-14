@@ -369,7 +369,7 @@ void renderer::destroy_buffer_binding(
 
 gfx::ShaderID renderer::create_shader(
 	gfx::Renderer* const renderer,
-	ShaderSpec const& spec
+	gfx::ShaderSpec const& spec
 ) {
 	TOGO_DEBUG_ASSERTE(fixed_array::any(spec.stages));
 
