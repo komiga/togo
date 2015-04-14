@@ -69,15 +69,15 @@ static_assert(
 	""
 );
 
-enum class GLBufferFlags : unsigned {
-	none = 0,
-	dynamic = 1 << 0,
-};
-
 struct Buffer {
+	enum : u32 {
+		F_NONE = 0,
+		F_DYNAMIC = 1 << 0,
+	};
+
 	gfx::BufferID id;
 	GLuint handle;
-	gfx::GLBufferFlags flags;
+	u32 flags;
 };
 
 struct BufferBinding {

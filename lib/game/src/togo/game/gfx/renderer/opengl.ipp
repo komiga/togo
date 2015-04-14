@@ -205,12 +205,12 @@ gfx::RendererType renderer::type(gfx::Renderer const* /*renderer*/) {
 	return gfx::RENDERER_TYPE_OPENGL;
 }
 
-inline static gfx::GLBufferFlags gl_buffer_flags(
+inline static u32 gl_buffer_flags(
 	gfx::BufferDataBinding const data_binding
 ) {
 	return (data_binding == gfx::BufferDataBinding::dynamic)
-		? gfx::GLBufferFlags::dynamic
-		: gfx::GLBufferFlags::none
+		? gfx::Buffer::F_DYNAMIC
+		: gfx::Buffer::F_NONE
 	;
 }
 
