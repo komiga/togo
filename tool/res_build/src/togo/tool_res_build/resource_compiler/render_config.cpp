@@ -132,6 +132,18 @@ static bool read_pipe(
 				kvs::name_size(k_pipe), kvs::name(k_pipe)
 			);
 			return false;
+		} else if (
+			k_layer_dst &&
+			kvs::is_type(*k_layer_dst, KVSType::string) &&
+			kvs::string_size(*k_layer_dst) == 0
+		) {
+			TOGO_LOG_ERRORF(
+				"malformed render_config: "
+				"dst must be non-empty as a string for layer '%.*s' in pipe '%.*s'\n",
+				kvs::name_size(k_layer), kvs::name(k_layer),
+				kvs::name_size(k_pipe), kvs::name(k_pipe)
+			);
+			return false;
 		}
 
 		k_layer_order = kvs::find(k_layer, "order");
@@ -202,7 +214,7 @@ static bool read_pipe(
 
 		// Read DST
 		layer.dst
-			= (kvs::is_null(*k_layer_dst) || kvs::string_size(*k_layer_dst) == 0)
+			= kvs::is_null(*k_layer_dst)
 			? hash::IDENTITY32
 			: hash::calc32(kvs::string_ref(*k_layer_dst))
 		;
