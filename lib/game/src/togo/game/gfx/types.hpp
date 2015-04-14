@@ -419,7 +419,8 @@ struct ShaderDef {
 		// stage sources indices + param block names + size of data
 		NUM_INDICES
 			= unsigned_cast(gfx::ShaderStage::Type::NUM)
-			+ 32
+			+ TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND // fixed
+			+ TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND // draw
 			+ 1
 		,
 		IDX_PARAM_NAMES = unsigned_cast(gfx::ShaderStage::Type::NUM),
