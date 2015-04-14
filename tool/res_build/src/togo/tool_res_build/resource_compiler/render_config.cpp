@@ -365,6 +365,7 @@ static bool compile(
 	IReader& in_stream,
 	IWriter& out_stream
 ) {
+	bool success = false;
 	auto& gfx_compiler = *static_cast<GfxCompiler*>(type_data);
 	gfx::RenderConfig* render_config = nullptr;
 	KVS k_root{};
@@ -457,13 +458,11 @@ static bool compile(
 			goto l_failed;
 		}
 	}}}}
-
-	TOGO_DESTROY(memory::default_allocator(), render_config);
-	return true;
+	success = true;
 
 l_failed:
 	TOGO_DESTROY(memory::default_allocator(), render_config);
-	return false;
+	return success;
 }
 
 } // namespace render_config
