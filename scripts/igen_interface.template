@@ -6,6 +6,8 @@
 
 #pragma once
 
+#if !defined(IGEN_RUNNING)
+
 %for ns in group.funcs_by_namespace.values():
 ${ns.open_string()}
 /**
@@ -28,3 +30,5 @@ ${f.signature(named_args = True)};
 /** @} */
 ${ns.close_string()}
 %endfor
+
+#endif
