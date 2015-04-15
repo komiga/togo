@@ -285,7 +285,7 @@ unsigned renderer::param_block_buffer_size(
 	return num_blocks * block_size;
 }
 
-ParamBlockBinding renderer::make_param_block_binding(
+gfx::ParamBlockBinding renderer::make_param_block_binding(
 	gfx::Renderer const* const renderer,
 	gfx::BufferID const id,
 	unsigned const offset,

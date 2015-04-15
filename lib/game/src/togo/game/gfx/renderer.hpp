@@ -76,7 +76,7 @@ void map_buffer(
 /// Map data to buffer by parameter block binding.
 inline void map_buffer(
 	gfx::Renderer* renderer,
-	ParamBlockBinding const& binding,
+	gfx::ParamBlockBinding const& binding,
 	void const* data
 ) {
 	renderer::map_buffer(
@@ -106,7 +106,7 @@ unsigned param_block_buffer_size(
 /// Make a parameter block binding.
 ///
 /// Offset must be aligned with param_block_offset().
-ParamBlockBinding make_param_block_binding(
+gfx::ParamBlockBinding make_param_block_binding(
 	gfx::Renderer const* renderer,
 	gfx::BufferID id,
 	unsigned offset,
