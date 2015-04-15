@@ -17,6 +17,7 @@ namespace gc_test_proxy {
 static bool write(
 	GeneratorCompiler& /*gen_compiler*/,
 	BinaryOutputSerializer& /*ser*/,
+	gfx::RenderConfig const& /*render_config*/,
 	gfx::GeneratorUnit const& /*unit*/
 ) {
 	// Nothing to do!

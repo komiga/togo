@@ -12,6 +12,7 @@
 #include <togo/core/serialization/serializer.hpp>
 #include <togo/core/serialization/support.hpp>
 #include <togo/core/serialization/binary_serializer.hpp>
+#include <togo/game/gfx/types.hpp>
 #include <togo/game/gfx/gfx.hpp>
 #include <togo/tool_res_build/generator_compiler.hpp>
 
@@ -24,6 +25,7 @@ namespace gc_clear {
 static bool write(
 	GeneratorCompiler& /*gen_compiler*/,
 	BinaryOutputSerializer& ser,
+	gfx::RenderConfig const& /*render_config*/,
 	gfx::GeneratorUnit const& unit
 ) {
 	auto* const k_root = static_cast<KVS const*>(unit.data);

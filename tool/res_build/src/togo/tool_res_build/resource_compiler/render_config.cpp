@@ -515,7 +515,7 @@ static bool compile(
 			gfx_compiler, gen_unit.name_hash
 		);
 		TOGO_ASSERTE(gen_compiler);
-		if (!gen_compiler->func_write(*gen_compiler, ser, gen_unit)) {
+		if (!gen_compiler->func_write(*gen_compiler, ser, *render_config, gen_unit)) {
 			goto l_failed;
 		}
 	}}}}

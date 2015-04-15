@@ -147,6 +147,7 @@ struct GeneratorCompiler {
 	using generator_write_func_type = bool (
 		GeneratorCompiler& gen_compiler,
 		BinaryOutputSerializer& ser,
+		gfx::RenderConfig const& render_config,
 		gfx::GeneratorUnit const& unit
 	);
 
