@@ -20,6 +20,7 @@ enum : GLuint {
 	BUFFER_HANDLE_NULL = 0,
 	VERTEX_ARRAY_HANDLE_NULL = 0,
 	TEXTURE_HANDLE_NULL = 0,
+	RENDER_BUFFER_HANDLE_NULL = 0,
 	PROGRAM_HANDLE_NULL = 0,
 };
 
@@ -100,6 +101,36 @@ struct Texture {
 	gfx::TextureID id;
 	GLuint handle;
 };
+
+struct RenderTarget {
+	enum : u32 {
+		MASK_TYPE = ~gfx::RenderTargetSpec::MASK_FLAG,
+		TYPE_TEXTURE = 1 << 8,
+		TYPE_BUFFER = 1 << 9,
+	};
+
+	gfx::RenderTargetID id;
+	GLuint handle;
+	gfx::RenderTargetSpec spec;
+};
+
+static constexpr struct {
+	bool requires_texture;
+	GLenum color_format;
+	GLenum data_format;
+	GLenum data_type;
+} const g_gl_render_target_format[]{
+	{false, GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT},
+	{false, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT},
+	{false, GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8},
+	{true, GL_RGB8, GL_RGB, GL_UNSIGNED_BYTE},
+	{true, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE},
+};
+static_assert(
+	array_extent(g_gl_render_target_format)
+	== unsigned_cast(gfx::RenderTargetFormat::NUM),
+	""
+);
 
 struct Uniform {
 	gfx::UniformID id;

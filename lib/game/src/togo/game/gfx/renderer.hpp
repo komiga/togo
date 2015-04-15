@@ -146,6 +146,20 @@ void destroy_buffer_binding(
 	gfx::BufferBindingID id
 );
 
+/// Create render target.
+///
+/// An assertion will fail if the render target could not be created.
+gfx::RenderTargetID create_render_target(
+	gfx::Renderer* renderer,
+	gfx::RenderTargetSpec const& spec
+);
+
+/// Destroy render target.
+void destroy_render_target(
+	gfx::Renderer* renderer,
+	gfx::RenderTargetID id
+);
+
 /// Create shader.
 ///
 /// An assertion will fail if the shader could not be created.

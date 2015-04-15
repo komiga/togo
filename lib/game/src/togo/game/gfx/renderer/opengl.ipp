@@ -6,6 +6,7 @@
 #include <togo/game/config.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/utility/utility.hpp>
+#include <togo/core/math/math.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/collection/fixed_array.hpp>
@@ -365,6 +366,111 @@ void renderer::destroy_buffer_binding(
 	TOGO_ASSERT(bb.id == id, "invalid buffer binding ID");
 	TOGO_GLCE_X(glDeleteVertexArrays(1, &bb.va_handle));
 	resource_array::free(renderer->_buffer_bindings, bb);
+}
+
+gfx::RenderTargetID renderer::create_render_target(
+	gfx::Renderer* const renderer,
+	gfx::RenderTargetSpec const& spec_in
+) {
+	TOGO_ASSERTE(spec_in.format < gfx::RenderTargetFormat::NUM);
+	TOGO_ASSERTE(
+		(spec_in.dim_x > 0.0f && spec_in.dim_y > 0.0f) ||
+		spec_in.properties & gfx::RenderTargetSpec::F_SCALE
+	);
+
+	gfx::RenderTarget render_target{
+		{}, TEXTURE_HANDLE_NULL,
+		spec_in
+	};
+	auto& spec = render_target.spec;
+	auto& format_info = gfx::g_gl_render_target_format[unsigned_cast(spec.format)];
+	auto const type
+		= (
+			format_info.requires_texture ||
+			spec.properties & gfx::RenderTargetSpec::F_DOUBLE_BUFFERED
+		)
+		? gfx::RenderTarget::TYPE_TEXTURE
+		: gfx::RenderTarget::TYPE_BUFFER
+	;
+	spec.properties &= ~gfx::RenderTarget::MASK_TYPE;
+	spec.properties |= type;
+
+	Vec2 size{spec.dim_x, spec.dim_y};
+	if (spec.properties & gfx::RenderTargetSpec::F_SCALE) {
+		size *= renderer->_viewport_size;
+	}
+
+	if (type == gfx::RenderTarget::TYPE_TEXTURE) {
+		TOGO_GLCE_X(glGenTextures(1, &render_target.handle));
+		TOGO_ASSERTE(render_target.handle != TEXTURE_HANDLE_NULL);
+
+		GLenum target
+			= spec.properties & gfx::RenderTargetSpec::F_DOUBLE_BUFFERED
+			? GL_TEXTURE_2D_ARRAY
+			: GL_TEXTURE_2D
+		;
+		TOGO_GLCE_X(glBindTexture(target, render_target.handle));
+		TOGO_GLCE_X(glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+		TOGO_GLCE_X(glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+		TOGO_GLCE_X(glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+		TOGO_GLCE_X(glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+
+		if (target == GL_TEXTURE_2D) {
+			TOGO_GLCE_X(glTexImage2D(
+				target, 0,
+				format_info.color_format,
+				size.x, size.y, 0,
+				format_info.data_format,
+				format_info.data_type,
+				nullptr
+			));
+		} else {
+			TOGO_GLCE_X(glTexImage3D(
+				target, 0,
+				format_info.color_format,
+				size.x, size.y, 2, 0,
+				format_info.data_format,
+				format_info.data_type,
+				nullptr
+			));
+		}
+		TOGO_GLCE_X(glBindTexture(target, TEXTURE_HANDLE_NULL));
+	} else if (type == gfx::RenderTarget::TYPE_BUFFER) {
+		TOGO_GLCE_X(glGenRenderbuffers(1, &render_target.handle));
+		TOGO_ASSERTE(render_target.handle != RENDER_BUFFER_HANDLE_NULL);
+		TOGO_GLCE_X(glBindRenderbuffer(GL_RENDERBUFFER, render_target.handle));
+		TOGO_GLCE_X(glRenderbufferStorage(
+			GL_RENDERBUFFER,
+			format_info.color_format,
+			size.x, size.y
+		));
+		TOGO_GLCE_X(glBindRenderbuffer(GL_RENDERBUFFER, RENDER_BUFFER_HANDLE_NULL));
+	}
+	return resource_array::assign(renderer->_render_targets, render_target).id;
+}
+
+void renderer::destroy_render_target(
+	gfx::Renderer* const renderer,
+	gfx::RenderTargetID const id
+) {
+	auto& render_target = resource_array::get(renderer->_render_targets, id);
+	TOGO_ASSERT(render_target.id == id, "invalid render_target ID");
+
+	auto const& spec = render_target.spec;
+	switch (spec.properties & gfx::RenderTarget::MASK_TYPE) {
+	case gfx::RenderTarget::TYPE_TEXTURE:
+		TOGO_GLCE_X(glDeleteTextures(1, &render_target.handle));
+		break;
+
+	case gfx::RenderTarget::TYPE_BUFFER:
+		TOGO_GLCE_X(glDeleteRenderbuffers(1, &render_target.handle));
+		break;
+
+	default:
+		TOGO_DEBUG_ASSERTE(false);
+		break;
+	}
+	resource_array::free(renderer->_render_targets, render_target);
 }
 
 gfx::ShaderID renderer::create_shader(

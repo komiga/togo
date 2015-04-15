@@ -129,6 +129,7 @@ struct Display;
 #define TOGO_GFX_NUM_BUFFERS 2048
 #define TOGO_GFX_NUM_BUFFER_BINDINGS 2048
 #define TOGO_GFX_NUM_TEXTURES 2048
+#define TOGO_GFX_NUM_RENDER_TARGETS 64
 #define TOGO_GFX_NUM_UNIFORMS 64
 #define TOGO_GFX_NUM_SHADERS 128
 #define TOGO_GFX_NUM_NODES 4
@@ -143,6 +144,22 @@ enum class BufferDataBinding : unsigned {
 	NUM
 };
 
+/// Render target formats.
+enum class RenderTargetFormat : u32 {
+	/// RGB with 8-bit components (24 bits).
+	rgb8,
+	/// RGBA with 8-bit components (32 bits).
+	rgba8,
+	/// 16-bit depth.
+	d16,
+	/// 32-bit depth.
+	d32,
+	/// Combined 24-bit depth and 8-bit stencil.
+	d24s8,
+
+	NUM
+};
+
 enum : u32 {
 	/// Null resource ID.
 	ID_VALUE_NULL = 0,
@@ -152,6 +169,7 @@ enum : u32 {
 struct Buffer;
 struct BufferBinding;
 struct Texture;
+struct RenderTarget;
 struct Uniform;
 struct Shader;
 
@@ -173,6 +191,9 @@ using BufferBindingID = gfx::ResourceID<gfx::BufferBinding>;
 
 /// Texture ID.
 using TextureID = gfx::ResourceID<gfx::Texture>;
+
+/// Render target ID.
+using RenderTargetID = gfx::ResourceID<gfx::RenderTarget>;
 
 /// Uniform ID.
 using UniformID = gfx::ResourceID<gfx::Uniform>;
@@ -383,6 +404,22 @@ struct ParamBlockDef {
 	u32 index;
 	ParamBlockNameHash name_hash;
 	StringRef name;
+};
+
+/// RenderTarget specification (creation).
+struct RenderTargetSpec {
+	/// Properties.
+	enum : u32 {
+		MASK_FLAG = 0xFF,
+		F_SCALE = 1 << 0,
+		F_CLEAR = 1 << 1,
+		F_DOUBLE_BUFFERED = 1 << 2,
+	};
+
+	u32 properties;
+	gfx::RenderTargetFormat format;
+	f32 dim_x;
+	f32 dim_y;
 };
 
 /// Shader stage.
