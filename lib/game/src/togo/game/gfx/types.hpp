@@ -121,6 +121,7 @@ struct Display;
 #define TOGO_GFX_KEY_USER_BITS (64ul - TOGO_GFX_KEY_SEQ_BITS)
 #define TOGO_GFX_KEY_USER_MASK ((1ul << TOGO_GFX_KEY_USER_BITS) - 1)
 
+#define TOGO_GFX_CONFIG_NUM_RESOURCES 32
 #define TOGO_GFX_CONFIG_NUM_PIPES 8
 #define TOGO_GFX_CONFIG_NUM_VIEWPORTS 8
 #define TOGO_GFX_PIPE_NUM_LAYERS 32
@@ -494,6 +495,29 @@ struct ShaderDef {
 	{}
 };
 
+/// Render config resource.
+struct RenderConfigResource {
+	/// Properties.
+	enum : u32 {
+		MASK_TYPE = 0x0F,
+		TYPE_RENDER_TARGET = 1 << 0,
+	};
+
+	hash32 name_hash;
+	u32 properties;
+
+	union {
+		gfx::RenderTargetSpec render_target;
+	} data;
+
+	FixedArray<char, 32> name;
+
+	/// Data type.
+	u32 type() const {
+		return properties & MASK_TYPE;
+	}
+};
+
 /// Pipe layer.
 struct Layer {
 	enum class Order : u32 {
@@ -529,7 +553,7 @@ struct Viewport {
 
 /// Render config.
 struct RenderConfig {
-	// TODO: shared_resources
+	FixedArray<gfx::RenderConfigResource, TOGO_GFX_CONFIG_NUM_RESOURCES> shared_resources;
 	FixedArray<gfx::Viewport, TOGO_GFX_CONFIG_NUM_VIEWPORTS> viewports;
 	FixedArray<gfx::Pipe, TOGO_GFX_CONFIG_NUM_PIPES> pipes;
 };
