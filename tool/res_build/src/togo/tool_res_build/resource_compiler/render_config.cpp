@@ -396,11 +396,12 @@ static bool compile(
 	gfx::RenderConfig* render_config = nullptr;
 	KVS k_root{};
 
+	TempAllocator<512> temp_allocator;
+	HashMap<KVSNameHash, KVS const*> used{temp_allocator};
+	hash_map::reserve(used, 16);
+
 	KVS const* k_pipes;
 	KVS const* k_viewports;
-
-	TempAllocator<256> pipes_used_allocator;
-	HashMap<hash32, KVS const*> pipes_used{pipes_used_allocator};
 
 	{// Read source
 	ParserInfo pinfo;
@@ -438,14 +439,39 @@ static bool compile(
 
 	// TODO: Read shared_resources
 	// TODO: Check for duplicate pipes and viewports
+	// Check for duplicate viewports
+	for (KVS const& k_viewport : *k_viewports) {
+		if (hash_map::has(used, kvs::name_hash(k_viewport))) {
+			TOGO_LOG_ERRORF(
+				"malformed render_config: "
+				"viewport '%.*s' defined again",
+				kvs::name_size(k_viewport), kvs::name(k_viewport)
+			);
+		}
+		hash_map::set(used, kvs::name_hash(k_viewport), &k_viewport);
+	}
+
+	// Check for duplicate pipes
+	hash_map::clear(used);
+	for (KVS const& k_pipe : *k_pipes) {
+		if (hash_map::has(used, kvs::name_hash(k_pipe))) {
+			TOGO_LOG_ERRORF(
+				"malformed render_config: "
+				"pipe '%.*s' defined again",
+				kvs::name_size(k_pipe), kvs::name(k_pipe)
+			);
+		}
+		hash_map::set(used, kvs::name_hash(k_pipe), &k_pipe);
+	}
 
 	// Read viewports
+	hash_map::clear(used);
 	for (KVS const& k_viewport : *k_viewports) {
 		KVS const* k_pipe = nullptr;
 		if (!read_viewport(*render_config, *k_pipes, k_viewport, k_pipe)) {
 			goto l_failed;
 		}
-		if (hash_map::size(pipes_used) == TOGO_GFX_CONFIG_NUM_PIPES) {
+		if (hash_map::size(used) == TOGO_GFX_CONFIG_NUM_PIPES) {
 			TOGO_LOG_ERRORF(
 				"malformed render_config: too many pipes used (max = %u)\n",
 				TOGO_GFX_CONFIG_NUM_PIPES
@@ -453,14 +479,14 @@ static bool compile(
 			goto l_failed;
 		}
 		hash_map::set(
-			pipes_used,
+			used,
 			fixed_array::back(render_config->viewports).pipe,
 			k_pipe
 		);
 	}
 
 	// Read pipes
-	for (auto const& entry : pipes_used) {
+	for (auto const& entry : used) {
 		if (!read_pipe(gfx_compiler, *render_config, *entry.value)) {
 			goto l_failed;
 		}
