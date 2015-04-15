@@ -115,7 +115,7 @@ struct has_serializer_write {
 		decltype(write(
 			serializer_tag{},
 			type_value<ser_type&>(),
-			type_value<T const&>()
+			type_value<remove_ref<T> const&>()
 		))
 	>;
 	static constexpr bool const value = !unimpl_capture::value;
