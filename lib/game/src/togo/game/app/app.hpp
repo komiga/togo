@@ -30,7 +30,7 @@ void AppModel<Data>::destruct(App<Data>& app) {
 
 /// Construct application with arguments and model data.
 ///
-/// args should not contain argv[0].
+/// args[0] should be the exec-line.
 template<class Data>
 inline App<Data>::App(
 	ArrayRef<char const* const> args,
