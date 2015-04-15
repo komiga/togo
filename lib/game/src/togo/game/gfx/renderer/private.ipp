@@ -22,7 +22,7 @@ void renderer::init_base(gfx::Renderer* const renderer) {
 	if (renderer->ra._num > 0) {								\
 		for (auto const& slot : renderer->ra._slots) {			\
 			if (slot.id._value != ID_VALUE_NULL) {				\
-				renderer::func_destroy(renderer, slot.id);		\
+				gfx::renderer::func_destroy(renderer, slot.id);	\
 			}													\
 		}														\
 	}
@@ -53,7 +53,7 @@ void renderer::configure_base(
 	for (auto const& layer : pipe.layers) {
 	for (auto const& gen_unit : layer.layout) {
 		TOGO_ASSERTF(
-			renderer::find_generator_def(renderer, gen_unit.name_hash),
+			gfx::renderer::find_generator_def(renderer, gen_unit.name_hash),
 			"generator unit %08x is not registered",
 			gen_unit.name_hash
 		);
