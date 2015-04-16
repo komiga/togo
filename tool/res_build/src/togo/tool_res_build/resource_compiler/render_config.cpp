@@ -447,6 +447,7 @@ static bool compile(
 				"viewport '%.*s' defined again",
 				kvs::name_size(k_viewport), kvs::name(k_viewport)
 			);
+			goto l_failed;
 		}
 		hash_map::set(used, kvs::name_hash(k_viewport), &k_viewport);
 	}
