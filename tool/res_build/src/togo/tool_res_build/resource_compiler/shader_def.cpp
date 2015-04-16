@@ -54,11 +54,11 @@ static bool read_prelude(
 	if (k_prelude && !kvs::is_array(*k_prelude)) {
 		TOGO_LOG_ERROR("malformed shader_def: prelude must be an array\n");
 		return false;
-	} else if (kvs::size(*k_prelude) > fixed_array::size(def.prelude)) {
+	} else if (kvs::size(*k_prelude) > fixed_array::capacity(def.prelude)) {
 		TOGO_LOG_ERRORF(
 			"malformed shader_def: too many preludes defined (%u whereas the max is %u)\n",
 			kvs::size(*k_prelude),
-			static_cast<unsigned>(fixed_array::size(def.prelude))
+			static_cast<unsigned>(fixed_array::capacity(def.prelude))
 		);
 		return false;
 	}
