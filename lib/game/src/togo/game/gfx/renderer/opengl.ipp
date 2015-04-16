@@ -637,7 +637,9 @@ void renderer::set_viewport_size(
 void renderer::clear_backbuffer(
 	gfx::Renderer* const /*renderer*/
 ) {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	Vec4 const clear_color{0.0f, 0.0f, 0.0f, 1.0f};
+	TOGO_GLCE_X(glClearBufferfv(GL_COLOR, 0, &clear_color.x));
+	TOGO_GLCE_X(glClearBufferfi(GL_DEPTH_STENCIL, 0, 0.0f, 0));
 }
 
 void renderer::render_buffers(
