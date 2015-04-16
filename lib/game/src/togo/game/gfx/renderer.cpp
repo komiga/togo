@@ -42,6 +42,7 @@ Renderer::Renderer(
 	, _frame_mutex()
 	, _frame_condvar()
 	, _work_data()
+	, _shared_rts()
 	, _config()
 	, _buffers()
 	, _buffer_bindings()

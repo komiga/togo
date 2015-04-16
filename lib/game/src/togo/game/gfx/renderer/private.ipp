@@ -28,6 +28,8 @@ void renderer::init_base(gfx::Renderer* const renderer) {
 	}
 
 void renderer::teardown_base(gfx::Renderer* const renderer) {
+	fixed_array::clear(renderer->_shared_rts);
+
 	TOGO_GFX_RENDERER_TEARDOWN_RA_(_buffers, destroy_buffer);
 	TOGO_GFX_RENDERER_TEARDOWN_RA_(_buffer_bindings, destroy_buffer_binding);
 	//TOGO_GFX_RENDERER_TEARDOWN_RA_(_textures, destroy_texture);
@@ -59,7 +61,28 @@ void renderer::configure_base(
 			gen_unit.name_hash
 		);
 	}}}
+
+	// Destroy previous shared resources
+	for (auto id : renderer->_shared_rts) {
+		gfx::renderer::destroy_render_target(renderer, id);
+	}
+
 	std::memcpy(&renderer->_config, &config, sizeof(gfx::RenderConfig));
+
+	// Create shared resources
+	for (auto& resource : renderer->_config.shared_resources) {
+		switch (resource.properties & gfx::RenderConfigResource::MASK_TYPE) {
+		case gfx::RenderConfigResource::TYPE_RENDER_TARGET:
+			fixed_array::push_back(
+				renderer->_shared_rts,
+				gfx::renderer::create_render_target(renderer, resource.data.render_target)
+			);
+			break;
+
+		default:
+			TOGO_ASSERT(false, "unhandled render config resource type");
+		}
+	}
 }
 
 } // namespace gfx

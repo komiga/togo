@@ -106,6 +106,7 @@ struct Renderer {
 		u8 buffer[48 * sizeof(gfx::CmdRenderWorld)];
 	} _work_data;
 
+	FixedArray<gfx::RenderTargetID, TOGO_GFX_CONFIG_NUM_RESOURCES> _shared_rts;
 	gfx::RenderConfig _config;
 
 	gfx::ResourceArray<gfx::Buffer, TOGO_GFX_NUM_BUFFERS> _buffers;
