@@ -627,11 +627,11 @@ void renderer::unset_fixed_param_block(
 }
 
 void renderer::set_viewport_size(
-	gfx::Renderer* const /*renderer*/,
-	unsigned const width,
-	unsigned const height
+	gfx::Renderer* const renderer,
+	UVec2 const size
 ) {
-	TOGO_GLCE_X(glViewport(0, 0, width, height));
+	TOGO_GLCE_X(glViewport(0, 0, size.x, size.y));
+	renderer->_viewport_size = size;
 }
 
 void renderer::clear_backbuffer(

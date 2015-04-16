@@ -15,6 +15,7 @@
 #pragma once
 
 #include <togo/game/config.hpp>
+#include <togo/core/math/types.hpp>
 #include <togo/core/threading/types.hpp>
 #include <togo/game/entity/types.hpp>
 #include <togo/game/world/types.hpp>
@@ -194,8 +195,7 @@ void unset_fixed_param_block(
 /// Set viewport size.
 void set_viewport_size(
 	gfx::Renderer* renderer,
-	unsigned width,
-	unsigned height
+	UVec2 size
 );
 
 /// Push work (generic helper).

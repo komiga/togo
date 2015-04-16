@@ -6,6 +6,7 @@
 #include <togo/game/config.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/utility/utility.hpp>
+#include <togo/core/math/types.hpp>
 #include <togo/core/collection/hash_map.hpp>
 #include <togo/core/algorithm/sort.hpp>
 #include <togo/core/threading/condvar.hpp>
@@ -34,7 +35,7 @@ Renderer::Renderer(
 )
 	: _allocator(&allocator)
 	, _impl(impl)
-	, _viewport_size(1024, 768)
+	, _viewport_size(1, 1)
 	, _shader_stage(allocator)
 	, _num_active_draw_param_blocks(0)
 	, _fixed_param_blocks()
@@ -79,6 +80,11 @@ gfx::GeneratorDef const* renderer::find_generator_def(
 	gfx::GeneratorNameHash const name_hash
 ) {
 	return hash_map::find(renderer->_generators, name_hash);
+}
+
+/// Get viewport size.
+UVec2 renderer::viewport_size(gfx::Renderer* const renderer) {
+	return renderer->_viewport_size;
 }
 
 static void process_work(

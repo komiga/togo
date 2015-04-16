@@ -91,7 +91,7 @@ struct Renderer {
 
 	gfx::RendererImpl _impl;
 
-	Vec2 _viewport_size;
+	UVec2 _viewport_size;
 	gfx::ShaderDef _shader_stage;
 	unsigned _num_active_draw_param_blocks;
 	gfx::ParamBlockNameHash _fixed_param_blocks[TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND];
