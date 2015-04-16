@@ -25,11 +25,17 @@
 #include <togo/tool_res_build/compiler_manager.hpp>
 #include <togo/tool_res_build/gfx_compiler.hpp>
 
+#include <cmath>
+
 namespace togo {
 namespace tool_res_build {
 
 namespace resource_compiler {
 namespace render_config {
+
+enum : hash32 {
+	RT_BACK_BUFFER = "back_buffer"_hash32
+};
 
 inline static bool is_kvs_valid_and_nonempty(
 	KVS const* const kvs,
@@ -38,27 +44,212 @@ inline static bool is_kvs_valid_and_nonempty(
 	return kvs && kvs::is_type(*kvs, type) && kvs::any(*kvs);
 }
 
-// static bool find_render_resource(
-// 	gfx::RenderConfig const& /*render_config*/,
-// 	gfx::Viewport const& /*viewport*/,
-// 	hash32 const render_resource
-// ) {
-// 	enum : hash32 {
-// 		RT_BACK_BUFFER = "back_buffer"_hash32
-// 	};
-// 	// TODO: Type distinction (DST, RT, etc.)
-// 	if (render_resource == RT_BACK_BUFFER) {
-// 		return true;
-// 	}
+static bool find_rc_resource(
+	gfx::RenderConfig const& render_config,
+	gfx::Viewport const& /*viewport*/,
+	hash32 const name_hash
+) {
+	if (name_hash == RT_BACK_BUFFER) {
+		return true;
+	}
+	for (auto const& resource : render_config.shared_resources) {
+		if (name_hash == resource.name_hash) {
+			return true;
+		}
+	}
+	// TODO: Check viewport resources
+	return false;
+}
 
-// 	// TODO: Check shared and viewport resources (not yet in-struct)
-// 	return false;
-// }
+static bool read_resource_render_target(
+	gfx::RenderConfigResource& resource,
+	gfx::RenderConfig& /*render_config*/,
+	KVS const& k_resource
+) {
+	auto& spec = resource.data.render_target;
+	resource.properties = gfx::RenderConfigResource::TYPE_RENDER_TARGET;
+
+	// Fetch and validate structure
+	KVS const* const k_format = kvs::find(k_resource, "format");
+	if (!k_format || !kvs::is_type(*k_format, KVSType::string)) {
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"resource '%.*s': 'format' not defined\n",
+			kvs::name_size(k_resource), kvs::name(k_resource)
+		);
+		return false;
+	}
+
+	KVS const* const k_size = kvs::find(k_resource, "size");
+	if (k_size && !kvs::is_type(*k_size, KVSType::vec2)) {
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"resource '%.*s': 'size' must be a vec2 if defined\n",
+			kvs::name_size(k_resource), kvs::name(k_resource)
+		);
+		return false;
+	}
+
+	KVS const* const k_scale = kvs::find(k_resource, "scale");
+	if (k_scale && !kvs::is_type(*k_scale, KVSType::vec2)) {
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"resource '%.*s': 'scale' must be a vec2 if defined\n",
+			kvs::name_size(k_resource), kvs::name(k_resource)
+		);
+		return false;
+	}
+
+	KVS const* const k_clear = kvs::find(k_resource, "clear");
+	if (k_clear && !kvs::is_type(*k_clear, KVSType::boolean)) {
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"resource '%.*s': 'clear' must be a boolean if defined\n",
+			kvs::name_size(k_resource), kvs::name(k_resource)
+		);
+		return false;
+	}
+
+	KVS const* const k_double_buffered = kvs::find(k_resource, "double_buffered");
+	if (k_double_buffered && !kvs::is_type(*k_double_buffered, KVSType::boolean)) {
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"resource '%.*s': 'double_buffered' must be a boolean if defined\n",
+			kvs::name_size(k_resource), kvs::name(k_resource)
+		);
+		return false;
+	}
+
+	if (k_scale && k_size) {
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"resource '%.*s': only 'size' or 'scale' can be defined, not both\n",
+			kvs::name_size(k_resource), kvs::name(k_resource)
+		);
+		return false;
+	} else if (!k_scale && !k_size) {
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"resource '%.*s': no dimensions; 'size' or 'scale' must be defined\n",
+			kvs::name_size(k_resource), kvs::name(k_resource)
+		);
+		return false;
+	}
+
+	// Read format
+	switch (hash::calc32(kvs::string_ref(*k_format))) {
+	case "RGB8"_hash32: spec.format = gfx::RenderTargetFormat::rgb8; break;
+	case "RGBA8"_hash32: spec.format = gfx::RenderTargetFormat::rgba8; break;
+	case "D16"_hash32: spec.format = gfx::RenderTargetFormat::d16; break;
+	case "D32"_hash32: spec.format = gfx::RenderTargetFormat::d32; break;
+	case "D24S8"_hash32: spec.format = gfx::RenderTargetFormat::d24s8; break;
+	default:
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"resource '%.*s': format '%.*s' not recognized\n",
+			kvs::name_size(k_resource), kvs::name(k_resource),
+			kvs::string_size(*k_format), kvs::string(*k_format)
+		);
+		return false;
+	}
+
+	// Read size
+	if (k_size) {
+		Vec2 size = kvs::vec2(*k_size);
+		spec.dim_x = std::round(size.x);
+		spec.dim_y = std::round(size.y);
+		if (!(spec.dim_x > 0.0f && spec.dim_y > 0.0f)) {
+			TOGO_LOG_ERRORF(
+				"malformed render_config: "
+				"resource '%.*s': size must be greater than (0, 0)\n",
+				kvs::name_size(k_resource), kvs::name(k_resource)
+			);
+			return false;
+		}
+	}
+
+	// Read scale
+	if (k_scale) {
+		spec.properties |= gfx::RenderTargetSpec::F_SCALE;
+		Vec2 scale = kvs::vec2(*k_scale);
+		spec.dim_x = scale.x;
+		spec.dim_y = scale.y;
+		if (!(
+			spec.dim_x > 0.0f && spec.dim_x <= 1.0f &&
+			spec.dim_y > 0.0f && spec.dim_y <= 1.0f
+		)) {
+			TOGO_LOG_ERRORF(
+				"malformed render_config: "
+				"resource '%.*s': scale must be in the range ((0, 0), (1, 1)]\n",
+				kvs::name_size(k_resource), kvs::name(k_resource)
+			);
+			return false;
+		}
+	}
+
+	// Read clear
+	if (!k_clear || kvs::boolean(*k_clear)) {
+		spec.properties |= gfx::RenderTargetSpec::F_CLEAR;
+	}
+
+	// Read double_buffered
+	if (k_double_buffered && kvs::boolean(*k_double_buffered)) {
+		spec.properties |= gfx::RenderTargetSpec::F_DOUBLE_BUFFERED;
+	}
+
+	return true;
+}
+
+static bool read_resource(
+	gfx::RenderConfigResource& resource,
+	gfx::RenderConfig& render_config,
+	KVS const& k_resource
+) {
+	if (!kvs::is_node(k_resource) || !kvs::is_named(k_resource)) {
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"resource '%.*s' is either not a node or unnamed\n",
+			kvs::name_size(k_resource), kvs::name(k_resource)
+		);
+		return false;
+	}
+
+	// Fetch and validate structure
+	KVS const* const k_type = kvs::find(k_resource, "type");
+	if (!k_type || !kvs::is_type(*k_type, KVSType::string)) {
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"no type defined for resource '%.*s'\n",
+			kvs::name_size(k_resource), kvs::name(k_resource)
+		);
+		return false;
+	}
+
+	// Read name
+	string::copy(resource.name, kvs::name_ref(k_resource));
+	resource.name_hash = hash::calc32(resource.name);
+
+	// Read data
+	switch (hash::calc32(kvs::string_ref(*k_type))) {
+	case "render_target"_hash32:
+		return read_resource_render_target(resource, render_config, k_resource);
+
+	default:
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"type '%.*s' not recognized for resource '%.*s'\n",
+			kvs::string_size(*k_type), kvs::string(*k_type),
+			kvs::name_size(k_resource), kvs::name(k_resource)
+		);
+		return false;
+	}
+}
 
 static bool read_pipe(
 	GfxCompiler& gfx_compiler,
 	gfx::RenderConfig& render_config,
-	KVS const& k_pipe
+	KVS const& k_pipe,
+	Array<u32> const& users
 ) {
 	if (!kvs::is_node(k_pipe) || !kvs::is_named(k_pipe)) {
 		TOGO_LOG_ERRORF(
@@ -200,16 +391,53 @@ static bool read_pipe(
 			if (!kvs::is_string(k_rt) || kvs::string_size(k_rt) == 0) {
 				TOGO_LOG_ERRORF(
 					"malformed render_config: "
-					"render target '%.*s' invalid for layer '%.*s' in pipe '%.*s'\n",
-					kvs::string_size(k_rt), kvs::string(k_rt),
+					"rts contains a value that is not a string or is empty "
+					"for layer '%.*s' in pipe '%.*s'\n",
 					kvs::name_size(k_layer), kvs::name(k_layer),
 					kvs::name_size(k_pipe), kvs::name(k_pipe)
 				);
 				return false;
 			}
 
-			hash32 const rt_hash = hash::calc32(kvs::string_ref(k_rt));
-			fixed_array::push_back(layer.rts, rt_hash);
+			hash32 const rt = hash::calc32(kvs::string_ref(k_rt));
+			for (auto const rt_existing : layer.rts) {
+				if (rt == rt_existing) {
+					TOGO_LOG_ERRORF(
+						"malformed render_config: "
+						"render target (rts) '%.*s' duplicated "
+						"in layer '%.*s' in pipe '%.*s'\n",
+						kvs::string_size(k_rt), kvs::string(k_rt),
+						kvs::name_size(k_layer), kvs::name(k_layer),
+						kvs::name_size(k_pipe), kvs::name(k_pipe)
+					);
+					return false;
+				}
+			}
+			if (rt == RT_BACK_BUFFER) {
+				TOGO_LOG_ERRORF(
+					"malformed render_config: "
+					"rts cannot contain 'back_buffer' for layer '%.*s' in pipe '%.*s'\n",
+					kvs::name_size(k_layer), kvs::name(k_layer),
+					kvs::name_size(k_pipe), kvs::name(k_pipe)
+				);
+				return false;
+			}
+			for (auto const viewport_index : users) {
+				auto& viewport = render_config.viewports[viewport_index];
+				if (!find_rc_resource(render_config, viewport, rt)) {
+					TOGO_LOG_ERRORF(
+						"malformed render_config: "
+						"render target (rts) '%.*s' does not exist "
+						"for layer '%.*s' in pipe '%.*s' in context of viewport '%.*s'\n",
+						kvs::string_size(k_rt), kvs::string(k_rt),
+						kvs::name_size(k_layer), kvs::name(k_layer),
+						kvs::name_size(k_pipe), kvs::name(k_pipe),
+						string::size(viewport.name), begin(viewport.name)
+					);
+					return false;
+				}
+			}
+			fixed_array::push_back(layer.rts, rt);
 		}
 
 		// Read DST
@@ -218,6 +446,24 @@ static bool read_pipe(
 			? hash::IDENTITY32
 			: hash::calc32(kvs::string_ref(*k_layer_dst))
 		;
+
+		if (layer.dst != hash::IDENTITY32) {
+			for (auto const viewport_index : users) {
+				auto& viewport = render_config.viewports[viewport_index];
+				if (!find_rc_resource(render_config, viewport, layer.dst)) {
+					TOGO_LOG_ERRORF(
+						"malformed render_config: "
+						"depth-stencil target (dst) '%.*s' does not exist "
+						"for layer '%.*s' in pipe '%.*s' in context of viewport '%.*s'\n",
+						kvs::string_size(*k_layer_dst), kvs::string(*k_layer_dst),
+						kvs::name_size(k_layer), kvs::name(k_layer),
+						kvs::name_size(k_pipe), kvs::name(k_pipe),
+						string::size(viewport.name), begin(viewport.name)
+					);
+					return false;
+				}
+			}
+		}
 
 		// Read order
 		if (k_layer_order) {
@@ -264,7 +510,8 @@ static bool read_pipe(
 			if (!gfx_compiler::find_generator_compiler(gfx_compiler, gen_unit.name_hash)) {
 				TOGO_LOG_ERRORF(
 					"malformed render_config: "
-					"no compiler found for generator unit '%.*s' for layout of layer '%.*s' in pipe '%.*s'\n",
+					"no compiler found for generator unit '%.*s' "
+					"for layout of layer '%.*s' in pipe '%.*s'\n",
 					unit_name.size, unit_name.data,
 					kvs::name_size(k_layer), kvs::name(k_layer),
 					kvs::name_size(k_pipe), kvs::name(k_pipe)
@@ -357,6 +604,15 @@ static bool read_viewport(
 
 	// Read output_rt
 	viewport.output_rt = hash::calc32(kvs::string_ref(*k_vp_output_rt));
+	if (!find_rc_resource(render_config, viewport, viewport.output_rt)) {
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"output_rt '%.*s' does not exist for viewport '%.*s'\n",
+			kvs::string_size(*k_vp_output_rt), kvs::string(*k_vp_output_rt),
+			kvs::name_size(k_viewport), kvs::name(k_viewport)
+		);
+		return false;
+	}
 
 	// Read output_dst
 	viewport.output_dst
@@ -364,6 +620,18 @@ static bool read_viewport(
 		? hash::IDENTITY32
 		: hash::calc32(kvs::string_ref(*k_vp_output_dst))
 	;
+	if (
+		viewport.output_dst != hash::IDENTITY32 &&
+		!find_rc_resource(render_config, viewport, viewport.output_dst)
+	) {
+		TOGO_LOG_ERRORF(
+			"malformed render_config: "
+			"output_dst '%.*s' does not exist for viewport '%.*s'\n",
+			kvs::string_size(*k_vp_output_dst), kvs::string(*k_vp_output_dst),
+			kvs::name_size(k_viewport), kvs::name(k_viewport)
+		);
+		return false;
+	}
 
 	// Check pipe existence
 	k_pipe = kvs::find(k_pipes, kvs::string_ref(*k_vp_pipe));
@@ -400,6 +668,7 @@ static bool compile(
 	HashMap<KVSNameHash, KVS const*> used{temp_allocator};
 	hash_map::reserve(used, 16);
 
+	KVS const* k_shared_resources;
 	KVS const* k_pipes;
 	KVS const* k_viewports;
 
@@ -415,6 +684,12 @@ static bool compile(
 	}}
 
 	// Fetch and validate structure
+	k_shared_resources = kvs::find(k_root, "shared_resources");
+	if (k_shared_resources && !kvs::is_type(*k_shared_resources, KVSType::node)) {
+		TOGO_LOG_ERROR("malformed render_config: 'shared_resources' must be a node if defined\n");
+		goto l_failed;
+	}
+
 	k_pipes = kvs::find(k_root, "pipes");
 	if (!is_kvs_valid_and_nonempty(k_pipes, KVSType::node)) {
 		TOGO_LOG_ERROR("malformed render_config: no pipes defined\n");
@@ -437,8 +712,6 @@ static bool compile(
 		memory::default_allocator(), gfx::RenderConfig
 	);
 
-	// TODO: Read shared_resources
-	// TODO: Check for duplicate pipes and viewports
 	// Check for duplicate viewports
 	for (KVS const& k_viewport : *k_viewports) {
 		if (hash_map::has(used, kvs::name_hash(k_viewport))) {
@@ -466,6 +739,20 @@ static bool compile(
 		hash_map::set(used, kvs::name_hash(k_pipe), &k_pipe);
 	}
 
+	// Read shared resources
+	if (k_shared_resources) {
+		for (KVS const& k_resource : *k_shared_resources) {
+			fixed_array::increase_size(render_config->shared_resources, 1);
+			if (!read_resource(
+				fixed_array::back(render_config->shared_resources),
+				*render_config,
+				k_resource
+			)) {
+				goto l_failed;
+			}
+		}
+	}
+
 	// Read viewports
 	hash_map::clear(used);
 	for (KVS const& k_viewport : *k_viewports) {
@@ -487,14 +774,21 @@ static bool compile(
 		);
 	}
 
-	// Read pipes
+	{// Read pipes
+	Array<u32> users{temp_allocator};
+	array::reserve(users, 32);
 	for (auto const& entry : used) {
-		if (!read_pipe(gfx_compiler, *render_config, *entry.value)) {
+		array::clear(users);
+		for (unsigned i = 0; i < fixed_array::size(render_config->viewports); ++i) {
+			if (entry.key == render_config->viewports[i].pipe) {
+				array::push_back(users, i);
+			}
+		}
+		if (!read_pipe(gfx_compiler, *render_config, *entry.value, users)) {
 			goto l_failed;
 		}
-	}
+	}}
 
-	// TODO: Validate render resource references in pipes
 	// Correct pipe indices
 	for (auto& viewport : render_config->viewports) {
 		for (unsigned i = 0; i < fixed_array::size(render_config->pipes); ++i) {
