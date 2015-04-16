@@ -193,6 +193,8 @@ gfx::Renderer* renderer::create(
 	);
 	renderer::init_base(renderer);
 	query_parameters(renderer);
+	TOGO_GLCE_X(glEnable(GL_DEPTH_TEST));
+	TOGO_GLCE_X(glDepthFunc(GL_ALWAYS));
 
 	GLint vp[4];
 	TOGO_GLCE_X(glGetIntegerv(GL_VIEWPORT, vp));
