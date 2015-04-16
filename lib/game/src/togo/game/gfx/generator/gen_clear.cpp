@@ -4,6 +4,7 @@
 */
 
 #include <togo/game/config.hpp>
+#include <togo/core/error/assert.hpp>
 #include <togo/core/hash/hash.hpp>
 #include <togo/core/serialization/serializer.hpp>
 #include <togo/core/serialization/support.hpp>
@@ -22,7 +23,7 @@ namespace gen_clear {
 
 union Data {
 	void* ptr;
-	hash32 rt;
+	u32 rt_index;
 };
 
 static void exec(
@@ -34,9 +35,11 @@ static void exec(
 	// TODO: Command for clearing any RT instead?
 	// TODO: Clear all RTs in layer?
 	Data const data{unit.data};
-	hash32 const rt = data.rt;
-	TOGO_ASSERTE(rt == "back_buffer"_hash32);
-	gfx::render_node::push(node, 0, gfx::CmdClearBackbuffer{});
+	if (data.rt_index == ~u32{0}) {
+		gfx::render_node::push(node, 0, gfx::CmdClearBackbuffer{});
+	} else {
+		TOGO_ASSERT(false, "clearing other than the back-buffer is not implemented");
+	}
 }
 
 static void read(
@@ -46,7 +49,7 @@ static void read(
 	gfx::GeneratorUnit& unit
 ) {
 	Data data;
-	ser % data.rt;
+	ser % data.rt_index;
 	unit.data = data.ptr;
 	unit.func_exec = exec;
 }
