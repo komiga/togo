@@ -239,6 +239,7 @@ ResourceValue resource_manager::load_resource(
 			"resource handler format version mismatch against [%08x %016lx]: %u != %u\n",
 			type, name_hash, handler->format_version, metadata->data_format_version
 		);
+		return nullptr;
 	}
 	StringRef const pkg_name{resource_package::name(*pkg)};
 	ResourceValue const load_value = handler->func_load(
