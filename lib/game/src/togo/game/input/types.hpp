@@ -11,6 +11,7 @@
 #pragma once
 
 #include <togo/game/config.hpp>
+#include <togo/core/math/types.hpp>
 #include <togo/core/memory/types.hpp>
 #include <togo/core/io/object_buffer_type.hpp>
 #include <togo/game/gfx/types.hpp>
@@ -245,10 +246,8 @@ struct DisplayCloseRequestEvent {
 /// Display close request event.
 struct DisplayResizeEvent {
 	gfx::Display* display;
-	unsigned old_width;
-	unsigned old_height;
-	unsigned new_width;
-	unsigned new_height;
+	UVec2 old_size;
+	UVec2 new_size;
 };
 
 /// Input event union.

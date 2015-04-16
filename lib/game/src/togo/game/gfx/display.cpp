@@ -5,6 +5,7 @@
 
 #include <togo/game/config.hpp>
 #include <togo/core/error/assert.hpp>
+#include <togo/core/math/types.hpp>
 #include <togo/game/gfx/display.hpp>
 #include <togo/game/gfx/display/types.hpp>
 #include <togo/game/gfx/display/private.hpp>
@@ -26,22 +27,19 @@ Display::~Display() {
 	}
 }
 
+/// Size.
+UVec2 display::size(gfx::Display const* display) {
+	return display->_size;
+}
+
 /// Width.
 unsigned display::width(gfx::Display const* display) {
-	return display->_width;
+	return display->_size.x;
 }
 
 /// Height.
 unsigned display::height(gfx::Display const* display) {
-	return display->_height;
-}
-
-/// Size.
-Vec2 display::size(gfx::Display const* display) {
-	return Vec2{
-		static_cast<f32>(display->_width),
-		static_cast<f32>(display->_height)
-	};
+	return display->_size.y;
 }
 
 // private

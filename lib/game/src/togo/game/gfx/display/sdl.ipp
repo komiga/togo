@@ -25,8 +25,7 @@ namespace gfx {
 
 gfx::Display* display::create(
 	char const* title,
-	unsigned width,
-	unsigned height,
+	UVec2 const size,
 	gfx::DisplayFlags flags,
 	gfx::DisplayConfig const& config,
 	gfx::Display* share_with,
@@ -64,7 +63,7 @@ gfx::Display* display::create(
 		share_with ? 1 : 0
 	));
 	sdl_config_setup(config);
-	handle = SDL_CreateWindow(title, x, y, width, height, sdl_flags);
+	handle = SDL_CreateWindow(title, x, y, size.x, size.y, sdl_flags);
 	TOGO_SDL_CHECK(!handle);
 	context = SDL_GL_CreateContext(handle);
 	TOGO_SDL_CHECK(!context);
@@ -72,7 +71,7 @@ gfx::Display* display::create(
 	gfx::glew_init();
 
 	return TOGO_CONSTRUCT(
-		allocator, gfx::Display, width, height, flags, config, allocator,
+		allocator, gfx::Display, size, flags, config, allocator,
 		SDLDisplayImpl{handle, context}
 	);
 
@@ -381,21 +380,16 @@ void display::process_events(InputBuffer& ib) {
 		switch (event.window.event) {
 		case SDL_WINDOWEVENT_RESIZED:
 			if (
-				display->_width != static_cast<unsigned>(event.window.data1) ||
-				display->_height != static_cast<unsigned>(event.window.data2)
+				display->_size.x != unsigned_cast(event.window.data1) ||
+				display->_size.y != unsigned_cast(event.window.data2)
 			) {
-				unsigned const old_width = display->_width;
-				unsigned const old_height = display->_height;
-				display->_width = static_cast<unsigned>(event.window.data1);
-				display->_height = static_cast<unsigned>(event.window.data2);
+				auto const old_size = display->_size;
+				display->_size.x = unsigned_cast(event.window.data1);
+				display->_size.y = unsigned_cast(event.window.data2);
 				object_buffer::write(
 					display->_input_buffer->_buffer,
 					InputEventType::display_resize,
-					DisplayResizeEvent{
-						display,
-						old_width, old_height,
-						display->_width, display->_height
-					}
+					DisplayResizeEvent{display, old_size, display->_size}
 				);
 			}
 			break;

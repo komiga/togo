@@ -16,6 +16,7 @@
 
 #include <togo/game/config.hpp>
 #include <togo/core/utility/utility.hpp>
+#include <togo/core/math/types.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/game/gfx/types.hpp>
 #include <togo/game/gfx/display.gen_interface>
@@ -37,12 +38,10 @@ namespace display {
 /// An assertion will fail if the display could not be created.
 /// The new display's context will be current.
 /// If share_with is non-null, the new display will share its context.
-/// If gfx::DisplayFlags::fullscreen is enabled, width and height
-/// are ignored.
+/// If gfx::DisplayFlags::fullscreen is enabled, size is ignored.
 gfx::Display* create(
 	char const* title,
-	unsigned width,
-	unsigned height,
+	UVec2 size,
 	gfx::DisplayFlags flags,
 	gfx::DisplayConfig const& config,
 	gfx::Display* share_with = nullptr,

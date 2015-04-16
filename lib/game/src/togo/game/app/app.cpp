@@ -93,7 +93,7 @@ void app::actual_init(AppBase& app) {
 	config.flags = gfx::DisplayConfigFlags::double_buffered;
 	app.display = gfx::display::create(
 		"togo display",
-		1024, 768,
+		UVec2{1024, 768},
 		gfx::DisplayFlags::borderless |
 		gfx::DisplayFlags::resizable,
 		config,
@@ -165,8 +165,7 @@ void app::update(AppBase& app, float dt) {
 		case InputEventType::display_resize:
 			gfx::renderer::set_viewport_size(
 				app.renderer,
-				event->display_resize.new_width,
-				event->display_resize.new_height
+				event->display_resize.new_size
 			);
 			break;
 

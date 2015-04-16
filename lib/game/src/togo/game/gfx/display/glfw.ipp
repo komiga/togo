@@ -26,8 +26,7 @@ namespace gfx {
 
 gfx::Display* display::create(
 	char const* title,
-	unsigned width,
-	unsigned height,
+	UVec2 size,
 	gfx::DisplayFlags flags,
 	gfx::DisplayConfig const& config,
 	gfx::Display* share_with,
@@ -49,14 +48,14 @@ gfx::Display* display::create(
 	;
 	glfw_config_setup(config);
 	GLFWwindow* const handle = glfwCreateWindow(
-		width, height, title, nullptr, share_with_handle
+		size.x, size.y, title, nullptr, share_with_handle
 	);
 	TOGO_ASSERT(handle, "failed to create display");
 	glfwMakeContextCurrent(handle);
 	gfx::glew_init();
 
 	gfx::Display* const display = TOGO_CONSTRUCT(
-		allocator, gfx::Display, width, height, flags, config, allocator,
+		allocator, gfx::Display, size, flags, config, allocator,
 		GLFWDisplayImpl{handle}
 	);
 	glfwSetWindowUserPointer(handle, display);
@@ -298,21 +297,16 @@ void glfw_window_size_cb(
 		glfwGetWindowUserPointer(handle)
 	);
 	if (
-		display->_width != static_cast<unsigned>(width) ||
-		display->_height != static_cast<unsigned>(height)
+		display->_size.x != unsigned_cast(width) ||
+		display->_size.y != unsigned_cast(height)
 	) {
-		unsigned const old_width = display->_width;
-		unsigned const old_height = display->_height;
-		display->_width = static_cast<unsigned>(width);
-		display->_height = static_cast<unsigned>(height);
+		auto const old_size = display->_size;
+		display->_size.x = unsigned_cast(width);
+		display->_size.y = unsigned_cast(height);
 		object_buffer::write(
 			display->_input_buffer->_buffer,
 			InputEventType::display_resize,
-			DisplayResizeEvent{
-				display,
-				old_width, old_height,
-				display->_width, display->_height
-			}
+			DisplayResizeEvent{display, old_size, display->_size}
 		);
 	}
 }

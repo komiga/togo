@@ -23,8 +23,7 @@ namespace game {
 namespace gfx {
 
 struct Display {
-	unsigned _width;
-	unsigned _height;
+	UVec2 _size;
 	gfx::DisplayFlags _flags;
 	gfx::DisplayConfig _config;
 	Allocator* _allocator;
@@ -46,15 +45,13 @@ struct Display {
 
 	~Display();
 	Display(
-		unsigned const width,
-		unsigned const height,
+		UVec2 const size,
 		gfx::DisplayFlags const flags,
 		DisplayConfig const& config,
 		Allocator& allocator,
 		DisplayImpl&& impl
 	)
-		: _width(width)
-		, _height(height)
+		: _size(size)
 		, _flags(flags)
 		, _config(config)
 		, _allocator(&allocator)
