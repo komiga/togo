@@ -203,22 +203,31 @@ static constexpr StringRef const source_names[NUM_SOURCES]{
 
 inline static bool check_source(
 	KVS const* k_sources[],
-	unsigned const index
+	unsigned const index,
+	bool const required
 ) {
 	auto const k_source = k_sources[index];
 	StringRef const name{source_names[index]};
-	if (!k_source || !kvs::is_string(*k_source)) {
+	if (!k_source) {
+		if (required) {
+			TOGO_LOG_ERRORF(
+				"malformed shader_def: '%.*s' is not defined (required)\n",
+				name.size, name.data
+			);
+			return false;
+		}
+	} else if (k_source && !kvs::is_string(*k_source)) {
 		TOGO_LOG_ERRORF(
-			"malformed shader_def: '%.*s' not defined or not a string\n",
+			"malformed shader_def: '%.*s' is not a string\n",
 			name.size, name.data
 		);
 		return false;
 	} else if (kvs::string_size(*k_source) == 0) {
-		TOGO_LOG_ERRORF(
-			"malformed shader_def: '%.*s' is empty\n",
-			name.size, name.data
-		);
-		return false;
+		// Required sources are to remind the user that they are possibly
+		// omitting the entry point. Preludes will likely be implementing the
+		// entry point in these cases, but regardless we don't want to deal with
+		// the data if it's empty.
+		k_sources[index] = nullptr;
 	}
 	return true;
 }
@@ -233,11 +242,17 @@ static bool read_glsl_unit(
 	for (unsigned index = 0; index < array_extent(k_sources); ++index) {
 		k_sources[index] = kvs::find(k_def, source_names[index]);
 	}
-	if (
-		!check_source(k_sources, 1 + unsigned_cast(gfx::ShaderStage::Type::vertex)) ||
-		!check_source(k_sources, 1 + unsigned_cast(gfx::ShaderStage::Type::fragment))
-	) {
-		return false;
+
+	bool const is_unit = def.properties & gfx::ShaderDef::TYPE_UNIT;
+	bool const required[NUM_SOURCES]{
+		false,
+		is_unit,
+		is_unit,
+	};
+	for (unsigned i = 0; i < NUM_SOURCES; ++i) {
+		if (!check_source(k_sources, i, required[i])) {
+			return false;
+		}
 	}
 
 	// Read
