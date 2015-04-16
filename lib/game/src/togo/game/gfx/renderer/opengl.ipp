@@ -193,6 +193,11 @@ gfx::Renderer* renderer::create(
 	);
 	renderer::init_base(renderer);
 	query_parameters(renderer);
+
+	GLint vp[4];
+	TOGO_GLCE_X(glGetIntegerv(GL_VIEWPORT, vp));
+	renderer->_viewport_size.x = unsigned_cast(max(0, vp[2]));
+	renderer->_viewport_size.y = unsigned_cast(max(0, vp[3]));
 	return renderer;
 }
 
