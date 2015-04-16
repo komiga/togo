@@ -10,6 +10,7 @@
 #pragma once
 
 #include <togo/game/config.hpp>
+#include <togo/core/error/assert.hpp>
 #include <togo/core/serialization/support.hpp>
 #include <togo/core/serialization/fixed_array.hpp>
 #include <togo/core/serialization/string.hpp>
@@ -26,16 +27,48 @@ namespace game {
 /** @cond INTERNAL */
 
 enum : u32 {
-	SER_FORMAT_VERSION_RENDER_CONFIG = 3,
+	SER_FORMAT_VERSION_RENDER_CONFIG = 4,
 };
 
 namespace gfx {
 
 template<class Ser>
 inline void
+serialize(serializer_tag, Ser& ser, gfx::RenderTargetSpec& value_unsafe) {
+	auto& value = serializer_cast_safe<Ser>(value_unsafe);
+	ser
+		% value.properties
+		% value.format
+		% value.dim_x
+		% value.dim_y
+	;
+}
+
+template<class Ser>
+inline void
 serialize(serializer_tag, Ser& ser, gfx::GeneratorUnit& value_unsafe) {
 	auto& value = serializer_cast_safe<Ser>(value_unsafe);
 	ser % value.name_hash;
+}
+
+template<class Ser>
+inline void
+serialize(serializer_tag, Ser& ser, gfx::RenderConfigResource& value_unsafe) {
+	auto& value = serializer_cast_safe<Ser>(value_unsafe);
+	ser
+		% value.name_hash
+		% make_ser_string<u8>(value.name)
+		% value.properties
+	;
+	switch (value.properties & gfx::RenderConfigResource::MASK_TYPE) {
+	case gfx::RenderConfigResource::TYPE_RENDER_TARGET:
+		ser % value.data.render_target;
+		break;
+
+	default:
+		TOGO_ASSERT(false, "type not recognized");
+		break;
+	}
 }
 
 template<class Ser>
@@ -82,6 +115,7 @@ inline void
 serialize(serializer_tag, Ser& ser, gfx::RenderConfig& value_unsafe) {
 	auto& value = serializer_cast_safe<Ser>(value_unsafe);
 	ser
+		% make_ser_collection<u8>(value.shared_resources)
 		% make_ser_collection<u8>(value.viewports)
 		% make_ser_collection<u8>(value.pipes)
 	;
