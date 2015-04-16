@@ -461,6 +461,7 @@ static bool compile(
 				"pipe '%.*s' defined again",
 				kvs::name_size(k_pipe), kvs::name(k_pipe)
 			);
+			goto l_failed;
 		}
 		hash_map::set(used, kvs::name_hash(k_pipe), &k_pipe);
 	}
