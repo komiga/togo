@@ -312,9 +312,9 @@ static bool compile(
 	ResourceCompilerMetadata const& metadata,
 	IReader& in_stream,
 	IWriter& out_stream,
+	gfx::ShaderDef& def,
 	complete_func_type& func_complete
 ) {
-	gfx::ShaderDef def{memory::scratch_allocator()};
 	KVS k_root{};
 	KVS const* k_type;
 
@@ -368,9 +368,8 @@ static bool compile(
 namespace shader {
 
 static bool complete(
-	gfx::ShaderDef& def
+	gfx::ShaderDef& /*def*/
 ) {
-	def.properties |= gfx::ShaderDef::TYPE_UNIT;
 	return true;
 }
 
@@ -382,8 +381,11 @@ static bool compile(
 	IReader& in_stream,
 	IWriter& out_stream
 ) {
+	gfx::ShaderDef def{memory::scratch_allocator()};
+	def.properties |= gfx::ShaderDef::TYPE_UNIT;
 	return resource_compiler::shader_def::compile(
 		type_data, manager, package, metadata, in_stream, out_stream,
+		def,
 		shader::complete
 	);
 }
@@ -393,9 +395,8 @@ static bool compile(
 namespace shader_prelude {
 
 static bool complete(
-	gfx::ShaderDef& def
+	gfx::ShaderDef& /*def*/
 ) {
-	def.properties |= gfx::ShaderDef::TYPE_PRELUDE;
 	return true;
 }
 
@@ -407,8 +408,11 @@ static bool compile(
 	IReader& in_stream,
 	IWriter& out_stream
 ) {
+	gfx::ShaderDef def{memory::scratch_allocator()};
+	def.properties |= gfx::ShaderDef::TYPE_PRELUDE;
 	return resource_compiler::shader_def::compile(
 		type_data, manager, package, metadata, in_stream, out_stream,
+		def,
 		shader_prelude::complete
 	);
 }
