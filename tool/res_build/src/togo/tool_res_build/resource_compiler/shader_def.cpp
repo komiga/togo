@@ -191,19 +191,32 @@ inline static void push_param_block_names(
 	}
 }
 
+enum : unsigned {
+	NUM_SOURCES = 1 + unsigned_cast(gfx::ShaderStage::Type::NUM)
+};
+
+static constexpr StringRef const source_names[NUM_SOURCES]{
+	"shared_source",
+	"vertex_source",
+	"fragment_source",
+};
+
 inline static bool check_source(
-	KVS const* k_source
+	KVS const* k_sources[],
+	unsigned const index
 ) {
+	auto const k_source = k_sources[index];
+	StringRef const name{source_names[index]};
 	if (!k_source || !kvs::is_string(*k_source)) {
 		TOGO_LOG_ERRORF(
 			"malformed shader_def: '%.*s' not defined or not a string\n",
-			kvs::name_size(*k_source), kvs::name(*k_source)
+			name.size, name.data
 		);
 		return false;
 	} else if (kvs::string_size(*k_source) == 0) {
 		TOGO_LOG_ERRORF(
 			"malformed shader_def: '%.*s' is empty\n",
-			kvs::name_size(*k_source), kvs::name(*k_source)
+			name.size, name.data
 		);
 		return false;
 	}
@@ -214,12 +227,6 @@ static bool read_glsl_unit(
 	gfx::ShaderDef& def,
 	KVS const& k_def
 ) {
-	static constexpr StringRef const source_names[]{
-		"shared_source",
-		"vertex_source",
-		"fragment_source",
-	};
-	enum : unsigned { NUM_SOURCES = 1 + unsigned_cast(gfx::ShaderStage::Type::NUM) };
 	KVS const* k_sources[NUM_SOURCES];
 
 	// Fetch and validate structure
@@ -227,8 +234,8 @@ static bool read_glsl_unit(
 		k_sources[index] = kvs::find(k_def, source_names[index]);
 	}
 	if (
-		!check_source(k_sources[1 + unsigned_cast(gfx::ShaderStage::Type::vertex)]) ||
-		!check_source(k_sources[1 + unsigned_cast(gfx::ShaderStage::Type::fragment)])
+		!check_source(k_sources, 1 + unsigned_cast(gfx::ShaderStage::Type::vertex)) ||
+		!check_source(k_sources, 1 + unsigned_cast(gfx::ShaderStage::Type::fragment))
 	) {
 		return false;
 	}
