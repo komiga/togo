@@ -18,7 +18,7 @@ pipes = {
 				order = front_back
 				layout = {
 					generators = [
-						{ unit = "clear" rt = "back_buffer" }
+						{ unit = "clear" render_target = "back_buffer" }
 						{ unit = "test_proxy" }
 					]
 				}
