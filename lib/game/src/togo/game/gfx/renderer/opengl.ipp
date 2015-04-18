@@ -493,7 +493,7 @@ gfx::ShaderID renderer::create_shader(
 	char info_log[1024];
 
 	{// Shared internal prefix
-	StringRef const internal_prefix{"#version 330\n"};
+	StringRef const internal_prefix{"#version 330 core\n"};
 	fixed_array::push_back(sources, internal_prefix.data);
 	fixed_array::push_back(sources_size, signed_cast(internal_prefix.size));
 	}
