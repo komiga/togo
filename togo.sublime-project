@@ -43,7 +43,7 @@
 			"path": "./lib/core/",
 			"folder_exclude_patterns": [
 				"src",
-				"out"
+				"build"
 			],
 			"file_exclude_patterns": [
 				"Makefile",
@@ -64,7 +64,7 @@
 			"path": "./lib/game/",
 			"folder_exclude_patterns": [
 				"src",
-				"out"
+				"build"
 			],
 			"file_exclude_patterns": [
 				"Makefile",
