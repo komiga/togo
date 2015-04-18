@@ -13,13 +13,12 @@
 #include <togo/core/collection/hash_map.hpp>
 #include <togo/core/string/string.hpp>
 #include <togo/core/hash/hash.hpp>
+#include <togo/core/io/memory_stream.hpp>
 #include <togo/core/kvs/kvs.hpp>
 #include <togo/core/serialization/serializer.hpp>
 #include <togo/core/serialization/support.hpp>
 #include <togo/core/serialization/binary_serializer.hpp>
-#include <togo/game/gfx/types.hpp>
 #include <togo/game/gfx/gfx.hpp>
-#include <togo/game/gfx/renderer/types.hpp>
 #include <togo/game/serialization/gfx/render_config.hpp>
 #include <togo/tool_res_build/resource_compiler.hpp>
 #include <togo/tool_res_build/compiler_manager.hpp>
@@ -661,7 +660,7 @@ static bool compile(
 ) {
 	bool success = false;
 	auto& gfx_compiler = *static_cast<GfxCompiler*>(type_data);
-	gfx::RenderConfig* render_config = nullptr;
+	gfx::PackedRenderConfig* packed = nullptr;
 	KVS k_root{};
 
 	TempAllocator<512> temp_allocator;
@@ -708,9 +707,10 @@ static bool compile(
 		goto l_failed;
 	}
 
-	render_config = TOGO_CONSTRUCT_DEFAULT(
-		memory::default_allocator(), gfx::RenderConfig
-	);
+	packed = TOGO_CONSTRUCT(
+		memory::default_allocator(), gfx::PackedRenderConfig, {
+		memory::default_allocator()
+	});
 
 	// Check for duplicate viewports
 	for (KVS const& k_viewport : *k_viewports) {
@@ -742,10 +742,10 @@ static bool compile(
 	// Read shared resources
 	if (k_shared_resources) {
 		for (KVS const& k_resource : *k_shared_resources) {
-			fixed_array::increase_size(render_config->shared_resources, 1);
+			fixed_array::increase_size(packed->config.shared_resources, 1);
 			if (!read_resource(
-				fixed_array::back(render_config->shared_resources),
-				*render_config,
+				fixed_array::back(packed->config.shared_resources),
+				packed->config,
 				k_resource
 			)) {
 				goto l_failed;
@@ -757,7 +757,7 @@ static bool compile(
 	hash_map::clear(used);
 	for (KVS const& k_viewport : *k_viewports) {
 		KVS const* k_pipe = nullptr;
-		if (!read_viewport(*render_config, *k_pipes, k_viewport, k_pipe)) {
+		if (!read_viewport(packed->config, *k_pipes, k_viewport, k_pipe)) {
 			goto l_failed;
 		}
 		if (hash_map::size(used) == TOGO_GFX_CONFIG_NUM_PIPES) {
@@ -769,7 +769,7 @@ static bool compile(
 		}
 		hash_map::set(
 			used,
-			fixed_array::back(render_config->viewports).pipe,
+			fixed_array::back(packed->config.viewports).pipe,
 			k_pipe
 		);
 	}
@@ -779,46 +779,51 @@ static bool compile(
 	array::reserve(users, 32);
 	for (auto const& entry : used) {
 		array::clear(users);
-		for (unsigned i = 0; i < fixed_array::size(render_config->viewports); ++i) {
-			if (entry.key == render_config->viewports[i].pipe) {
+		for (unsigned i = 0; i < fixed_array::size(packed->config.viewports); ++i) {
+			if (entry.key == packed->config.viewports[i].pipe) {
 				array::push_back(users, i);
 			}
 		}
-		if (!read_pipe(gfx_compiler, *render_config, *entry.value, users)) {
+		if (!read_pipe(gfx_compiler, packed->config, *entry.value, users)) {
 			goto l_failed;
 		}
 	}}
 
 	// Correct pipe indices
-	for (auto& viewport : render_config->viewports) {
-		for (unsigned i = 0; i < fixed_array::size(render_config->pipes); ++i) {
-			if (viewport.pipe == render_config->pipes[i].name_hash) {
+	for (auto& viewport : packed->config.viewports) {
+		for (unsigned i = 0; i < fixed_array::size(packed->config.pipes); ++i) {
+			if (viewport.pipe == packed->config.pipes[i].name_hash) {
 				viewport.pipe = i;
 				break;
 			}
 		}
 	}
 
-	{// Serialize resource
-	BinaryOutputSerializer ser{out_stream};
-	ser % *render_config;
-
-	// Serialize generator units
-	for (auto const& pipe : render_config->pipes) {
+	{// Serialize generator unit data
+	MemoryStream stream{memory::default_allocator(), 16*1024};
+	BinaryOutputSerializer ser{stream};
+	for (auto const& pipe : packed->config.pipes) {
 	for (auto const& layer : pipe.layers) {
 	for (auto const& gen_unit : layer.layout) {
 		auto* gen_compiler = gfx_compiler::find_generator_compiler(
 			gfx_compiler, gen_unit.name_hash
 		);
 		TOGO_ASSERTE(gen_compiler);
-		if (!gen_compiler->func_write(*gen_compiler, ser, *render_config, gen_unit)) {
+		if (!gen_compiler->func_write(*gen_compiler, ser, packed->config, gen_unit)) {
 			goto l_failed;
 		}
-	}}}}
+	}}}
+	packed->unit_data = rvalue_ref(stream._data);
+	}
+
+	{// Serialize resource
+	BinaryOutputSerializer ser{out_stream};
+	ser % *packed;
+	}
 	success = true;
 
 l_failed:
-	TOGO_DESTROY(memory::default_allocator(), render_config);
+	TOGO_DESTROY(memory::default_allocator(), packed);
 	return success;
 }
 
