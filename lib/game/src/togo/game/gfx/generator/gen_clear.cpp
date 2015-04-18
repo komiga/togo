@@ -61,6 +61,7 @@ gfx::GeneratorDef const generator::clear{
 	"clear"_generator_name,
 	nullptr,
 	nullptr,
+	nullptr,
 	generator::gen_clear::read
 };
 

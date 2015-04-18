@@ -304,6 +304,12 @@ struct GeneratorUnit {
 
 /// Generator definition.
 struct GeneratorDef {
+	/// GeneratorDef init() function.
+	using init_func_type = void (
+		gfx::GeneratorDef& def,
+		gfx::Renderer* renderer
+	);
+
 	/// GeneratorDef destroy() function.
 	using destroy_func_type = void (
 		gfx::GeneratorDef const& def,
@@ -318,9 +324,14 @@ struct GeneratorDef {
 		gfx::GeneratorUnit& unit
 	);
 
+	/// Name hash.
 	gfx::GeneratorNameHash name_hash;
+
+	/// Data.
 	void* data;
 
+	/// Initialize the definition data.
+	init_func_type* func_init;
 	/// Destroy the definition data.
 	destroy_func_type* func_destroy;
 	/// Read a GeneratorUnit.

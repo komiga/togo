@@ -56,22 +56,32 @@ Renderer::Renderer(
 
 /// Register generator definition.
 ///
-/// An assertion will fail if the generator definition is malformed
-/// or is already registered.
+/// An assertion will fail if the generator definition is malformed or is
+/// already registered.
+/// An assertion will fail if func_init is assigned and func_destroy is not
+/// assigned.
 void renderer::register_generator_def(
 	gfx::Renderer* const renderer,
 	gfx::GeneratorDef const& def
 ) {
 	TOGO_ASSERT(
 		def.func_read_unit,
-		"func_read must be assigned in generator definition"
+		"func_read_unit must be assigned in generator definition"
+	);
+	TOGO_ASSERT(
+		!def.func_init || def.func_destroy,
+		"func_destroy must be assigned in generator definition if func_init is assigned"
 	);
 	TOGO_ASSERTF(
 		!hash_map::has(renderer->_generators, def.name_hash),
 		"generator %08x has already been registered",
 		def.name_hash
 	);
-	hash_map::push(renderer->_generators, def.name_hash, def);
+
+	auto& def_mapped = hash_map::push(renderer->_generators, def.name_hash, def);
+	if (def_mapped.func_init) {
+		def_mapped.func_init(def_mapped, renderer);
+	}
 }
 
 /// Find generator definition by name.
