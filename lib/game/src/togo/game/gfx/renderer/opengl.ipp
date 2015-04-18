@@ -711,10 +711,10 @@ void renderer::render_buffers(
 
 void renderer::configure(
 	gfx::Renderer* const renderer,
-	gfx::RenderConfig const& config
+	gfx::PackedRenderConfig const& packed_config,
+	Endian endian
 ) {
-	renderer::configure_base(renderer, config);
-	// TODO: Create global resources
+	renderer::configure_base(renderer, packed_config, endian);
 }
 
 } // namespace gfx

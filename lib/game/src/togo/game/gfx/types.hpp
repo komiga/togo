@@ -569,6 +569,18 @@ struct RenderConfig {
 	FixedArray<gfx::Pipe, TOGO_GFX_CONFIG_NUM_PIPES> pipes;
 };
 
+/// Render config with generator unit data.
+struct PackedRenderConfig {
+	gfx::RenderConfig config;
+	Array<u8> unit_data;
+
+	PackedRenderConfig(
+		Allocator& allocator
+	)
+		: unit_data(allocator)
+	{}
+};
+
 /// Render object.
 struct RenderObject {
 	Mat4x4 transform;

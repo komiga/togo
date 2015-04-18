@@ -4,6 +4,10 @@
 */
 
 #include <togo/game/config.hpp>
+#include <togo/core/error/assert.hpp>
+#include <togo/core/collection/array.hpp>
+#include <togo/core/io/memory_stream.hpp>
+#include <togo/core/serialization/binary_serializer.hpp>
 #include <togo/game/gfx/types.hpp>
 #include <togo/game/gfx/generator.hpp>
 #include <togo/game/gfx/renderer/types.hpp>
@@ -50,9 +54,10 @@ void renderer::teardown_base(gfx::Renderer* const renderer) {
 
 void renderer::configure_base(
 	gfx::Renderer* const renderer,
-	gfx::RenderConfig const& config
+	gfx::PackedRenderConfig const& packed_config,
+	Endian const endian
 ) {
-	for (auto const& pipe : config.pipes) {
+	for (auto const& pipe : packed_config.config.pipes) {
 	for (auto const& layer : pipe.layers) {
 	for (auto const& gen_unit : layer.layout) {
 		TOGO_ASSERTF(
@@ -67,7 +72,7 @@ void renderer::configure_base(
 		gfx::renderer::destroy_render_target(renderer, id);
 	}
 
-	std::memcpy(&renderer->_config, &config, sizeof(gfx::RenderConfig));
+	std::memcpy(&renderer->_config, &packed_config.config, sizeof(gfx::RenderConfig));
 
 	// Create shared resources
 	for (auto& resource : renderer->_config.shared_resources) {
@@ -83,6 +88,26 @@ void renderer::configure_base(
 			TOGO_ASSERT(false, "unhandled render config resource type");
 		}
 	}
+
+	// Reinitialize generator definitions (unload existing unit data)
+	for (auto& entry : renderer->_generators) {
+		if (entry.value.func_init) {
+			entry.value.func_init(entry.value, renderer);
+		}
+	}
+
+	{// Deserialize generator units
+	MemoryReader stream{packed_config.unit_data};
+	BinaryInputSerializer ser{stream, endian};
+	for (auto& pipe : renderer->_config.pipes) {
+	for (auto& layer : pipe.layers) {
+	for (auto& gen_unit : layer.layout) {
+		gen_unit.data = nullptr;
+		auto* gen_def = gfx::renderer::find_generator_def(renderer, gen_unit.name_hash);
+		TOGO_ASSERTE(gen_def);
+		gen_def->func_read_unit(*gen_def, renderer, ser, gen_unit);
+		TOGO_ASSERTE(gen_unit.func_exec);
+	}}}}
 }
 
 } // namespace gfx

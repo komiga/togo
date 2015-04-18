@@ -13,6 +13,7 @@
 #include <togo/core/error/assert.hpp>
 #include <togo/core/serialization/support.hpp>
 #include <togo/core/serialization/fixed_array.hpp>
+#include <togo/core/serialization/array.hpp>
 #include <togo/core/serialization/string.hpp>
 #include <togo/game/gfx/renderer/types.hpp>
 
@@ -27,7 +28,7 @@ namespace game {
 /** @cond INTERNAL */
 
 enum : u32 {
-	SER_FORMAT_VERSION_RENDER_CONFIG = 4,
+	SER_FORMAT_VERSION_RENDER_CONFIG = 5,
 };
 
 namespace gfx {
@@ -119,8 +120,16 @@ serialize(serializer_tag, Ser& ser, gfx::RenderConfig& value_unsafe) {
 		% make_ser_collection<u8>(value.viewports)
 		% make_ser_collection<u8>(value.pipes)
 	;
-	// NB: GeneratorUnit data is stored immediately after pipes in
-	// sequential order. Units must be fixed up externally.
+}
+
+template<class Ser>
+inline void
+serialize(serializer_tag, Ser& ser, gfx::PackedRenderConfig& value_unsafe) {
+	auto& value = serializer_cast_safe<Ser>(value_unsafe);
+	ser
+		% value.config
+		% make_ser_collection<u32>(value.unit_data)
+	;
 }
 
 } // namespace gfx

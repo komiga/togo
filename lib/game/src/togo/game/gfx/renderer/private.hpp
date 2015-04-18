@@ -31,7 +31,8 @@ void teardown_base(gfx::Renderer* renderer);
 
 void configure_base(
 	gfx::Renderer* renderer,
-	gfx::RenderConfig const& config
+	gfx::PackedRenderConfig const& packed_config,
+	Endian endian
 );
 
 } // namespace renderer

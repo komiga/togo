@@ -47,18 +47,18 @@ inline gfx::ShaderID load_shader(
 	return id;
 }
 
-/// Load a render config.
+/// Load a render configuration.
 ///
 /// An assertion will fail if the load failed.
-inline gfx::RenderConfig* load_render_config(
+inline gfx::PackedRenderConfig* load_render_config(
 	ResourceManager& rm,
 	ResourceNameHash const name_hash
 ) {
-	auto* render_config = static_cast<gfx::RenderConfig*>(
+	auto* packed_config = static_cast<gfx::PackedRenderConfig*>(
 		resource_manager::load_resource(rm, RES_TYPE_RENDER_CONFIG, name_hash).pointer
 	);
-	TOGO_ASSERT(render_config, "failed to load render_config");
-	return render_config;
+	TOGO_ASSERT(packed_config, "failed to load render_config");
+	return packed_config;
 }
 
 /** @} */ // end of doc-group lib_game_resource

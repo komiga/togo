@@ -15,6 +15,7 @@
 #pragma once
 
 #include <togo/game/config.hpp>
+#include <togo/core/utility/types.hpp>
 #include <togo/core/math/types.hpp>
 #include <togo/core/threading/types.hpp>
 #include <togo/game/entity/types.hpp>
@@ -228,10 +229,19 @@ void render_buffers(
 
 /// Configure the renderer.
 ///
+/// Base effects:
+///
+/// 1. Destroys previous shared resources.
+/// 2. Copies the config to the renderer.
+/// 3. Creates shared resources.
+/// 4. Generator definitions are reinitialized.
+/// 5. Generator units are deserialized from the packed unit data.
+///
 /// An assertion will fail if the renderer could not be configured.
 void configure(
 	gfx::Renderer* renderer,
-	gfx::RenderConfig const& config
+	gfx::PackedRenderConfig const& packed_config,
+	Endian endian = Endian::little
 );
 
 /** @} */ // end of doc-group lib_game_gfx_renderer
