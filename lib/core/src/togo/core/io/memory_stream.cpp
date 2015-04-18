@@ -90,6 +90,15 @@ MemoryReader::MemoryReader(u8 const* const buffer, u32_fast const size)
 	TOGO_ASSERTE(_data);
 }
 
+MemoryReader::MemoryReader(ArrayRef<u8 const> const ref)
+	: _status()
+	, _size(ref.size())
+	, _data(begin(ref))
+	, _position(0)
+{
+	TOGO_ASSERTE(_data);
+}
+
 MemoryReader::MemoryReader(StringRef const& ref)
 	: _status()
 	, _size(ref.size)

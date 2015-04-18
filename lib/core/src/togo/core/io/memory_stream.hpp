@@ -16,6 +16,7 @@
 
 #include <togo/core/config.hpp>
 #include <togo/core/types.hpp>
+#include <togo/core/utility/types.hpp>
 #include <togo/core/memory/types.hpp>
 #include <togo/core/collection/types.hpp>
 #include <togo/core/string/types.hpp>
@@ -101,6 +102,9 @@ public:
 
 	/// Construct with buffer.
 	MemoryReader(u8 const* const buffer, u32_fast const size);
+
+	/// Construct with array reference.
+	MemoryReader(ArrayRef<u8 const> ref);
 
 	/// Construct with string reference.
 	MemoryReader(StringRef const& ref);
