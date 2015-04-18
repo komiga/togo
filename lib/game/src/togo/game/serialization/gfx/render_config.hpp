@@ -66,7 +66,7 @@ serialize(serializer_tag, Ser& ser, gfx::RenderConfigResource& value_unsafe) {
 		break;
 
 	default:
-		TOGO_ASSERT(false, "type not recognized");
+		TOGO_ASSERT(false, "render config resource type not recognized");
 		break;
 	}
 }
