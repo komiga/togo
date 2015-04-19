@@ -105,6 +105,7 @@ void renderer::configure_base(
 		gen_unit.data = nullptr;
 		auto* gen_def = gfx::renderer::find_generator_def(renderer, gen_unit.name_hash);
 		TOGO_ASSERTE(gen_def);
+		gen_unit.func_exec = gen_def->func_exec_unit;
 		gen_def->func_read_unit(*gen_def, renderer, ser, gen_unit);
 		TOGO_ASSERTE(gen_unit.func_exec);
 	}}}}

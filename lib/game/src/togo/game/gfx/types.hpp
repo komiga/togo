@@ -334,8 +334,13 @@ struct GeneratorDef {
 	init_func_type* func_init;
 	/// Destroy the definition data.
 	destroy_func_type* func_destroy;
-	/// Read a GeneratorUnit.
+	/// Read a generator unit.
 	read_unit_func_type* func_read_unit;
+	/// Default execution function for units.
+	///
+	/// If this is assigned, generator units' func_exec will be assigned to it
+	/// before func_read_unit calls are made.
+	gfx::GeneratorUnit::exec_func_type* func_exec_unit;
 };
 
 /// Primitive data type.
