@@ -86,12 +86,12 @@ struct FixedArray {
 	u32_fast _size;
 	T _data[N];
 
-	FixedArray(FixedArray<T, N> const&) = delete;
 	FixedArray(FixedArray<T, N>&&) = delete;
-	FixedArray& operator=(FixedArray<T, N> const&) = delete;
 	FixedArray& operator=(FixedArray<T, N>&&) = delete;
 
 	~FixedArray() = default;
+	FixedArray(FixedArray<T, N> const&) = default;
+	FixedArray& operator=(FixedArray<T, N> const&) = default;
 
 	FixedArray();
 
