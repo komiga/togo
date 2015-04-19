@@ -21,10 +21,17 @@ namespace gfx {
 namespace generator {
 namespace gen_clear {
 
-union Data {
-	void* ptr;
+static void read(
+	gfx::GeneratorDef const& /*def*/,
+	gfx::Renderer* /*renderer*/,
+	BinaryInputSerializer& ser,
+	gfx::GeneratorUnit& unit
+) {
 	u32 rt_index;
-};
+	ser % rt_index;
+	unit.data_index = rt_index;
+	unit.data = nullptr;
+}
 
 static void exec(
 	gfx::GeneratorUnit const& unit,
@@ -34,24 +41,12 @@ static void exec(
 ) {
 	// TODO: Command for clearing any RT instead?
 	// TODO: Clear all RTs in layer?
-	Data const data{unit.data};
-	if (data.rt_index == ~u32{0}) {
+	u32 rt_index = unit.data_index;
+	if (rt_index == ~u32{0}) {
 		gfx::render_node::push(node, 0, gfx::CmdClearBackbuffer{});
 	} else {
 		TOGO_ASSERT(false, "clearing other than the back-buffer is not implemented");
 	}
-}
-
-static void read(
-	gfx::GeneratorDef const& /*def*/,
-	gfx::Renderer* /*renderer*/,
-	BinaryInputSerializer& ser,
-	gfx::GeneratorUnit& unit
-) {
-	Data data;
-	ser % data.rt_index;
-	unit.data = data.ptr;
-	unit.func_exec = exec;
 }
 
 } // namespace gen_clear
@@ -62,7 +57,8 @@ gfx::GeneratorDef const generator::clear{
 	nullptr,
 	nullptr,
 	nullptr,
-	generator::gen_clear::read
+	generator::gen_clear::read,
+	generator::gen_clear::exec
 };
 
 } // namespace gfx
