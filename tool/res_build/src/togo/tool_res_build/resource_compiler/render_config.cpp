@@ -503,6 +503,7 @@ static bool read_pipe(
 			unit_name = kvs::string_ref(*k_generator_unit);
 			gfx::GeneratorUnit gen_unit{
 				gfx::hash_generator_name(unit_name),
+				0,
 				const_cast<KVS*>(&k_generator),
 				nullptr
 			};
