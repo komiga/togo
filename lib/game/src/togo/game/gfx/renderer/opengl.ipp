@@ -407,11 +407,12 @@ gfx::RenderTargetID renderer::create_render_target(
 		size *= renderer->_viewport_size;
 	}
 
-	if (type == gfx::RenderTarget::TYPE_TEXTURE) {
+	switch (type) {
+	case gfx::RenderTarget::TYPE_TEXTURE: {
 		TOGO_GLCE_X(glGenTextures(1, &render_target.handle));
 		TOGO_ASSERTE(render_target.handle != TEXTURE_HANDLE_NULL);
 
-		GLenum target
+		GLenum const target
 			= spec.properties & gfx::RenderTargetSpec::F_DOUBLE_BUFFERED
 			? GL_TEXTURE_2D_ARRAY
 			: GL_TEXTURE_2D
@@ -442,7 +443,9 @@ gfx::RenderTargetID renderer::create_render_target(
 			));
 		}
 		TOGO_GLCE_X(glBindTexture(target, TEXTURE_HANDLE_NULL));
-	} else if (type == gfx::RenderTarget::TYPE_BUFFER) {
+	}	break;
+
+	case gfx::RenderTarget::TYPE_BUFFER: {
 		TOGO_GLCE_X(glGenRenderbuffers(1, &render_target.handle));
 		TOGO_ASSERTE(render_target.handle != RENDER_BUFFER_HANDLE_NULL);
 		TOGO_GLCE_X(glBindRenderbuffer(GL_RENDERBUFFER, render_target.handle));
@@ -452,6 +455,10 @@ gfx::RenderTargetID renderer::create_render_target(
 			size.x, size.y
 		));
 		TOGO_GLCE_X(glBindRenderbuffer(GL_RENDERBUFFER, RENDER_BUFFER_HANDLE_NULL));
+	}	break;
+
+	default:
+		TOGO_DEBUG_ASSERTE(false);
 	}
 	return resource_array::assign(renderer->_render_targets, render_target).id;
 }
