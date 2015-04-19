@@ -52,6 +52,14 @@ signed main() {
 		++count;
 	}
 
+	// ctor copy
+	FixedArray<u32, 10> ctor_copy{a};
+
+	TOGO_ASSERTE(fixed_array::size(ctor_copy) == fixed_array::size(a));
+	for (u32 i = 0; i < fixed_array::size(ctor_copy); ++i) {
+		TOGO_ASSERTE(ctor_copy[i] == a[i]);
+	}
+
 	// Copy
 	FixedArray<u32, 10> copy{};
 
