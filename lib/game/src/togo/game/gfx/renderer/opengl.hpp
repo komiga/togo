@@ -140,10 +140,10 @@ struct RenderTarget {
 //
 
 static constexpr struct {
-	u32 properties;
 	GLenum color_format;
 	GLenum data_format;
 	GLenum data_type;
+	u32 properties;
 } const g_gl_render_target_format[]{
 	{GL_DEPTH_COMPONENT16, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, TOGO_DT_(DEPTH)},
 	{GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT, TOGO_DT_(DEPTH)},
