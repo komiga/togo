@@ -36,6 +36,8 @@ union ResourceSlot {
 	gfx::ResourceID<R> id;
 	R res;
 	gfx::ResourceHole<R> hole;
+
+	ResourceSlot() {}
 };
 
 namespace {
@@ -80,8 +82,10 @@ struct ResourceArray {
 	{
 		auto* const last = _slots + (NUM_SLOTS - 1);
 		for (auto* slot = _slots; slot != last; ++slot) {
+			slot->id._value = ID_VALUE_NULL;
 			slot->hole.next = slot + 1;
 		}
+		last->id._value = ID_VALUE_NULL;
 		last->hole.next = nullptr;
 	}
 };
