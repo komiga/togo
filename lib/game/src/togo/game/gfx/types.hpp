@@ -292,7 +292,13 @@ struct GeneratorUnit {
 		gfx::RenderObject const* objects_end
 	);
 
+	/// Name hash.
 	gfx::GeneratorNameHash name_hash;
+
+	/// Data index.
+	u32 data_index;
+
+	/// Data.
 	void* data;
 
 	/// Execute the generator.
