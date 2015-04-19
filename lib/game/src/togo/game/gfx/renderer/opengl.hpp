@@ -140,8 +140,8 @@ struct RenderTarget {
 //
 
 static constexpr struct {
-	GLenum color_format;
 	GLenum data_format;
+	GLenum data_layout;
 	GLenum data_type;
 	u32 properties;
 } const g_gl_render_target_format[]{

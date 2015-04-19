@@ -427,18 +427,18 @@ gfx::RenderTargetID renderer::create_render_target(
 		if (target == GL_TEXTURE_2D) {
 			TOGO_GLCE_X(glTexImage2D(
 				target, 0,
-				format_info.color_format,
-				size.x, size.y, 0,
 				format_info.data_format,
+				size.x, size.y, 0,
+				format_info.data_layout,
 				format_info.data_type,
 				nullptr
 			));
 		} else {
 			TOGO_GLCE_X(glTexImage3D(
 				target, 0,
-				format_info.color_format,
-				size.x, size.y, 2, 0,
 				format_info.data_format,
+				size.x, size.y, 2, 0,
+				format_info.data_layout,
 				format_info.data_type,
 				nullptr
 			));
@@ -452,7 +452,7 @@ gfx::RenderTargetID renderer::create_render_target(
 		TOGO_GLCE_X(glBindRenderbuffer(GL_RENDERBUFFER, render_target.handle));
 		TOGO_GLCE_X(glRenderbufferStorage(
 			GL_RENDERBUFFER,
-			format_info.color_format,
+			format_info.data_format,
 			size.x, size.y
 		));
 		TOGO_GLCE_X(glBindRenderbuffer(GL_RENDERBUFFER, RENDER_BUFFER_HANDLE_NULL));
