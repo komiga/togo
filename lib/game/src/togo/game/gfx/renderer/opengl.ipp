@@ -391,15 +391,16 @@ gfx::RenderTargetID renderer::create_render_target(
 	};
 	auto& spec = render_target.spec;
 	auto& format_info = gfx::g_gl_render_target_format[unsigned_cast(spec.format)];
+	spec.properties &= ~gfx::RenderTarget::MASK_EXTENDED;
+	spec.properties |= format_info.properties;
 	auto const type
 		= (
-			format_info.requires_texture ||
-			spec.properties & gfx::RenderTargetSpec::F_DOUBLE_BUFFERED
+			spec.properties & gfx::RenderTargetSpec::F_DOUBLE_BUFFERED ||
+			render_target.data_type() == gfx::RenderTarget::DT_COLOR
 		)
 		? gfx::RenderTarget::TYPE_TEXTURE
 		: gfx::RenderTarget::TYPE_BUFFER
 	;
-	spec.properties &= ~gfx::RenderTarget::MASK_TYPE;
 	spec.properties |= type;
 
 	Vec2 size{spec.dim_x, spec.dim_y};
