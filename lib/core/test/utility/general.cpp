@@ -20,6 +20,11 @@ struct NotEmpty {
 	u8 x;
 };
 
+static_assert(sizeof_empty<Empty>() == 0, "");
+static_assert(sizeof_empty<Empty&>() == 0, "");
+static_assert(sizeof_empty<NotEmpty>() == sizeof(NotEmpty), "");
+static_assert(sizeof_empty<NotEmpty&>() == sizeof(NotEmpty), "");
+
 signed main() {
 	E1 e = E1::A & E1::A;
 	TOGO_ASSERTE(e == E1::A);
@@ -42,9 +47,6 @@ signed main() {
 
 	unsigned a[4];
 	static_assert(array_extent(a) == 4, "");
-
-	static_assert(sizeof_empty<Empty>() == 0, "");
-	static_assert(sizeof_empty<NotEmpty>() == sizeof(NotEmpty), "");
 
 	TOGO_ASSERTE(min(1, 0) == 0 && min(0, 1) == 0);
 	TOGO_ASSERTE(max(1, 0) == 1 && max(0, 1) == 1);
