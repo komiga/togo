@@ -119,7 +119,7 @@ struct RenderTarget {
 		DT_DEPTH_STENCIL,
 		DT_COLOR,
 		SHIFT_P_DATA_TYPE = 16,
-		P_DATA_TYPE = (3 << SHIFT_P_DATA_TYPE),
+		P_DATA_TYPE = 3,
 	};
 
 	gfx::RenderTargetID id;
@@ -131,7 +131,7 @@ struct RenderTarget {
 	}
 
 	unsigned data_type() const {
-		return spec.properties & P_DATA_TYPE;
+		return (spec.properties >> SHIFT_P_DATA_TYPE) & P_DATA_TYPE;
 	}
 };
 
