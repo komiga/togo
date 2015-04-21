@@ -60,7 +60,7 @@ array_extent(T const (U::* const)[N]) noexcept {
 template<class T>
 inline constexpr unsigned
 sizeof_empty() noexcept {
-	return std::is_empty<T>::value ? 0 : sizeof(T);
+	return std::is_empty<remove_ref<T>>::value ? 0 : sizeof(T);
 }
 
 /// @}
