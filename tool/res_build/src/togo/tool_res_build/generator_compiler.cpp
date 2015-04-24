@@ -17,6 +17,7 @@ void generator_compiler::register_standard(
 ) {
 	gfx_compiler::register_generator_compiler(gfx_compiler, generator_compiler::test_proxy);
 	gfx_compiler::register_generator_compiler(gfx_compiler, generator_compiler::clear);
+	gfx_compiler::register_generator_compiler(gfx_compiler, generator_compiler::fullscreen_pass);
 }
 
 } // namespace tool_res_build

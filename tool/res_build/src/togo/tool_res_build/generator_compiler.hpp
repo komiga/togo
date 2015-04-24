@@ -32,6 +32,9 @@ extern GeneratorCompiler const test_proxy;
 /// clear generator compiler.
 extern GeneratorCompiler const clear;
 
+/// fullscreen_pass generator compiler.
+extern GeneratorCompiler const fullscreen_pass;
+
 /** @} */ // end of doc-group tool_res_build_generator_compiler
 
 } // namespace generator_compiler
