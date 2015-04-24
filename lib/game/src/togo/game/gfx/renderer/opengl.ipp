@@ -200,6 +200,16 @@ gfx::Renderer* renderer::create(
 	TOGO_GLCE_X(glGetIntegerv(GL_VIEWPORT, vp));
 	renderer->_viewport_size.x = unsigned_cast(max(0, vp[2]));
 	renderer->_viewport_size.y = unsigned_cast(max(0, vp[3]));
+
+	// Check extensions
+	for (auto const& extension : gl_extensions) {
+		TOGO_ASSERTF(
+			glewIsSupported(extension.name.data),
+			"OpenGL extension '%.*s' is required",
+			extension.name.size, extension.name.data
+		);
+	}
+
 	return renderer;
 }
 

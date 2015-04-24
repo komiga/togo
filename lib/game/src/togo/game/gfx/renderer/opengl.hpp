@@ -17,6 +17,14 @@ namespace togo {
 namespace game {
 namespace gfx {
 
+static struct {
+	StringRef name;
+} const gl_extensions[]{
+	// Widely supported:
+	{"GL_ARB_texture_non_power_of_two"},
+	{"GL_ARB_shading_language_420pack"},
+};
+
 enum : GLuint {
 	BUFFER_HANDLE_NULL = 0,
 	VERTEX_ARRAY_HANDLE_NULL = 0,
