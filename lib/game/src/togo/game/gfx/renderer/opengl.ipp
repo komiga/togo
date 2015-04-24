@@ -643,9 +643,16 @@ gfx::ShaderID renderer::create_shader(
 		// Join sources
 		fixed_array::resize(sources, 1);
 		fixed_array::resize(sources_size, 1);
+		unsigned stage_index = 1;
 		for (StringRef const& stage_source : stage.sources) {
 			fixed_array::push_back(sources, stage_source.data);
 			fixed_array::push_back(sources_size, signed_cast(stage_source.size));
+			TOGO_LOG_DEBUGF(
+				"GL shader source stage %u: ```%.*s```\n",
+				stage_index,
+				stage_source.size, stage_source.data
+			);
+			++stage_index;
 		}
 
 		// Create GL shader
