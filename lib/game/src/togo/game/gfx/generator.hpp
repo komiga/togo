@@ -29,6 +29,7 @@ namespace generator {
 */
 
 extern gfx::GeneratorDef const clear;
+extern gfx::GeneratorDef const fullscreen_pass;
 
 /** @} */ // end of doc-group lib_game_gfx_generator
 

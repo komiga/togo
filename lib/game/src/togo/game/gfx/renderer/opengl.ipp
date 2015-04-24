@@ -210,6 +210,24 @@ gfx::Renderer* renderer::create(
 		);
 	}
 
+	{// Create empty buffer binding
+	gfx::BufferBinding bb{
+		{}, VERTEX_ARRAY_HANDLE_NULL,
+		0, 0, gfx::BufferBinding::F_NONE
+	};
+
+	TOGO_GLCE_X(glGenVertexArrays(1, &bb.va_handle));
+	TOGO_ASSERTE(bb.va_handle != VERTEX_ARRAY_HANDLE_NULL);
+	bind_buffer(renderer, {ID_VALUE_NULL}, GL_ARRAY_BUFFER);
+	bind_buffer(renderer, {ID_VALUE_NULL}, GL_ELEMENT_ARRAY_BUFFER);
+	TOGO_GLCE_X(glBindVertexArray(bb.va_handle));
+	TOGO_GLCE_X(glBindVertexArray(VERTEX_ARRAY_HANDLE_NULL));
+
+	renderer->_impl.empty_buffer_binding = &resource_array::assign(
+		renderer->_buffer_bindings, bb
+	);
+	}
+
 	return renderer;
 }
 
@@ -792,6 +810,23 @@ void renderer::clear_backbuffer(
 	Vec4 const clear_color{0.0f, 0.0f, 0.0f, 1.0f};
 	TOGO_GLCE_X(glClearBufferfv(GL_COLOR, 0, &clear_color.x));
 	TOGO_GLCE_X(glClearBufferfi(GL_DEPTH_STENCIL, 0, 0.0f, 0));
+}
+
+void renderer::render_fullscreen_pass(
+	gfx::Renderer* const renderer,
+	gfx::ShaderID const shader_id,
+	gfx::FramebufferID const framebuffer_id,
+	gfx::RenderTargetID const /*output_id*/
+) {
+	auto prev_framebuffer_id = gfx::renderer::active_framebuffer(renderer);
+	gfx::renderer::bind_framebuffer(renderer, framebuffer_id);
+	// TODO: uniform interface
+	// gfx::renderer::set_uniform(renderer, shader, "u_fs_input", output_id);
+	auto bb = renderer->_impl.empty_buffer_binding;
+	bb->base_vertex = 0;
+	bb->num_vertices = 3;
+	gfx::renderer::render_buffers(renderer, shader_id, 0, nullptr, 1, &bb->id);
+	gfx::renderer::bind_framebuffer(renderer, prev_framebuffer_id);
 }
 
 void renderer::render_buffers(

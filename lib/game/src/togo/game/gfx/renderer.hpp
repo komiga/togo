@@ -250,6 +250,14 @@ void clear_backbuffer(
 	gfx::Renderer* renderer
 );
 
+/// Render a fullscreen pass.
+void render_fullscreen_pass(
+	gfx::Renderer* renderer,
+	gfx::ShaderID shader_id,
+	gfx::FramebufferID framebuffer_id,
+	gfx::RenderTargetID output_id
+);
+
 /// Render buffers.
 void render_buffers(
 	gfx::Renderer* renderer,

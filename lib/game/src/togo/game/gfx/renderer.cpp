@@ -243,6 +243,15 @@ unsigned renderer::execute_command(
 		gfx::renderer::clear_backbuffer(renderer);
 	END_CMD()
 
+	DO_CMD(RenderFullscreenPass)
+		gfx::renderer::render_fullscreen_pass(
+			renderer,
+			d->shader_id,
+			d->framebuffer_id,
+			d->output_id
+		);
+	END_CMD()
+
 	DO_CMD(RenderBuffers)
 		gfx::renderer::render_buffers(
 			renderer,

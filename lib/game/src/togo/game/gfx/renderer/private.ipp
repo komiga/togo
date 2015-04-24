@@ -20,6 +20,7 @@ namespace gfx {
 void renderer::init_base(gfx::Renderer* const renderer) {
 	// Register standard generators
 	gfx::renderer::register_generator_def(renderer, gfx::generator::clear);
+	gfx::renderer::register_generator_def(renderer, gfx::generator::fullscreen_pass);
 }
 
 #define TOGO_GFX_RENDERER_TEARDOWN_RA_(ra, func_destroy)		\

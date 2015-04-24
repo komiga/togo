@@ -33,6 +33,7 @@ namespace gfx {
 enum class CmdType : u8 {
 	Callback,
 	ClearBackbuffer,
+	RenderFullscreenPass,
 	RenderBuffers,
 	RenderWorld,
 };
@@ -54,6 +55,13 @@ TOGO_GFX_CMD(Callback) {
 
 /// renderer::clear_backbuffer() command.
 TOGO_GFX_CMD(ClearBackbuffer) {};
+
+/// renderer::render_fullscreen_pass() command.
+TOGO_GFX_CMD(RenderFullscreenPass) {
+	gfx::ShaderID shader_id;
+	gfx::FramebufferID framebuffer_id;
+	gfx::RenderTargetID output_id;
+};
 
 /// renderer::render_buffers() command.
 TOGO_GFX_CMD(RenderBuffers) {
