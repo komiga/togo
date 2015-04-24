@@ -47,6 +47,11 @@ struct CmdTypeProperties;
 	};																	\
 	struct Cmd ## type_name_
 
+/// Callback command.
+TOGO_GFX_CMD(Callback) {
+	// TODO
+};
+
 /// renderer::clear_backbuffer() command.
 TOGO_GFX_CMD(ClearBackbuffer) {};
 

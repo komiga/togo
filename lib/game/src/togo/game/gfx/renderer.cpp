@@ -223,17 +223,27 @@ unsigned renderer::execute_command(
 	gfx::CmdType const type,
 	void const* const data
 ) {
+	#define DO_CMD(name) \
+		case gfx::CmdType:: name: { \
+			auto* d = static_cast<gfx::Cmd ## name const*>(data); \
+
+	#define END_CMD() \
+			return sizeof_empty<remove_ref<decltype(*d)>>(); \
+		}
+
 	switch (type) {
-	case gfx::CmdType::Callback:
+	DO_CMD(Callback)
 		// TODO
-		return 0;
+		(void)d;
+		TOGO_ASSERTE(false);
+	END_CMD()
 
-	case gfx::CmdType::ClearBackbuffer:
+	DO_CMD(ClearBackbuffer)
+		(void)d;
 		gfx::renderer::clear_backbuffer(renderer);
-		return 0;
+	END_CMD()
 
-	case gfx::CmdType::RenderBuffers: {
-		auto* d = static_cast<gfx::CmdRenderBuffers const*>(data);
+	DO_CMD(RenderBuffers)
 		gfx::renderer::render_buffers(
 			renderer,
 			d->shader_id,
@@ -242,20 +252,20 @@ unsigned renderer::execute_command(
 			d->num_buffers,
 			d->buffers
 		);
-		return sizeof(*d);
-	}
+	END_CMD()
 
-	case gfx::CmdType::RenderWorld: {
-		auto* d = static_cast<gfx::CmdRenderWorld const*>(data);
+	DO_CMD(RenderWorld)
 		gfx::renderer::render_world(
 			renderer,
 			d->world_id,
 			d->camera_id,
 			d->viewport_name_hash
 		);
-		return sizeof(*d);
+	END_CMD()
 	}
-	}
+	#undef DO_CMD
+	#undef END_CMD
+
 	TOGO_ASSERTE(false);
 }
 
