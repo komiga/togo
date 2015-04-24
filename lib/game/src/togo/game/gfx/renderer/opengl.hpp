@@ -8,6 +8,7 @@
 #include <togo/game/config.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/log/log.hpp>
+#include <togo/core/collection/types.hpp>
 #include <togo/game/gfx/types.hpp>
 
 #include <GL/glew.h>
@@ -22,6 +23,7 @@ enum : GLuint {
 	TEXTURE_HANDLE_NULL = 0,
 	RENDER_BUFFER_HANDLE_NULL = 0,
 	PROGRAM_HANDLE_NULL = 0,
+	FRAMEBUFFER_HANDLE_NULL = 0,
 };
 
 enum : GLint {
@@ -134,6 +136,11 @@ struct RenderTarget {
 		return (spec.properties >> SHIFT_P_DATA_TYPE) & P_DATA_TYPE;
 	}
 };
+static constexpr GLenum const gl_rt_attachment_for_data_type[]{
+	GL_DEPTH_ATTACHMENT,
+	GL_DEPTH_STENCIL_ATTACHMENT,
+	GL_COLOR_ATTACHMENT0,
+};
 
 #define TOGO_DT_(name) \
 	(gfx::RenderTarget::DT_ ## name << gfx::RenderTarget::SHIFT_P_DATA_TYPE)
@@ -159,6 +166,13 @@ static_assert(
 	== unsigned_cast(gfx::RenderTargetFormat::NUM),
 	""
 );
+
+struct Framebuffer {
+	gfx::FramebufferID id;
+	GLuint handle;
+	FixedArray<gfx::RenderTargetID, 4> color_targets;
+	gfx::RenderTargetID ds_target;
+};
 
 struct Uniform {
 	gfx::UniformID id;

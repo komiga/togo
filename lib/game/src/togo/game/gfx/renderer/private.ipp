@@ -38,6 +38,7 @@ void renderer::teardown_base(gfx::Renderer* const renderer) {
 	TOGO_GFX_RENDERER_TEARDOWN_RA_(_buffer_bindings, destroy_buffer_binding);
 	//TOGO_GFX_RENDERER_TEARDOWN_RA_(_textures, destroy_texture);
 	TOGO_GFX_RENDERER_TEARDOWN_RA_(_render_targets, destroy_render_target);
+	TOGO_GFX_RENDERER_TEARDOWN_RA_(_framebuffers, destroy_framebuffer);
 	//TOGO_GFX_RENDERER_TEARDOWN_RA_(_uniforms, destroy_uniform);
 	TOGO_GFX_RENDERER_TEARDOWN_RA_(_shaders, destroy_shader);
 	for (auto& pb_name_hash : renderer->_fixed_param_blocks) {

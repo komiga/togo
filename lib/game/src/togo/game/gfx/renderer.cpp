@@ -36,6 +36,7 @@ Renderer::Renderer(
 	: _allocator(&allocator)
 	, _impl(impl)
 	, _viewport_size(1, 1)
+	, _active_framebuffer_id({gfx::ID_VALUE_NULL})
 	, _shader_stage(allocator)
 	, _num_active_draw_param_blocks(0)
 	, _fixed_param_blocks()
@@ -95,6 +96,20 @@ gfx::GeneratorDef const* renderer::find_generator_def(
 /// Get viewport size.
 UVec2 renderer::viewport_size(gfx::Renderer* const renderer) {
 	return renderer->_viewport_size;
+}
+
+gfx::FramebufferID renderer::active_framebuffer(
+	gfx::Renderer* const renderer
+) {
+	return renderer->_active_framebuffer_id;
+}
+
+/// Get a shared render target.
+gfx::RenderTargetID renderer::shared_render_target(
+	gfx::Renderer* const renderer,
+	unsigned const index
+) {
+	return renderer->_shared_rts[index];
 }
 
 static void process_work(

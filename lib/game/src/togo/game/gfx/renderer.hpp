@@ -162,6 +162,39 @@ void destroy_render_target(
 	gfx::RenderTargetID id
 );
 
+/// Create framebuffer.
+///
+/// depth_stencil_target may be invalid.
+///
+/// An assertion will fail if the framebuffer could not be created.
+gfx::FramebufferID create_framebuffer(
+	gfx::Renderer* renderer,
+	unsigned num_color_targets,
+	gfx::RenderTargetID const* color_targets,
+	gfx::RenderTargetID depth_stencil_target
+);
+
+/// Destroy framebuffer.
+void destroy_framebuffer(
+	gfx::Renderer* renderer,
+	gfx::FramebufferID id
+);
+
+/// Active framebuffer.
+///
+/// If the default framebuffer is bound, this returns an invalid ID.
+gfx::FramebufferID active_framebuffer(
+	gfx::Renderer* renderer
+);
+
+/// Bind framebuffer.
+///
+/// If id is invalid, the default framebuffer is bound.
+void bind_framebuffer(
+	gfx::Renderer* renderer,
+	gfx::FramebufferID id
+);
+
 /// Create shader.
 ///
 /// An assertion will fail if the shader could not be created.

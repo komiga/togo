@@ -488,6 +488,123 @@ void renderer::destroy_render_target(
 	resource_array::free(renderer->_render_targets, render_target);
 }
 
+static unsigned attach_render_target(
+	gfx::RenderTarget const& rt,
+	unsigned const index
+) {
+	GLenum const attachment = gfx::gl_rt_attachment_for_data_type[rt.data_type()] + index;
+	switch (rt.spec.properties & gfx::RenderTarget::MASK_TYPE) {
+	case gfx::RenderTarget::TYPE_TEXTURE:
+		if (rt.spec.properties & gfx::RenderTargetSpec::F_DOUBLE_BUFFERED) {
+			TOGO_GLCE_X(glFramebufferTextureLayer(
+				GL_FRAMEBUFFER, attachment, rt.handle, 0, 0
+			));
+			TOGO_GLCE_X(glFramebufferTextureLayer(
+				GL_FRAMEBUFFER, attachment + 1, rt.handle, 0, 1
+			));
+			return 2;
+		} else {
+			TOGO_GLCE_X(glFramebufferTexture2D(
+				GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, rt.handle, 0
+			));
+			return 1;
+		}
+		break;
+
+	case gfx::RenderTarget::TYPE_BUFFER:
+		TOGO_GLCE_X(glFramebufferRenderbuffer(
+			GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, rt.handle
+		));
+		return 1;
+	}
+	TOGO_ASSERTE(false);
+	return 0;
+}
+
+gfx::FramebufferID renderer::create_framebuffer(
+	gfx::Renderer* renderer,
+	unsigned num_color_targets,
+	gfx::RenderTargetID const* color_targets,
+	gfx::RenderTargetID ds_target_id
+) {
+	TOGO_ASSERT(
+		num_color_targets > 0 || ds_target_id.valid(),
+		"framebuffer must have at least one color target or a depth-stencil target"
+	);
+
+	gfx::Framebuffer framebuffer{
+		{}, FRAMEBUFFER_HANDLE_NULL,
+		{}, {}
+	};
+	TOGO_GLCE_X(glGenFramebuffers(1, &framebuffer.handle));
+	TOGO_ASSERTE(framebuffer.handle != FRAMEBUFFER_HANDLE_NULL);
+	TOGO_GLCE_X(glBindFramebuffer(GL_FRAMEBUFFER, framebuffer.handle));
+
+	{// Bind color targets
+	unsigned binding_index = 0;
+	for (auto id : array_cref(num_color_targets, color_targets)) {
+		TOGO_ASSERTE(id.valid());
+		auto& render_target = resource_array::get(renderer->_render_targets, id);
+		TOGO_ASSERT(render_target.id == id, "invalid render target ID");
+		TOGO_ASSERT(
+			render_target.data_type() == gfx::RenderTarget::DT_COLOR,
+			"specified color target does not store color data"
+		);
+		fixed_array::push_back(framebuffer.color_targets, id);
+		binding_index += attach_render_target(render_target, binding_index);
+	}}
+
+	// Bind depth-stencil target
+	if (ds_target_id.valid()) {
+		auto& ds_target = resource_array::get(renderer->_render_targets, ds_target_id);
+		TOGO_ASSERT(ds_target.id == ds_target_id, "invalid render target ID");
+		TOGO_ASSERT(
+			ds_target.data_type() != gfx::RenderTarget::DT_COLOR,
+			"specified depth-stencil target does not store depth and/or stencil data"
+		);
+		framebuffer.ds_target = ds_target_id;
+		attach_render_target(ds_target, 0);
+	}
+
+	{// Check completeness
+	GLenum status;
+	TOGO_GLCE_X(status = glCheckFramebufferStatus(GL_FRAMEBUFFER));
+	TOGO_ASSERT(status == GL_FRAMEBUFFER_COMPLETE, "framebuffer is incomplete");
+	}
+
+	TOGO_GLCE_X(glBindFramebuffer(GL_FRAMEBUFFER, FRAMEBUFFER_HANDLE_NULL));
+	return resource_array::assign(renderer->_framebuffers, framebuffer).id;
+}
+
+void renderer::destroy_framebuffer(
+	gfx::Renderer* const renderer,
+	gfx::FramebufferID const id
+) {
+	auto& framebuffer = resource_array::get(renderer->_framebuffers, id);
+	TOGO_ASSERT(framebuffer.id == id, "invalid framebuffer ID");
+	if (id == renderer->_active_framebuffer_id) {
+		renderer::bind_framebuffer(renderer, {ID_VALUE_NULL});
+	}
+	TOGO_GLCE_X(glDeleteFramebuffers(1, &framebuffer.handle));
+	resource_array::free(renderer->_framebuffers, framebuffer);
+}
+
+void renderer::bind_framebuffer(
+	gfx::Renderer* const renderer,
+	gfx::FramebufferID const id
+) {
+	if (id == renderer->_active_framebuffer_id) {
+		return;
+	} else if (id.valid()) {
+		auto& framebuffer = resource_array::get(renderer->_framebuffers, id);
+		TOGO_ASSERT(framebuffer.id == id, "invalid framebuffer ID");
+		TOGO_GLCE_X(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.handle));
+	} else {
+		TOGO_GLCE_X(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FRAMEBUFFER_HANDLE_NULL));
+	}
+	renderer->_active_framebuffer_id = id;
+}
+
 gfx::ShaderID renderer::create_shader(
 	gfx::Renderer* const renderer,
 	gfx::ShaderSpec const& spec

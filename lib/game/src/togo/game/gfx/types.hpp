@@ -131,6 +131,7 @@ struct Display;
 #define TOGO_GFX_NUM_BUFFER_BINDINGS 2048
 #define TOGO_GFX_NUM_TEXTURES 2048
 #define TOGO_GFX_NUM_RENDER_TARGETS 64
+#define TOGO_GFX_NUM_FRAMEBUFFERS 64
 #define TOGO_GFX_NUM_UNIFORMS 64
 #define TOGO_GFX_NUM_SHADERS 128
 #define TOGO_GFX_NUM_NODES 4
@@ -171,6 +172,7 @@ struct Buffer;
 struct BufferBinding;
 struct Texture;
 struct RenderTarget;
+struct Framebuffer;
 struct Uniform;
 struct Shader;
 
@@ -195,6 +197,9 @@ using TextureID = gfx::ResourceID<gfx::Texture>;
 
 /// Render target ID.
 using RenderTargetID = gfx::ResourceID<gfx::RenderTarget>;
+
+/// Render target binding ID.
+using FramebufferID = gfx::ResourceID<gfx::Framebuffer>;
 
 /// Uniform ID.
 using UniformID = gfx::ResourceID<gfx::Uniform>;

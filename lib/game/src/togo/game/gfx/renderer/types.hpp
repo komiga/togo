@@ -96,6 +96,8 @@ struct Renderer {
 	gfx::RendererImpl _impl;
 
 	UVec2 _viewport_size;
+	gfx::FramebufferID _active_framebuffer_id;
+
 	gfx::ShaderDef _shader_stage;
 	unsigned _num_active_draw_param_blocks;
 	gfx::ParamBlockNameHash _fixed_param_blocks[TOGO_GFX_NUM_PARAM_BLOCKS_BY_KIND];
@@ -117,6 +119,7 @@ struct Renderer {
 	gfx::ResourceArray<gfx::BufferBinding, TOGO_GFX_NUM_BUFFER_BINDINGS> _buffer_bindings;
 	gfx::ResourceArray<gfx::Texture, TOGO_GFX_NUM_TEXTURES> _textures;
 	gfx::ResourceArray<gfx::RenderTarget, TOGO_GFX_NUM_RENDER_TARGETS> _render_targets;
+	gfx::ResourceArray<gfx::Framebuffer, TOGO_GFX_NUM_FRAMEBUFFERS> _framebuffers;
 	gfx::ResourceArray<gfx::Uniform, TOGO_GFX_NUM_UNIFORMS> _uniforms;
 	gfx::ResourceArray<gfx::Shader, TOGO_GFX_NUM_SHADERS> _shaders;
 
