@@ -372,6 +372,9 @@ gfx::BufferBindingID renderer::create_buffer_binding(
 			++attrib_index;
 		}
 	}}
+	bind_buffer(renderer, {ID_VALUE_NULL}, GL_ARRAY_BUFFER);
+	bind_buffer(renderer, {ID_VALUE_NULL}, GL_ELEMENT_ARRAY_BUFFER);
+
 	return resource_array::assign(renderer->_buffer_bindings, bb).id;
 }
 
@@ -479,7 +482,7 @@ void renderer::destroy_render_target(
 	gfx::RenderTargetID const id
 ) {
 	auto& render_target = resource_array::get(renderer->_render_targets, id);
-	TOGO_ASSERT(render_target.id == id, "invalid render_target ID");
+	TOGO_ASSERT(render_target.id == id, "invalid render target ID");
 
 	auto const& spec = render_target.spec;
 	switch (spec.properties & gfx::RenderTarget::MASK_TYPE) {
