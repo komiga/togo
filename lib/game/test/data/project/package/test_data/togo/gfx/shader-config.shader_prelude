@@ -13,9 +13,12 @@ Fixed param blocks can be indexed non-sequentially in [0, 15].
 The renderer pre-defines fixed param blocks in [14, 15].
 */
 shared_source = ```
-	#extension GL_ARB_shading_language_420pack : enable
+	#extension GL_ARB_shading_language_420pack : require
 
-	layout(std140) uniform;
+	precision highp int;
+	precision highp float;
+	layout(std140, column_major) uniform;
+
 	#define s32 int
 	#define u32 uint
 	#define f32 float
