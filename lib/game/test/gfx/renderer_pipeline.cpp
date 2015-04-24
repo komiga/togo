@@ -84,6 +84,15 @@ void gen_test_proxy_destroy(
 	TOGO_DESTROY(memory::default_allocator(), data);
 }
 
+void gen_test_proxy_read(
+	gfx::GeneratorDef const& def,
+	gfx::Renderer* /*renderer*/,
+	BinaryInputSerializer& /*ser*/,
+	gfx::GeneratorUnit& unit
+) {
+	unit.data = def.data;
+}
+
 void gen_test_proxy_exec(
 	gfx::GeneratorUnit const& unit,
 	gfx::RenderNode& node,
@@ -102,16 +111,6 @@ void gen_test_proxy_exec(
 			nullptr, &data->binding
 		}
 	);
-}
-
-void gen_test_proxy_read(
-	gfx::GeneratorDef const& def,
-	gfx::Renderer* /*renderer*/,
-	BinaryInputSerializer& /*ser*/,
-	gfx::GeneratorUnit& unit
-) {
-	unit.func_exec = gen_test_proxy_exec;
-	unit.data = def.data;
 }
 
 struct TestAppData {
@@ -134,7 +133,8 @@ void TestAppModel::init(TestApp& app) {
 			nullptr,
 			gen_test_proxy_init,
 			gen_test_proxy_destroy,
-			gen_test_proxy_read
+			gen_test_proxy_read,
+			gen_test_proxy_exec
 		}
 	);
 	auto* render_config = resource::load_render_config(
