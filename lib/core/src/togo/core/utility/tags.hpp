@@ -20,6 +20,9 @@ namespace togo {
 
 /** @name Variation/placeholder tags */ /// @{
 
+/// No-initialize constructor tag.
+enum class no_init_tag {};
+
 /// Null value tag.
 enum class null_tag {};
 
