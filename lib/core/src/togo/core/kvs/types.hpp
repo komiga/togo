@@ -65,7 +65,7 @@ enum class KVSType : u32 {
 	vec4		= 1 << 8,
 	/// Ordered collection of unnamed values.
 	array		= 1 << 9,
-	/// Collection of named values.
+	/// Ordered collection of named values (non-unique).
 	node		= 1 << 10,
 };
 
@@ -118,11 +118,12 @@ struct KVS {
 
 	~KVS();
 
-public:
 	KVS();
+	KVS(no_init_tag const);
 	KVS(KVS const& other);
 	KVS(KVS&& other);
 
+	KVS(KVSType const type, no_init_tag const);
 	KVS(KVSType const type);
 
 // value ctors

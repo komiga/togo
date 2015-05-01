@@ -378,6 +378,14 @@ inline KVS::~KVS() {
 	kvs::clear_name(*this);
 }
 
+/// Construct to type with no value initialization.
+inline KVS::KVS(KVSType const type, no_init_tag const)
+	: _type(type)
+	, _name_size(0)
+	, _name_hash(KVS_NAME_NULL)
+	, _name(nullptr)
+{}
+
 /// Construct to type.
 inline KVS::KVS(KVSType const type)
 	: _type(type)
@@ -387,39 +395,44 @@ inline KVS::KVS(KVSType const type)
 	, _value()
 {}
 
+/// Construct null with no value initialization.
+inline KVS::KVS(no_init_tag const)
+	: KVS(KVSType::null, no_init_tag{})
+{}
+
 /// Construct null.
 inline KVS::KVS()
 	: KVS(KVSType::null)
 {}
 
-inline KVS::KVS(KVS const& other) : KVS() { kvs::copy(*this, other); }
+inline KVS::KVS(KVS const& other) : KVS(no_init_tag{}) { kvs::copy(*this, other); }
 
 /// Construct with integer value.
-inline KVS::KVS(s64 const value) : KVS(KVSType::integer) { _value.integer = value; }
+inline KVS::KVS(s64 const value) : KVS(KVSType::integer, no_init_tag{}) { _value.integer = value; }
 
 /// Construct with integer value.
-inline KVS::KVS(s32 const value) : KVS(KVSType::integer) { _value.integer = value; }
+inline KVS::KVS(s32 const value) : KVS(KVSType::integer, no_init_tag{}) { _value.integer = value; }
 
 /// Construct with decimal value.
-inline KVS::KVS(f64 const value) : KVS(KVSType::decimal) { _value.decimal = value; }
+inline KVS::KVS(f64 const value) : KVS(KVSType::decimal, no_init_tag{}) { _value.decimal = value; }
 
 /// Construct with boolean value.
-inline KVS::KVS(bool const value, bool_tag const) : KVS(KVSType::boolean) { _value.boolean = value; }
+inline KVS::KVS(bool const value, bool_tag const) : KVS(KVSType::boolean, no_init_tag{}) { _value.boolean = value; }
 
 /// Construct with string value.
-inline KVS::KVS(StringRef const& value) : KVS() { kvs::string(*this, value); }
+inline KVS::KVS(StringRef const& value) : KVS(no_init_tag{}) { kvs::string(*this, value); }
 
 /// Construct with 1-dimensional vector value.
-inline KVS::KVS(Vec1 const& value) : KVS(KVSType::vec1) { _value.vec1 = value; }
+inline KVS::KVS(Vec1 const& value) : KVS(KVSType::vec1, no_init_tag{}) { _value.vec1 = value; }
 
 /// Construct with 2-dimensional vector value.
-inline KVS::KVS(Vec2 const& value) : KVS(KVSType::vec2) { _value.vec2 = value; }
+inline KVS::KVS(Vec2 const& value) : KVS(KVSType::vec2, no_init_tag{}) { _value.vec2 = value; }
 
 /// Construct with 3-dimensional vector value.
-inline KVS::KVS(Vec3 const& value) : KVS(KVSType::vec3) { _value.vec3 = value; }
+inline KVS::KVS(Vec3 const& value) : KVS(KVSType::vec3, no_init_tag{}) { _value.vec3 = value; }
 
 /// Construct with 4-dimensional vector value.
-inline KVS::KVS(Vec4 const& value) : KVS(KVSType::vec4) { _value.vec4 = value; }
+inline KVS::KVS(Vec4 const& value) : KVS(KVSType::vec4, no_init_tag{}) { _value.vec4 = value; }
 
 /// Construct with name and null value.
 inline KVS::KVS(StringRef const& name, null_tag const) : KVS() { kvs::set_name(*this, name); }
