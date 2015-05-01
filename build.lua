@@ -328,6 +328,4 @@ end
 
 precore.apply_global({
 	"togo.test.opt",
-	"togo.lib.game.renderer.opt",
-	"togo.lib.game.gfx-backend.opt",
 })

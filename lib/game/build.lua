@@ -130,3 +130,8 @@ precore.append_config_scoped("togo.projects", {
 		"togo.lib.game.dep",
 	})
 end}})
+
+precore.apply_global({
+	"togo.lib.game.renderer.opt",
+	"togo.lib.game.gfx-backend.opt",
+})
