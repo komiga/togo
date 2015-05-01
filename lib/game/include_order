@@ -15,20 +15,20 @@ return {
 			N("sdl_common"),
 			N("sdl"),
 		}),
-	}),
-	M("display", {
-		I("display", {
-			N("glfw"),
-			N("sdl"),
+		N("display", {
+			I("display", {
+				N("glfw"),
+				N("sdl"),
+			}),
 		}),
-	}),
-	M("command"),
-	M("generator"),
-	M("render_node"),
-	M("shader_def"),
-	M("renderer", {
-		I("renderer", {
-			N("opengl"),
+		N("command"),
+		N("generator"),
+		N("render_node"),
+		N("shader_def"),
+		N("renderer", {
+			I("renderer", {
+				N("opengl"),
+			}),
 		}),
 	}),
 	M("input", {
