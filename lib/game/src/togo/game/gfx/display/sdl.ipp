@@ -56,7 +56,7 @@ gfx::Display* display::create(
 	}
 
 	if (share_with) {
-		gfx::display::make_current(share_with);
+		gfx::display::bind_context(share_with);
 	}
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(
 		SDL_GL_SHARE_WITH_CURRENT_CONTEXT,
@@ -93,8 +93,12 @@ void display::set_swap_mode(gfx::Display* display, gfx::DisplaySwapMode mode) {
 	case gfx::DisplaySwapMode::immediate:		interval = 0; break;
 	case gfx::DisplaySwapMode::wait_refresh:	interval = 1; break;
 	}
-	display::make_current(display);
+	display::bind_context(display);
 	TOGO_SDL_CHECK(SDL_GL_SetSwapInterval(interval));
+	return;
+
+sdl_error:
+	TOGO_ASSERTF(false, "failed to set display swap mode: %s", SDL_GetError());
 }
 
 void display::bind_context(gfx::Display* display) {
