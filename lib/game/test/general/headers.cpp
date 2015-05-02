@@ -12,9 +12,9 @@
 #include <togo/game/gfx/command.hpp>
 #include <togo/game/gfx/generator.hpp>
 #include <togo/game/gfx/render_node.hpp>
+#include <togo/game/gfx/shader_def.hpp>
 #include <togo/game/gfx/renderer.hpp>
 #include <togo/game/gfx/renderer/types.hpp>
-#include <togo/game/gfx/shader_def.hpp>
 #include <togo/game/input/types.hpp>
 #include <togo/game/input/input.hpp>
 #include <togo/game/input/input_buffer.hpp>

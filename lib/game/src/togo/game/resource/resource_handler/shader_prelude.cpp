@@ -10,9 +10,9 @@
 #include <togo/core/serialization/serializer.hpp>
 #include <togo/core/serialization/binary_serializer.hpp>
 #include <togo/game/gfx/types.hpp>
+#include <togo/game/gfx/shader_def.hpp>
 #include <togo/game/gfx/renderer.hpp>
 #include <togo/game/gfx/renderer/types.hpp>
-#include <togo/game/gfx/shader_def.hpp>
 #include <togo/game/resource/types.hpp>
 #include <togo/game/resource/resource.hpp>
 #include <togo/game/resource/resource_handler.hpp>
