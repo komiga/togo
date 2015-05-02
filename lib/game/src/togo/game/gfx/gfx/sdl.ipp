@@ -23,7 +23,7 @@ namespace {
 	};
 } // anonymous namespace
 
-void gfx::init(
+void gfx::init_impl(
 	unsigned context_major,
 	unsigned context_minor
 ) {
@@ -41,7 +41,7 @@ sdl_error:
 	TOGO_ASSERTF(false, "failed to initialize graphics backend: %s", SDL_GetError());
 }
 
-void gfx::shutdown() {
+void gfx::shutdown_impl() {
 	SDL_Quit();
 }
 
