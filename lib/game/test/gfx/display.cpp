@@ -56,6 +56,7 @@ signed main() {
 			gfx::display::set_mouse_lock(display, mouse_lock);
 			TOGO_LOG("mouse lock toggled\n");
 		}
+		gfx::display::swap_buffers(display);
 		system::sleep_ms(50);
 	}
 	input_buffer::remove_display(ib, display);
