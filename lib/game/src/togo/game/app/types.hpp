@@ -13,10 +13,11 @@
 #include <togo/game/config.hpp>
 #include <togo/core/utility/types.hpp>
 #include <togo/core/threading/types.hpp>
+#include <togo/window/window/types.hpp>
+#include <togo/window/input/types.hpp>
 #include <togo/game/entity/types.hpp>
 #include <togo/game/world/types.hpp>
 #include <togo/game/gfx/types.hpp>
-#include <togo/game/input/types.hpp>
 #include <togo/game/resource/types.hpp>
 
 namespace togo {
@@ -62,7 +63,7 @@ struct AppBase {
 	EntityManager entity_manager;
 	WorldManager world_manager;
 
-	gfx::Display* display;
+	Window* window;
 	InputBuffer input_buffer;
 	gfx::Renderer* renderer;
 

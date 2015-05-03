@@ -9,12 +9,12 @@
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/system/system.hpp>
 #include <togo/core/threading/task_manager.hpp>
+#include <togo/window/window/window.hpp>
+#include <togo/window/input/input_buffer.hpp>
 #include <togo/game/entity/entity_manager.hpp>
 #include <togo/game/world/world_manager.hpp>
 #include <togo/game/gfx/gfx.hpp>
-#include <togo/game/gfx/display.hpp>
 #include <togo/game/gfx/renderer.hpp>
-#include <togo/game/input/input_buffer.hpp>
 #include <togo/game/resource/resource_handler.hpp>
 #include <togo/game/resource/resource_manager.hpp>
 #include <togo/game/app/types.hpp>
@@ -60,7 +60,7 @@ AppBase::AppBase(
 	)
 	, entity_manager(memory::default_allocator())
 	, world_manager(memory::default_allocator())
-	, display(nullptr)
+	, window(nullptr)
 	, input_buffer(memory::default_allocator())
 	, renderer(nullptr)
 	, _update_freq(update_freq)
@@ -83,25 +83,25 @@ void app::actual_init(AppBase& app) {
 	TOGO_LOG("App: initializing\n");
 
 	// Initialize graphics
-	gfx::init(3, 3);
-	gfx::DisplayConfig config{};
+	window::init(3, 3);
+	WindowConfig config{};
 	config.color_bits = {8, 8, 8, 0};
 	config.depth_bits = 16;
 	config.stencil_bits = 0;
 	config.msaa_num_buffers = 0;
 	config.msaa_num_samples = 0;
-	config.flags = gfx::DisplayConfigFlags::double_buffered;
-	app.display = gfx::display::create(
-		"togo display",
+	config.flags = WindowConfigFlags::double_buffered;
+	app.window = window::create(
+		"togo window",
 		UVec2{1024, 768},
-		gfx::DisplayFlags::borderless |
-		gfx::DisplayFlags::resizable,
+		WindowFlags::borderless |
+		WindowFlags::resizable,
 		config,
 		nullptr,
 		memory::default_allocator()
 	);
-	input_buffer::add_display(app.input_buffer, app.display);
-	gfx::display::set_mouse_lock(app.display, false);
+	input_buffer::add_window(app.input_buffer, app.window);
+	window::set_mouse_lock(app.window, false);
 	app.renderer = gfx::renderer::create(
 		memory::default_allocator()
 	);
@@ -135,10 +135,10 @@ void app::shutdown() {
 	resource_manager::clear_resources(app.resource_manager);
 	gfx::renderer::destroy(app.renderer);
 	app.renderer = nullptr;
-	input_buffer::remove_display(app.input_buffer, app.display);
-	gfx::display::destroy(app.display);
-	app.display = nullptr;
-	gfx::shutdown();
+	input_buffer::remove_window(app.input_buffer, app.window);
+	window::destroy(app.window);
+	app.window = nullptr;
+	window::shutdown();
 	resource_manager::clear_packages(app.resource_manager);
 	resource_manager::clear_handlers(app.resource_manager);
 
@@ -154,18 +154,18 @@ void app::update(AppBase& app, float dt) {
 	InputEvent const* event = nullptr;
 	input_buffer::update(app.input_buffer);
 	while (input_buffer::poll(app.input_buffer, event_type, event)) {
-		if (event->display != app.display) {
+		if (event->window != app.window) {
 			continue;
 		}
 		switch (event_type) {
-		case InputEventType::display_close_request:
+		case InputEventType::window_close_request:
 			app::quit();
 			break;
 
-		case InputEventType::display_resize:
+		case InputEventType::window_resize:
 			gfx::renderer::set_viewport_size(
 				app.renderer,
-				event->display_resize.new_size
+				event->window_resize.new_size
 			);
 			break;
 
@@ -178,14 +178,14 @@ void app::update(AppBase& app, float dt) {
 
 IGEN_PRIVATE
 void app::render(AppBase& app) {
-	gfx::display::unbind_context();
+	window::unbind_context();
 	TaskID const work_task_id = gfx::renderer::begin_frame(
-		app.renderer, app.task_manager, app.display
+		app.renderer, app.task_manager, app.window
 	);
 	app._func_render(app);
 	gfx::renderer::end_frame(app.renderer);
 	task_manager::wait(app.task_manager, work_task_id);
-	gfx::display::bind_context(app.display);
+	window::bind_context(app.window);
 }
 
 /// Run the application.

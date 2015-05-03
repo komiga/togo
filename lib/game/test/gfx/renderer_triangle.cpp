@@ -3,15 +3,15 @@
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/math/math.hpp>
 #include <togo/core/log/log.hpp>
+#include <togo/window/window/window.hpp>
+#include <togo/window/input/input.hpp>
 #include <togo/game/gfx/types.hpp>
 #include <togo/game/gfx/gfx.hpp>
-#include <togo/game/gfx/display.hpp>
 #include <togo/game/gfx/command.hpp>
 #include <togo/game/gfx/renderer.hpp>
 #include <togo/game/gfx/renderer/types.hpp>
 #include <togo/game/gfx/renderer/private.hpp>
 #include <togo/game/gfx/renderer/opengl.hpp>
-#include <togo/game/input/input.hpp>
 #include <togo/game/resource/types.hpp>
 #include <togo/game/resource/resource_handler.hpp>
 #include <togo/game/resource/resource_manager.hpp>
@@ -70,7 +70,7 @@ using TestAppModel = AppModel<TestAppData>;
 template<>
 void TestAppModel::init(TestApp& app) {
 	resource_manager::add_package(app.resource_manager, "test_data");
-	gfx::display::set_swap_mode(app.display, gfx::DisplaySwapMode::wait_refresh);
+	window::set_swap_mode(app.window, WindowSwapMode::wait_refresh);
 
 	app.data.osc_paused = false;
 
@@ -138,10 +138,10 @@ f32 usin(f32 x) {
 
 template<>
 void TestAppModel::update(TestApp& app, float dt) {
-	if (input::key_released(app.display, KeyCode::space)) {
+	if (input::key_released(app.window, KeyCode::space)) {
 		app.data.osc_paused = !app.data.osc_paused;
 	}
-	if (input::key_released(app.display, KeyCode::escape)) {
+	if (input::key_released(app.window, KeyCode::escape)) {
 		app::quit();
 	}
 
@@ -156,9 +156,9 @@ void TestAppModel::update(TestApp& app, float dt) {
 	}
 
 	// Update p_color_factors
-	Vec2 const mp = input::mouse_position(app.display);
-	Vec2 const display_size = gfx::display::size(app.display);
-	app.data.p_color_factors.rg_gb = mp / display_size;
+	Vec2 const mp = input::mouse_position(app.window);
+	Vec2 const window_size = window::size(app.window);
+	app.data.p_color_factors.rg_gb = mp / window_size;
 
 	gfx::renderer::map_buffer(
 		app.renderer,

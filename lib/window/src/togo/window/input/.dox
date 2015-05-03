@@ -1,0 +1,17 @@
+
+/**
+
+@defgroup lib_window_input Input
+@ingroup lib_window
+@details
+
+Due to the behavior of some backends, there should only be
+one InputBuffer in use. Events for windows that have not been added
+to the window system will be discarded.
+
+The SDL backend may report events to the wrong window due to
+SDL implementation quirks. Keyboard events that do not have a valid
+windowID will be reported as having come from the first window in the
+input buffer (hopefully the primary window).
+
+*/

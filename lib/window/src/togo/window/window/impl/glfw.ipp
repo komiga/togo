@@ -1,44 +1,63 @@
-#line 2 "togo/game/gfx/display/glfw.ipp"
+#line 2 "togo/window/window/impl/glfw.ipp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
-#include <togo/game/config.hpp>
+#include <togo/window/config.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/io/object_buffer.hpp>
-#include <togo/game/gfx/gfx/glfw_common.hpp>
-#include <togo/game/gfx/display.hpp>
-#include <togo/game/gfx/display/types.hpp>
-#include <togo/game/gfx/display/private.hpp>
-#include <togo/game/gfx/display/glfw.hpp>
-#include <togo/game/input/types.hpp>
+#include <togo/window/window/window.hpp>
+#include <togo/window/window/impl/types.hpp>
+#include <togo/window/window/impl/private.hpp>
+#include <togo/window/window/impl/glfw.hpp>
+#include <togo/window/window/impl/opengl.hpp>
+#include <togo/window/input/types.hpp>
 
 #include <GLFW/glfw3.h>
 
 #include <cmath>
 
 namespace togo {
-namespace game {
-namespace gfx {
 
-gfx::Display* display::create(
+void window::init_impl(
+	unsigned context_major,
+	unsigned context_minor
+) {
+	TOGO_GLFW_CHECK(glfwInit());
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, context_major);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, context_minor);
+	if (context_major >= 3) {
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	}
+	return;
+
+glfw_error:
+	TOGO_ASSERT(false, "failed to initialize window backend\n");
+}
+
+void window::shutdown_impl() {
+	glfwTerminate();
+}
+
+Window* window::create(
 	char const* title,
 	UVec2 size,
-	gfx::DisplayFlags flags,
-	gfx::DisplayConfig const& config,
-	gfx::Display* share_with,
+	WindowFlags flags,
+	WindowConfig const& config,
+	Window* share_with,
 	Allocator& allocator
 ) {
 	glfwWindowHint(
 		GLFW_DECORATED,
-		enum_bool(flags & gfx::DisplayFlags::borderless) ? GL_TRUE : GL_FALSE
+		enum_bool(flags & WindowFlags::borderless) ? GL_TRUE : GL_FALSE
 	);
 	glfwWindowHint(
 		GLFW_RESIZABLE,
-		enum_bool(flags & gfx::DisplayFlags::resizable) ? GL_TRUE : GL_FALSE
+		enum_bool(flags & WindowFlags::resizable) ? GL_TRUE : GL_FALSE
 	);
 
 	GLFWwindow* const share_with_handle
@@ -46,64 +65,82 @@ gfx::Display* display::create(
 		? share_with->_impl.handle
 		: nullptr
 	;
-	glfw_config_setup(config);
+
+	TOGO_ASSERT(
+		enum_bool(config.flags & WindowConfigFlags::double_buffered),
+		"GLFW window is always double-buffered"
+	);
+
+	glfwWindowHint(GLFW_RED_BITS, config.color_bits.red);
+	glfwWindowHint(GLFW_GREEN_BITS, config.color_bits.green);
+	glfwWindowHint(GLFW_BLUE_BITS, config.color_bits.blue);
+	glfwWindowHint(GLFW_ALPHA_BITS, config.color_bits.alpha);
+	glfwWindowHint(GLFW_DEPTH_BITS, config.depth_bits);
+	glfwWindowHint(GLFW_STENCIL_BITS, config.stencil_bits);
+
+	if (config.msaa_num_buffers == 0 || config.msaa_num_samples == 0) {
+		glfwWindowHint(GLFW_SAMPLES, 0);
+	} else {
+		glfwWindowHint(GLFW_SAMPLES, config.msaa_num_samples);
+	}
+
 	GLFWwindow* const handle = glfwCreateWindow(
 		size.x, size.y, title, nullptr, share_with_handle
 	);
-	TOGO_ASSERT(handle, "failed to create display");
+	TOGO_ASSERT(handle, "failed to create window");
 	glfwMakeContextCurrent(handle);
-	gfx::glew_init();
+	glew_init();
 
-	gfx::Display* const display = TOGO_CONSTRUCT(
-		allocator, gfx::Display, size, flags, config, allocator,
-		GLFWDisplayImpl{handle}
+	Window* const window = TOGO_CONSTRUCT(
+		allocator, Window, size, flags, config, allocator,
+		GLFWWindowImpl{handle}
 	);
-	glfwSetWindowUserPointer(handle, display);
-	return display;
+	glfwSetWindowUserPointer(handle, window);
+	return window;
 }
 
-void display::set_title(gfx::Display* display, char const* title) {
-	glfwSetWindowTitle(display->_impl.handle, title);
+void window::set_title(Window* window, char const* title) {
+	glfwSetWindowTitle(window->_impl.handle, title);
 }
 
-void display::set_mouse_lock(gfx::Display* /*display*/, bool /*enable*/) {
-	TOGO_LOG_DEBUG("gfx::display::set_mouse_lock() not implemented for GLFW\n");
+void window::set_mouse_lock(Window* /*window*/, bool /*enable*/) {
+	TOGO_LOG_DEBUG("window::set_mouse_lock() not implemented for GLFW\n");
 	// GLFW TODO: Need a GLFW_CURSOR_CONSTRAINED (i.e., cursor
 	// locked to window as in GLFW_CURSOR_DISABLED, but still
 	// visible).
 	/*glfwSetInputMode(
-		display->_impl.handle,
+		window->_impl.handle,
 		GLFW_CURSOR,
 		enable ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL
 	);*/
 }
 
-void display::set_swap_mode(gfx::Display* display, gfx::DisplaySwapMode mode) {
+void window::set_swap_mode(Window* window, WindowSwapMode mode) {
 	signed interval;
 	switch (mode) {
-	case gfx::DisplaySwapMode::immediate:		interval = 0; break;
-	case gfx::DisplaySwapMode::wait_refresh:	interval = 1; break;
+	case WindowSwapMode::immediate:		interval = 0; break;
+	case WindowSwapMode::wait_refresh:	interval = 1; break;
 	}
-	display::bind_context(display);
+	window::bind_context(window);
 	glfwSwapInterval(interval);
 }
 
-void display::bind_context(gfx::Display* display) {
-	glfwMakeContextCurrent(display->_impl.handle);
+void window::bind_context(Window* window) {
+	glfwMakeContextCurrent(window->_impl.handle);
 }
 
-void display::unbind_context() {
+void window::unbind_context() {
 	glfwMakeContextCurrent(nullptr);
 }
 
-void display::swap_buffers(gfx::Display* display) {
-	glfwSwapBuffers(display->_impl.handle);
+void window::swap_buffers(Window* window) {
+	glfwSwapBuffers(window->_impl.handle);
 }
 
-void display::destroy(gfx::Display* display) {
-	Allocator& allocator = *display->_allocator;
-	glfwDestroyWindow(display->_impl.handle);
-	TOGO_DESTROY(allocator, display);
+void window::destroy(Window* window) {
+	Allocator& allocator = *window->_allocator;
+	glfwDestroyWindow(window->_impl.handle);
+	TOGO_DESTROY(allocator, window);
 }
 
 // private
@@ -264,13 +301,13 @@ inline MouseButton glfw_tl_mouse_button(signed const button) {
 }
 
 void glfw_window_close_cb(GLFWwindow* const handle) {
-	auto const display = static_cast<gfx::Display*>(
+	auto const window = static_cast<Window*>(
 		glfwGetWindowUserPointer(handle)
 	);
 	object_buffer::write(
-		display->_input_buffer->_buffer,
-		InputEventType::display_close_request,
-		DisplayCloseRequestEvent{display}
+		window->_input_buffer->_buffer,
+		InputEventType::window_close_request,
+		WindowCloseRequestEvent{window}
 	);
 }
 
@@ -278,13 +315,13 @@ void glfw_window_focus_cb(
 	GLFWwindow* const handle,
 	signed const focused
 ) {
-	auto const display = static_cast<gfx::Display*>(
+	auto const window = static_cast<Window*>(
 		glfwGetWindowUserPointer(handle)
 	);
 	object_buffer::write(
-		display->_input_buffer->_buffer,
-		InputEventType::display_focus,
-		DisplayFocusEvent{display, focused == GL_TRUE}
+		window->_input_buffer->_buffer,
+		InputEventType::window_focus,
+		WindowFocusEvent{window, focused == GL_TRUE}
 	);
 }
 
@@ -293,20 +330,20 @@ void glfw_window_size_cb(
 	signed const width,
 	signed const height
 ) {
-	auto const display = static_cast<gfx::Display*>(
+	auto const window = static_cast<Window*>(
 		glfwGetWindowUserPointer(handle)
 	);
 	if (
-		display->_size.x != unsigned_cast(width) ||
-		display->_size.y != unsigned_cast(height)
+		window->_size.x != unsigned_cast(width) ||
+		window->_size.y != unsigned_cast(height)
 	) {
-		auto const old_size = display->_size;
-		display->_size.x = unsigned_cast(width);
-		display->_size.y = unsigned_cast(height);
+		auto const old_size = window->_size;
+		window->_size.x = unsigned_cast(width);
+		window->_size.y = unsigned_cast(height);
 		object_buffer::write(
-			display->_input_buffer->_buffer,
-			InputEventType::display_resize,
-			DisplayResizeEvent{display, old_size, display->_size}
+			window->_input_buffer->_buffer,
+			InputEventType::window_resize,
+			WindowResizeEvent{window, old_size, window->_size}
 		);
 	}
 }
@@ -318,16 +355,16 @@ void glfw_key_cb(
 	signed const action,
 	signed const mods
 ) {
-	auto const display = static_cast<gfx::Display*>(
+	auto const window = static_cast<Window*>(
 		glfwGetWindowUserPointer(handle)
 	);
 	KeyCode const key_code = glfw_tl_key_code(key);
 	if (key_code != static_cast<KeyCode>(-1)) {
 		object_buffer::write(
-			display->_input_buffer->_buffer,
+			window->_input_buffer->_buffer,
 			InputEventType::key,
 			KeyEvent{
-				display,
+				window,
 				glfw_tl_key_action(action),
 				key_code,
 				glfw_tl_key_mods(mods)
@@ -342,16 +379,16 @@ void glfw_mouse_button_cb(
 	signed const action,
 	signed const /*mods*/
 ) {
-	auto const display = static_cast<gfx::Display*>(
+	auto const window = static_cast<Window*>(
 		glfwGetWindowUserPointer(handle)
 	);
 	MouseButton const button = glfw_tl_mouse_button(glfw_button);
 	if (button != static_cast<MouseButton>(-1)) {
 		object_buffer::write(
-			display->_input_buffer->_buffer,
+			window->_input_buffer->_buffer,
 			InputEventType::mouse_button,
 			MouseButtonEvent{
-				display,
+				window,
 				glfw_tl_mouse_action(action),
 				button
 			}
@@ -364,42 +401,40 @@ void glfw_cursor_pos_cb(
 	double const xpos,
 	double const ypos
 ) {
-	auto const display = static_cast<gfx::Display*>(
+	auto const window = static_cast<Window*>(
 		glfwGetWindowUserPointer(handle)
 	);
 	object_buffer::write(
-		display->_input_buffer->_buffer,
+		window->_input_buffer->_buffer,
 		InputEventType::mouse_motion,
 		MouseMotionEvent{
-			display,
+			window,
 			static_cast<signed>(std::floor(xpos)),
 			static_cast<signed>(std::floor(ypos))
 		}
 	);
 }
 
-void display::attach_to_input_buffer_impl(gfx::Display* display) {
-	glfwSetWindowCloseCallback(display->_impl.handle, glfw_window_close_cb);
-	glfwSetWindowFocusCallback(display->_impl.handle, glfw_window_focus_cb);
-	glfwSetWindowSizeCallback(display->_impl.handle, glfw_window_size_cb);
-	glfwSetKeyCallback(display->_impl.handle, glfw_key_cb);
-	glfwSetMouseButtonCallback(display->_impl.handle, glfw_mouse_button_cb);
-	glfwSetCursorPosCallback(display->_impl.handle, glfw_cursor_pos_cb);
+void window::attach_to_input_buffer_impl(Window* window) {
+	glfwSetWindowCloseCallback(window->_impl.handle, glfw_window_close_cb);
+	glfwSetWindowFocusCallback(window->_impl.handle, glfw_window_focus_cb);
+	glfwSetWindowSizeCallback(window->_impl.handle, glfw_window_size_cb);
+	glfwSetKeyCallback(window->_impl.handle, glfw_key_cb);
+	glfwSetMouseButtonCallback(window->_impl.handle, glfw_mouse_button_cb);
+	glfwSetCursorPosCallback(window->_impl.handle, glfw_cursor_pos_cb);
 }
 
-void display::detach_from_input_buffer_impl(gfx::Display* display) {
-	glfwSetWindowCloseCallback(display->_impl.handle, nullptr);
-	glfwSetWindowFocusCallback(display->_impl.handle, nullptr);
-	glfwSetWindowSizeCallback(display->_impl.handle, nullptr);
-	glfwSetKeyCallback(display->_impl.handle, nullptr);
-	glfwSetMouseButtonCallback(display->_impl.handle, nullptr);
-	glfwSetCursorPosCallback(display->_impl.handle, nullptr);
+void window::detach_from_input_buffer_impl(Window* window) {
+	glfwSetWindowCloseCallback(window->_impl.handle, nullptr);
+	glfwSetWindowFocusCallback(window->_impl.handle, nullptr);
+	glfwSetWindowSizeCallback(window->_impl.handle, nullptr);
+	glfwSetKeyCallback(window->_impl.handle, nullptr);
+	glfwSetMouseButtonCallback(window->_impl.handle, nullptr);
+	glfwSetCursorPosCallback(window->_impl.handle, nullptr);
 }
 
-void display::process_events(InputBuffer&) {
+void window::process_events(InputBuffer&) {
 	glfwPollEvents();
 }
 
-} // namespace gfx
-} // namespace game
 } // namespace togo

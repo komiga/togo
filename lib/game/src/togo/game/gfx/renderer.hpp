@@ -18,6 +18,7 @@
 #include <togo/core/utility/types.hpp>
 #include <togo/core/math/types.hpp>
 #include <togo/core/threading/types.hpp>
+#include <togo/window/window/types.hpp>
 #include <togo/game/entity/types.hpp>
 #include <togo/game/world/types.hpp>
 #include <togo/game/gfx/types.hpp>

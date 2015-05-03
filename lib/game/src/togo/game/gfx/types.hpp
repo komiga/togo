@@ -23,84 +23,8 @@
 #include <initializer_list>
 
 namespace togo {
-
 namespace game {
 namespace gfx {
-
-/**
-	@addtogroup lib_game_gfx_display
-	@{
-*/
-
-/// Graphics configuration flags.
-enum class DisplayConfigFlags : unsigned {
-	/// Empty flag.
-	none = 0,
-	/// Double-buffered display.
-	double_buffered = 1 << 0,
-};
-
-/// Graphics configuration.
-///
-/// If either msaa_num_buffers or msaa_num_samples are 0, MSAA is
-/// disabled.
-struct DisplayConfig {
-	struct ColorBits {
-		unsigned red;
-		unsigned green;
-		unsigned blue;
-		unsigned alpha;
-	};
-
-	/// Color buffer bits.
-	gfx::DisplayConfig::ColorBits color_bits;
-
-	/// Depth buffer bits.
-	/// If this is 0, the depth buffer should be assumed unavailable.
-	unsigned depth_bits;
-
-	/// Stencil buffer bits.
-	/// If this is 0, the stencil buffer should be assumed unavailable.
-	unsigned stencil_bits;
-
-	/// Number of MSAA buffers.
-	unsigned msaa_num_buffers;
-	/// Number of MSAA samples.
-	unsigned msaa_num_samples;
-
-	/// Miscellaneous flags.
-	gfx::DisplayConfigFlags flags;
-};
-
-/// Display flags.
-enum class DisplayFlags : unsigned {
-	/// Empty flag.
-	none = 0,
-	/// Center window.
-	centered = 1 << 0,
-	/// Border-less window.
-	borderless = 1 << 1,
-	/// Full-screen window.
-	fullscreen = 1 << 2,
-	/// Re-sizable window.
-	resizable = 1 << 3,
-
-	owned_by_input_buffer = 1 << 4,
-};
-
-/// Display swap modes.
-enum class DisplaySwapMode : unsigned {
-	/// No screen synchronization.
-	immediate = 0,
-
-	/// Wait for at least one refresh cycle before swapping.
-	wait_refresh,
-};
-
-/// Graphics display.
-struct Display;
-
-/** @} */ // end of doc-group lib_game_gfx_display
 
 /**
 	@addtogroup lib_game_gfx_renderer
@@ -626,13 +550,4 @@ struct Camera {};
 
 } // namespace gfx
 } // namespace game
-
-/** @cond INTERNAL */
-template<>
-struct enable_enum_bitwise_ops<game::gfx::DisplayConfigFlags> : true_type {};
-
-template<>
-struct enable_enum_bitwise_ops<game::gfx::DisplayFlags> : true_type {};
-/** @endcond */ // INTERNAL
-
 } // namespace togo

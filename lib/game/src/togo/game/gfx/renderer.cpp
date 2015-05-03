@@ -12,7 +12,7 @@
 #include <togo/core/threading/condvar.hpp>
 #include <togo/core/threading/mutex.hpp>
 #include <togo/core/threading/task_manager.hpp>
-#include <togo/game/gfx/display.hpp>
+#include <togo/window/window/window.hpp>
 #include <togo/game/gfx/command.hpp>
 #include <togo/game/gfx/renderer.hpp>
 #include <togo/game/gfx/renderer/types.hpp>
@@ -135,7 +135,7 @@ static void worker_task_func(TaskID /*id*/, void* task_data) {
 	auto* renderer = static_cast<gfx::Renderer*>(task_data);
 	auto& w = renderer->_work_data;
 	MutexLock l{renderer->_frame_mutex};
-	gfx::display::bind_context(w.display);
+	window::bind_context(w.window);
 	while (
 		w.active ||
 		w.num_commands > 0
@@ -146,27 +146,27 @@ static void worker_task_func(TaskID /*id*/, void* task_data) {
 		}
 		condvar::wait(renderer->_frame_condvar, l);
 	}
-	gfx::display::swap_buffers(w.display);
-	gfx::display::unbind_context();
-	w.display = nullptr;
+	window::swap_buffers(w.window);
+	window::unbind_context();
+	w.window = nullptr;
 }
 
 /// Begin frame.
 ///
-/// This binds the display context to the worker thread. It must be
+/// This binds the window context to the worker thread. It must be
 /// unbound on all other threads before calling this.
 ///
 /// An assertion will fail if the frame has already begun.
 TaskID renderer::begin_frame(
 	gfx::Renderer* renderer,
 	TaskManager& task_manager,
-	gfx::Display* display
+	Window* window
 ) {
 	MutexLock l{renderer->_frame_mutex};
 	auto& w = renderer->_work_data;
 	TOGO_ASSERTE(!w.active);
 	w.active = true;
-	w.display = display;
+	w.window = window;
 	w.num_commands = 0;
 	w.buffer_size = 0;
 	return task_manager::add(

@@ -1,0 +1,13 @@
+
+return {
+	M("window", {
+		I("impl", {
+			N("sdl"),
+			N("glfw"),
+			N("opengl"),
+		}),
+	}),
+	M("input", {
+		N("input_buffer"),
+	}),
+}

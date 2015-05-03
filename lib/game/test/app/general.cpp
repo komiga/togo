@@ -3,7 +3,7 @@
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/memory/memory.hpp>
-#include <togo/game/input/input.hpp>
+#include <togo/window/input/input.hpp>
 #include <togo/game/app/app.hpp>
 
 #include <togo/support/test.hpp>
@@ -37,7 +37,7 @@ void TestAppModel::shutdown(TestApp& app) {
 template<>
 void TestAppModel::update(TestApp& app, float /*dt*/) {
 	//TOGO_LOG("update()\n");
-	if (input::key_released(app.display, KeyCode::escape)) {
+	if (input::key_released(app.window, KeyCode::escape)) {
 		app::quit();
 	}
 }

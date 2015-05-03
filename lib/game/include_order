@@ -7,20 +7,7 @@ return {
 		N("world_manager"),
 	}),
 	M("gfx", {
-		I("gfx", {
-			N("common"),
-			N("opengl_common"),
-			N("glfw_common"),
-			N("glfw"),
-			N("sdl_common"),
-			N("sdl"),
-		}),
-		N("display", {
-			I("display", {
-				N("glfw"),
-				N("sdl"),
-			}),
-		}),
+		N("gfx"),
 		N("command"),
 		N("generator"),
 		N("render_node"),
@@ -30,9 +17,6 @@ return {
 				N("opengl"),
 			}),
 		}),
-	}),
-	M("input", {
-		N("input_buffer"),
 	}),
 	M("resource", {
 		N("resource_handler"),

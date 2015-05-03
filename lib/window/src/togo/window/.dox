@@ -1,0 +1,15 @@
+
+/**
+
+@defgroup lib_window Library: window
+@details
+
+*/
+
+/**
+
+@defgroup lib_window_types Types
+@ingroup lib_window
+@details
+
+*/

@@ -1,25 +1,24 @@
-#line 2 "togo/game/gfx/display/sdl.hpp"
+#line 2 "togo/window/window/impl/sdl.hpp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
 #pragma once
 
-#include <togo/game/config.hpp>
+#include <togo/window/config.hpp>
 
 #include <SDL2/SDL_video.h>
 
 namespace togo {
-namespace game {
-namespace gfx {
 
-struct SDLDisplayImpl {
+struct SDLWindowImpl {
 	SDL_Window* handle;
 	SDL_GLContext context;
 };
 
-using DisplayImpl = SDLDisplayImpl;
+using WindowImpl = SDLWindowImpl;
 
-} // namespace gfx
-} // namespace game
+#define TOGO_SDL_CHECK(expr) \
+	if ((expr)) { goto sdl_error; }
+
 } // namespace togo

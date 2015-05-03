@@ -1,41 +1,70 @@
-#line 2 "togo/game/gfx/display/sdl.ipp"
+#line 2 "togo/window/window/impl/sdl.ipp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
-#include <togo/game/config.hpp>
+#include <togo/window/config.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/io/object_buffer.hpp>
-#include <togo/game/gfx/gfx/sdl_common.hpp>
-#include <togo/game/gfx/display.hpp>
-#include <togo/game/gfx/display/types.hpp>
-#include <togo/game/gfx/display/private.hpp>
-#include <togo/game/gfx/display/sdl.hpp>
-#include <togo/game/input/types.hpp>
+#include <togo/window/window/window.hpp>
+#include <togo/window/window/impl/types.hpp>
+#include <togo/window/window/impl/private.hpp>
+#include <togo/window/window/impl/sdl.hpp>
+#include <togo/window/window/impl/opengl.hpp>
+#include <togo/window/input/types.hpp>
 
 #include <SDL2/SDL_error.h>
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_events.h>
+#include <SDL2/SDL.h>
 
 namespace togo {
-namespace game {
-namespace gfx {
 
-gfx::Display* display::create(
+namespace {
+
+enum {
+	INIT_SYSTEMS = SDL_INIT_EVENTS | SDL_INIT_VIDEO,
+};
+
+} // anonymous namespace
+
+void window::init_impl(
+	unsigned context_major,
+	unsigned context_minor
+) {
+	TOGO_SDL_CHECK(SDL_Init(INIT_SYSTEMS) != 0);
+	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1));
+	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, context_major));
+	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, context_minor));
+	if (context_major >= 3) {
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG));
+	}
+	return;
+
+sdl_error:
+	TOGO_ASSERTF(false, "failed to initialize window backend: %s", SDL_GetError());
+}
+
+void window::shutdown_impl() {
+	SDL_Quit();
+}
+
+Window* window::create(
 	char const* title,
 	UVec2 const size,
-	gfx::DisplayFlags flags,
-	gfx::DisplayConfig const& config,
-	gfx::Display* share_with,
+	WindowFlags flags,
+	WindowConfig const& config,
+	Window* share_with,
 	Allocator& allocator
 ) {
 	SDL_Window* handle = nullptr;
 	SDL_GLContext context = nullptr;
 	int x;
 	int y;
-	if (enum_bool(flags & gfx::DisplayFlags::centered)) {
+	if (enum_bool(flags & WindowFlags::centered)) {
 		x = y = SDL_WINDOWPOS_CENTERED;
 	} else {
 		x = y = SDL_WINDOWPOS_UNDEFINED;
@@ -45,89 +74,107 @@ gfx::Display* display::create(
 		= SDL_WINDOW_ALLOW_HIGHDPI
 		| SDL_WINDOW_OPENGL
 	;
-	if (enum_bool(flags & gfx::DisplayFlags::borderless)) {
+	if (enum_bool(flags & WindowFlags::borderless)) {
 		sdl_flags |= SDL_WINDOW_BORDERLESS;
 	}
-	if (enum_bool(flags & gfx::DisplayFlags::fullscreen)) {
+	if (enum_bool(flags & WindowFlags::fullscreen)) {
 		sdl_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
-	if (enum_bool(flags & gfx::DisplayFlags::resizable)) {
+	if (enum_bool(flags & WindowFlags::resizable)) {
 		sdl_flags |= SDL_WINDOW_RESIZABLE;
 	}
 
 	if (share_with) {
-		gfx::display::bind_context(share_with);
+		window::bind_context(share_with);
 	}
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(
 		SDL_GL_SHARE_WITH_CURRENT_CONTEXT,
 		share_with ? 1 : 0
 	));
-	sdl_config_setup(config);
+	TOGO_SDL_CHECK(SDL_GL_SetAttribute(
+		SDL_GL_DOUBLEBUFFER,
+		enum_bool(config.flags & WindowConfigFlags::double_buffered) ? 1 : 0
+	));
+	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_RED_SIZE, config.color_bits.red));
+	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, config.color_bits.green));
+	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, config.color_bits.blue));
+	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, config.color_bits.alpha));
+	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, config.depth_bits));
+	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, config.stencil_bits));
+
+	if (config.msaa_num_buffers == 0 || config.msaa_num_samples == 0) {
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0));
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0));
+	} else {
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, config.msaa_num_buffers));
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, config.msaa_num_samples));
+	}
+
 	handle = SDL_CreateWindow(title, x, y, size.x, size.y, sdl_flags);
 	TOGO_SDL_CHECK(!handle);
 	context = SDL_GL_CreateContext(handle);
 	TOGO_SDL_CHECK(!context);
 	TOGO_SDL_CHECK(SDL_GL_MakeCurrent(handle, context));
-	gfx::glew_init();
+	glew_init();
 
 	return TOGO_CONSTRUCT(
-		allocator, gfx::Display, size, flags, config, allocator,
-		SDLDisplayImpl{handle, context}
+		allocator, Window, size, flags, config, allocator,
+		SDLWindowImpl{handle, context}
 	);
 
 sdl_error:
-	TOGO_ASSERTF(false, "failed to create display: %s", SDL_GetError());
+	TOGO_ASSERTF(false, "failed to create window: %s", SDL_GetError());
 }
 
-void display::set_title(gfx::Display* display, char const* title) {
-	SDL_SetWindowTitle(display->_impl.handle, title);
+void window::set_title(Window* window, char const* title) {
+	SDL_SetWindowTitle(window->_impl.handle, title);
 }
 
-void display::set_mouse_lock(gfx::Display* display, bool enable) {
-	SDL_SetWindowGrab(display->_impl.handle, enable ? SDL_TRUE : SDL_FALSE);
+void window::set_mouse_lock(Window* window, bool enable) {
+	SDL_SetWindowGrab(window->_impl.handle, enable ? SDL_TRUE : SDL_FALSE);
 }
 
-void display::set_swap_mode(gfx::Display* display, gfx::DisplaySwapMode mode) {
+void window::set_swap_mode(Window* window, WindowSwapMode mode) {
 	signed interval;
 	switch (mode) {
-	case gfx::DisplaySwapMode::immediate:		interval = 0; break;
-	case gfx::DisplaySwapMode::wait_refresh:	interval = 1; break;
+	case WindowSwapMode::immediate:		interval = 0; break;
+	case WindowSwapMode::wait_refresh:	interval = 1; break;
 	}
-	display::bind_context(display);
+	window::bind_context(window);
 	TOGO_SDL_CHECK(SDL_GL_SetSwapInterval(interval));
 	return;
 
 sdl_error:
-	TOGO_ASSERTF(false, "failed to set display swap mode: %s", SDL_GetError());
+	TOGO_ASSERTF(false, "failed to set window swap mode: %s", SDL_GetError());
 }
 
-void display::bind_context(gfx::Display* display) {
-	TOGO_SDL_CHECK(SDL_GL_MakeCurrent(display->_impl.handle, display->_impl.context));
+void window::bind_context(Window* window) {
+	TOGO_SDL_CHECK(SDL_GL_MakeCurrent(window->_impl.handle, window->_impl.context));
 	return;
 
 sdl_error:
-	TOGO_ASSERTF(false, "failed to bind display context: %s", SDL_GetError());
+	TOGO_ASSERTF(false, "failed to bind window context: %s", SDL_GetError());
 }
 
-void display::unbind_context() {
+void window::unbind_context() {
 	TOGO_SDL_CHECK(SDL_GL_MakeCurrent(nullptr, nullptr));
 	return;
 
 sdl_error:
-	TOGO_ASSERTF(false, "failed to unbind display context: %s", SDL_GetError());
+	TOGO_ASSERTF(false, "failed to unbind window context: %s", SDL_GetError());
 }
 
-void display::swap_buffers(gfx::Display* display) {
-	if (enum_bool(display->_config.flags & gfx::DisplayConfigFlags::double_buffered)) {
-		SDL_GL_SwapWindow(display->_impl.handle);
+void window::swap_buffers(Window* window) {
+	if (enum_bool(window->_config.flags & WindowConfigFlags::double_buffered)) {
+		SDL_GL_SwapWindow(window->_impl.handle);
 	}
 }
 
-void display::destroy(gfx::Display* display) {
-	Allocator& allocator = *display->_allocator;
-	SDL_GL_DeleteContext(display->_impl.context);
-	SDL_DestroyWindow(display->_impl.handle);
-	TOGO_DESTROY(allocator, display);
+void window::destroy(Window* window) {
+	Allocator& allocator = *window->_allocator;
+	SDL_GL_DeleteContext(window->_impl.context);
+	SDL_DestroyWindow(window->_impl.handle);
+	TOGO_DESTROY(allocator, window);
 }
 
 // private
@@ -289,29 +336,29 @@ inline MouseButton sdl_tl_mouse_button(SDL_MouseButtonEvent const& mbev) {
 	}
 }
 
-void display::attach_to_input_buffer_impl(gfx::Display* /*display*/) {}
-void display::detach_from_input_buffer_impl(gfx::Display* /*display*/) {}
+void window::attach_to_input_buffer_impl(Window* /*window*/) {}
+void window::detach_from_input_buffer_impl(Window* /*window*/) {}
 
-gfx::Display* sdl_ib_find_display_by_id(
+Window* sdl_ib_find_window_by_id(
 	InputBuffer& ib,
 	unsigned const id,
 	bool const allow_fallback
 ) {
-	for (auto display : ib._displays) {
+	for (auto window : ib._windows) {
 		if (
-			display != nullptr && (
+			window != nullptr && (
 				(allow_fallback && id == 0) ||
-				id == SDL_GetWindowID(display->_impl.handle)
+				id == SDL_GetWindowID(window->_impl.handle)
 			)
 		) {
-			return display;
+			return window;
 		}
 	}
 	return nullptr;
 }
 
-void display::process_events(InputBuffer& ib) {
-	gfx::Display* display = nullptr;
+void window::process_events(InputBuffer& ib) {
+	Window* window = nullptr;
 	KeyCode key_code{};
 	MouseButton button{};
 	SDL_Event event{};
@@ -319,19 +366,19 @@ void display::process_events(InputBuffer& ib) {
 	switch (event.type) {
 	case SDL_KEYDOWN: // fall-through
 	case SDL_KEYUP:
-		// If there are no displays attached to the IB, we can't
+		// If there are no windows attached to the IB, we can't
 		// report the event
-		display = sdl_ib_find_display_by_id(ib, event.key.windowID, true);
-		if (!display) {
+		window = sdl_ib_find_window_by_id(ib, event.key.windowID, true);
+		if (!window) {
 			break;
 		}
 		key_code = sdl_tl_key_code(event.key);
 		if (key_code != static_cast<KeyCode>(-1)) {
 			object_buffer::write(
-				display->_input_buffer->_buffer,
+				window->_input_buffer->_buffer,
 				InputEventType::key,
 				KeyEvent{
-					display,
+					window,
 					sdl_tl_key_action(event.key),
 					key_code,
 					sdl_tl_key_mods(event.key)
@@ -342,17 +389,17 @@ void display::process_events(InputBuffer& ib) {
 
 	case SDL_MOUSEBUTTONDOWN: // fall-through
 	case SDL_MOUSEBUTTONUP:
-		display = sdl_ib_find_display_by_id(ib, event.button.windowID, true);
-		if (!display) {
+		window = sdl_ib_find_window_by_id(ib, event.button.windowID, true);
+		if (!window) {
 			break;
 		}
 		button = sdl_tl_mouse_button(event.button);
 		if (button != static_cast<MouseButton>(-1)) {
 			object_buffer::write(
-				display->_input_buffer->_buffer,
+				window->_input_buffer->_buffer,
 				InputEventType::mouse_button,
 				MouseButtonEvent{
-					display,
+					window,
 					sdl_tl_mouse_action(event.button),
 					button
 				}
@@ -361,15 +408,15 @@ void display::process_events(InputBuffer& ib) {
 		break;
 
 	case SDL_MOUSEMOTION:
-		display = sdl_ib_find_display_by_id(ib, event.motion.windowID, false);
-		if (!display) {
+		window = sdl_ib_find_window_by_id(ib, event.motion.windowID, false);
+		if (!window) {
 			break;
 		}
 		object_buffer::write(
-			display->_input_buffer->_buffer,
+			window->_input_buffer->_buffer,
 			InputEventType::mouse_motion,
 			MouseMotionEvent{
-				display,
+				window,
 				event.motion.x,
 				event.motion.y
 			}
@@ -377,45 +424,45 @@ void display::process_events(InputBuffer& ib) {
 		break;
 
 	case SDL_WINDOWEVENT:
-		display = sdl_ib_find_display_by_id(ib, event.window.windowID, false);
-		if (!display) {
+		window = sdl_ib_find_window_by_id(ib, event.window.windowID, false);
+		if (!window) {
 			break;
 		}
 		switch (event.window.event) {
 		case SDL_WINDOWEVENT_RESIZED:
 			if (
-				display->_size.x != unsigned_cast(event.window.data1) ||
-				display->_size.y != unsigned_cast(event.window.data2)
+				window->_size.x != unsigned_cast(event.window.data1) ||
+				window->_size.y != unsigned_cast(event.window.data2)
 			) {
-				auto const old_size = display->_size;
-				display->_size.x = unsigned_cast(event.window.data1);
-				display->_size.y = unsigned_cast(event.window.data2);
+				auto const old_size = window->_size;
+				window->_size.x = unsigned_cast(event.window.data1);
+				window->_size.y = unsigned_cast(event.window.data2);
 				object_buffer::write(
-					display->_input_buffer->_buffer,
-					InputEventType::display_resize,
-					DisplayResizeEvent{display, old_size, display->_size}
+					window->_input_buffer->_buffer,
+					InputEventType::window_resize,
+					WindowResizeEvent{window, old_size, window->_size}
 				);
 			}
 			break;
 		case SDL_WINDOWEVENT_CLOSE:
 			object_buffer::write(
-				display->_input_buffer->_buffer,
-				InputEventType::display_close_request,
-				DisplayCloseRequestEvent{display}
+				window->_input_buffer->_buffer,
+				InputEventType::window_close_request,
+				WindowCloseRequestEvent{window}
 			);
 			break;
 		case SDL_WINDOWEVENT_FOCUS_GAINED:
 			object_buffer::write(
-				display->_input_buffer->_buffer,
-				InputEventType::display_focus,
-				DisplayFocusEvent{display, true}
+				window->_input_buffer->_buffer,
+				InputEventType::window_focus,
+				WindowFocusEvent{window, true}
 			);
 			break;
 		case SDL_WINDOWEVENT_FOCUS_LOST:
 			object_buffer::write(
-				display->_input_buffer->_buffer,
-				InputEventType::display_focus,
-				DisplayFocusEvent{display, false}
+				window->_input_buffer->_buffer,
+				InputEventType::window_focus,
+				WindowFocusEvent{window, false}
 			);
 			break;
 		}
@@ -424,6 +471,4 @@ void display::process_events(InputBuffer& ib) {
 	} // while
 }
 
-} // namespace gfx
-} // namespace game
 } // namespace togo

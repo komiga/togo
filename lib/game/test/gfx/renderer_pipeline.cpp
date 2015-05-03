@@ -3,16 +3,16 @@
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/math/math.hpp>
 #include <togo/core/log/log.hpp>
+#include <togo/window/window/window.hpp>
+#include <togo/window/input/input.hpp>
 #include <togo/game/entity/entity_manager.hpp>
 #include <togo/game/world/world_manager.hpp>
 #include <togo/game/gfx/gfx.hpp>
-#include <togo/game/gfx/display.hpp>
 #include <togo/game/gfx/command.hpp>
 #include <togo/game/gfx/render_node.hpp>
 #include <togo/game/gfx/renderer.hpp>
 #include <togo/game/gfx/renderer/private.hpp>
 #include <togo/game/gfx/renderer/opengl.hpp>
-#include <togo/game/input/input.hpp>
 #include <togo/game/resource/resource_handler.hpp>
 #include <togo/game/resource/resource_manager.hpp>
 #include <togo/game/app/app.hpp>
@@ -124,7 +124,7 @@ using TestAppModel = AppModel<TestAppData>;
 template<>
 void TestAppModel::init(TestApp& app) {
 	resource_manager::add_package(app.resource_manager, "test_data");
-	gfx::display::set_swap_mode(app.display, gfx::DisplaySwapMode::wait_refresh);
+	window::set_swap_mode(app.window, WindowSwapMode::wait_refresh);
 
 	gfx::renderer::register_generator_def(
 		app.renderer,
@@ -155,7 +155,7 @@ void TestAppModel::shutdown(TestApp& app) {
 
 template<>
 void TestAppModel::update(TestApp& app, float /*dt*/) {
-	if (input::key_released(app.display, KeyCode::escape)) {
+	if (input::key_released(app.window, KeyCode::escape)) {
 		app::quit();
 	}
 }

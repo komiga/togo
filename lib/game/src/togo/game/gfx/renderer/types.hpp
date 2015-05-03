@@ -11,6 +11,7 @@
 #include <togo/core/collection/types.hpp>
 #include <togo/core/hash/hash.hpp>
 #include <togo/core/threading/types.hpp>
+#include <togo/window/window/types.hpp>
 #include <togo/game/gfx/types.hpp>
 #include <togo/game/gfx/command.hpp>
 
@@ -106,7 +107,7 @@ struct Renderer {
 	CondVar _frame_condvar;
 	struct WorkData {
 		bool active;
-		gfx::Display* display;
+		Window* window;
 		unsigned num_commands;
 		unsigned buffer_size;
 		u8 buffer[48 * sizeof(gfx::CmdRenderWorld)];

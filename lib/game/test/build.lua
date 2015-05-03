@@ -14,7 +14,6 @@ togo.make_tests("general", {
 })
 
 togo.make_tests("gfx", {
-	["display"] = {nil, configs},
 	["renderer_triangle"] = {nil, configs},
 	["renderer_pipeline"] = {nil, configs},
 })

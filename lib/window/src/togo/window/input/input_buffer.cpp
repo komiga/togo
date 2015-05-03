@@ -1,15 +1,15 @@
-#line 2 "togo/game/input/input_buffer.cpp"
+#line 2 "togo/window/input/input_buffer.cpp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 */
 
-#include <togo/game/config.hpp>
+#include <togo/window/config.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/collection/fixed_array.hpp>
 #include <togo/core/io/object_buffer.hpp>
-#include <togo/game/gfx/display/types.hpp>
-#include <togo/game/gfx/display/private.hpp>
-#include <togo/game/input/input_buffer.hpp>
+#include <togo/window/window/impl/types.hpp>
+#include <togo/window/window/impl/private.hpp>
+#include <togo/window/input/input_buffer.hpp>
 
 #undef TOGO_TEST_LOG_ENABLE
 #if defined(TOGO_TEST_INPUT_BUFFER)
@@ -18,65 +18,64 @@
 #include <togo/core/log/test.hpp>
 
 namespace togo {
-namespace game {
 
 InputBuffer::~InputBuffer() {
-	for (auto& display : _displays) {
-		if (display != nullptr) {
-			gfx::display::detach_from_input_buffer(display);
-			display = nullptr;
-			--_num_displays;
+	for (auto& window : _windows) {
+		if (window != nullptr) {
+			window::detach_from_input_buffer(window);
+			window = nullptr;
+			--_num_windows;
 		}
 	}
 }
 
-/// Add a display.
+/// Add a window.
 ///
-/// If the display is already owned by an input buffer, an assertion
-/// will fail. If the input buffer has no space for more displays, an
+/// If the window is already owned by an input buffer, an assertion
+/// will fail. If the input buffer has no space for more windows, an
 /// assertion will fail.
-void input_buffer::add_display(InputBuffer& ib, gfx::Display* display) {
-	TOGO_DEBUG_ASSERTE(display);
+void input_buffer::add_window(InputBuffer& ib, Window* window) {
+	TOGO_DEBUG_ASSERTE(window);
 	TOGO_ASSERT(
-		ib._num_displays < INPUT_SYSTEM_NUM_DISPLAYS,
-		"input buffer has no space for display"
+		ib._num_windows < INPUT_SYSTEM_NUM_WINDOWS,
+		"input buffer has no space for window"
 	);
-	for (auto& it : ib._displays) {
+	for (auto& it : ib._windows) {
 		if (it == nullptr) {
-			it = display;
-			++ib._num_displays;
-			gfx::display::attach_to_input_buffer(display, ib);
+			it = window;
+			++ib._num_windows;
+			window::attach_to_input_buffer(window, ib);
 			return;
 		}
 	}
 	TOGO_ASSERT(false, "something has gone terribly wrong");
 }
 
-/// Remove a display.
+/// Remove a window.
 ///
-/// If the display is not owned by the input buffer, an assertion
+/// If the window is not owned by the input buffer, an assertion
 /// will fail.
-void input_buffer::remove_display(InputBuffer& ib, gfx::Display* display) {
-	TOGO_DEBUG_ASSERTE(display);
-	for (auto& it : ib._displays) {
-		if (it == display) {
-			gfx::display::detach_from_input_buffer(display);
+void input_buffer::remove_window(InputBuffer& ib, Window* window) {
+	TOGO_DEBUG_ASSERTE(window);
+	for (auto& it : ib._windows) {
+		if (it == window) {
+			window::detach_from_input_buffer(window);
 			it = nullptr;
-			--ib._num_displays;
+			--ib._num_windows;
 			return;
 		}
 	}
 	TOGO_ASSERT(false, "something has gone terribly wrong");
 }
 
-static void update_input_states(gfx::Display* display) {
-	for (auto const code : display->_key_clear_queue) {
-		display->_key_states[
+static void update_input_states(Window* window) {
+	for (auto const code : window->_key_clear_queue) {
+		window->_key_states[
 			unsigned_cast(code)
 		] &= ~(1 << unsigned_cast(KeyAction::release));
 	}
-	fixed_array::clear(display->_key_clear_queue);
-	for (auto& state : display->_mouse_button_states) {
+	fixed_array::clear(window->_key_clear_queue);
+	for (auto& state : window->_mouse_button_states) {
 		state &= ~(1 << unsigned_cast(MouseButtonAction::release));
 	}
 }
@@ -86,39 +85,39 @@ static void update_input_states(gfx::Display* display) {
 /// This should be executed once per frame before polling the input
 /// buffer.
 void input_buffer::update(InputBuffer& ib) {
-	for (auto display : ib._displays) {
-		if (!display) {
+	for (auto window : ib._windows) {
+		if (!window) {
 			continue;
 		}
-		update_input_states(display);
+		update_input_states(window);
 	}
 }
 
 static void set_key_state(KeyEvent const& event) {
-	gfx::Display* const display = event.display;
+	Window* const window = event.window;
 	if (event.action == KeyAction::press) {
 		// If state already has KeyAction::release, retain it
 		// (it will be cleared by update())
-		display->_key_states[
+		window->_key_states[
 			unsigned_cast(event.code)
 		] |= 1 << unsigned_cast(event.action);
 	} else if (event.action == KeyAction::release) {
 		// Replace state and enqueue clear
-		display->_key_states[
+		window->_key_states[
 			unsigned_cast(event.code)
 		] = 1 << unsigned_cast(event.action);
-		for (auto const code : display->_key_clear_queue) {
+		for (auto const code : window->_key_clear_queue) {
 			if (code == event.code) {
 				return;
 			}
 		}
-		if (fixed_array::space(display->_key_clear_queue)) {
-			fixed_array::push_back(display->_key_clear_queue, event.code);
+		if (fixed_array::space(window->_key_clear_queue)) {
+			fixed_array::push_back(window->_key_clear_queue, event.code);
 		} else {
 			TOGO_LOGF(
-				"input_buffer: warning: discarded key-clear for key %u on display %p\n",
+				"input_buffer: warning: discarded key-clear for key %u on window %p\n",
 				unsigned_cast(event.code),
-				event.display
+				event.window
 			);
 		}
 	}
@@ -129,14 +128,14 @@ static void set_key_state(KeyEvent const& event) {
 /// Returns true if an event was fetched.
 ///
 /// @warning This must be called on the thread that created the
-/// displays.
+/// windows.
 bool input_buffer::poll(
 	InputBuffer& ib,
 	InputEventType& type,
 	InputEvent const*& event
 ) {
 	if (!ib._buffer._consume_mode) {
-		gfx::display::process_events(ib);
+		window::process_events(ib);
 		if (!object_buffer::empty(ib._buffer)) {
 			object_buffer::begin_consume(ib._buffer);
 		} else {
@@ -152,7 +151,7 @@ bool input_buffer::poll(
 	object_buffer::read(ib._buffer, type, vptr);
 	event = static_cast<InputEvent const*>(vptr);
 	#if defined(TOGO_TEST_INPUT_BUFFER)
-		TOGO_TEST_LOGF("input event: %p => ", event->display);
+		TOGO_TEST_LOGF("input event: %p => ", event->window);
 		switch (type) {
 		case InputEventType::key:
 			TOGO_TEST_LOGF(
@@ -175,22 +174,22 @@ bool input_buffer::poll(
 				event->mouse_motion.x, event->mouse_motion.y
 			);
 			break;
-		case InputEventType::display_focus:
+		case InputEventType::window_focus:
 			TOGO_TEST_LOGF(
-				"display_focus: focused = %s\n",
-				event->display_focus.focused ? "true" : "false"
+				"window_focus: focused = %s\n",
+				event->window_focus.focused ? "true" : "false"
 			);
 			break;
-		case InputEventType::display_close_request:
-			TOGO_TEST_LOG("display_close_request\n");
+		case InputEventType::window_close_request:
+			TOGO_TEST_LOG("window_close_request\n");
 			break;
-		case InputEventType::display_resize:
+		case InputEventType::window_resize:
 			TOGO_TEST_LOGF(
-				"display_resize: (%-4u, %-4u) -> (%-4u, %-4u)\n",
-				event->display_resize.old_width,
-				event->display_resize.old_height,
-				event->display_resize.new_width,
-				event->display_resize.new_height
+				"window_resize: (%-4u, %-4u) -> (%-4u, %-4u)\n",
+				event->window_resize.old_width,
+				event->window_resize.old_height,
+				event->window_resize.new_width,
+				event->window_resize.new_height
 			);
 			break;
 		}
@@ -202,19 +201,19 @@ bool input_buffer::poll(
 
 	case InputEventType::mouse_button:
 		if (event->mouse_button.action == MouseButtonAction::press) {
-			event->display->_mouse_button_states[
+			event->window->_mouse_button_states[
 				unsigned_cast(event->mouse_button.button)
 			] |= 1 << unsigned_cast(event->mouse_button.action);
 		} else if (event->mouse_button.action == MouseButtonAction::release) {
-			event->display->_mouse_button_states[
+			event->window->_mouse_button_states[
 				unsigned_cast(event->mouse_button.button)
 			]  = 1 << unsigned_cast(event->mouse_button.action);
 		}
 		break;
 
 	case InputEventType::mouse_motion:
-		event->display->_mouse_x = event->mouse_motion.x;
-		event->display->_mouse_y = event->mouse_motion.y;
+		event->window->_mouse_x = event->mouse_motion.x;
+		event->window->_mouse_y = event->mouse_motion.y;
 		break;
 
 	default:
@@ -223,5 +222,4 @@ bool input_buffer::poll(
 	return true;
 }
 
-} // namespace game
 } // namespace togo

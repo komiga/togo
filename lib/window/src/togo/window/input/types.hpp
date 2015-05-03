@@ -1,27 +1,25 @@
-#line 2 "togo/game/input/types.hpp"
+#line 2 "togo/window/input/types.hpp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
 @file
 @brief Input types.
-@ingroup lib_game_types
-@ingroup lib_game_input
+@ingroup lib_window_types
+@ingroup lib_window_input
 */
 
 #pragma once
 
-#include <togo/game/config.hpp>
+#include <togo/window/config.hpp>
 #include <togo/core/math/types.hpp>
 #include <togo/core/memory/types.hpp>
 #include <togo/core/io/object_buffer_type.hpp>
-#include <togo/game/gfx/types.hpp>
+#include <togo/window/window/types.hpp>
 
 namespace togo {
 
-namespace game {
-
 /**
-	@addtogroup lib_game_input
+	@addtogroup lib_window_input
 	@{
 */
 
@@ -30,22 +28,22 @@ enum class InputEventType : unsigned {
 	key,
 	mouse_button,
 	mouse_motion,
-	display_focus,
-	display_close_request,
-	display_resize,
+	window_focus,
+	window_close_request,
+	window_resize,
 };
 
 enum : unsigned {
-	/// Maximum number of displays in input buffer.
-	INPUT_SYSTEM_NUM_DISPLAYS = 4,
+	/// Maximum number of windows in input buffer.
+	INPUT_SYSTEM_NUM_WINDOWS = 4,
 	/// Default buffer capacity.
 	INPUT_SYSTEM_DEFAULT_INIT_CAPACITY = 1024,
 };
 
 /// Input buffer.
 struct InputBuffer {
-	unsigned _num_displays;
-	gfx::Display* _displays[INPUT_SYSTEM_NUM_DISPLAYS];
+	unsigned _num_windows;
+	Window* _windows[INPUT_SYSTEM_NUM_WINDOWS];
 	ObjectBuffer<unsigned, unsigned> _buffer;
 
 	InputBuffer() = delete;
@@ -197,7 +195,7 @@ enum class KeyMod {
 
 /// Key input event.
 struct KeyEvent {
-	gfx::Display* display;
+	Window* window;
 	KeyAction action;
 	KeyCode code;
 	KeyMod mods;
@@ -220,32 +218,32 @@ enum class MouseButtonAction : unsigned {
 
 /// Mouse button event.
 struct MouseButtonEvent {
-	gfx::Display* display;
+	Window* window;
 	MouseButtonAction action;
 	MouseButton button;
 };
 
 /// Mouse motion event.
 struct MouseMotionEvent {
-	gfx::Display* display;
+	Window* window;
 	signed x;
 	signed y;
 };
 
-/// Display focus event.
-struct DisplayFocusEvent {
-	gfx::Display* display;
+/// Window focus event.
+struct WindowFocusEvent {
+	Window* window;
 	bool focused;
 };
 
-/// Display close request event.
-struct DisplayCloseRequestEvent {
-	gfx::Display* display;
+/// Window close request event.
+struct WindowCloseRequestEvent {
+	Window* window;
 };
 
-/// Display close request event.
-struct DisplayResizeEvent {
-	gfx::Display* display;
+/// Window close request event.
+struct WindowResizeEvent {
+	Window* window;
 	UVec2 old_size;
 	UVec2 new_size;
 };
@@ -255,23 +253,21 @@ struct DisplayResizeEvent {
 /// @warning Members should only be accessed by the reported event
 /// type from input_buffer::poll().
 union InputEvent {
-	gfx::Display* const display;
+	Window* const window;
 
 	KeyEvent const key;
 	MouseButtonEvent const mouse_button;
 	MouseMotionEvent const mouse_motion;
-	DisplayFocusEvent const display_focus;
-	DisplayCloseRequestEvent const display_close_request;
-	DisplayResizeEvent const display_resize;
+	WindowFocusEvent const window_focus;
+	WindowCloseRequestEvent const window_close_request;
+	WindowResizeEvent const window_resize;
 };
 
-/** @} */ // end of doc-group lib_game_input
-
-} // namespace game
+/** @} */ // end of doc-group lib_window_input
 
 /** @cond INTERNAL */
 template<>
-struct enable_enum_bitwise_ops<game::KeyMod> : true_type {};
+struct enable_enum_bitwise_ops<KeyMod> : true_type {};
 /** @endcond */ // INTERNAL
 
 } // namespace togo

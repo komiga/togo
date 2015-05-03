@@ -13,7 +13,6 @@
 #include <togo/core/string/types.hpp>
 #include <togo/core/hash/hash.hpp>
 #include <togo/game/gfx/types.hpp>
-#include <togo/game/gfx/gfx.gen_interface>
 
 namespace togo {
 namespace game {
