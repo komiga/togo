@@ -5,7 +5,8 @@ premake4 $@
 if [[ -f Makefile ]]; then
 	sed -i \
 		-e 's/lib_core:/& | igen/' \
-		-e 's/lib_game:/& | lib_core/' \
+		-e 's/lib_window:/& | lib_core/' \
+		-e 's/lib_game:/& | lib_window/' \
 		-e 's/tool_res_build_lib:/& | lib_game/' \
 		-e 's/tool_res_build:/& | tool_res_build_lib/' \
 		-e 's|\-f tool_res_build\.make$|& -W src/togo/tool_res_build/main.cpp|' \
