@@ -1,6 +1,4 @@
 
-require("lfs")
-
 function table_last(t)
 	return t[#t]
 end
@@ -35,6 +33,7 @@ function printf(msg, ...)
 end
 
 function iterate_dir(dir, select_only, max_depth)
+	require("lfs")
 	assert(dir and dir ~= "", "directory parameter is missing or empty")
 	dir = trim_trailing_slash(dir)
 
@@ -61,4 +60,18 @@ function iterate_dir(dir, select_only, max_depth)
 			yield_tree(dir, "", 1)
 		end
 	)
+end
+
+function togo_libraries()
+	return {
+		"core",
+		"window",
+		"game",
+	}
+end
+
+function togo_tools()
+	return {
+		"res_build",
+	}
 end
