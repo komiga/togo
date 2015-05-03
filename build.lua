@@ -1,4 +1,6 @@
 
+dofile("scripts/common.lua")
+
 local S, G, R = precore.helpers()
 
 togo = {}
@@ -257,24 +259,8 @@ precore.apply_global({
 	"togo.env",
 })
 
-togo.libs = {
-	"core",
-}
-togo.tools = {}
-
-local glob = os.matchdirs(G"${TOGO_ROOT}/lib/*")
-for _, p in pairs(glob) do
-	local name = path.getname(p)
-	if name ~= "core" then
-		table.insert(togo.libs, name)
-	end
-end
-
-glob = os.matchdirs(G"${TOGO_ROOT}/tool/*")
-for _, p in pairs(glob) do
-	local name = path.getname(p)
-	table.insert(togo.tools, name)
-end
+togo.libs = togo_libraries()
+togo.tools = togo_tools()
 
 precore.make_config_scoped("togo.projects", {
 	once = true,
