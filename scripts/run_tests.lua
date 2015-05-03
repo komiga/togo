@@ -25,6 +25,13 @@ group_data["core"] = {
 	},
 }
 
+group_data["window"] = {
+	excluded = {
+	},
+	args = {
+	},
+}
+
 group_data["game"] = {
 	excluded = {
 		["app/general"] = true,
