@@ -60,6 +60,27 @@
 			]
 		},
 		{
+			"name": "Library: window",
+			"path": "./lib/window/",
+			"folder_exclude_patterns": [
+				"src",
+				"build"
+			],
+			"file_exclude_patterns": [
+				"Makefile",
+				"*.make",
+				"*.exe",
+				"*.elf"
+			]
+		},
+		{
+			"name": "— lib/window",
+			"path": "./lib/window/src/togo/window/",
+			"file_exclude_patterns": [
+				"*.gen_interface"
+			]
+		},
+		{
 			"name": "Library: game",
 			"path": "./lib/game/",
 			"folder_exclude_patterns": [
