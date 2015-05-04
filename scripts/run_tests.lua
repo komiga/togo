@@ -27,6 +27,8 @@ group_data["core"] = {
 
 group_data["window"] = {
 	excluded = {
+		-- ["window/window"] = true,
+		-- ["window/window_opengl"] = true,
 	},
 	args = {
 	},
@@ -34,10 +36,9 @@ group_data["window"] = {
 
 group_data["game"] = {
 	excluded = {
-		["app/general"] = true,
-		["gfx/display"] = true,
-		["gfx/renderer_triangle"] = true,
-		["gfx/renderer_pipeline"] = true,
+		-- ["app/general"] = true,
+		-- ["gfx/renderer_triangle"] = true,
+		-- ["gfx/renderer_pipeline"] = true,
 	},
 	args = {
 	},
