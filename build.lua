@@ -259,8 +259,23 @@ precore.apply_global({
 	"togo.env",
 })
 
-togo.libs = togo_libraries()
-togo.tools = togo_tools()
+precore.make_config("togo.dep.opengl", nil, {
+{project = function(p)
+	configuration {}
+		defines {"GLEW_STATIC"}
+		includedirs {
+			G"${DEP_PATH}/glew/include/",
+		}
+		if not precore.env_project()["NO_LINK"] then
+			libdirs {
+				G"${DEP_PATH}/glew/lib/",
+			}
+			links {
+				"GL",
+				":libGLEW.a",
+			}
+		end
+end}})
 
 precore.make_config_scoped("togo.projects", {
 	once = true,
@@ -304,6 +319,9 @@ precore.make_config_scoped("togo.projects", {
 			"$(SILENT) exit 0",
 		}
 end}})
+
+togo.libs = togo_libraries()
+togo.tools = togo_tools()
 
 for _, name in pairs(togo.libs) do
 	precore.import(G"${TOGO_ROOT}/lib/" .. name)

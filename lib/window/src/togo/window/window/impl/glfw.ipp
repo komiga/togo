@@ -13,7 +13,6 @@
 #include <togo/window/window/impl/types.hpp>
 #include <togo/window/window/impl/private.hpp>
 #include <togo/window/window/impl/glfw.hpp>
-#include <togo/window/window/impl/opengl.hpp>
 #include <togo/window/input/types.hpp>
 
 #include <GLFW/glfw3.h>
@@ -22,14 +21,13 @@
 
 namespace togo {
 
-void window::init_impl(
-	unsigned context_major,
-	unsigned context_minor
-) {
+void window::init_impl() {
+	TOGO_ASSERT(_globals.with_gl, "OpenGL context must be requested for GLFW backend");
 	TOGO_GLFW_CHECK(glfwInit());
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, context_major);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, context_minor);
-	if (context_major >= 3) {
+
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, _globals.context_major);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, _globals.context_minor);
+	if (_globals.context_major >= 3) {
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	}
@@ -44,10 +42,19 @@ void window::shutdown_impl() {
 }
 
 Window* window::create(
-	char const* title,
+	StringRef /*title*/,
+	UVec2 /*size*/,
+	WindowFlags /*flags*/,
+	Allocator& /*allocator*/
+) {
+	TOGO_ASSERT(false, "cannot create plain window with GLFW backend");
+}
+
+Window* window::create_opengl(
+	StringRef title,
 	UVec2 size,
 	WindowFlags flags,
-	WindowConfig const& config,
+	WindowOpenGLConfig const& config,
 	Window* share_with,
 	Allocator& allocator
 ) {
@@ -67,7 +74,7 @@ Window* window::create(
 	;
 
 	TOGO_ASSERT(
-		enum_bool(config.flags & WindowConfigFlags::double_buffered),
+		enum_bool(config.flags & WindowOpenGLConfig::Flags::double_buffered),
 		"GLFW window is always double-buffered"
 	);
 
@@ -85,7 +92,7 @@ Window* window::create(
 	}
 
 	GLFWwindow* const handle = glfwCreateWindow(
-		size.x, size.y, title, nullptr, share_with_handle
+		size.x, size.y, title.data, nullptr, share_with_handle
 	);
 	TOGO_ASSERT(handle, "failed to create window");
 	glfwMakeContextCurrent(handle);
@@ -99,8 +106,14 @@ Window* window::create(
 	return window;
 }
 
-void window::set_title(Window* window, char const* title) {
-	glfwSetWindowTitle(window->_impl.handle, title);
+void window::destroy(Window* window) {
+	Allocator& allocator = *window->_allocator;
+	glfwDestroyWindow(window->_impl.handle);
+	TOGO_DESTROY(allocator, window);
+}
+
+void window::set_title(Window* window, StringRef title) {
+	glfwSetWindowTitle(window->_impl.handle, title.data);
 }
 
 void window::set_mouse_lock(Window* /*window*/, bool /*enable*/) {
@@ -135,12 +148,6 @@ void window::unbind_context() {
 
 void window::swap_buffers(Window* window) {
 	glfwSwapBuffers(window->_impl.handle);
-}
-
-void window::destroy(Window* window) {
-	Allocator& allocator = *window->_allocator;
-	glfwDestroyWindow(window->_impl.handle);
-	TOGO_DESTROY(allocator, window);
 }
 
 // private

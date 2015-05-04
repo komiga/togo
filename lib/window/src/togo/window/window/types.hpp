@@ -22,19 +22,19 @@ namespace togo {
 	@{
 */
 
-/// Window configuration flags.
-enum class WindowConfigFlags : unsigned {
-	/// Empty flag.
-	none = 0,
-	/// Double-buffered window.
-	double_buffered = 1 << 0,
-};
-
-/// Window configuration.
+/// Window OpenGL configuration.
 ///
 /// If either msaa_num_buffers or msaa_num_samples are 0, MSAA is
 /// disabled.
-struct WindowConfig {
+struct WindowOpenGLConfig {
+	/// Flags.
+	enum class Flags : unsigned {
+		/// Empty flag.
+		none = 0,
+		/// Double-buffered window.
+		double_buffered = 1 << 0,
+	};
+
 	struct ColorBits {
 		unsigned red;
 		unsigned green;
@@ -43,7 +43,7 @@ struct WindowConfig {
 	};
 
 	/// Color buffer bits.
-	WindowConfig::ColorBits color_bits;
+	ColorBits color_bits;
 
 	/// Depth buffer bits.
 	/// If this is 0, the depth buffer should be assumed unavailable.
@@ -59,7 +59,7 @@ struct WindowConfig {
 	unsigned msaa_num_samples;
 
 	/// Miscellaneous flags.
-	WindowConfigFlags flags;
+	Flags flags;
 };
 
 /// Window flags.
@@ -94,7 +94,7 @@ struct Window;
 
 /** @cond INTERNAL */
 template<>
-struct enable_enum_bitwise_ops<WindowConfigFlags> : true_type {};
+struct enable_enum_bitwise_ops<WindowOpenGLConfig::Flags> : true_type {};
 
 template<>
 struct enable_enum_bitwise_ops<WindowFlags> : true_type {};

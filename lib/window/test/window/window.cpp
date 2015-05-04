@@ -1,6 +1,7 @@
 
 #include <togo/core/error/assert.hpp>
 #include <togo/core/log/log.hpp>
+#include <togo/core/string/string.hpp>
 #include <togo/core/system/system.hpp>
 #include <togo/window/window/window.hpp>
 #include <togo/window/input/input.hpp>
@@ -12,22 +13,15 @@ using namespace togo;
 
 signed main() {
 	memory_init();
-	window::init(3, 3);
 
-	WindowConfig config{};
-	config.color_bits = {8, 8, 8, 0};
-	config.depth_bits = 16;
-	config.stencil_bits = 0;
-	config.msaa_num_buffers = 0;
-	config.msaa_num_samples = 0;
-	config.flags = WindowConfigFlags::double_buffered;
+#if (TOGO_CONFIG_WINDOW_BACKEND != TOGO_WINDOW_BACKEND_GLFW)
+	window::init(0, 0);
 
 	Window* const window = window::create(
 		"togo window",
 		UVec2{1024, 768},
 		WindowFlags::borderless |
-		WindowFlags::resizable,
-		config
+		WindowFlags::resizable
 	);
 	InputBuffer ib{memory::default_allocator()};
 	input_buffer::add_window(ib, window);
@@ -54,11 +48,15 @@ signed main() {
 			window::set_mouse_lock(window, mouse_lock);
 			TOGO_LOG("mouse lock toggled\n");
 		}
-		window::swap_buffers(window);
+		// window::update_framebuffer(window);
 		system::sleep_ms(50);
 	}
 	input_buffer::remove_window(ib, window);
 	window::destroy(window);
 	window::shutdown();
+#else
+	TOGO_LOG("GLFW backend does not support plain windows\n");
+#endif
+
 	return 0;
 }

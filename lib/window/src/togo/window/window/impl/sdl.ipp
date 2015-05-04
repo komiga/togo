@@ -12,7 +12,6 @@
 #include <togo/window/window/impl/types.hpp>
 #include <togo/window/window/impl/private.hpp>
 #include <togo/window/window/impl/sdl.hpp>
-#include <togo/window/window/impl/opengl.hpp>
 #include <togo/window/input/types.hpp>
 
 #include <SDL2/SDL_error.h>
@@ -30,18 +29,22 @@ enum {
 
 } // anonymous namespace
 
-void window::init_impl(
-	unsigned context_major,
-	unsigned context_minor
-) {
+void window::init_impl() {
 	TOGO_SDL_CHECK(SDL_Init(INIT_SYSTEMS) != 0);
-	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1));
-	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, context_major));
-	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, context_minor));
-	if (context_major >= 3) {
-		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
-		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG));
+
+#if defined(TOGO_CONFIG_WINDOW_ENABLE_OPENGL)
+	if (_globals.with_gl) {
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1));
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, _globals.context_major));
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, _globals.context_minor));
+		if (_globals.context_major >= 3) {
+			TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
+			TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG));
+		}
 	}
+#else
+	TOGO_ASSERT(!_globals.with_gl, "OpenGL support disabled in lib/window");
+#endif
 	return;
 
 sdl_error:
@@ -52,28 +55,17 @@ void window::shutdown_impl() {
 	SDL_Quit();
 }
 
-Window* window::create(
-	char const* title,
-	UVec2 const size,
-	WindowFlags flags,
-	WindowConfig const& config,
-	Window* share_with,
-	Allocator& allocator
+static void set_creation_properties(
+	WindowFlags const flags,
+	signed& x, signed& y,
+	unsigned& sdl_flags
 ) {
-	SDL_Window* handle = nullptr;
-	SDL_GLContext context = nullptr;
-	int x;
-	int y;
 	if (enum_bool(flags & WindowFlags::centered)) {
 		x = y = SDL_WINDOWPOS_CENTERED;
 	} else {
 		x = y = SDL_WINDOWPOS_UNDEFINED;
 	}
 
-	unsigned sdl_flags
-		= SDL_WINDOW_ALLOW_HIGHDPI
-		| SDL_WINDOW_OPENGL
-	;
 	if (enum_bool(flags & WindowFlags::borderless)) {
 		sdl_flags |= SDL_WINDOW_BORDERLESS;
 	}
@@ -83,6 +75,52 @@ Window* window::create(
 	if (enum_bool(flags & WindowFlags::resizable)) {
 		sdl_flags |= SDL_WINDOW_RESIZABLE;
 	}
+}
+
+Window* window::create(
+	StringRef title,
+	UVec2 size,
+	WindowFlags flags,
+	Allocator& allocator
+) {
+	signed x;
+	signed y;
+	unsigned sdl_flags
+		= SDL_WINDOW_ALLOW_HIGHDPI
+	;
+	set_creation_properties(flags, x, y, sdl_flags);
+
+	SDL_Window* handle = SDL_CreateWindow(title.data, x, y, size.x, size.y, sdl_flags);
+	TOGO_SDL_CHECK(!handle);
+
+	return TOGO_CONSTRUCT(
+		allocator, Window, size, flags, {}, allocator,
+		SDLWindowImpl{handle, nullptr}
+	);
+
+sdl_error:
+	TOGO_ASSERTF(false, "failed to create window: %s", SDL_GetError());
+}
+
+#if defined(TOGO_CONFIG_WINDOW_ENABLE_OPENGL)
+Window* window::create_opengl(
+	StringRef title,
+	UVec2 size,
+	WindowFlags flags,
+	WindowOpenGLConfig const& config,
+	Window* share_with,
+	Allocator& allocator
+) {
+	SDL_Window* handle = nullptr;
+	SDL_GLContext context = nullptr;
+
+	signed x;
+	signed y;
+	unsigned sdl_flags
+		= SDL_WINDOW_ALLOW_HIGHDPI
+		| SDL_WINDOW_OPENGL
+	;
+	set_creation_properties(flags, x, y, sdl_flags);
 
 	if (share_with) {
 		window::bind_context(share_with);
@@ -93,7 +131,7 @@ Window* window::create(
 	));
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(
 		SDL_GL_DOUBLEBUFFER,
-		enum_bool(config.flags & WindowConfigFlags::double_buffered) ? 1 : 0
+		enum_bool(config.flags & WindowOpenGLConfig::Flags::double_buffered) ? 1 : 0
 	));
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_RED_SIZE, config.color_bits.red));
 	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, config.color_bits.green));
@@ -110,7 +148,7 @@ Window* window::create(
 		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, config.msaa_num_samples));
 	}
 
-	handle = SDL_CreateWindow(title, x, y, size.x, size.y, sdl_flags);
+	handle = SDL_CreateWindow(title.data, x, y, size.x, size.y, sdl_flags);
 	TOGO_SDL_CHECK(!handle);
 	context = SDL_GL_CreateContext(handle);
 	TOGO_SDL_CHECK(!context);
@@ -125,9 +163,21 @@ Window* window::create(
 sdl_error:
 	TOGO_ASSERTF(false, "failed to create window: %s", SDL_GetError());
 }
+#endif
 
-void window::set_title(Window* window, char const* title) {
-	SDL_SetWindowTitle(window->_impl.handle, title);
+void window::destroy(Window* window) {
+	Allocator& allocator = *window->_allocator;
+#if defined(TOGO_CONFIG_WINDOW_ENABLE_OPENGL)
+	if (window->_impl.context) {
+		SDL_GL_DeleteContext(window->_impl.context);
+	}
+#endif
+	SDL_DestroyWindow(window->_impl.handle);
+	TOGO_DESTROY(allocator, window);
+}
+
+void window::set_title(Window* window, StringRef title) {
+	SDL_SetWindowTitle(window->_impl.handle, title.data);
 }
 
 void window::set_mouse_lock(Window* window, bool enable) {
@@ -148,7 +198,9 @@ sdl_error:
 	TOGO_ASSERTF(false, "failed to set window swap mode: %s", SDL_GetError());
 }
 
+#if defined(TOGO_CONFIG_WINDOW_ENABLE_OPENGL)
 void window::bind_context(Window* window) {
+	TOGO_ASSERTE(window->_impl.context);
 	TOGO_SDL_CHECK(SDL_GL_MakeCurrent(window->_impl.handle, window->_impl.context));
 	return;
 
@@ -165,17 +217,11 @@ sdl_error:
 }
 
 void window::swap_buffers(Window* window) {
-	if (enum_bool(window->_config.flags & WindowConfigFlags::double_buffered)) {
+	if (enum_bool(window->_config.flags & WindowOpenGLConfig::Flags::double_buffered)) {
 		SDL_GL_SwapWindow(window->_impl.handle);
 	}
 }
-
-void window::destroy(Window* window) {
-	Allocator& allocator = *window->_allocator;
-	SDL_GL_DeleteContext(window->_impl.context);
-	SDL_DestroyWindow(window->_impl.handle);
-	TOGO_DESTROY(allocator, window);
-}
+#endif
 
 // private
 

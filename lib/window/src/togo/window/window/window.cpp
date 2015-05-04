@@ -24,27 +24,35 @@
 
 namespace togo {
 
-Globals _globals{false, false, 0, 0};
+namespace window {
+
+Globals _globals{false, false, false, 0, 0};
+
+} // namespace window
 
 /// Initialize the window backend.
 ///
 /// context_major and context_minor are OpenGL context version numbers.
-/// If these are less than 3 and 2, respectively, an assertion will fail.
-/// The core profile is forced.
+/// If these are 0 and 0, OpenGL is not initialized, and OpenGL contexts cannot
+/// be created.
+/// If these are otherwise less than 3 and 3, an assertion will fail. The core
+/// profile is forced.
 void window::init(
 	unsigned context_major,
 	unsigned context_minor
 ) {
 	TOGO_ASSERT(!_globals.initialized, "window backend has already been initialized");
 
+	_globals.with_gl = !(context_major == 0 && context_minor == 0);
 	TOGO_ASSERT(
-		context_major >= 3 && context_minor >= 3,
+		!_globals.with_gl || (context_major >= 3 && context_minor >= 3),
 		"OpenGL context version below 3.3 is not supported"
 	);
-	window::init_impl(context_major, context_minor);
 
 	_globals.context_major = context_major;
 	_globals.context_minor = context_minor;
+	window::init_impl();
+
 	_globals.initialized = true;
 	return;
 }
@@ -79,6 +87,31 @@ unsigned window::width(Window const* window) {
 unsigned window::height(Window const* window) {
 	return window->_size.y;
 }
+
+#if !defined(TOGO_CONFIG_WINDOW_ENABLE_OPENGL)
+Window* window::create_opengl(
+	StringRef /*title*/,
+	UVec2 /*size*/,
+	WindowFlags /*flags*/,
+	WindowOpenGLConfig const& /*config*/,
+	Window* /*share_with*/,
+	Allocator& /*allocator*/
+) {
+	TOGO_ASSERT(false, "OpenGL disabled in lib/window");
+}
+
+void window::bind_context(Window* /*window*/) {
+	TOGO_ASSERT(false, "OpenGL disabled in lib/window");
+}
+
+void window::unbind_context() {
+	TOGO_ASSERT(false, "OpenGL disabled in lib/window");
+}
+
+void window::swap_buffers(Window* /*window*/) {
+	TOGO_ASSERT(false, "OpenGL disabled in lib/window");
+}
+#endif
 
 // private
 

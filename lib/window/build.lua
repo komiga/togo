@@ -83,19 +83,7 @@ precore.make_config("togo.lib.window.backend.dep", nil, {
 		defines {
 			"TOGO_CONFIG_WINDOW_ENABLE_OPENGL",
 		}
-		defines {"GLEW_STATIC"}
-		includedirs {
-			G"${DEP_PATH}/glew/include/",
-		}
-		if not precore.env_project()["NO_LINK"] then
-			libdirs {
-				G"${DEP_PATH}/glew/lib/",
-			}
-			links {
-				"GL",
-				":libGLEW.a",
-			}
-		end
+		precore.apply("togo.dep.opengl")
 	end
 end}})
 

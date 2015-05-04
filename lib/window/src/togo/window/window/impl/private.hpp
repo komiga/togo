@@ -12,10 +12,7 @@
 namespace togo {
 namespace window {
 
-void init_impl(
-	unsigned context_major,
-	unsigned context_minor
-);
+void init_impl();
 void shutdown_impl();
 
 bool is_attached_to_input_buffer(Window const* window);

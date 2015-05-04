@@ -13,7 +13,12 @@ namespace togo {
 
 struct SDLWindowImpl {
 	SDL_Window* handle;
+
+#if defined(TOGO_CONFIG_WINDOW_ENABLE_OPENGL)
 	SDL_GLContext context;
+#else
+	void* context;
+#endif
 };
 
 using WindowImpl = SDLWindowImpl;

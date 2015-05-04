@@ -6,6 +6,7 @@ precore.make_config("togo.lib.game.dep", {
 }, {
 "togo.base",
 "togo.lib.core.dep",
+"togo.dep.opengl",
 "togo.lib.window.dep",
 {project = function(p)
 	togo.library_config("game")

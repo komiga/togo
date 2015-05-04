@@ -14,9 +14,6 @@
 
 #if defined(TOGO_CONFIG_WINDOW_ENABLE_OPENGL)
 	#include <togo/window/window/impl/opengl.hpp>
-#else
-	// TODO
-	#error "OpenGL support must be enabled"
 #endif
 
 #if (TOGO_CONFIG_WINDOW_BACKEND == TOGO_WINDOW_BACKEND_SDL)
@@ -27,8 +24,11 @@
 
 namespace togo {
 
+namespace window {
+
 struct Globals {
 	bool initialized;
+	bool with_gl;
 	bool glew_initialized;
 	unsigned context_major;
 	unsigned context_minor;
@@ -36,10 +36,12 @@ struct Globals {
 
 extern Globals _globals;
 
+} // namespace window
+
 struct Window {
 	UVec2 _size;
 	WindowFlags _flags;
-	WindowConfig _config;
+	WindowOpenGLConfig _config;
 	Allocator* _allocator;
 	InputBuffer* _input_buffer;
 
@@ -61,7 +63,7 @@ struct Window {
 	Window(
 		UVec2 const size,
 		WindowFlags const flags,
-		WindowConfig const& config,
+		WindowOpenGLConfig const& config,
 		Allocator& allocator,
 		WindowImpl&& impl
 	)

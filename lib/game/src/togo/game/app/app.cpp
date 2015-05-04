@@ -84,14 +84,14 @@ void app::actual_init(AppBase& app) {
 
 	// Initialize graphics
 	window::init(3, 3);
-	WindowConfig config{};
+	WindowOpenGLConfig config{};
 	config.color_bits = {8, 8, 8, 0};
 	config.depth_bits = 16;
 	config.stencil_bits = 0;
 	config.msaa_num_buffers = 0;
 	config.msaa_num_samples = 0;
-	config.flags = WindowConfigFlags::double_buffered;
-	app.window = window::create(
+	config.flags = WindowOpenGLConfig::Flags::double_buffered;
+	app.window = window::create_opengl(
 		"togo window",
 		UVec2{1024, 768},
 		WindowFlags::borderless |

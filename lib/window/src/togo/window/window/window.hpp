@@ -13,6 +13,7 @@
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/math/types.hpp>
 #include <togo/core/memory/memory.hpp>
+#include <togo/core/string/types.hpp>
 #include <togo/window/window/types.hpp>
 #include <togo/window/window/window.gen_interface>
 
@@ -26,17 +27,28 @@ namespace window {
 
 // implementation
 
-/// Create window.
+/// Create plain window.
+///
+/// An assertion will fail if the window could not be created.
+/// If WindowFlags::fullscreen is enabled, size is ignored.
+Window* create(
+	StringRef title,
+	UVec2 size,
+	WindowFlags flags,
+	Allocator& allocator = memory::default_allocator()
+);
+
+/// Create window with OpenGL context.
 ///
 /// An assertion will fail if the window could not be created.
 /// The new window's OpenGL context will be current.
 /// If share_with is non-null, the new window will share its OpenGL context.
 /// If WindowFlags::fullscreen is enabled, size is ignored.
-Window* create(
-	char const* title,
+Window* create_opengl(
+	StringRef title,
 	UVec2 size,
 	WindowFlags flags,
-	WindowConfig const& config,
+	WindowOpenGLConfig const& config,
 	Window* share_with = nullptr,
 	Allocator& allocator = memory::default_allocator()
 );
@@ -45,7 +57,7 @@ Window* create(
 void destroy(Window* window);
 
 /// Set title.
-void set_title(Window* window, char const* title);
+void set_title(Window* window, StringRef title);
 
 /// Set mouse input lock.
 ///
