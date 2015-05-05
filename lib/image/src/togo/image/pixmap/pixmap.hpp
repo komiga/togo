@@ -23,6 +23,11 @@ namespace pixmap {
 	@{
 */
 
+/// Check if pixmap is empty.
+inline bool empty(Pixmap const& p) {
+	return p.data_size == 0;
+}
+
 /// Fill with color.
 inline void fill(Pixmap& p, Color color) {
 	pixmap::fill(p, color, UVec4{0, 0, p.size});
