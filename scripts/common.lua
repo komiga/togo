@@ -65,6 +65,7 @@ end
 function togo_libraries()
 	return {
 		"core",
+		"image",
 		"window",
 		"game",
 	}

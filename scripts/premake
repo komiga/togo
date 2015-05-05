@@ -5,6 +5,7 @@ premake4 $@
 if [[ -f Makefile ]]; then
 	sed -i \
 		-e 's/lib_core:/& | igen/' \
+		-e 's/lib_image:/& | lib_core/' \
 		-e 's/lib_window:/& | lib_core/' \
 		-e 's/lib_game:/& | lib_window/' \
 		-e 's/tool_res_build_lib:/& | lib_game/' \

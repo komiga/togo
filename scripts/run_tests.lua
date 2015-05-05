@@ -21,6 +21,13 @@ group_data["core"] = {
 	},
 }
 
+group_data["image"] = {
+	excluded = {
+	},
+	args = {
+	},
+}
+
 group_data["window"] = {
 	excluded = {
 		-- ["window/window"] = true,
