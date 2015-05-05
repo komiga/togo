@@ -153,6 +153,7 @@ FULL_PATH_NAMES        = YES
 # This tag requires that the tag FULL_PATH_NAMES is set to YES.
 
 STRIP_FROM_PATH        = ../lib/core/src/ \
+                         ../lib/image/src/ \
                          ../lib/window/src/ \
                          ../lib/game/src/ \
                          ../tool/res_build/src/
@@ -764,6 +765,7 @@ WARN_LOGFILE           =
 INPUT                  = ./pages/ \
                          ../support/ \
                          ../lib/core/src/ \
+                         ../lib/image/src/ \
                          ../lib/window/src/ \
                          ../lib/game/src/ \
                          ../tool/res_build/src/ \
