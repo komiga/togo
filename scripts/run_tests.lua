@@ -10,10 +10,6 @@ local prev_wd = lfs.currentdir()
 lfs.chdir(SCRIPTS_PATH .. "/..")
 local ROOT = lfs.currentdir()
 
-local order = {
-	["core"] = 1,
-}
-
 local group_data = {}
 
 group_data["core"] = {
@@ -44,8 +40,10 @@ group_data["game"] = {
 	},
 }
 
+local group_names = togo_libraries()
 local groups = {}
-for group_name in iterate_dir("lib", "directory", 1) do
+
+for _, group_name in pairs(group_names) do
 	local root = "lib/" .. group_name .. "/test"
 	local group = {
 		name = group_name,
@@ -63,7 +61,7 @@ for group_name in iterate_dir("lib", "directory", 1) do
 			end
 		end
 	end
-	table.insert(groups, order[group_name] or (#groups + 1), group)
+	table.insert(groups, group)
 end
 
 function run()
