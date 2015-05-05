@@ -11,7 +11,7 @@
 namespace togo {
 
 namespace {
-	static constexpr u32 const
+	static constexpr unsigned const
 	BLOCK_SIZE_MIN = 4 * 1024; // 4KB
 }
 
@@ -42,11 +42,11 @@ JumpBlockAllocator::JumpBlockAllocator(
 	BLOCK_NEXT_PTR(_block_begin) = nullptr;
 }
 
-void* JumpBlockAllocator::allocate(u32 const size, u32 const align) {
+void* JumpBlockAllocator::allocate(unsigned const size, unsigned const align) {
 	_put = pointer_align(_put, align);
 	if (signed_cast(size) > _block_end - _put) {
-		u32 const block_size = max(
-			u32{sizeof(void*)} + size + align,
+		unsigned const block_size = max(
+			unsigned{sizeof(void*)} + size + align,
 			BLOCK_SIZE_MIN
 		);
 		_put = static_cast<char*>(_fallback_allocator.allocate(block_size));

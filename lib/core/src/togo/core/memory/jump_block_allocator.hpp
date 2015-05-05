@@ -70,24 +70,24 @@ public:
 	);
 
 	/// This operation is not supported.
-	u32 num_allocations() const override {
+	unsigned num_allocations() const override {
 		return 0;
 	}
 
 	/// This operation is not supported.
-	u32 total_size() const override {
+	unsigned total_size() const override {
 		return SIZE_NOT_TRACKED;
 	}
 
 	/// This operation is not supported.
-	u32 allocation_size(void const* const) const override {
+	unsigned allocation_size(void const* const) const override {
 		return SIZE_NOT_TRACKED;
 	}
 
 	/// Returns the next free slice.
 	/// If the allocation would grow past the current block, a new
 	/// block will be allocated.
-	void* allocate(u32 const size, u32 const align = DEFAULT_ALIGNMENT) override;
+	void* allocate(unsigned const size, unsigned const align = DEFAULT_ALIGNMENT) override;
 
 	/// Does nothing.
 	void deallocate(void const* const) override {}

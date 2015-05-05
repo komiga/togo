@@ -30,7 +30,7 @@ class HeapAllocator
 {
 private:
 	mspace _mspace;
-	u32 _num_allocations;
+	unsigned _num_allocations;
 	Mutex _op_mutex;
 
 public:
@@ -46,7 +46,7 @@ public:
 		destroy_mspace(_mspace);
 	}
 
-	HeapAllocator(u32 const capacity)
+	HeapAllocator(unsigned const capacity)
 		: _mspace(nullptr)
 		, _num_allocations(0)
 		, _op_mutex(MutexType::normal)
@@ -55,23 +55,23 @@ public:
 		TOGO_ASSERT(_mspace, "failed to create mspace");
 	}
 
-	u32 num_allocations() const override {
+	unsigned num_allocations() const override {
 		return _num_allocations;
 	}
 
-	u32 total_size() const override {
+	unsigned total_size() const override {
 		MutexLock op_mutex_lock{const_cast<Mutex&>(_op_mutex)};
 		return mspace_mallinfo(const_cast<void*>(_mspace)).uordblks;
 	}
 
-	u32 allocation_size(void const* const p) const override {
+	unsigned allocation_size(void const* const p) const override {
 		MutexLock op_mutex_lock{const_cast<Mutex&>(_op_mutex)};
 		size_t const size = mspace_usable_size(p);
 		TOGO_DEBUG_ASSERT(size != 0, "attempted to access size for non-allocator pointer");
-		return static_cast<u32>(size);
+		return static_cast<unsigned>(size);
 	}
 
-	void* allocate(u32 const size, u32 const align) override {
+	void* allocate(unsigned const size, unsigned const align) override {
 		MutexLock op_mutex_lock{_op_mutex};
 
 		void* p = nullptr;
@@ -131,13 +131,13 @@ struct MemoryGlobals {
 	default_allocator_type* default_allocator{nullptr};
 	//scratch_allocator_type* scratch_allocator{nullptr};
 
-	static constexpr u32 const
+	static constexpr unsigned const
 	BUFFER_SIZE = sizeof(default_allocator_type)/* + sizeof(scratch_allocator_type)*/;
 	char buffer[BUFFER_SIZE];
 };
 MemoryGlobals _mem_globals{};
 
-static constexpr u32 const
+static constexpr unsigned const
 HEAP_CAPACITY = 8 * 1024 * 1024; // 8MB
 
 } // anonymous namespace
@@ -147,7 +147,7 @@ HEAP_CAPACITY = 8 * 1024 * 1024; // 8MB
 ///
 /// scratch_size is size of the scratch space block to pre-allocate.
 /// If scratch_size < SCRATCH_ALLOCATOR_SIZE_MINIMUM, an assertion will trigger.
-void memory::init(u32 const scratch_size IGEN_DEFAULT(SCRATCH_ALLOCATOR_SIZE_DEFAULT)) {
+void memory::init(unsigned const scratch_size IGEN_DEFAULT(SCRATCH_ALLOCATOR_SIZE_DEFAULT)) {
 	TOGO_ASSERT(!_mem_globals.active, "memory system has already been initialized");
 	TOGO_ASSERT(
 		scratch_size >= SCRATCH_ALLOCATOR_SIZE_MINIMUM,

@@ -30,12 +30,12 @@ namespace togo {
 ///
 /// S is the number of bytes to store in the allocator directly.
 /// S must be a power of 2 at least twice the size of a pointer.
-template<u32 S>
+template<unsigned S>
 class TempAllocator
 	: public JumpBlockAllocator
 {
 private:
-	static constexpr u32 const
+	static constexpr unsigned const
 	BUFFER_SIZE = S;
 
 	static_assert(

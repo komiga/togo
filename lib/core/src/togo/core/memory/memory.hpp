@@ -62,11 +62,11 @@ namespace togo {
 /// %Allocator base class.
 class Allocator {
 public:
-	static constexpr u32 const
+	static constexpr unsigned const
 	/// Default allocation alignment.
 	DEFAULT_ALIGNMENT = 4,
 	/// Size value returned by unsupported operations.
-	SIZE_NOT_TRACKED = static_cast<u32>(-1);
+	SIZE_NOT_TRACKED = ~(0u);
 
 	Allocator(Allocator const&) = delete;
 	Allocator& operator=(Allocator const&) = delete;
@@ -80,25 +80,25 @@ public:
 	virtual ~Allocator() = 0;
 
 	/// Number of active allocations.
-	virtual u32 num_allocations() const = 0;
+	virtual unsigned num_allocations() const = 0;
 
 	/// Number of bytes allocated by the allocator.
 	///
 	/// If an allocator does not support this operation, it shall
 	/// return SIZE_NOT_TRACKED.
-	virtual u32 total_size() const = 0;
+	virtual unsigned total_size() const = 0;
 
 	/// Size of block allocated for p.
 	///
 	/// This may be greater than the actual size of the object type
 	/// due to internal state and alignment. If an allocator does not
 	/// support this operation, it shall return SIZE_NOT_TRACKED.
-	virtual u32 allocation_size(void const* p) const = 0;
+	virtual unsigned allocation_size(void const* p) const = 0;
 
 	/// Allocate memory.
 	///
 	/// If align is 0, no alignment is used.
-	virtual void* allocate(u32 size, u32 align = DEFAULT_ALIGNMENT) = 0;
+	virtual void* allocate(unsigned size, unsigned align = DEFAULT_ALIGNMENT) = 0;
 
 	/// Deallocate memory.
 	///
