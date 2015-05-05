@@ -5,6 +5,8 @@
 @ingroup lib_image
 @details
 
+Pixmap storage is y-major, starting with the top-left pixel.
+
 Pixmaps use the default allocator.
 
 */
