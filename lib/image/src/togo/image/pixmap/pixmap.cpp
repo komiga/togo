@@ -88,7 +88,7 @@ Pixmap& Pixmap::operator=(Pixmap&& other) {
 
 /// Resize.
 ///
-/// If resized to (0, 0), the data buffer is retained.
+/// If resized to (0, 0), the image is empty, but the data buffer is retained.
 /// Existing pixels are retained, but not stretched.
 /// New area is filled with fill_color.
 void pixmap::resize(
@@ -112,18 +112,19 @@ void pixmap::resize(
 		data = static_cast<u8*>(allocator.allocate(data_size));
 	}
 
-	if (p.data_size > 0) {
+	if (
+		p.data_size > 0 &&
 		// No copy necessary when only changing the number of rows
 		// within existing space
-		if (data != p.data || size.width != old_size.width) {
-			unsigned width  = min(size.width , old_size.width);
-			unsigned height = min(size.height, old_size.height);
-			pixmap::blit_direct_unscaled(
-				p.format,
-				data, size.width, UVec2{0, 0},
-				p.data, old_size.width, UVec4{0, 0, width, height}
-			);
-		}
+		(data != p.data || size.width != old_size.width)
+	) {
+		unsigned width  = min(size.width , old_size.width);
+		unsigned height = min(size.height, old_size.height);
+		pixmap::blit_direct_unscaled(
+			p.format,
+			data, size.width, UVec2{0, 0},
+			p.data, old_size.width, UVec4{0, 0, width, height}
+		);
 	}
 
 	if (data != p.data) {
@@ -208,8 +209,8 @@ void pixmap::fill(Pixmap& p, Color color, UVec4 rect) {
 	if (p.data_size == 0 || rect.x >= p.size.width || rect.y >= p.size.height) {
 		return;
 	}
-	rect.width = min(p.size.width - rect.x, rect.width);
-	rect.height = min(p.size.height - rect.y, rect.height);
+	rect.width = min(rect.width, p.size.width - rect.x);
+	rect.height = min(rect.height, p.size.height - rect.y);
 	/*TOGO_DEBUG_LOGF(
 		"    clipped = {%2u, %2u,  %2u, %2u}\n",
 		rect.x, rect.y, rect.width, rect.height
