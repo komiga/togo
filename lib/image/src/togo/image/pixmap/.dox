@@ -1,0 +1,10 @@
+
+/**
+
+@defgroup lib_image_pixmap Pixmap
+@ingroup lib_image
+@details
+
+Pixmaps use the default allocator.
+
+*/

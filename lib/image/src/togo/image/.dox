@@ -1,0 +1,10 @@
+
+/**
+
+@defgroup lib_image Library: image
+@details
+
+UVec4 is named by its use. If it is a "rect", the 3rd and 4th components are the
+width and height of a rectangle. If it is a "quad", they are x2 and y2.
+
+*/
