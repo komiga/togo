@@ -60,6 +60,27 @@
 			]
 		},
 		{
+			"name": "Library: image",
+			"path": "./lib/image/",
+			"folder_exclude_patterns": [
+				"src",
+				"build"
+			],
+			"file_exclude_patterns": [
+				"Makefile",
+				"*.make",
+				"*.exe",
+				"*.elf"
+			]
+		},
+		{
+			"name": "— lib/image",
+			"path": "./lib/image/src/togo/image/",
+			"file_exclude_patterns": [
+				"*.gen_interface"
+			]
+		},
+		{
 			"name": "Library: window",
 			"path": "./lib/window/",
 			"folder_exclude_patterns": [
