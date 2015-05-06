@@ -188,7 +188,7 @@ void pixmap::copy(Pixmap& p, Pixmap const& from) {
 		p.data_capacity = from.data_size;
 		auto& allocator = memory::default_allocator();
 		allocator.deallocate(p.data);
-		p.data = static_cast<u8*>(allocator.allocate(p.data_size));
+		p.data = static_cast<u8*>(allocator.allocate(p.data_capacity));
 	}
 	p.format = from.format;
 	p.data_size = from.data_size;
