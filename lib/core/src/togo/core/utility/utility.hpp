@@ -166,9 +166,11 @@ inline T* pointer_add(T* p, unsigned const bytes) noexcept {
 /// Aligns a pointer by moving it forward.
 template<class T>
 inline T* pointer_align(T* p, unsigned const align) noexcept {
-	unsigned const m = reinterpret_cast<std::uintptr_t>(p) % align;
-	if (m) {
-		p = pointer_add(p, align - m);
+	if (align) {
+		unsigned const m = reinterpret_cast<std::uintptr_t>(p) % align;
+		if (m) {
+			p = pointer_add(p, align - m);
+		}
 	}
 	return p;
 }
