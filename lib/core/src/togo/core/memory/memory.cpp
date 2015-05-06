@@ -72,6 +72,7 @@ public:
 	}
 
 	void* allocate(unsigned const size, unsigned const align) override {
+		TOGO_ASSERTE(size != 0);
 		MutexLock op_mutex_lock{_op_mutex};
 
 		void* p = nullptr;

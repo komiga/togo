@@ -98,6 +98,7 @@ public:
 	/// Allocate memory.
 	///
 	/// If align is 0, no alignment is used.
+	/// An assertion will fail if size is 0.
 	virtual void* allocate(unsigned size, unsigned align = DEFAULT_ALIGNMENT) = 0;
 
 	/// Deallocate memory.

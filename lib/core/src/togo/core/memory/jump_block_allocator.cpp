@@ -4,6 +4,7 @@
 */
 
 #include <togo/core/config.hpp>
+#include <togo/core/error/assert.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/memory/jump_block_allocator.hpp>
@@ -43,6 +44,7 @@ JumpBlockAllocator::JumpBlockAllocator(
 }
 
 void* JumpBlockAllocator::allocate(unsigned const size, unsigned const align) {
+	TOGO_ASSERTE(size != 0);
 	_put = pointer_align(_put, align);
 	if (signed_cast(size) > _block_end - _put) {
 		unsigned const block_size = max(
