@@ -33,6 +33,11 @@ inline void fill(Pixmap& p, Color color) {
 	pixmap::fill(p, color, UVec4{0, 0, p.size});
 }
 
+/// Blit a pixmap (not scaled, not blended).
+inline void blit(Pixmap& dst, Pixmap const& src, UVec2 dst_pos) {
+	pixmap::blit(dst, src, dst_pos, UVec4{0, 0, src.size});
+}
+
 /** @} */ // end of doc-group lib_image_pixmap
 
 } // namespace pixmap

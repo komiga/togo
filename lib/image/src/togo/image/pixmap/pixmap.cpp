@@ -120,10 +120,9 @@ void pixmap::resize(
 	) {
 		unsigned width  = min(size.width , old_size.width);
 		unsigned height = min(size.height, old_size.height);
-		pixmap::blit_direct_unscaled(
-			p.format,
-			data, size.width, UVec2{0, 0},
-			p.data, old_size.width, UVec4{0, 0, width, height}
+		pixmap::blit_unscaled_choose(
+			p.format, data, size.width, UVec2{0, 0},
+			p.format, p.data, old_size.width, UVec4{0, 0, width, height}
 		);
 	}
 
@@ -222,6 +221,28 @@ void pixmap::fill(Pixmap& p, Color color, UVec4 rect) {
 	case PixelDataType::c8: pixmap::fill_c8(p, color, rect); return;
 	case PixelDataType::p32: pixmap::fill_p32(p, color, rect); return;
 	}
+}
+
+/// Blit an area of a pixmap (not scaled, not blended).
+void pixmap::blit(
+	Pixmap& dst,
+	Pixmap const& src,
+	UVec2 dst_pos,
+	UVec4 src_rect
+) {
+	if (
+		dst.data_size == 0 || src.data_size == 0 ||
+		dst_pos.x >= dst.size.width || dst_pos.y >= dst.size.height ||
+		src_rect.x >= src.size.width || src_rect.y >= src.size.height
+	) {
+		return;
+	}
+	src_rect.width = min(src_rect.width, dst.size.width - dst_pos.x);
+	src_rect.height = min(src_rect.height, dst.size.height - dst_pos.y);
+	pixmap::blit_unscaled_choose(
+		dst.format, dst.data, dst.size.width, dst_pos,
+		src.format, src.data, src.size.width, src_rect
+	);
 }
 
 } // namespace togo

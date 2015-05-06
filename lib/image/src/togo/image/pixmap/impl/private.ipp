@@ -6,6 +6,7 @@
 #pragma once
 
 #include <togo/image/config.hpp>
+#include <togo/core/error/assert.hpp>
 #include <togo/image/pixmap/pixmap.hpp>
 #include <togo/image/pixmap/impl/private.hpp>
 
@@ -113,7 +114,7 @@ void pixmap::fill_p32(Pixmap& p, Color& color, UVec4& rect) {
 	}
 }
 
-void pixmap::blit_direct_unscaled_c8(
+void pixmap::blit_unscaled_c8(
 	PixelFormat const& format,
 	u8* dst,
 	unsigned dst_width,
@@ -126,8 +127,8 @@ void pixmap::blit_direct_unscaled_c8(
 	unsigned num_rows = src_rect.height;
 	unsigned num_bytes = src_rect.width * pixel_size;
 
-	dst += ((dst_pos.y * dst_width) + dst_pos.x) * pixel_size;
-	src += ((src_rect.y * src_width) + src_rect.x) * pixel_size;
+	dst += (dst_pos.y * dst_width + dst_pos.x) * pixel_size;
+	src += (src_rect.y * src_width + src_rect.x) * pixel_size;
 	dst_width *= pixel_size;
 	src_width *= pixel_size;
 	// TODO: Optimize for small areas
@@ -138,7 +139,7 @@ void pixmap::blit_direct_unscaled_c8(
 	}
 }
 
-void pixmap::blit_direct_unscaled_p32(
+void pixmap::blit_unscaled_p32(
 	u8* dst,
 	unsigned dst_width,
 	UVec2 dst_pos,
@@ -159,6 +160,38 @@ void pixmap::blit_direct_unscaled_p32(
 		std::memmove(dst, src, num_bytes);
 		dst += dst_width;
 		src += src_width;
+	}
+}
+
+void pixmap::blit_unscaled_choose(
+	PixelFormat const& dst_format,
+	u8* dst,
+	unsigned dst_width,
+	UVec2 dst_pos,
+	PixelFormat const& src_format,
+	u8 const* src,
+	unsigned src_width,
+	UVec4 src_rect
+) {
+	if (dst_format.equals(src_format)) {
+		switch (dst_format.data_type()) {
+		case PixelDataType::c8:
+			pixmap::blit_unscaled_c8(
+				dst_format,
+				dst, dst_width, dst_pos,
+				src, src_width, src_rect
+			);
+			return;
+
+		case PixelDataType::p32:
+			pixmap::blit_unscaled_p32(
+				dst, dst_width, dst_pos,
+				src, src_width, src_rect
+			);
+			return;
+		}
+	} else {
+		TOGO_ASSERT(false, "TODO");
 	}
 }
 
