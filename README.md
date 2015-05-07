@@ -46,6 +46,8 @@ Dependencies:
     2. [GLFW](http://www.glfw.org/download.html) >= **3.0.4**
   2. Raster:
     1. [XCB (Linux)](http://xcb.freedesktop.org) >= **1.11**
+2. With OpenGL backend:
+  1. [GLEW](http://glew.sourceforge.net/index.html) >= **1.11.0**
 
 ### Library: game
 
@@ -57,7 +59,7 @@ in great detail.
 
 Dependencies:
 
-1. [GLEW](http://glew.sourceforge.net/index.html) >= **1.11.0**
+1. `lib/window`
 
 ### Tool: res_build
 
