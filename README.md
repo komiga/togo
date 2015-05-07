@@ -59,12 +59,16 @@ in great detail.
 
 Dependencies:
 
-1. `lib/window`
+1. `lib/window` (requires OpenGL backend)
 
 ### Tool: res_build
 
 Resource package compiler for the game library. Interface is available as a
 static library for extension/automation.
+
+Dependencies:
+
+1. `lib/game`
 
 ## Platforms
 
