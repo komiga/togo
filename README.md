@@ -30,6 +30,10 @@ Dependencies:
 
 1. [All the Maths‽](https://github.com/komiga/am) (HEAD)
 
+### Library: image
+
+Imaging library.
+
 ### Library: window
 
 Windowing library.
