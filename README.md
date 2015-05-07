@@ -30,9 +30,22 @@ Dependencies:
 
 1. [All the Maths‽](https://github.com/komiga/am) (HEAD)
 
+### Library: window
+
+Windowing library.
+
+Dependencies:
+
+1. Backend (one of):
+  1. OpenGL:
+    1. [SDL](http://libsdl.org/download-2.0.php) >= **2.0.3**
+    2. [GLFW](http://www.glfw.org/download.html) >= **3.0.4**
+  2. Raster:
+    1. [XCB (Linux)](http://xcb.freedesktop.org) >= **1.11**
+
 ### Library: game
 
-A library for game development.
+Game engine.
 
 This library takes significant inspiration from [bitsquid](http://bitsquid.se),
 who have [written about](https://github.com/niklasfrykholm/blog) their design
@@ -40,10 +53,7 @@ in great detail.
 
 Dependencies:
 
-1. [GLEW](http://glew.sourceforge.net/index.html) **1.11.0**
-2. Graphics backend (one of):
-  1. [SDL](http://libsdl.org/download-2.0.php) **2.0.3**
-  2. [GLFW](http://www.glfw.org/download.html) **3.0.4**
+1. [GLEW](http://glew.sourceforge.net/index.html) >= **1.11.0**
 
 ### Tool: res_build
 
