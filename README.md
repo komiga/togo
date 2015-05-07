@@ -85,6 +85,13 @@ http://komiga.com/pp-cpp
 The only difference from the project protocol is `scripts/premake` in place of
 premake, which enforces recipe order to allow the use of GNU make's `--jobs`.
 
+Build configuration:
+
+* `--togo-window-backend=sdl | glfw | raster`
+
+  Set window backend. See [lib/window](#library-window) above for the
+  dependencies required.
+
 ## License
 
 togo carries the MIT license, which can be found both below and in the
