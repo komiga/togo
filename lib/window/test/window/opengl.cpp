@@ -14,7 +14,7 @@ using namespace togo;
 signed main() {
 	memory_init();
 
-#if defined(TOGO_CONFIG_WINDOW_ENABLE_OPENGL)
+#if defined(TOGO_WINDOW_BACKEND_USES_OPENGL)
 	window::init(3, 3);
 
 	WindowOpenGLConfig config{};
@@ -64,7 +64,7 @@ signed main() {
 	window::destroy(window);
 	window::shutdown();
 #else
-	TOGO_LOG("OpenGL support disabled in lib/window\n");
+	TOGO_LOG("OpenGL window not supported by backend\n");
 #endif
 
 	return 0;

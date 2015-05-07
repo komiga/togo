@@ -10,6 +10,6 @@ togo.make_tests("general", {
 })
 
 togo.make_tests("window", {
-	["window"] = {nil, configs},
-	["window_opengl"] = {nil, configs},
+	["raster"] = {nil, configs},
+	["opengl"] = {nil, configs},
 })

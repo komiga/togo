@@ -14,10 +14,10 @@ using namespace togo;
 signed main() {
 	memory_init();
 
-#if (TOGO_CONFIG_WINDOW_BACKEND != TOGO_WINDOW_BACKEND_GLFW)
+#if (TOGO_CONFIG_WINDOW_BACKEND == TOGO_WINDOW_BACKEND_RASTER)
 	window::init(0, 0);
 
-	Window* const window = window::create(
+	Window* const window = window::create_raster(
 		"togo window",
 		UVec2{1024, 768},
 		WindowFlags::borderless |
@@ -55,7 +55,7 @@ signed main() {
 	window::destroy(window);
 	window::shutdown();
 #else
-	TOGO_LOG("GLFW backend does not support plain windows\n");
+	TOGO_LOG("raster window not supported by backend\n");
 #endif
 
 	return 0;
