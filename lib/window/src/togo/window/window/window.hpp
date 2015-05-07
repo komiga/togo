@@ -27,11 +27,11 @@ namespace window {
 
 // implementation
 
-/// Create plain window.
+/// Create raster window.
 ///
 /// An assertion will fail if the window could not be created.
 /// If WindowFlags::fullscreen is enabled, size is ignored.
-Window* create(
+Window* create_raster(
 	StringRef title,
 	UVec2 size,
 	WindowFlags flags,

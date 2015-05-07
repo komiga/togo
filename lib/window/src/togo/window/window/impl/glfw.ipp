@@ -22,7 +22,6 @@
 namespace togo {
 
 void window::init_impl() {
-	TOGO_ASSERT(_globals.with_gl, "OpenGL context must be requested for GLFW backend");
 	TOGO_GLFW_CHECK(glfwInit());
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, _globals.context_major);
@@ -39,15 +38,6 @@ glfw_error:
 
 void window::shutdown_impl() {
 	glfwTerminate();
-}
-
-Window* window::create(
-	StringRef /*title*/,
-	UVec2 /*size*/,
-	WindowFlags /*flags*/,
-	Allocator& /*allocator*/
-) {
-	TOGO_ASSERT(false, "cannot create plain window with GLFW backend");
 }
 
 Window* window::create_opengl(

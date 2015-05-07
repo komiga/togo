@@ -10,26 +10,15 @@ precore.make_config("togo.lib.window.backend.opt", {
 		value = "BACKEND",
 		description = "select the window system backend",
 		allowed = {
-			{"sdl", "SDL2 backend (default)"},
-			{"glfw", "GLFW backend"},
+			{"sdl", "SDL2 OpenGL backend (default)"},
+			{"glfw", "GLFW OpenGL backend"},
+			{"raster", "system-dependent raster backend (XCB on Linux, ...)"},
 		}
 	},
 	init_handler = function()
 		if not _OPTIONS["togo-window-backend"] then
 			_OPTIONS["togo-window-backend"] = "sdl"
 		end
-	end
-}}})
-
-precore.make_config("togo.lib.window.enable-opengl.opt", {
-	once = true,
-}, {
-{option = {
-	data = {
-		trigger = "togo-enable-opengl",
-		description = "enable OpenGL support",
-	},
-	init_handler = function()
 	end
 }}})
 
@@ -55,7 +44,6 @@ precore.make_config("togo.lib.window.backend.dep", nil, {
 			}
 		end
 	elseif backend == "glfw" then
-		assert(_OPTIONS["togo-enable-opengl"], "GLFW backend requires --togo-enable-opengl")
 		defines {
 			"TOGO_CONFIG_WINDOW_BACKEND=TOGO_WINDOW_BACKEND_GLFW",
 		}
@@ -77,12 +65,31 @@ precore.make_config("togo.lib.window.backend.dep", nil, {
 					":libglfw3.a",
 				}
 		end
+	elseif backend == "raster" then
+		configuration {"linux"}
+			defines {
+				"TOGO_CONFIG_WINDOW_BACKEND=TOGO_WINDOW_BACKEND_RASTER",
+			}
+			includedirs {
+				G"${DEP_PATH}/xcb/include/",
+			}
+		if not precore.env_project()["NO_LINK"] then
+			linkoptions {
+				"`pkg-config --static --libs " ..
+				G"${DEP_PATH}/xcb/lib/pkgconfig/xcb.pc" ..
+				"`"
+			}
+			libdirs {
+				G"${DEP_PATH}/xcb/lib/",
+			}
+			links {
+				":libxcb.a",
+			}
+		end
 	end
 
-	if _OPTIONS["togo-enable-opengl"] then
-		defines {
-			"TOGO_CONFIG_WINDOW_ENABLE_OPENGL",
-		}
+	-- Link to OpenGL after OpenGL backends
+	if backend == "sdl" or backend == "glfw" then
 		precore.apply("togo.dep.opengl")
 	end
 end}})
@@ -110,6 +117,5 @@ precore.append_config_scoped("togo.projects", {
 end}})
 
 precore.apply_global({
-	"togo.lib.window.enable-opengl.opt",
 	"togo.lib.window.backend.opt",
 })
