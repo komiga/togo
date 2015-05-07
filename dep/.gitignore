@@ -3,3 +3,4 @@ am
 glew
 sdl
 glfw
+xcb
