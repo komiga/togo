@@ -151,11 +151,12 @@ bool input_buffer::poll(
 	object_buffer::read(ib._buffer, type, vptr);
 	event = static_cast<InputEvent const*>(vptr);
 	#if defined(TOGO_TEST_INPUT_BUFFER)
-		TOGO_TEST_LOGF("input event: %p => ", event->window);
 		switch (type) {
 		case InputEventType::key:
 			TOGO_TEST_LOGF(
+				"input event: %p => "
 				"key: action = %u  code = %u  mods = %u\n",
+				event->window,
 				unsigned_cast(event->key.action),
 				unsigned_cast(event->key.code),
 				unsigned_cast(event->key.mods)
@@ -163,20 +164,26 @@ bool input_buffer::poll(
 			break;
 		case InputEventType::mouse_button:
 			TOGO_TEST_LOGF(
+				"input event: %p => "
 				"mouse_button: action = %u   button = %u\n",
+				event->window,
 				unsigned_cast(event->mouse_button.action),
 				unsigned_cast(event->mouse_button.button)
 			);
 			break;
 		case InputEventType::mouse_motion:
-			TOGO_TEST_LOGF(
+			/*TOGO_TEST_LOGF(
+				"input event: %p => "
 				"mouse_motion: (%d, %d)\n",
+				event->window,
 				event->mouse_motion.x, event->mouse_motion.y
-			);
+			);*/
 			break;
 		case InputEventType::window_focus:
 			TOGO_TEST_LOGF(
+				"input event: %p => "
 				"window_focus: focused = %s\n",
+				event->window,
 				event->window_focus.focused ? "true" : "false"
 			);
 			break;
@@ -185,7 +192,9 @@ bool input_buffer::poll(
 			break;
 		case InputEventType::window_resize:
 			TOGO_TEST_LOGF(
+				"input event: %p => "
 				"window_resize: (%-4u, %-4u) -> (%-4u, %-4u)\n",
+				event->window,
 				event->window_resize.old_size.width,
 				event->window_resize.old_size.height,
 				event->window_resize.new_size.width,
