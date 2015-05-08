@@ -186,10 +186,10 @@ bool input_buffer::poll(
 		case InputEventType::window_resize:
 			TOGO_TEST_LOGF(
 				"window_resize: (%-4u, %-4u) -> (%-4u, %-4u)\n",
-				event->window_resize.old_width,
-				event->window_resize.old_height,
-				event->window_resize.new_width,
-				event->window_resize.new_height
+				event->window_resize.old_size.width,
+				event->window_resize.old_size.height,
+				event->window_resize.new_size.width,
+				event->window_resize.new_size.height
 			);
 			break;
 		}
