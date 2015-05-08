@@ -180,7 +180,7 @@ precore.make_config("togo.test.opt", {
 }, {
 {option = {
 	data = {
-		trigger = "togo.test",
+		trigger = "togo-test",
 		description = "enable test mode",
 	},
 	init_handler = function()
