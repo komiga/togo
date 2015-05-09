@@ -33,15 +33,19 @@ struct XCBAtom {
 	{}
 };
 
+#define ATOM(name_, fallback_) \
+	XCBAtom name_{#name_, fallback_}
 
 struct XCBGlobals {
 	xcb_connection_t* c{nullptr};
 	xcb_screen_t* screen{nullptr};
 
 	struct {
-		XCBAtom title{"_NET_WM_NAME", XCB_ATOM_WM_NAME};
+		ATOM(_NET_WM_NAME, XCB_ATOM_WM_NAME);
 	} atom;
 };
+
+#undef ATOM
 
 extern XCBGlobals _xcb_globals;
 

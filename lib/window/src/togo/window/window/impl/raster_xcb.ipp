@@ -150,7 +150,7 @@ void window::set_title(Window* window, StringRef title) {
 		_xcb_globals.c,
 		XCB_PROP_MODE_REPLACE,
 		window->_impl.id,
-		_xcb_globals.atom.title.id,
+		_xcb_globals.atom._NET_WM_NAME.id,
 		XCB_ATOM_STRING,
 		8,
 		title.size,
