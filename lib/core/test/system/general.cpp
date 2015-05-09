@@ -7,7 +7,7 @@
 using namespace togo;
 
 signed main() {
-	TOGO_LOGF("num_cores = %u\n", system::num_cores());
+	TOGO_LOGF("pid = %u, num_cores = %u\n", system::pid(), system::num_cores());
 	TOGO_ASSERTE(system::secs_since_epoch() > 1407135980u);
 
 	// Environment variables
