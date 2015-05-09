@@ -21,6 +21,12 @@
 
 namespace togo {
 
+unsigned system::pid() {
+	pid_t id = getpid();
+	TOGO_DEBUG_ASSERT(id >= 0, "unexpected pid < 0, what does it mean?");
+	return static_cast<unsigned>(id);
+}
+
 unsigned system::num_cores() {
 	signed const num = ::sysconf(_SC_NPROCESSORS_ONLN);
 	return static_cast<unsigned>(max(1, num));

@@ -23,7 +23,10 @@ namespace system {
 	@{
 */
 
-/// Number of cores.
+/// Process ID.
+unsigned pid();
+
+/// Number of CPU cores.
 unsigned num_cores();
 
 /// Sleep the current thread for a duration in milliseconds.
