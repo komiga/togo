@@ -29,6 +29,9 @@ unsigned pid();
 /// Number of CPU cores.
 unsigned num_cores();
 
+/// Hostname.
+StringRef hostname();
+
 /// Sleep the current thread for a duration in milliseconds.
 void sleep_ms(unsigned duration_ms);
 

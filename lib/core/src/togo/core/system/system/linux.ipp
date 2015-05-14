@@ -14,6 +14,7 @@
 #include <cstring>
 
 #include <unistd.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -22,7 +23,7 @@
 namespace togo {
 
 unsigned system::pid() {
-	pid_t id = getpid();
+	pid_t id = ::getpid();
 	TOGO_DEBUG_ASSERT(id >= 0, "unexpected pid < 0, what does it mean?");
 	return static_cast<unsigned>(id);
 }
@@ -30,6 +31,16 @@ unsigned system::pid() {
 unsigned system::num_cores() {
 	signed const num = ::sysconf(_SC_NPROCESSORS_ONLN);
 	return static_cast<unsigned>(max(1, num));
+}
+
+StringRef system::hostname() {
+	static char name[HOST_NAME_MAX];
+	static unsigned size = 0;
+	if (size == 0) {
+		TOGO_ASSERTE(::gethostname(name, array_extent(name)) == 0);
+		size = string::size(name);
+	}
+	return StringRef{name, size};
 }
 
 void system::sleep_ms(unsigned duration_ms) {
