@@ -8,6 +8,10 @@ using namespace togo;
 
 signed main() {
 	TOGO_LOGF("pid = %u, num_cores = %u\n", system::pid(), system::num_cores());
+
+	StringRef const hostname = system::hostname();
+	TOGO_LOGF("hostname = %.*s\n", hostname.size, hostname.data);
+
 	TOGO_ASSERTE(system::secs_since_epoch() > 1407135980u);
 
 	// Environment variables
