@@ -18,7 +18,9 @@ proper directories).
     1. [SDL](http://libsdl.org/download-2.0.php) >= **2.0.3** into `sdl/`
     2. [GLFW](http://www.glfw.org/download.html) >= **3.0.4** into `glfw/`
   2. Raster:
-    1. [XCB (Linux)](http://xcb.freedesktop.org) >= **1.11** into `xcb/`
+    1. XCB (Linux):
+      1. [xcb](http://xcb.freedesktop.org) >= **1.11** into `xcb/`
+      2. [xcb-wm-util](http://cgit.freedesktop.org/xcb/util-wm/tree/) (HEAD) into `xcb-util-wm/`
 
 ### lib/game
 

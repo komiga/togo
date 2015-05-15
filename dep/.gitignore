@@ -4,3 +4,5 @@ glew
 sdl
 glfw
 xcb
+xcb-util-wm
+luajit

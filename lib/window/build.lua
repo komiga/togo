@@ -71,19 +71,22 @@ precore.make_config("togo.lib.window.backend.dep", nil, {
 				"TOGO_CONFIG_WINDOW_BACKEND=TOGO_WINDOW_BACKEND_RASTER",
 			}
 			includedirs {
+				G"${DEP_PATH}/xcb-util-wm/include/",
 				G"${DEP_PATH}/xcb/include/",
 			}
 		if not precore.env_project()["NO_LINK"] then
-			linkoptions {
-				"`pkg-config --static --libs " ..
-				G"${DEP_PATH}/xcb/lib/pkgconfig/xcb.pc" ..
-				"`"
-			}
 			libdirs {
+				G"${DEP_PATH}/xcb-util-wm/lib/",
 				G"${DEP_PATH}/xcb/lib/",
 			}
 			links {
+				":libxcb-ewmh.a",
+				":libxcb-icccm.a",
 				":libxcb.a",
+
+				-- Dependencies
+				"Xau",
+				"Xdmcp",
 			}
 		end
 	end

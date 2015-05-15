@@ -45,7 +45,9 @@ Dependencies:
     1. [SDL](http://libsdl.org/download-2.0.php) >= **2.0.3**
     2. [GLFW](http://www.glfw.org/download.html) >= **3.0.4**
   2. Raster:
-    1. [XCB (Linux)](http://xcb.freedesktop.org) >= **1.11**
+    1. XCB (Linux):
+      1. [xcb](http://xcb.freedesktop.org) >= **1.11**
+      2. [xcb-wm-util](http://cgit.freedesktop.org/xcb/util-wm/tree/) (HEAD)
 2. With OpenGL backend:
   1. [GLEW](http://glew.sourceforge.net/index.html) >= **1.11.0**
 
