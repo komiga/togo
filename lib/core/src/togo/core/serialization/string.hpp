@@ -109,7 +109,7 @@ write(serializer_tag, Ser& ser, SerString<S, char[N], C> const& value) {
 	);
 
 	auto const& str = value.ref;
-	auto const size = string::size(str, cstr_tag{});
+	auto const size = string::size(str);
 	TOGO_DEBUG_ASSERTE(std::numeric_limits<S>::max() >= size);
 	ser
 		% static_cast<S>(size)

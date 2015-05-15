@@ -30,7 +30,7 @@ namespace string {
 /// Calculate size of a NUL-terminated string.
 ///
 /// This does not include the NUL terminator.
-inline unsigned size(char const* cstr, cstr_tag = cstr_tag{}) {
+inline unsigned size(char const* cstr) {
 	return cstr ? std::strlen(cstr) : 0;
 }
 
@@ -43,7 +43,7 @@ inline unsigned size(char const* cstr, cstr_tag = cstr_tag{}) {
 /// The C-string variant should be used for character arrays that may
 /// have NULs before N.
 template<unsigned N>
-inline constexpr unsigned size(char const (&data)[N]) {
+inline constexpr unsigned size_literal(char const (&data)[N]) {
 	return N > 0 && data[N - 1] == '\0' ? N - 1 : N;
 }
 
