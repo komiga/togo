@@ -204,8 +204,8 @@ struct KeyEvent {
 /// Mouse buttons.
 enum class MouseButton : unsigned {
 	left,
-	right,
 	middle,
+	right,
 
 	COUNT
 };
