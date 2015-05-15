@@ -338,8 +338,8 @@ inline MouseButtonAction sdl_tl_mouse_action(SDL_MouseButtonEvent const& mbev) {
 inline MouseButton sdl_tl_mouse_button(SDL_MouseButtonEvent const& mbev) {
 	switch (mbev.button) {
 	case SDL_BUTTON_LEFT: return MouseButton::left;
-	case SDL_BUTTON_RIGHT: return MouseButton::right;
 	case SDL_BUTTON_MIDDLE: return MouseButton::middle;
+	case SDL_BUTTON_RIGHT: return MouseButton::right;
 	default:
 		return static_cast<MouseButton>(-1);
 	}

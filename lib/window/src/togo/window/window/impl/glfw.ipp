@@ -290,8 +290,8 @@ inline MouseButtonAction glfw_tl_mouse_action(signed const action) {
 inline MouseButton glfw_tl_mouse_button(signed const button) {
 	switch (button) {
 	case GLFW_MOUSE_BUTTON_LEFT: return MouseButton::left;
-	case GLFW_MOUSE_BUTTON_RIGHT: return MouseButton::right;
 	case GLFW_MOUSE_BUTTON_MIDDLE: return MouseButton::middle;
+	case GLFW_MOUSE_BUTTON_RIGHT: return MouseButton::right;
 	default:
 		return static_cast<MouseButton>(-1);
 	}

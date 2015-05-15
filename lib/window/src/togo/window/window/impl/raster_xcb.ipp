@@ -214,8 +214,8 @@ inline static MouseButton tl_xcb_mouse_button(xcb_button_t button) {
 	// (also, togo doesn't know about mouse wheel yet)
 	switch (button) {
 	case 1: return MouseButton::left;
-	case 2: return MouseButton::right;
-	case 3: return MouseButton::middle;
+	case 2: return MouseButton::middle;
+	case 3: return MouseButton::right;
 	default:
 		return static_cast<MouseButton>(-1);
 	}
