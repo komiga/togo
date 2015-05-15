@@ -33,14 +33,17 @@ unsigned system::num_cores() {
 	return static_cast<unsigned>(max(1, num));
 }
 
+namespace {
+	static char cached_hostname[HOST_NAME_MAX]{};
+	static unsigned cached_hostname_size = 0;
+} // anonymous namespace
+
 StringRef system::hostname() {
-	static char name[HOST_NAME_MAX];
-	static unsigned size = 0;
-	if (size == 0) {
-		TOGO_ASSERTE(::gethostname(name, array_extent(name)) == 0);
-		size = string::size(name);
+	if (cached_hostname_size == 0) {
+		TOGO_ASSERTE(::gethostname(cached_hostname, HOST_NAME_MAX) == 0);
+		cached_hostname_size = string::size(cached_hostname);
 	}
-	return StringRef{name, size};
+	return StringRef{cached_hostname, cached_hostname_size};
 }
 
 void system::sleep_ms(unsigned duration_ms) {
