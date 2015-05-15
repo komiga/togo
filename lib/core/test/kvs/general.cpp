@@ -54,19 +54,19 @@ signed main() {
 		KVS a{VALUE};
 		TOGO_ASSERTE(!kvs::is_named(a));
 		TOGO_ASSERTE(kvs::is_string(a));
-		TOGO_ASSERTE(kvs::string_size(a) == string::size(VALUE));
+		TOGO_ASSERTE(kvs::string_size(a) == string::size_literal(VALUE));
 		TOGO_ASSERTE(string::compare_equal(VALUE, kvs::string_ref(a)));
 
 		kvs::set_name(a, NAME);
 		TOGO_ASSERTE(kvs::is_named(a));
-		TOGO_ASSERTE(kvs::name_size(a) == string::size(NAME));
+		TOGO_ASSERTE(kvs::name_size(a) == string::size_literal(NAME));
 		TOGO_ASSERTE(string::compare_equal(NAME, kvs::name_ref(a)));
 
 		TOGO_LOGF("\"%s\" = \"%s\"\n", kvs::name(a), kvs::string(a));
 
-		kvs::integer(a, static_cast<s64>(0xCECECECECECECECE));
+		kvs::integer(a, static_cast<s64>(0xCECECECECECECECEl));
 		TOGO_ASSERTE(kvs::is_integer(a));
-		TOGO_ASSERTE(kvs::integer(a) == static_cast<s64>(0xCECECECECECECECE));
+		TOGO_ASSERTE(kvs::integer(a) == static_cast<s64>(0xCECECECECECECECEl));
 
 		kvs::boolean(a, false);
 		TOGO_ASSERTE(kvs::is_boolean(a));
@@ -91,9 +91,9 @@ signed main() {
 		kvs::move(z, x);
 		TOGO_ASSERTE(kvs::is_null(x));
 		TOGO_ASSERTE(!kvs::is_type(z, kvs::type(x)));
-		TOGO_ASSERTE(kvs::name_size(z) == string::size("x-name"));
+		TOGO_ASSERTE(kvs::name_size(z) == string::size_literal("x-name"));
 		TOGO_ASSERTE(string::compare_equal(kvs::name_ref(z), "x-name"));
-		TOGO_ASSERTE(kvs::string_size(z) == string::size("x-value"));
+		TOGO_ASSERTE(kvs::string_size(z) == string::size_literal("x-value"));
 		TOGO_ASSERTE(string::compare_equal(kvs::string_ref(z), "x-value"));
 	}
 

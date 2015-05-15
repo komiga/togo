@@ -112,7 +112,7 @@ void resource::set_compiled_path(
 		string::copy(path._data, ".compiled/");
 	}
 	path.id = id;
-	unsigned const size = string::size(".compiled/");
+	unsigned const size = string::size_literal(".compiled/");
 	// TODO: string::append_integer()
 	signed const id_size = std::snprintf(
 		fixed_array::begin(path._data) + size,

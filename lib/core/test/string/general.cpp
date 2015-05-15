@@ -68,10 +68,10 @@ signed main() {
 			char ca[array_extent(res__)]{init__}; \
 			FixedArray<char, array_extent(res__)> fa; \
 			string::copy(fa, init__); \
-			string::append(ca, string::size(init__), str__); \
+			string::append(ca, string::size_literal(init__), str__); \
 			string::append(fa, str__); \
-			unsigned const res_size = string::size(res__); \
-			unsigned const ca_size = string::size(ca, cstr_tag{}); \
+			unsigned const res_size = string::size_literal(res__); \
+			unsigned const ca_size = string::size(ca); \
 			unsigned const fa_size = string::size(fa); \
 			TOGO_ASSERTE(ca_size == res_size); \
 			TOGO_ASSERTE(fa_size == res_size); \
@@ -93,8 +93,8 @@ signed main() {
 			char ca[array_extent(str__)]{str__}; \
 			FixedArray<char, array_extent(str__)> fa{}; \
 			string::copy(fa, str__); \
-			unsigned const res_size = string::size(res__); \
-			unsigned const ca_size = string::trim_trailing_slashes(ca, string::size(ca, cstr_tag{})); \
+			unsigned const res_size = string::size_literal(res__); \
+			unsigned const ca_size = string::trim_trailing_slashes(ca, string::size(ca)); \
 			unsigned const fa_size = string::trim_trailing_slashes(fa); \
 			TOGO_ASSERTE(ca_size == res_size); \
 			TOGO_ASSERTE(fa_size == res_size); \
