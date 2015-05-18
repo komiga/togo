@@ -188,7 +188,11 @@ bool input_buffer::poll(
 			);
 			break;
 		case InputEventType::window_close_request:
-			TOGO_TEST_LOG("window_close_request\n");
+			TOGO_TEST_LOGF(
+				"input event: %p => "
+				"window_close_request\n",
+				event->window
+			);
 			break;
 		case InputEventType::window_resize:
 			TOGO_TEST_LOGF(
