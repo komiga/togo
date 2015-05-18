@@ -9,6 +9,9 @@
 #include <togo/core/string/string.hpp>
 
 #include <xcb/xcb.h>
+#include <xcb/xcb_ewmh.h>
+
+#include <cstddef>
 
 namespace togo {
 
@@ -21,33 +24,20 @@ using WindowImpl = XCBWindowImpl;
 
 namespace window {
 
-struct XCBAtom {
-	StringRef name;
-	xcb_atom_t fallback;
-	xcb_atom_t id;
-
-	constexpr XCBAtom(StringRef name, xcb_atom_t fallback)
-		: name(name)
-		, fallback(fallback)
-		, id(XCB_ATOM_NONE)
-	{}
-};
-
-#define ATOM(name_, fallback_) \
-	XCBAtom name_{#name_, fallback_}
-
 struct XCBGlobals {
 	xcb_connection_t* c{nullptr};
 	xcb_screen_t* screen{nullptr};
-
-	struct {
-		ATOM(_NET_WM_NAME, XCB_ATOM_WM_NAME);
-	} atom;
+	xcb_ewmh_connection_t c_ewmh{};
+	bool has_ewmh;
 };
 
-#undef ATOM
+struct XCBAtomCache {
+	xcb_atom_t WM_DELETE_WINDOW;
+	xcb_atom_t _NET_WM_BYPASS_COMPOSITOR;
+};
 
 extern XCBGlobals _xcb_globals;
+extern XCBAtomCache _xcb_atom;
 
 } // namespace window
 
