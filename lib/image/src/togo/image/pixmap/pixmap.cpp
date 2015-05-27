@@ -79,9 +79,13 @@ Pixmap::Pixmap(Pixmap&&) {
 Pixmap& Pixmap::operator=(Pixmap&& other) {
 	pixmap::free(*this);
 	this->data = other.data;
-	this->format = other.format;
+	this->data_capacity = other.data_capacity;
+	this->data_size = other.data_size;
 	this->size = other.size;
+	this->format = other.format;
 	other.data = nullptr;
+	other.data_capacity = 0;
+	other.data_size = 0;
 	other.size = UVec2{0, 0};
 	return *this;
 }
