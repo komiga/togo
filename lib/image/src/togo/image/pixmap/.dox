@@ -7,6 +7,26 @@
 
 Pixmap storage is y-major, starting with the top-left pixel.
 
+Pixel layout names correspond to byte order. For example, PixelLayout::argb
+corresponds to:
+
+@code
+FF 00 00 00 // A mask
+00 FF 00 00 // R mask
+00 00 FF 00 // G mask
+00 00 00 FF // B mask
+@endcode
+
+PixelLayout::rgb with PixelDataType::p32 has the same order as above, with
+the MSB being empty (unused):
+
+@code
+00 00 00 00 // X mask
+00 FF 00 00 // R mask
+00 00 FF 00 // G mask
+00 00 00 FF // B mask
+@endcode
+
 Pixmaps use the default allocator.
 
 */

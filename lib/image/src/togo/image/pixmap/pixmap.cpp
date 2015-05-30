@@ -16,58 +16,44 @@
 
 namespace togo {
 
-// PixelFormat implementation
-
-unsigned PixelFormat::bytes_required(UVec2 size) const {
-	TOGO_DEBUG_ASSERTE(size.width > 0 && size.height > 0);
-	unsigned num_pixels = size.height * size.width;
-	switch (this->data_type()) {
-	case PixelDataType::c8:
-		return num_pixels * 1 * pixmap::num_components[unsigned_cast(this->layout())];
-	case PixelDataType::p32:
-		return num_pixels * 4;
-	}
-	TOGO_ASSERTE(false);
-}
-
 // Pixmap interface
 
 Pixmap::~Pixmap() {
 	pixmap::free(*this);
 }
 
-Pixmap::Pixmap(PixelFormatID format_id)
-	: data(nullptr)
-	, data_capacity(0)
-	, data_size(0)
-	, size(0, 0)
-	, format(pixmap::pixel_formats[unsigned_cast(format_id)])
-{}
-
-Pixmap::Pixmap(PixelFormat const& format)
+Pixmap::Pixmap(PixelFormat format)
 	: data(nullptr)
 	, data_capacity(0)
 	, data_size(0)
 	, size(0, 0)
 	, format(format)
 {}
+
+Pixmap::Pixmap(PixelFormatID format_id)
+	: data(nullptr)
+	, data_capacity(0)
+	, data_size(0)
+	, size(0, 0)
+	, format{format_id}
+{}
+
+Pixmap::Pixmap(UVec2 size, PixelFormat format)
+	: data(nullptr)
+	, data_capacity(0)
+	, data_size(0)
+	, size(0, 0)
+	, format(format)
+{
+	pixmap::resize(*this, size);
+}
 
 Pixmap::Pixmap(UVec2 size, PixelFormatID format_id)
 	: data(nullptr)
 	, data_capacity(0)
 	, data_size(0)
 	, size(0, 0)
-	, format(pixmap::pixel_formats[unsigned_cast(format_id)])
-{
-	pixmap::resize(*this, size);
-}
-
-Pixmap::Pixmap(UVec2 size, PixelFormat const& format)
-	: data(nullptr)
-	, data_capacity(0)
-	, data_size(0)
-	, size(0, 0)
-	, format(format)
+	, format{format_id}
 {
 	pixmap::resize(*this, size);
 }
@@ -111,7 +97,7 @@ void pixmap::resize(
 
 	auto& allocator = memory::default_allocator();
 	u8* data = p.data;
-	unsigned const data_size = p.format.bytes_required(size);
+	unsigned const data_size = pixel_format::bytes_required(p.format, size);
 	if (data_size > p.data_capacity) {
 		data = static_cast<u8*>(allocator.allocate(data_size));
 	}
@@ -221,9 +207,10 @@ void pixmap::fill(Pixmap& p, Color color, UVec4 rect) {
 	if (rect.width == 0 || rect.height == 0) {
 		return;
 	}
-	switch (p.format.data_type()) {
-	case PixelDataType::c8: pixmap::fill_c8(p, color, rect); return;
-	case PixelDataType::p32: pixmap::fill_p32(p, color, rect); return;
+	if (p.format.id == PixelFormatID::rgb) {
+		pixmap::fill_rgb(p, color, rect);
+	} else {
+		pixmap::fill_packed(p, color, rect);
 	}
 }
 

@@ -35,27 +35,6 @@ struct Color {
 		, b(b)
 		, a(a)
 	{}
-
-	/// Construct from packed.
-	Color(u32 p)
-		: r(p & 0xFF)
-		, g((p >> 8 ) & 0xFF)
-		, b((p >> 16) & 0xFF)
-		, a((p >> 24) & 0xFF)
-	{}
-
-	/// Get components as packed value.
-	u32 packed() const {
-		return (r) | (g << 8) | (b << 16) | (a << 24);
-	}
-
-	/// Set components from packed value.
-	void from_packed(u32 p) {
-		r = p & 0xFF;
-		g = (p >> 8 ) & 0xFF;
-		b = (p >> 16) & 0xFF;
-		a = (p >> 24) & 0xFF;
-	}
 };
 
 /** @} */ // end of doc-group lib_image_types

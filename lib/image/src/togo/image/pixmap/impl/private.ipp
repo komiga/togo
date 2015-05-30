@@ -7,6 +7,7 @@
 
 #include <togo/image/config.hpp>
 #include <togo/core/error/assert.hpp>
+#include <togo/core/utility/utility.hpp>
 #include <togo/image/pixmap/pixmap.hpp>
 #include <togo/image/pixmap/impl/private.hpp>
 
@@ -14,79 +15,34 @@
 
 namespace togo {
 
-namespace pixmap {
-
-unsigned const num_components[]{
-	3, // rgb
-	4, // rgbx
-	4, // rgba
+PixelFormatInfo const pixel_format_info[]{
+	{{1, 1, 1, 0}, {16, 8, 0, 0}}, // rgb
+	{{1, 1, 1, 0}, {24, 16, 8, 0}}, // rgbx
+	{{1, 1, 1, 0}, {16, 8, 0, 0}}, // xrgb
+	{{1, 1, 1, 1}, {24, 16, 8, 0}}, // rgba
+	{{1, 1, 1, 1}, {16, 8, 0, 24}}, // argb
 };
-
-#define FMT_PROPERTIES(data_type, layout) ( \
-	(unsigned_cast(data_type) << PixelFormat::P_DATA_TYPE) | \
-	(unsigned_cast(layout) << PixelFormat::P_LAYOUT) \
-)
-
-PixelFormat const pixel_formats[]{
-	{FMT_PROPERTIES(PixelDataType::c8 , PixelLayout::rgb )}, // rgb8
-	{FMT_PROPERTIES(PixelDataType::p32, PixelLayout::rgbx)}, // rgbx8
-	{FMT_PROPERTIES(PixelDataType::p32, PixelLayout::rgba)}, // rgba8
-};
-
-#undef FMT_PROPERTIES
-
-} // namespace pixmap
 
 // private
 
-void pixmap::fill_c8(Pixmap& p, Color& color, UVec4& rect) {
-	unsigned pixel_size = 1 * num_components[unsigned_cast(p.format.layout())];
+void pixmap::fill_rgb(Pixmap& p, Color& color, UVec4& rect) {
+	enum : unsigned { pixel_size = 3 };
 	unsigned num_rows = rect.height;
 	unsigned bytes_to_next_row = (p.size.width - rect.width) * pixel_size;
 	u8* dst = p.data + (rect.y * p.size.width + rect.x) * pixel_size;
 	unsigned n;
-	switch (p.format.layout()) {
-	case PixelLayout::rgb:
-		while (num_rows--) {
-			n = rect.width;
-			while (n--) {
-				*dst++ = color.r;
-				*dst++ = color.g;
-				*dst++ = color.b;
-			}
-			dst += bytes_to_next_row;
+	while (num_rows--) {
+		n = rect.width;
+		while (n--) {
+			*dst++ = color.r;
+			*dst++ = color.g;
+			*dst++ = color.b;
 		}
-		break;
-
-	case PixelLayout::rgbx:
-		while (num_rows--) {
-			n = rect.width;
-			while (n--) {
-				*dst++ = color.r;
-				*dst++ = color.g;
-				*dst++ = color.b;
-				dst++;
-			}
-			dst += bytes_to_next_row;
-		}
-		break;
-
-	case PixelLayout::rgba:
-		while (num_rows--) {
-			n = rect.width;
-			while (n--) {
-				*dst++ = color.r;
-				*dst++ = color.g;
-				*dst++ = color.b;
-				*dst++ = color.a;
-			}
-			dst += bytes_to_next_row;
-		}
-		break;
+		dst += bytes_to_next_row;
 	}
 }
 
-void pixmap::fill_p32(Pixmap& p, Color& color, UVec4& rect) {
+void pixmap::fill_packed(Pixmap& p, Color& color, UVec4& rect) {
 	enum : unsigned { pixel_size = 4 };
 	unsigned num_rows = rect.height;
 	unsigned bytes_to_next_row = (p.size.width - rect.width) * pixel_size;
@@ -94,7 +50,7 @@ void pixmap::fill_p32(Pixmap& p, Color& color, UVec4& rect) {
 		reinterpret_cast<u32*>(p.data),
 		(rect.y * p.size.width + rect.x) * pixel_size
 	);
-	u32 packed = color.packed();
+	u32 packed = pixel_format::pack(p.format, color);
 	unsigned n;
 	while (num_rows--) {
 		n = rect.width;
@@ -114,7 +70,7 @@ void pixmap::fill_p32(Pixmap& p, Color& color, UVec4& rect) {
 	}
 }
 
-void pixmap::blit_unscaled_c8(
+void pixmap::blit_unscaled_copy(
 	PixelFormat const& format,
 	u8* dst,
 	unsigned dst_width,
@@ -123,31 +79,7 @@ void pixmap::blit_unscaled_c8(
 	unsigned src_width,
 	UVec4 src_rect
 ) {
-	unsigned pixel_size = 1 * num_components[unsigned_cast(format.layout())];
-	unsigned num_rows = src_rect.height;
-	unsigned num_bytes = src_rect.width * pixel_size;
-
-	dst += (dst_pos.y * dst_width + dst_pos.x) * pixel_size;
-	src += (src_rect.y * src_width + src_rect.x) * pixel_size;
-	dst_width *= pixel_size;
-	src_width *= pixel_size;
-	// TODO: Optimize for small areas
-	while (num_rows--) {
-		std::memmove(dst, src, num_bytes);
-		dst += dst_width;
-		src += src_width;
-	}
-}
-
-void pixmap::blit_unscaled_p32(
-	u8* dst,
-	unsigned dst_width,
-	UVec2 dst_pos,
-	u8 const* src,
-	unsigned src_width,
-	UVec4 src_rect
-) {
-	enum : unsigned { pixel_size = 4 };
+	unsigned pixel_size = pixel_format::pixel_size(format);
 	unsigned num_rows = src_rect.height;
 	unsigned num_bytes = src_rect.width * pixel_size;
 
@@ -173,25 +105,14 @@ void pixmap::blit_unscaled_choose(
 	unsigned src_width,
 	UVec4 src_rect
 ) {
-	if (dst_format.equals(src_format)) {
-		switch (dst_format.data_type()) {
-		case PixelDataType::c8:
-			pixmap::blit_unscaled_c8(
-				dst_format,
-				dst, dst_width, dst_pos,
-				src, src_width, src_rect
-			);
-			return;
-
-		case PixelDataType::p32:
-			pixmap::blit_unscaled_p32(
-				dst, dst_width, dst_pos,
-				src, src_width, src_rect
-			);
-			return;
-		}
+	if (pixel_format::compare_equal(dst_format, src_format)) {
+		pixmap::blit_unscaled_copy(
+			dst_format,
+			dst, dst_width, dst_pos,
+			src, src_width, src_rect
+		);
 	} else {
-		TOGO_ASSERT(false, "TODO");
+		TOGO_ASSERT(false, "TODO: unequal pixmap formats");
 	}
 }
 

@@ -21,61 +21,39 @@ namespace togo {
 	@{
 */
 
-/// Pixel data type.
-enum class PixelDataType : unsigned {
-	/// Unpacked with 8-bit components.
-	c8,
-	/// Packed into 32 bits.
-	p32,
-};
-
-/// Pixel component layout.
-enum class PixelLayout : unsigned {
-	/// RGB.
-	rgb,
-	/// RGB + unused byte.
-	rgbx,
-	/// RGBA.
-	rgba,
-};
-
-/// Pixel format ID.
+/// Pixel format.
 enum class PixelFormatID : unsigned {
-	/// Unpacked RGB with 8-bit components (24 bits).
-	rgb8,
-	/// Packed RGB + unused byte with 8-bit components (32 bits).
-	rgbx8,
-	/// Packed RGBA with 8-bit components (32 bits).
-	rgba8,
+	/// RGB, unpacked in 8-bit integrals.
+	rgb,
+
+	/// RGBX (unused component), packed in 32-bit integral.
+	rgbx,
+	/// XRGB (unused component), packed in 32-bit integral.
+	xrgb,
+
+	/// RGBA, packed in 32-bit integral.
+	rgba,
+	/// ARGB, packed in 32-bit integral.
+	argb,
 };
 
 /// Pixel format.
 struct PixelFormat {
-	enum : unsigned {
-		MASK_PROPERTY = 0xFF,
-		P_DATA_TYPE = 0x00,
-		P_LAYOUT = 0x08,
-	};
-	unsigned properties;
-
-	/// Check if this format is equivalent to another.
-	bool equals(PixelFormat const& other) const {
-		return properties == other.properties;
-	}
-
-	/// Pixel data type.
-	PixelDataType data_type() const {
-		return static_cast<PixelDataType>((properties >> P_DATA_TYPE) & MASK_PROPERTY);
-	}
-
-	/// Pixel component layout.
-	PixelLayout layout() const {
-		return static_cast<PixelLayout>((properties >> P_LAYOUT) & MASK_PROPERTY);
-	}
-
-	/// Calculate the bytes needed to store a pixmap.
-	unsigned bytes_required(UVec2 size) const;
+	PixelFormatID id;
+	// TODO: Endianness? Ideally only use the system endian, but that may
+	// be detrimental for RT systems that send pixel data to other systems.
 };
+
+/// Pixel format info.
+struct PixelFormatInfo {
+	/// Whether a component is used, in this order: R, G, B, A.
+	u32 comp[4];
+	/// The bit index of a component.
+	u32 shift[4];
+};
+
+/// Pixel format info by ID.
+extern PixelFormatInfo const pixel_format_info[];
 
 /// Pixel grid.
 struct Pixmap {
@@ -91,15 +69,15 @@ struct Pixmap {
 
 	~Pixmap();
 
-	/// Construct empty with format by ID.
-	Pixmap(PixelFormatID format_id);
 	/// Construct empty with format.
-	Pixmap(PixelFormat const& format);
+	Pixmap(PixelFormat format);
+	/// Construct empty with format ID.
+	Pixmap(PixelFormatID format_id);
 
-	/// Construct with size and format by ID.
-	Pixmap(UVec2 size, PixelFormatID format_id);
 	/// Construct with size and format.
-	Pixmap(UVec2 size, PixelFormat const& format);
+	Pixmap(UVec2 size, PixelFormat format);
+	/// Construct with size and format ID.
+	Pixmap(UVec2 size, PixelFormatID format_id);
 
 	Pixmap(Pixmap&&);
 	Pixmap& operator=(Pixmap&&);
