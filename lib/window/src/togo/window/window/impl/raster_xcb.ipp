@@ -10,6 +10,7 @@
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/system/system.hpp>
 #include <togo/core/io/object_buffer.hpp>
+#include <togo/image/pixmap/types.hpp>
 #include <togo/window/window/window.hpp>
 #include <togo/window/window/impl/types.hpp>
 #include <togo/window/window/impl/private.hpp>
@@ -19,6 +20,12 @@
 #include <xcb/xcb_icccm.h>
 
 #include <cstdlib>
+
+#undef TOGO_TEST_LOG_ENABLE
+#if defined(TOGO_TEST_WINDOW)
+	#define TOGO_TEST_LOG_ENABLE
+#endif
+#include <togo/core/log/test.hpp>
 
 namespace togo {
 
@@ -46,18 +53,174 @@ static XCBAtomLookup const _xcb_atom_lookup[]{
 } // anonymous namespace
 
 void window::init_impl() {
+	xcb_void_cookie_t err_cookie;
 	xcb_generic_error_t* err;
 
 	{// Connect
 	_xcb_globals.c = xcb_connect(nullptr, nullptr);
 	int connect_err = xcb_connection_has_error(_xcb_globals.c);
 	TOGO_ASSERTF(connect_err <= 0, "failed to connect to XCB with error: %d", connect_err);
+	}
 
-	// Get first screen
-	xcb_setup_t const* setup = xcb_get_setup(_xcb_globals.c);
-	xcb_screen_iterator_t iter = xcb_setup_roots_iterator(setup);
+	{// Gather info from setup
+	auto* setup = xcb_get_setup(_xcb_globals.c);
+
+	{// Get first screen
+	auto iter = xcb_setup_roots_iterator(setup);
+	TOGO_ASSERTE(iter.rem > 0);
 	_xcb_globals.screen = iter.data;
 	TOGO_ASSERTE(_xcb_globals.screen);
+	}
+
+	_xcb_globals.depth = 0;
+	_xcb_globals.visual_id = ~0u;
+	TOGO_ASSERT(
+		setup->image_byte_order == XCB_IMAGE_ORDER_LSB_FIRST,
+		"dunno what to do with non-little-endian host!"
+	);
+
+	for (auto i = xcb_setup_pixmap_formats_iterator(setup); i.rem; xcb_format_next(&i)) {
+		auto* format = i.data;
+		if (
+			format->depth == 24 &&
+			format->bits_per_pixel == 32 &&
+			format->scanline_pad == 32
+		) {
+			_xcb_globals.depth = format->depth;
+			break;
+		}
+	}
+	TOGO_ASSERT(_xcb_globals.depth != 0, "could not find a suitable XCB pixmap format");
+
+	auto& pf_info = pixel_format_info[unsigned_cast(PixelFormatID::xrgb)];
+	for (
+		auto i = xcb_screen_allowed_depths_iterator(_xcb_globals.screen);
+		i.rem && _xcb_globals.visual_id == ~0u; xcb_depth_next(&i)
+	) {
+		auto* depth = i.data;
+		if (depth->depth != _xcb_globals.depth) {
+			continue;
+		}
+	for (auto j = xcb_depth_visuals_iterator(depth); j.rem; xcb_visualtype_next(&j)) {
+		auto* visual_type = j.data;
+		if (
+			(
+				visual_type->visual_id == _xcb_globals.screen->root_visual ||
+				_xcb_globals.visual_id == ~0u
+			) &&
+			visual_type->_class == XCB_VISUAL_CLASS_TRUE_COLOR &&
+			visual_type->bits_per_rgb_value == 8 &&
+			// TODO: Check for masks in BE order (also: Pixmap probably
+			// won't support it until something like this this is found)
+			visual_type->red_mask == pf_info.mask[0] &&
+			visual_type->green_mask == pf_info.mask[1] &&
+			visual_type->blue_mask == pf_info.mask[2]
+		) {
+			_xcb_globals.visual_id = visual_type->visual_id;
+			if (visual_type->visual_id == _xcb_globals.screen->root_visual) {
+				break;
+			}
+		}
+	}}
+	TOGO_ASSERT(_xcb_globals.visual_id != ~0u, "could not find a suitable XCB visual ID");
+	TOGO_TEST_LOG_DEBUGF(
+		"chosen visual: depth = %u, id = %u\n",
+		_xcb_globals.depth, _xcb_globals.visual_id
+	);
+
+#if defined(TOGO_TEST_WINDOW)
+	TOGO_TEST_LOG_DEBUGF(
+		"XCB bits:"
+		" image_byte_order = %u,"
+		" root_depth = %u,"
+		" root_visual = %u,"
+		"\n"
+		, setup->image_byte_order
+		, _xcb_globals.screen->root_depth
+		, _xcb_globals.screen->root_visual
+	);
+
+	TOGO_TEST_LOG_DEBUG("XCB pixel formats:\n");
+	for (auto i = xcb_setup_pixmap_formats_iterator(setup); i.rem; xcb_format_next(&i)) {
+		auto* format = i.data;
+		TOGO_TEST_LOG_DEBUGF(
+			"   "
+			" depth = %u,"
+			" bits_per_pixel = %u,"
+			" scanline_pad = %u,"
+			"\n"
+			, format->depth
+			, format->bits_per_pixel
+			, format->scanline_pad
+		);
+	}
+
+	static StringRef visual_class_name[]{
+		"StaticGray",
+		"GrayScale",
+		"StaticColor",
+		"PseudoColor",
+		"TrueColor",
+		"DirectColor",
+	};
+
+	TOGO_TEST_LOG_DEBUG("XCB depth + visual type info:\n");
+	for (
+		auto i = xcb_screen_allowed_depths_iterator(_xcb_globals.screen);
+		i.rem; xcb_depth_next(&i)
+	) {
+		auto* depth = i.data;
+		TOGO_TEST_LOG_DEBUGF(
+			"'depth': %u, %u visuals:\n"
+			, depth->depth
+			, xcb_depth_visuals_length(depth)
+		);
+	for (auto j = xcb_depth_visuals_iterator(depth); j.rem; xcb_visualtype_next(&j)) {
+		auto* visual_type = j.data;
+		TOGO_DEBUG_ASSERTE(visual_type->_class >= 0 && visual_type->_class <= 5);
+		auto class_name = visual_class_name[visual_type->_class];
+		TOGO_TEST_LOGF(
+			"   "
+			" id = %u,"
+			" class = %u = %.*s,"
+			" bits_per_rgb_value = %u,"
+			" colormap_entries = %u,"
+			" red_mask = %08x,"
+			" green_mask = %08x,"
+			" blue_mask = %08x,"
+			"\n"
+			, visual_type->visual_id
+			, visual_type->_class
+			, class_name.size, class_name.data
+			, visual_type->bits_per_rgb_value
+			, visual_type->colormap_entries
+			, visual_type->red_mask
+			, visual_type->green_mask
+			, visual_type->blue_mask
+		);
+	}}
+#endif // defined(TOGO_TEST_WINDOW)
+	}
+
+	{// Create GC
+	constexpr u32 const attr_mask = 0
+		| XCB_GC_FOREGROUND
+		| XCB_GC_BACKGROUND
+		| XCB_GC_GRAPHICS_EXPOSURES
+	;
+	static u32 const attrs[]{
+		_xcb_globals.screen->white_pixel,
+		_xcb_globals.screen->black_pixel,
+		0,
+	};
+	_xcb_globals.gc = xcb_generate_id(_xcb_globals.c);
+	xcb_create_gc_checked(
+		_xcb_globals.c,
+		_xcb_globals.gc,
+		_xcb_globals.screen->root,
+		attr_mask, attrs
+	);
+	TOGO_ASSERTE(!(err = xcb_request_check(_xcb_globals.c, err_cookie)));
 	}
 
 	{// Initialize EWMH
@@ -129,7 +292,7 @@ Window* window::create_raster(
 	xcb_window_t id = xcb_generate_id(_xcb_globals.c);
 
 	{// Create window
-	u32 attr_mask = 0
+	constexpr u32 const attr_mask = 0
 		| XCB_CW_BACK_PIXMAP
 		| XCB_CW_BACK_PIXEL
 		| XCB_CW_BACKING_STORE
@@ -155,7 +318,7 @@ Window* window::create_raster(
 	};
 	err_cookie = xcb_create_window_checked(
 		_xcb_globals.c,
-		XCB_COPY_FROM_PARENT,
+		_xcb_globals.depth,
 		id,
 		_xcb_globals.screen->root,
 		0, 0,
@@ -163,8 +326,7 @@ Window* window::create_raster(
 		static_cast<u16>(size.height),
 		0, // border
 		XCB_WINDOW_CLASS_INPUT_OUTPUT,
-		// TODO: Make visual from window configuration? cf. xcb_visualtype_t
-		_xcb_globals.screen->root_visual,
+		_xcb_globals.visual_id,
 		attr_mask, attrs
 	);
 	// NB: We own result
@@ -519,3 +681,5 @@ void window::process_events(InputBuffer& ib) {
 #undef END_EVENT
 
 } // namespace togo
+
+#include <togo/core/log/test_unconfigure.hpp>

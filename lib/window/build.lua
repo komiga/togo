@@ -102,6 +102,7 @@ precore.make_config("togo.lib.window.dep", {
 }, {
 "togo.base",
 "togo.lib.core.dep",
+"togo.lib.image.dep",
 "togo.lib.window.backend.dep",
 {project = function(p)
 	togo.library_config("window")
@@ -109,6 +110,7 @@ precore.make_config("togo.lib.window.dep", {
 	configuration {"togo-test"}
 		defines {
 			"TOGO_TEST_INPUT_BUFFER",
+			"TOGO_TEST_WINDOW",
 		}
 end}})
 

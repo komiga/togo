@@ -28,7 +28,10 @@ struct XCBGlobals {
 	xcb_connection_t* c{nullptr};
 	xcb_screen_t* screen{nullptr};
 	xcb_ewmh_connection_t c_ewmh{};
-	bool has_ewmh;
+	bool has_ewmh{false};
+	u8 depth;
+	xcb_visualid_t visual_id;
+	xcb_gcontext_t gc;
 };
 
 struct XCBAtomCache {
