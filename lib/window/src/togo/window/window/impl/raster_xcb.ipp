@@ -52,8 +52,38 @@ static XCBAtomLookup const _xcb_atom_lookup[]{
 
 } // anonymous namespace
 
-void window::init_impl() {
+namespace window {
+namespace {
+
+static void create_xcb_gc(xcb_drawable_t drawable) {
+	TOGO_DEBUG_ASSERTE(_xcb_globals.gc == XCB_NONE);
 	xcb_void_cookie_t err_cookie;
+	xcb_generic_error_t* err;
+
+	constexpr u32 const attr_mask = 0
+		| XCB_GC_FOREGROUND
+		| XCB_GC_BACKGROUND
+		| XCB_GC_GRAPHICS_EXPOSURES
+	;
+	static u32 const attrs[]{
+		_xcb_globals.screen->white_pixel,
+		_xcb_globals.screen->black_pixel,
+		0,
+	};
+	_xcb_globals.gc = xcb_generate_id(_xcb_globals.c);
+	err_cookie = xcb_create_gc_checked(
+		_xcb_globals.c,
+		_xcb_globals.gc,
+		drawable,
+		attr_mask, attrs
+	);
+	TOGO_ASSERTE(!(err = xcb_request_check(_xcb_globals.c, err_cookie)));
+}
+
+} // anonymous namespace
+} // namespace window
+
+void window::init_impl() {
 	xcb_generic_error_t* err;
 
 	{// Connect
@@ -202,25 +232,11 @@ void window::init_impl() {
 #endif // defined(TOGO_TEST_WINDOW)
 	}
 
-	{// Create GC
-	constexpr u32 const attr_mask = 0
-		| XCB_GC_FOREGROUND
-		| XCB_GC_BACKGROUND
-		| XCB_GC_GRAPHICS_EXPOSURES
-	;
-	static u32 const attrs[]{
-		_xcb_globals.screen->white_pixel,
-		_xcb_globals.screen->black_pixel,
-		0,
-	};
-	_xcb_globals.gc = xcb_generate_id(_xcb_globals.c);
-	xcb_create_gc_checked(
-		_xcb_globals.c,
-		_xcb_globals.gc,
-		_xcb_globals.screen->root,
-		attr_mask, attrs
-	);
-	TOGO_ASSERTE(!(err = xcb_request_check(_xcb_globals.c, err_cookie)));
+	if (
+		_xcb_globals.depth == _xcb_globals.screen->root_depth &&
+		_xcb_globals.visual_id == _xcb_globals.screen->root_visual
+	) {
+		create_xcb_gc(_xcb_globals.screen->root);
 	}
 
 	{// Initialize EWMH
@@ -414,6 +430,10 @@ Window* window::create_raster(
 	err_cookie = xcb_map_window_checked(_xcb_globals.c, id);
 	TOGO_ASSERTE(!(err = xcb_request_check(_xcb_globals.c, err_cookie)));
 	TOGO_ASSERTE(xcb_flush(_xcb_globals.c) > 0);
+
+	if (!_xcb_globals.gc) {
+		create_xcb_gc(id);
+	}
 
 	Window* const window = TOGO_CONSTRUCT(
 		allocator, Window, size, flags, {}, allocator,

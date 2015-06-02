@@ -31,7 +31,7 @@ struct XCBGlobals {
 	bool has_ewmh{false};
 	u8 depth;
 	xcb_visualid_t visual_id;
-	xcb_gcontext_t gc;
+	xcb_gcontext_t gc{XCB_NONE};
 };
 
 struct XCBAtomCache {
