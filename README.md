@@ -50,6 +50,9 @@ Dependencies:
       2. [xcb-wm-util](http://cgit.freedesktop.org/xcb/util-wm/tree/) (HEAD)
 2. With OpenGL backend:
   1. [GLEW](http://glew.sourceforge.net/index.html) >= **1.11.0**
+3. With raster backend:
+  1. `lib/image`
+
 
 ### Library: game
 
