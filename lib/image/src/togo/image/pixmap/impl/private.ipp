@@ -15,14 +15,6 @@
 
 namespace togo {
 
-PixelFormatInfo const pixel_format_info[]{
-	{{1, 1, 1, 0}, {16, 8, 0, 0}}, // rgb
-	{{1, 1, 1, 0}, {24, 16, 8, 0}}, // rgbx
-	{{1, 1, 1, 0}, {16, 8, 0, 0}}, // xrgb
-	{{1, 1, 1, 1}, {24, 16, 8, 0}}, // rgba
-	{{1, 1, 1, 1}, {16, 8, 0, 24}}, // argb
-};
-
 // private
 
 void pixmap::fill_rgb(Pixmap& p, Color& color, UVec4& rect) {

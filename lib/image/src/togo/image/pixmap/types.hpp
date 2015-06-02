@@ -50,6 +50,8 @@ struct PixelFormatInfo {
 	u32 comp[4];
 	/// The bit index of a component.
 	u32 shift[4];
+	/// The mask of a component.
+	u32 mask[4];
 };
 
 /// Pixel format info by ID.

@@ -16,6 +16,14 @@
 
 namespace togo {
 
+PixelFormatInfo const pixel_format_info[]{
+	{{1, 1, 1, 0}, {16, 8, 0, 0} , {0xFFu << 16, 0xFFu << 8 , 0xFFu << 0, 0}}, // rgb
+	{{1, 1, 1, 0}, {24, 16, 8, 0}, {0xFFu << 24, 0xFFu << 16, 0xFFu << 8, 0}}, // rgbx
+	{{1, 1, 1, 0}, {16, 8, 0, 0} , {0xFFu << 16, 0xFFu << 8 , 0xFFu << 0, 0}}, // xrgb
+	{{1, 1, 1, 1}, {24, 16, 8, 0}, {0xFFu << 24, 0xFFu << 16, 0xFFu << 8, 0xFFu << 0}}, // rgba
+	{{1, 1, 1, 1}, {16, 8, 0, 24}, {0xFFu << 16, 0xFFu << 8 , 0xFFu << 0, 0xFFu << 24}}, // argb
+};
+
 // Pixmap interface
 
 Pixmap::~Pixmap() {
