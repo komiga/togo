@@ -27,7 +27,11 @@ namespace togo {
 
 /// Allocate an object with an allocator without constructing it.
 #define TOGO_ALLOCATE(a, T) \
-	((a).allocate(sizeof(T), alignof(T)))
+	reinterpret_cast<T*>((a).allocate(sizeof(T), alignof(T)))
+
+/// Allocate N objects with an allocator without constructing them.
+#define TOGO_ALLOCATE_N(a, T, n) \
+	reinterpret_cast<T*>((a).allocate(sizeof(T) * n, alignof(T)))
 
 /// Construct an object with an allocator.
 #define TOGO_CONSTRUCT(a, T, ...) \
