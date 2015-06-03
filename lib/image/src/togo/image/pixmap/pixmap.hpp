@@ -47,7 +47,7 @@ inline u32 pack(PixelFormat const& format, Color const& color) {
 		(color.r << info.shift[0]) |
 		(color.g << info.shift[1]) |
 		(color.b << info.shift[2]) |
-		info.comp[3] ? (color.a << info.shift[3]) : 0
+		(info.comp[3] ? (color.a << info.shift[3]) : 0)
 	;
 }
 
