@@ -7,6 +7,7 @@
 
 #include <togo/window/config.hpp>
 #include <togo/core/types.hpp>
+#include <togo/core/utility/utility.hpp>
 #include <togo/core/memory/types.hpp>
 #include <togo/core/collection/fixed_array.hpp>
 #include <togo/window/window/types.hpp>
@@ -82,7 +83,7 @@ struct Window {
 		, _mouse_button_states()
 		, _mouse_x(0)
 		, _mouse_y(0)
-		, _impl(impl)
+		, _impl(rvalue_ref(impl))
 	{}
 };
 
