@@ -7,9 +7,11 @@
 
 #include <togo/window/config.hpp>
 #include <togo/core/string/string.hpp>
+#include <togo/image/pixmap/types.hpp>
 
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
+#include <xcb/xcbext.h>
 
 #include <cstddef>
 
@@ -18,6 +20,8 @@ namespace togo {
 struct XCBWindowImpl {
 	xcb_window_t id;
 	bool focus_last;
+	bool resized;
+	Pixmap backbuffer;
 };
 
 using WindowImpl = XCBWindowImpl;
@@ -25,6 +29,9 @@ using WindowImpl = XCBWindowImpl;
 namespace window {
 
 struct XCBGlobals {
+	static constexpr auto const
+	pixel_format_id = PixelFormatID::xrgb;
+
 	xcb_connection_t* c{nullptr};
 	xcb_screen_t* screen{nullptr};
 	xcb_ewmh_connection_t c_ewmh{};
@@ -32,6 +39,9 @@ struct XCBGlobals {
 	u8 depth;
 	xcb_visualid_t visual_id;
 	xcb_gcontext_t gc{XCB_NONE};
+
+	struct iovec* iovec_temporary{nullptr};
+	u32 iovec_temporary_size{0};
 };
 
 struct XCBAtomCache {

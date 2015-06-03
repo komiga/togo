@@ -14,6 +14,7 @@
 #include <togo/core/math/types.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/string/types.hpp>
+#include <togo/image/pixmap/types.hpp>
 #include <togo/window/window/types.hpp>
 #include <togo/window/window/window.gen_interface>
 
@@ -64,6 +65,12 @@ void set_title(Window* window, StringRef title);
 /// If this is enabled, the mouse position will be locked to the
 /// window.
 void set_mouse_lock(Window* window, bool enable);
+
+/// Get raster window backbuffer.
+Pixmap& backbuffer(Window* window);
+
+/// Push areas of the backbuffer to the window.
+void push_backbuffer(Window* window, ArrayRef<UVec4 const> areas);
 
 /// Set swap mode.
 ///

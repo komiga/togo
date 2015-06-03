@@ -109,6 +109,14 @@ Window* window::create_raster(
 ) {
 	TOGO_ASSERT(false, "raster window not supported in the lib/window backend");
 }
+
+Pixmap& window::backbuffer(Window* /*window*/) {
+	TOGO_ASSERT(false, "raster window not supported in the lib/window backend");
+}
+
+void window::push_backbuffer(Window* /*window*/, ArrayRef<UVec4 const> /*areas*/) {
+	TOGO_ASSERT(false, "raster window not supported in the lib/window backend");
+}
 #else
 Window* window::create_opengl(
 	StringRef /*title*/,

@@ -10,13 +10,14 @@
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/system/system.hpp>
 #include <togo/core/io/object_buffer.hpp>
-#include <togo/image/pixmap/types.hpp>
+#include <togo/image/pixmap/pixmap.hpp>
 #include <togo/window/window/window.hpp>
 #include <togo/window/window/impl/types.hpp>
 #include <togo/window/window/impl/private.hpp>
 #include <togo/window/window/impl/raster_xcb.hpp>
 #include <togo/window/input/types.hpp>
 
+#include <xcb/xcbext.h>
 #include <xcb/xcb_icccm.h>
 
 #include <cstdlib>
@@ -80,6 +81,73 @@ static void create_xcb_gc(xcb_drawable_t drawable) {
 	TOGO_ASSERTE(!(err = xcb_request_check(_xcb_globals.c, err_cookie)));
 }
 
+static void put_image_area(
+	Window* window,
+	unsigned dst_x, unsigned dst_y,
+	unsigned src_x, unsigned src_y,
+	unsigned width, unsigned height
+) {
+	auto& b = window->_impl.backbuffer;
+	xcb_protocol_request_t proc_req{
+		// 2 internal + put_image req + 1 per row + padding
+		2 + 1 + height + 1, // count
+		0, // ext
+		XCB_PUT_IMAGE, // opcode
+		1 // isvoid
+	};
+
+	xcb_put_image_request_t req{};
+	// major_opcode
+	req.format = XCB_IMAGE_FORMAT_Z_PIXMAP;
+	// length
+	req.drawable = window->_impl.id;
+	req.gc = _xcb_globals.gc;
+	req.width = width;
+	req.height = height;
+	req.dst_x = signed_cast(dst_x);
+	req.dst_y = signed_cast(dst_y);
+	req.left_pad = 0;
+	req.depth = _xcb_globals.depth;
+	// pad0
+
+	if (
+		!_xcb_globals.iovec_temporary ||
+		_xcb_globals.iovec_temporary_size < proc_req.count
+	) {
+		memory::default_allocator().deallocate(_xcb_globals.iovec_temporary);
+		_xcb_globals.iovec_temporary = TOGO_ALLOCATE_N(
+			memory::default_allocator(), struct iovec, proc_req.count
+		);
+		_xcb_globals.iovec_temporary_size = proc_req.count;
+	}
+	auto* vec = _xcb_globals.iovec_temporary;
+
+	// NB: xcb_put_image_request_t is padded in-structure
+	vec[2].iov_base = reinterpret_cast<char*>(&req);
+	vec[2].iov_len = sizeof(req);
+
+	unsigned const pixel_size = pixel_format::pixel_size(b.format);
+	unsigned bytes_to_next_row = pixel_size * b.size.width;
+	u8* data = b.data + (pixel_size * (src_y * b.size.width + src_x));
+
+	unsigned data_size = pixel_size * width;
+	unsigned n = 3;
+	for (auto rows = height; rows--;) {
+		vec[n].iov_base = data;
+		vec[n].iov_len = data_size;
+		data += bytes_to_next_row;
+		++n;
+	}
+	data_size *= height;
+
+	// padding (XCB replaces this with pad data)
+	vec[n].iov_base = nullptr;
+	vec[n].iov_len = -data_size & 3;
+
+	proc_req.count -= 2;
+	xcb_send_request(_xcb_globals.c, 0, vec + 2, &proc_req);
+}
+
 } // anonymous namespace
 } // namespace window
 
@@ -88,12 +156,13 @@ void window::init_impl() {
 
 	{// Connect
 	_xcb_globals.c = xcb_connect(nullptr, nullptr);
-	int connect_err = xcb_connection_has_error(_xcb_globals.c);
+	auto connect_err = xcb_connection_has_error(_xcb_globals.c);
 	TOGO_ASSERTF(connect_err <= 0, "failed to connect to XCB with error: %d", connect_err);
 	}
 
 	{// Gather info from setup
 	auto* setup = xcb_get_setup(_xcb_globals.c);
+	// TOGO_LOG_DEBUGF("maximum_request_length = %u\n", setup->maximum_request_length);
 
 	{// Get first screen
 	auto iter = xcb_setup_roots_iterator(setup);
@@ -122,7 +191,7 @@ void window::init_impl() {
 	}
 	TOGO_ASSERT(_xcb_globals.depth != 0, "could not find a suitable XCB pixmap format");
 
-	auto& pf_info = pixel_format_info[unsigned_cast(PixelFormatID::xrgb)];
+	auto& pf_info = pixel_format_info[unsigned_cast(XCBGlobals::pixel_format_id)];
 	for (
 		auto i = xcb_screen_allowed_depths_iterator(_xcb_globals.screen);
 		i.rem && _xcb_globals.visual_id == ~0u; xcb_depth_next(&i)
@@ -294,6 +363,10 @@ void window::shutdown_impl() {
 	xcb_ewmh_connection_wipe(&_xcb_globals.c_ewmh);
 	xcb_disconnect(_xcb_globals.c);
 	_xcb_globals.c = nullptr;
+
+	memory::default_allocator().deallocate(_xcb_globals.iovec_temporary);
+	_xcb_globals.iovec_temporary = nullptr;
+	_xcb_globals.iovec_temporary_size = 0;
 }
 
 Window* window::create_raster(
@@ -305,7 +378,7 @@ Window* window::create_raster(
 	xcb_void_cookie_t err_cookie;
 	xcb_generic_error_t* err;
 
-	xcb_window_t id = xcb_generate_id(_xcb_globals.c);
+	xcb_window_t window_id = xcb_generate_id(_xcb_globals.c);
 
 	{// Create window
 	constexpr u32 const attr_mask = 0
@@ -335,7 +408,7 @@ Window* window::create_raster(
 	err_cookie = xcb_create_window_checked(
 		_xcb_globals.c,
 		_xcb_globals.depth,
-		id,
+		window_id,
 		_xcb_globals.screen->root,
 		0, 0,
 		static_cast<u16>(size.width),
@@ -356,7 +429,7 @@ Window* window::create_raster(
 		_xcb_globals.c_ewmh._NET_WM_PING,
 	};
 	err_cookie = xcb_icccm_set_wm_protocols_checked(
-		_xcb_globals.c, id,
+		_xcb_globals.c, window_id,
 		_xcb_globals.c_ewmh.WM_PROTOCOLS,
 		array_extent(protocols), protocols
 	);
@@ -365,7 +438,7 @@ Window* window::create_raster(
 
 	// _NET_WM_WINDOW_TYPE
 	err_cookie = xcb_ewmh_set_wm_window_type_checked(
-		&_xcb_globals.c_ewmh, id,
+		&_xcb_globals.c_ewmh, window_id,
 		1, &_xcb_globals.c_ewmh._NET_WM_WINDOW_TYPE_NORMAL
 	);
 	TOGO_ASSERTE(!(err = xcb_request_check(_xcb_globals.c, err_cookie)));
@@ -374,7 +447,7 @@ Window* window::create_raster(
 	xcb_icccm_wm_hints_t wm_hints{};
 	xcb_icccm_wm_hints_set_input(&wm_hints, 1);
 	xcb_icccm_wm_hints_set_normal(&wm_hints);
-	err_cookie = xcb_icccm_set_wm_hints_checked(_xcb_globals.c, id, &wm_hints);
+	err_cookie = xcb_icccm_set_wm_hints_checked(_xcb_globals.c, window_id, &wm_hints);
 	TOGO_ASSERTE(!(err = xcb_request_check(_xcb_globals.c, err_cookie)));
 	}
 
@@ -387,7 +460,7 @@ Window* window::create_raster(
 		xcb_icccm_size_hints_set_min_size(&size_hints, size.width, size.height);
 		xcb_icccm_size_hints_set_max_size(&size_hints, size.width, size.height);
 	}
-	err_cookie = xcb_icccm_set_wm_normal_hints_checked(_xcb_globals.c, id, &size_hints);
+	err_cookie = xcb_icccm_set_wm_normal_hints_checked(_xcb_globals.c, window_id, &size_hints);
 	TOGO_ASSERTE(!(err = xcb_request_check(_xcb_globals.c, err_cookie)));
 	}
 
@@ -395,7 +468,7 @@ Window* window::create_raster(
 	// TODO: Proper instance and class names
 	static char const wm_class[] = "togo_app\0togo_app";
 	err_cookie = xcb_icccm_set_wm_class_checked(
-		_xcb_globals.c, id,
+		_xcb_globals.c, window_id,
 		array_extent(wm_class), wm_class
 	);
 	TOGO_ASSERTE(!(err = xcb_request_check(_xcb_globals.c, err_cookie)));
@@ -404,7 +477,7 @@ Window* window::create_raster(
 	{// WM_CLIENT_MACHINE
 	auto hostname = system::hostname();
 	err_cookie = xcb_icccm_set_wm_client_machine_checked(
-		_xcb_globals.c, id,
+		_xcb_globals.c, window_id,
 		XCB_ATOM_STRING, 8,
 		hostname.size, hostname.data
 	);
@@ -412,14 +485,14 @@ Window* window::create_raster(
 	}
 
 	// _NET_WM_PID
-	err_cookie = xcb_ewmh_set_wm_pid_checked(&_xcb_globals.c_ewmh, id, system::pid());
+	err_cookie = xcb_ewmh_set_wm_pid_checked(&_xcb_globals.c_ewmh, window_id, system::pid());
 	TOGO_ASSERTE(!(err = xcb_request_check(_xcb_globals.c, err_cookie)));
 
 	// Enable _NET_WM_BYPASS_COMPOSITOR (not in xcb_ewmh)
 	if (_xcb_atom._NET_WM_BYPASS_COMPOSITOR != XCB_ATOM_NONE) {
 		u32 value = 1;
 		err_cookie = xcb_change_property_checked(
-			_xcb_globals.c, XCB_PROP_MODE_REPLACE, id,
+			_xcb_globals.c, XCB_PROP_MODE_REPLACE, window_id,
 			_xcb_atom._NET_WM_BYPASS_COMPOSITOR,
 			XCB_ATOM_CARDINAL, 32, 1, &value
 		);
@@ -427,17 +500,21 @@ Window* window::create_raster(
 	}
 
 	// Map window
-	err_cookie = xcb_map_window_checked(_xcb_globals.c, id);
+	err_cookie = xcb_map_window_checked(_xcb_globals.c, window_id);
 	TOGO_ASSERTE(!(err = xcb_request_check(_xcb_globals.c, err_cookie)));
 	TOGO_ASSERTE(xcb_flush(_xcb_globals.c) > 0);
 
 	if (!_xcb_globals.gc) {
-		create_xcb_gc(id);
+		create_xcb_gc(window_id);
 	}
 
 	Window* const window = TOGO_CONSTRUCT(
 		allocator, Window, size, flags, {}, allocator,
-		XCBWindowImpl{id, false}
+		XCBWindowImpl{
+			window_id,
+			false, false,
+			{size, XCBGlobals::pixel_format_id}
+		}
 	);
 	window::set_title(window, title);
 	return window;
@@ -475,6 +552,48 @@ void window::set_title(Window* window, StringRef title) {
 
 void window::set_mouse_lock(Window* /*window*/, bool /*enable*/) {
 	// TODO
+}
+
+Pixmap& window::backbuffer(Window* window) {
+	return window->_impl.backbuffer;
+}
+
+void window::push_backbuffer(Window* window, ArrayRef<UVec4 const> areas) {
+	auto const& wsize = window->_size;
+	for (auto& area : areas) {
+		if (
+			area.x > wsize.width || area.y > wsize.height ||
+			area.width == 0 || area.height == 0
+		) {
+			continue;
+		} else if (
+			area.x == 0 && area.y == 0 &&
+			area.width == wsize.width && area.height == wsize.height
+		) {
+			xcb_put_image(
+				_xcb_globals.c,
+				XCB_IMAGE_FORMAT_Z_PIXMAP,
+				window->_impl.id,
+				_xcb_globals.gc,
+				static_cast<u16>(area.width),
+				static_cast<u16>(area.height),
+				0, 0,
+				0,
+				_xcb_globals.depth,
+				window->_impl.backbuffer.data_size,
+				window->_impl.backbuffer.data
+			);
+		} else {
+			put_image_area(
+				window,
+				area.x, area.y,
+				area.x, area.y,
+				min(area.width, wsize.width),
+				min(area.height, wsize.height)
+			);
+		}
+	}
+	xcb_flush(_xcb_globals.c);
 }
 
 // private
@@ -545,22 +664,29 @@ void window::detach_from_input_buffer_impl(Window* /*window*/) {}
 		auto window = ib_find_window_by_id(ib, event->id_name_);
 
 #define END_EVENT() \
-		break; }
+		} break;
 
 void window::process_events(InputBuffer& ib) {
 	xcb_void_cookie_t err_cookie;
 	xcb_generic_error_t* err;
 	xcb_generic_event_t* generic_event;
 	unsigned event_type;
+	bool any_resized = false;
 
 	while ((generic_event = xcb_poll_for_event(_xcb_globals.c))) {
 	// NB: MSB is whether the event came from another client
 	event_type = generic_event->response_type & ~0x80;
 	switch (event_type) {
 	DO_EVENT(XCB_EXPOSE, xcb_expose_event_t, window)
-		// TODO: Re-render the exposed bits of the window pixmap
-		(void)event;
-		(void)window;
+		// TOGO_LOG_DEBUGF("EXPOSE. resized = %d\n", window->_impl.resized);
+		if (!window->_impl.resized) {
+			put_image_area(
+				window,
+				event->x, event->y,
+				event->x, event->y,
+				event->width, event->height
+			);
+		}
 	END_EVENT()
 
 	// NB: Same event type
@@ -649,6 +775,8 @@ void window::process_events(InputBuffer& ib) {
 				WindowResizeEvent{window, window->_size, new_size}
 			);
 			window->_size = new_size;
+			any_resized = true;
+			window->_impl.resized = true;
 		}
 	END_EVENT()
 
@@ -694,7 +822,19 @@ void window::process_events(InputBuffer& ib) {
 	std::free(generic_event);
 	}
 
-	// TODO: Resize pixmaps
+	if (any_resized) {
+		for (auto window : ib._windows) {
+			if (!window || !window->_impl.resized) {
+				continue;
+			}
+			pixmap::resize(window->_impl.backbuffer, window->_size);
+			put_image_area(
+				window, 0, 0, 0, 0,
+				window->_size.width, window->_size.height
+			);
+			window->_impl.resized = false;
+		}
+	}
 }
 
 #undef DO_EVENT
