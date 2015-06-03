@@ -1,8 +1,10 @@
 
 #include <togo/core/error/assert.hpp>
+#include <togo/core/math/types.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/string/string.hpp>
 #include <togo/core/system/system.hpp>
+#include <togo/image/pixmap/pixmap.hpp>
 #include <togo/window/window/window.hpp>
 #include <togo/window/input/input.hpp>
 #include <togo/window/input/input_buffer.hpp>
@@ -30,6 +32,10 @@ signed main() {
 	bool mouse_lock = false;
 	window::set_mouse_lock(window, mouse_lock);
 
+	UVec4 area{0, 0, 256, 256};
+	pixmap::fill(window::backbuffer(window), {0, 255, 0}, area);
+	window::push_backbuffer(window, array_ref(1, &area));
+
 	InputEventType event_type{};
 	InputEvent const* event = nullptr;
 	while (!quit) {
@@ -48,7 +54,6 @@ signed main() {
 			window::set_mouse_lock(window, mouse_lock);
 			TOGO_LOG("mouse lock toggled\n");
 		}
-		// window::update_framebuffer(window);
 		system::sleep_ms(50);
 	}
 	input_buffer::remove_window(ib, window);
