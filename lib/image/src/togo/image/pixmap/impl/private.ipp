@@ -37,7 +37,7 @@ void pixmap::fill_rgb(Pixmap& p, Color& color, UVec4& rect) {
 void pixmap::fill_packed(Pixmap& p, Color& color, UVec4& rect) {
 	enum : unsigned { pixel_size = 4 };
 	unsigned num_rows = rect.height;
-	unsigned bytes_to_next_row = (p.size.width - rect.width) * pixel_size;
+	unsigned to_next_row = p.size.width - rect.width;
 	u32* dst = pointer_add(
 		reinterpret_cast<u32*>(p.data),
 		(rect.y * p.size.width + rect.x) * pixel_size
@@ -57,7 +57,7 @@ void pixmap::fill_packed(Pixmap& p, Color& color, UVec4& rect) {
 		case 3: *dst++ = packed;
 		case 2: *dst++ = packed;
 		case 1: *dst++ = packed;
-		case 0: dst += bytes_to_next_row;
+		case 0: dst += to_next_row;
 		}
 	}
 }
