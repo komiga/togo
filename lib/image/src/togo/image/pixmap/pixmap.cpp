@@ -66,8 +66,8 @@ Pixmap::Pixmap(UVec2 size, PixelFormatID format_id)
 	pixmap::resize(*this, size);
 }
 
-Pixmap::Pixmap(Pixmap&&) {
-	pixmap::free(*this);
+Pixmap::Pixmap(Pixmap&& other) {
+	*this = rvalue_ref(other);
 }
 
 Pixmap& Pixmap::operator=(Pixmap&& other) {
