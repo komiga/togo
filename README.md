@@ -53,7 +53,6 @@ Dependencies:
 3. With raster backend:
   1. `lib/image`
 
-
 ### Library: game
 
 Game engine.
