@@ -25,6 +25,8 @@ namespace togo {
 	@{
 */
 
+namespace basic_types {
+
 /** @name Signed integral types */ /// @{
 /// Fixed-width signed integral.
 using s8		= std::int8_t;
@@ -57,6 +59,10 @@ using hash32 = u32;
 /// 64-bit hash.
 using hash64 = u64;
 /// @}
+
+} // namespace basic_types
+
+using namespace basic_types;
 
 /** @} */ // end of doc-group lib_core_types
 
