@@ -117,7 +117,7 @@ namespace togo {
 #else
 	#if defined(__linux__)
 		#define TOGO_PLATFORM_LINUX
-	#elif defined(macintosh) || defined(Macintosh) || \\
+	#elif defined(macintosh) || defined(Macintosh) || \
 		(defined(__APPLE__) && defined(__MACH__))
 
 		#define TOGO_PLATFORM_MACOS
