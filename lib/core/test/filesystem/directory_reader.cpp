@@ -21,12 +21,6 @@ signed main() {
 	CREATE_IF_NON_EXISTENT(file, ROOT "/file");
 	CREATE_IF_NON_EXISTENT(file, ROOT "/.dotdotdot");
 
-	#define READ_ENTRY(type_, path_)								\
-		TOGO_ASSERTE(												\
-			directory_reader::read(reader, entry, type_mask) &&		\
-			entry.type == type_ &&									\
-			string::compare_equal(entry.path, path_)				\
-		)
 	{
 	DirectoryReader reader{};
 	DirectoryEntry entry;
@@ -34,13 +28,39 @@ signed main() {
 	auto const type_dir = DirectoryEntry::Type::dir;
 	auto const type_mask = DirectoryEntry::Type::all;
 
-	TOGO_ASSERTE(directory_reader::open(reader, ROOT, true, true));
-	READ_ENTRY(type_dir , ROOT "/inner_dir/");
-	READ_ENTRY(type_file, ROOT "/inner_dir/file");
-	READ_ENTRY(type_file, ROOT "/file");
-	TOGO_ASSERTE(!directory_reader::read(reader, entry, type_mask));
-	directory_reader::close(reader);
+	struct {
+		bool found;
+		DirectoryEntry::Type type;
+		StringRef path;
 	}
+	*match,
+	expected_entries[]{
+		{false, type_file, ROOT "/file"},
+		{false, type_dir , ROOT "/inner_dir/"},
+		{false, type_file, ROOT "/inner_dir/file"}
+	};
+
+	TOGO_ASSERTE(directory_reader::open(reader, ROOT, true, true));
+	while (directory_reader::read(reader, entry, type_mask)) {
+		match = nullptr;
+		for (auto& x : expected_entries) {
+			if (
+				entry.type == x.type &&
+				string::compare_equal(entry.path, x.path)
+			) {
+				match = &x;
+				break;
+			}
+		}
+		TOGO_ASSERTF(match, "unexpected entry: %.*s", entry.path.size, entry.path.data);
+		TOGO_ASSERTE(!match->found);
+		match->found = true;
+	}
+	directory_reader::close(reader);
+
+	for (auto const& x : expected_entries) {
+		TOGO_ASSERTF(x.found, "unmatched entry: %.*s", x.path.size, x.path.data);
+	}}
 
 	TOGO_ASSERTE(filesystem::remove_file(ROOT "/.dotdotdot"));
 	TOGO_ASSERTE(filesystem::remove_file(ROOT "/file"));
