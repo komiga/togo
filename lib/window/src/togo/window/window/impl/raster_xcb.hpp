@@ -11,6 +11,7 @@
 
 #include <xcb/xcb.h>
 #include <xcb/xcb_ewmh.h>
+#include <xcb/xcb_keysyms.h>
 #include <xcb/xcbext.h>
 
 #include <cstddef>
@@ -34,6 +35,7 @@ struct XCBGlobals {
 
 	xcb_connection_t* c{nullptr};
 	xcb_screen_t* screen{nullptr};
+	xcb_key_symbols_t* key_symbols{nullptr};
 	xcb_ewmh_connection_t c_ewmh{};
 	bool has_ewmh{false};
 	u8 depth;

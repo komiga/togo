@@ -19,7 +19,10 @@
 
 #include <xcb/xcbext.h>
 #include <xcb/xcb_icccm.h>
+#include <xcb/xcb_keysyms.h>
+#include <X11/keysym.h>
 
+#include <cstddef>
 #include <cstdlib>
 
 #undef TOGO_TEST_LOG_ENABLE
@@ -51,10 +54,160 @@ static XCBAtomLookup const _xcb_atom_lookup[]{
 
 #undef ATOM
 
+KeyCode _xcb_keycode_map[255];
+
 } // anonymous namespace
 
 namespace window {
 namespace {
+
+static KeyCode lookup_xcb_key(xcb_keycode_t xcb_keycode) {
+	// Map numpad keys directly instead of their underlying values
+	auto keysym = xcb_key_symbols_get_keysym(_xcb_globals.key_symbols, xcb_keycode, 1);
+	switch (keysym) {
+	case XK_KP_0: return KeyCode::numpad_0;
+	case XK_KP_1: return KeyCode::numpad_1;
+	case XK_KP_2: return KeyCode::numpad_2;
+	case XK_KP_3: return KeyCode::numpad_3;
+	case XK_KP_4: return KeyCode::numpad_4;
+	case XK_KP_5: return KeyCode::numpad_5;
+	case XK_KP_6: return KeyCode::numpad_6;
+	case XK_KP_7: return KeyCode::numpad_7;
+	case XK_KP_8: return KeyCode::numpad_8;
+	case XK_KP_9: return KeyCode::numpad_9;
+	case XK_KP_Decimal: return KeyCode::numpad_decimal;
+	case XK_KP_Divide: return KeyCode::numpad_divide;
+	case XK_KP_Multiply: return KeyCode::numpad_multiply;
+	case XK_KP_Subtract: return KeyCode::numpad_subtract;
+	case XK_KP_Add: return KeyCode::numpad_add;
+	case XK_KP_Enter: return KeyCode::numpad_enter;
+	case XK_KP_Equal: return KeyCode::numpad_equal;
+	default: break;
+	}
+
+	keysym = xcb_key_symbols_get_keysym(_xcb_globals.key_symbols, xcb_keycode, 0);
+	switch (keysym) {
+	case XK_F1: return KeyCode::f1;
+	case XK_F2: return KeyCode::f2;
+	case XK_F3: return KeyCode::f3;
+	case XK_F4: return KeyCode::f4;
+	case XK_F5: return KeyCode::f5;
+	case XK_F6: return KeyCode::f6;
+	case XK_F7: return KeyCode::f7;
+	case XK_F8: return KeyCode::f8;
+	case XK_F9: return KeyCode::f9;
+	case XK_F10: return KeyCode::f10;
+	case XK_F11: return KeyCode::f11;
+	case XK_F12: return KeyCode::f12;
+
+	case XK_0: return KeyCode::n0;
+	case XK_1: return KeyCode::n1;
+	case XK_2: return KeyCode::n2;
+	case XK_3: return KeyCode::n3;
+	case XK_4: return KeyCode::n4;
+	case XK_5: return KeyCode::n5;
+	case XK_6: return KeyCode::n6;
+	case XK_7: return KeyCode::n7;
+	case XK_8: return KeyCode::n8;
+	case XK_9: return KeyCode::n9;
+
+	case XK_a: return KeyCode::a;
+	case XK_b: return KeyCode::b;
+	case XK_c: return KeyCode::c;
+	case XK_d: return KeyCode::d;
+	case XK_e: return KeyCode::e;
+	case XK_f: return KeyCode::f;
+	case XK_g: return KeyCode::g;
+	case XK_h: return KeyCode::h;
+	case XK_i: return KeyCode::i;
+	case XK_j: return KeyCode::j;
+	case XK_k: return KeyCode::k;
+	case XK_l: return KeyCode::l;
+	case XK_m: return KeyCode::m;
+	case XK_n: return KeyCode::n;
+	case XK_o: return KeyCode::o;
+	case XK_p: return KeyCode::p;
+	case XK_q: return KeyCode::q;
+	case XK_r: return KeyCode::r;
+	case XK_s: return KeyCode::s;
+	case XK_t: return KeyCode::t;
+	case XK_u: return KeyCode::u;
+	case XK_v: return KeyCode::v;
+	case XK_w: return KeyCode::w;
+	case XK_x: return KeyCode::x;
+	case XK_y: return KeyCode::y;
+	case XK_z: return KeyCode::z;
+
+	// Probably won't happen here
+	case XK_KP_0: return KeyCode::numpad_0;
+	case XK_KP_1: return KeyCode::numpad_1;
+	case XK_KP_2: return KeyCode::numpad_2;
+	case XK_KP_3: return KeyCode::numpad_3;
+	case XK_KP_4: return KeyCode::numpad_4;
+	case XK_KP_5: return KeyCode::numpad_5;
+	case XK_KP_6: return KeyCode::numpad_6;
+	case XK_KP_7: return KeyCode::numpad_7;
+	case XK_KP_8: return KeyCode::numpad_8;
+	case XK_KP_9: return KeyCode::numpad_9;
+	case XK_KP_Decimal: return KeyCode::numpad_decimal;
+	case XK_KP_Divide: return KeyCode::numpad_divide;
+	case XK_KP_Multiply: return KeyCode::numpad_multiply;
+	case XK_KP_Subtract: return KeyCode::numpad_subtract;
+	case XK_KP_Add: return KeyCode::numpad_add;
+	case XK_KP_Enter: return KeyCode::numpad_enter;
+	case XK_KP_Equal: return KeyCode::numpad_equal;
+
+	case XK_grave: return KeyCode::grave;
+	case XK_Tab: return KeyCode::tab;
+	case XK_space: return KeyCode::space;
+	case XK_minus: return KeyCode::minus;
+	case XK_equal: return KeyCode::equal;
+	case XK_BackSpace: return KeyCode::backspace;
+	case XK_bracketleft: return KeyCode::left_bracket;
+	case XK_bracketright: return KeyCode::right_bracket;
+	case XK_backslash: return KeyCode::backslash;
+	case XK_semicolon: return KeyCode::semicolon;
+	case XK_apostrophe: return KeyCode::apostrophe;
+	case XK_comma: return KeyCode::comma;
+	case XK_period: return KeyCode::period;
+	case XK_slash: return KeyCode::slash;
+
+	case XK_Caps_Lock: return KeyCode::caps_lock;
+	case XK_Scroll_Lock: return KeyCode::scroll_lock;
+	case XK_Num_Lock: return KeyCode::num_lock;
+
+	case XK_Escape: return KeyCode::escape;
+	case XK_Return: return KeyCode::enter;
+
+	case XK_Print: return KeyCode::print_screen;
+	case XK_Pause: return KeyCode::pause;
+	case XK_Insert: return KeyCode::insert;
+	case XK_Delete: return KeyCode::del;
+	case XK_Home: return KeyCode::home;
+	case XK_End: return KeyCode::end;
+	case XK_Page_Up: return KeyCode::page_up;
+	case XK_Page_Down: return KeyCode::page_down;
+
+	case XK_Up: return KeyCode::up;
+	case XK_Down: return KeyCode::down;
+	case XK_Left: return KeyCode::left;
+	case XK_Right: return KeyCode::right;
+
+	case XK_Shift_L: return KeyCode::left_shift;
+	case XK_Control_L: return KeyCode::left_control;
+	case XK_Alt_L: // fall-through
+	case XK_Meta_L: return KeyCode::left_alt;
+	case XK_Super_L: return KeyCode::left_super;
+	case XK_Shift_R: return KeyCode::right_shift;
+	case XK_Control_R: return KeyCode::right_control;
+	case XK_Alt_R: // fall-through
+	case XK_Meta_R: return KeyCode::right_alt;
+	case XK_Super_R: return KeyCode::right_super;
+
+	default: break;
+	}
+	return static_cast<KeyCode>(-1);
+}
 
 static void create_xcb_gc(xcb_drawable_t drawable) {
 	TOGO_DEBUG_ASSERTE(_xcb_globals.gc == XCB_NONE);
@@ -301,6 +454,13 @@ void window::init_impl() {
 #endif // defined(TOGO_TEST_WINDOW)
 	}
 
+	_xcb_globals.key_symbols = xcb_key_symbols_alloc(_xcb_globals.c);
+	TOGO_ASSERT(_xcb_globals.key_symbols, "failed to allocate key_symbols");
+
+	for (unsigned i = 0; i < 255; ++i) {
+		_xcb_keycode_map[i] = lookup_xcb_key(static_cast<xcb_keycode_t>(i));
+	}
+
 	if (
 		_xcb_globals.depth == _xcb_globals.screen->root_depth &&
 		_xcb_globals.visual_id == _xcb_globals.screen->root_visual
@@ -360,6 +520,8 @@ void window::init_impl() {
 }
 
 void window::shutdown_impl() {
+	xcb_key_symbols_free(_xcb_globals.key_symbols);
+	_xcb_globals.key_symbols = nullptr;
 	xcb_ewmh_connection_wipe(&_xcb_globals.c_ewmh);
 	xcb_disconnect(_xcb_globals.c);
 	_xcb_globals.c = nullptr;
@@ -598,6 +760,8 @@ void window::push_backbuffer(Window* window, ArrayRef<UVec4 const> areas) {
 
 // private
 
+namespace window {
+
 static Window* ib_find_window_by_id(
 	InputBuffer& ib,
 	xcb_window_t const id
@@ -611,10 +775,7 @@ static Window* ib_find_window_by_id(
 }
 
 inline static KeyCode tl_xcb_key_code(xcb_key_press_event_t* event) {
-	// TODO: use xcb_get_keyboard_mapping()? xcb_keycode_t is only a byte.
-	// Should probably use xkb...
-	// TOGO_LOG_DEBUGF("keycode: %u\n", static_cast<unsigned>(event->detail));
-	return event->detail == 9 ? KeyCode::escape : KeyCode::space;
+	return _xcb_keycode_map[event->detail];
 }
 
 inline static KeyAction tl_xcb_key_action(xcb_key_press_event_t* event) {
@@ -654,6 +815,8 @@ inline static MouseButton tl_xcb_mouse_button(xcb_button_t button) {
 		return static_cast<MouseButton>(-1);
 	}
 }
+
+} // namespace window
 
 void window::attach_to_input_buffer_impl(Window* /*window*/) {}
 void window::detach_from_input_buffer_impl(Window* /*window*/) {}
