@@ -72,16 +72,19 @@ precore.make_config("togo.lib.window.backend.dep", nil, {
 			}
 			includedirs {
 				G"${DEP_PATH}/xcb-util-wm/include/",
+				G"${DEP_PATH}/xcb-util-keysyms/include/",
 				G"${DEP_PATH}/xcb/include/",
 			}
 		if not precore.env_project()["NO_LINK"] then
 			libdirs {
 				G"${DEP_PATH}/xcb-util-wm/lib/",
+				G"${DEP_PATH}/xcb-util-keysyms/lib/",
 				G"${DEP_PATH}/xcb/lib/",
 			}
 			links {
 				":libxcb-ewmh.a",
 				":libxcb-icccm.a",
+				":libxcb-keysyms.a",
 				":libxcb.a",
 
 				-- Dependencies
