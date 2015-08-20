@@ -8,6 +8,7 @@
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/io/object_buffer.hpp>
+#include <togo/image/pixmap/pixmap.hpp>
 #include <togo/window/window/window.hpp>
 #include <togo/window/window/impl/types.hpp>
 #include <togo/window/window/impl/private.hpp>
@@ -31,13 +32,16 @@ enum {
 
 void window::init_impl() {
 	TOGO_SDL_CHECK(SDL_Init(INIT_SYSTEMS) != 0);
+	TOGO_SDL_CHECK(!SDL_SetHint(SDL_HINT_FRAMEBUFFER_ACCELERATION, "0"));
 
-	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1));
-	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, _globals.context_major));
-	TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, _globals.context_minor));
-	if (_globals.context_major >= 3) {
-		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
-		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG));
+	if (_globals.context_major != 0 && _globals.context_minor != 0) {
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1));
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, _globals.context_major));
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, _globals.context_minor));
+		if (_globals.context_major >= 3) {
+			TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
+			TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG));
+		}
 	}
 	return;
 
@@ -69,6 +73,108 @@ static void set_creation_properties(
 	if (enum_bool(flags & WindowFlags::resizable)) {
 		sdl_flags |= SDL_WINDOW_RESIZABLE;
 	}
+}
+
+static void update_backbuffer_pixmap(Window* window) {
+	SDL_Surface* surface = SDL_GetWindowSurface(window->_impl.handle);
+	TOGO_ASSERT(!SDL_MUSTLOCK(surface), "we don't like special surfaces");
+	// NB: For some reason the format value itself doesn't seem to match
+	// the actual properties of the format
+	auto const sdl_format = surface->format->format;
+	auto const sdl_order = SDL_PIXELORDER(sdl_format);
+	PixelFormat format{static_cast<PixelFormatID>(-1)};
+	switch (SDL_PIXELTYPE(sdl_format)) {
+	case SDL_PIXELTYPE_ARRAYU8:
+		if (sdl_order == SDL_ARRAYORDER_RGB) {
+			format.id = PixelFormatID::rgb;
+		}
+		break;
+
+	case SDL_PIXELTYPE_PACKED32:
+		switch (sdl_order) {
+		case SDL_PACKEDORDER_XRGB: format.id = PixelFormatID::xrgb; break;
+		case SDL_PACKEDORDER_RGBX: format.id = PixelFormatID::rgbx; break;
+		case SDL_PACKEDORDER_ARGB: format.id = PixelFormatID::argb; break;
+		case SDL_PACKEDORDER_RGBA: format.id = PixelFormatID::rgba; break;
+		}
+		break;
+	}
+	unsigned const pixel_size = pixel_format::pixel_size(format);
+	TOGO_ASSERT(
+		format.id != static_cast<PixelFormatID>(-1) &&
+		surface->format->BytesPerPixel == pixel_size &&
+		surface->format->BitsPerPixel == pixel_size * 8 &&
+		unsigned_cast(surface->pitch) == (pixel_size * unsigned_cast(surface->w))
+		, "unknown pixel format for window backbuffer"
+	);
+	auto& backbuffer = window->_impl.backbuffer;
+	backbuffer.data = static_cast<u8*>(surface->pixels);
+	backbuffer.data_capacity = unsigned_cast(surface->pitch * surface->h);
+	backbuffer.data_size = backbuffer.data_capacity;
+	backbuffer.size = UVec2{surface->w, surface->h};
+	backbuffer.format = format;
+}
+
+Window* window::create_raster(
+	StringRef title,
+	UVec2 size,
+	WindowFlags flags,
+	Allocator& allocator
+) {
+	SDL_Window* handle = nullptr;
+	Window* window = nullptr;
+
+	signed x;
+	signed y;
+	unsigned sdl_flags
+		= SDL_WINDOW_ALLOW_HIGHDPI
+	;
+	set_creation_properties(flags, x, y, sdl_flags);
+	handle = SDL_CreateWindow(title.data, x, y, size.x, size.y, sdl_flags);
+	TOGO_SDL_CHECK(!handle);
+
+	window = TOGO_CONSTRUCT(
+		allocator, Window, size, flags, {}, allocator,
+		SDLWindowImpl{
+			handle, nullptr,
+			{PixelFormatID::xrgb}
+		}
+	);
+	update_backbuffer_pixmap(window);
+	return window;
+
+sdl_error:
+	TOGO_ASSERTF(false, "failed to create window: %s", SDL_GetError());
+}
+
+Pixmap& window::backbuffer(Window* window) {
+	TOGO_ASSERTE(!window->_impl.context);
+	return window->_impl.backbuffer;
+}
+
+void window::push_backbuffer(Window* window) {
+	TOGO_ASSERTE(!window->_impl.context);
+	TOGO_SDL_CHECK(SDL_UpdateWindowSurface(window->_impl.handle));
+	return;
+
+sdl_error:
+	TOGO_ASSERTF(false, "failed to push backbuffer: %s", SDL_GetError());
+}
+
+void window::push_backbuffer(Window* window, ArrayRef<UVec4 const> areas) {
+	TOGO_ASSERTE(!window->_impl.context);
+	SDL_Rect sdl_rect;
+	for (auto& area : areas) {
+		sdl_rect.x = area.x;
+		sdl_rect.y = area.y;
+		sdl_rect.w = area.width;
+		sdl_rect.h = area.height;
+		TOGO_SDL_CHECK(SDL_UpdateWindowSurfaceRects(window->_impl.handle, &sdl_rect, 1));
+	}
+	return;
+
+sdl_error:
+	TOGO_ASSERTF(false, "failed to push backbuffer: %s", SDL_GetError());
 }
 
 Window* window::create_opengl(
@@ -125,7 +231,10 @@ Window* window::create_opengl(
 
 	return TOGO_CONSTRUCT(
 		allocator, Window, size, flags, config, allocator,
-		SDLWindowImpl{handle, context}
+		SDLWindowImpl{
+			handle, context,
+			{PixelFormatID::argb}
+		}
 	);
 
 sdl_error:
@@ -134,6 +243,7 @@ sdl_error:
 
 void window::destroy(Window* window) {
 	Allocator& allocator = *window->_allocator;
+	window->_impl.backbuffer.data = nullptr;
 	if (window->_impl.context) {
 		SDL_GL_DeleteContext(window->_impl.context);
 	}
@@ -150,6 +260,7 @@ void window::set_mouse_lock(Window* window, bool enable) {
 }
 
 void window::set_swap_mode(Window* window, WindowSwapMode mode) {
+	TOGO_ASSERTE(window->_impl.context);
 	signed interval;
 	switch (mode) {
 	case WindowSwapMode::immediate:		interval = 0; break;
@@ -181,7 +292,7 @@ sdl_error:
 }
 
 void window::swap_buffers(Window* window) {
-	if (enum_bool(window->_config.flags & WindowOpenGLConfig::Flags::double_buffered)) {
+	if (window->_impl.context && enum_bool(window->_config.flags & WindowOpenGLConfig::Flags::double_buffered)) {
 		SDL_GL_SwapWindow(window->_impl.handle);
 	}
 }
@@ -439,6 +550,7 @@ void window::process_events(InputBuffer& ib) {
 		}
 		switch (event.window.event) {
 		case SDL_WINDOWEVENT_RESIZED:
+			update_backbuffer_pixmap(window);
 			if (
 				window->_size.x != unsigned_cast(event.window.data1) ||
 				window->_size.y != unsigned_cast(event.window.data2)

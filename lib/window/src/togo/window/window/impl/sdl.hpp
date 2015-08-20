@@ -6,6 +6,7 @@
 #pragma once
 
 #include <togo/window/config.hpp>
+#include <togo/image/pixmap/types.hpp>
 
 #include <SDL2/SDL_video.h>
 
@@ -14,6 +15,7 @@ namespace togo {
 struct SDLWindowImpl {
 	SDL_Window* handle;
 	SDL_GLContext context;
+	Pixmap backbuffer;
 };
 
 using WindowImpl = SDLWindowImpl;
