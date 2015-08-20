@@ -12,7 +12,7 @@
 #include <togo/window/window/impl/private.hpp>
 #include <togo/window/input/input_buffer.hpp>
 
-#if defined(TOGO_WINDOW_BACKEND_USES_OPENGL)
+#if defined(TOGO_WINDOW_BACKEND_SUPPORTS_OPENGL)
 	#include <togo/window/window/impl/opengl.ipp>
 #endif
 
@@ -20,12 +20,6 @@
 	#include <togo/window/window/impl/sdl.ipp>
 #elif (TOGO_CONFIG_WINDOW_BACKEND == TOGO_WINDOW_BACKEND_GLFW)
 	#include <togo/window/window/impl/glfw.ipp>
-#elif (TOGO_CONFIG_WINDOW_BACKEND == TOGO_WINDOW_BACKEND_RASTER)
-	#if defined(TOGO_PLATFORM_LINUX)
-		#include <togo/window/window/impl/raster_xcb.ipp>
-	#else
-		#error "raster window backend not supported on this platform"
-	#endif
 #endif
 
 namespace togo {
@@ -49,16 +43,15 @@ void window::init(
 ) {
 	TOGO_ASSERT(!_globals.initialized, "window backend has already been initialized");
 
-#if defined(TOGO_WINDOW_BACKEND_USES_OPENGL)
+#if defined(TOGO_WINDOW_BACKEND_SUPPORTS_RASTER)
+if (context_major != 0 && context_minor != 0) {
+#endif
 	TOGO_ASSERT(
 		(context_major >= 3 && context_minor >= 3),
 		"OpenGL context version below 3.3 is not supported"
 	);
-#else
-	TOGO_ASSERT(
-		context_major == 0 && context_minor == 0,
-		"cannot request OpenGL context with raster backend"
-	);
+#if defined(TOGO_WINDOW_BACKEND_SUPPORTS_RASTER)
+}
 #endif
 
 	_globals.context_major = context_major;
@@ -73,7 +66,7 @@ void window::init(
 void window::shutdown() {
 	TOGO_ASSERT(_globals.initialized, "window backend has not been initialized");
 
-	shutdown_impl();
+	window::shutdown_impl();
 	_globals.context_major = 0;
 	_globals.context_minor = 0;
 	_globals.initialized = false;
@@ -100,24 +93,26 @@ unsigned window::height(Window const* window) {
 	return window->_size.y;
 }
 
-#if defined(TOGO_WINDOW_BACKEND_USES_OPENGL)
+#if !defined(TOGO_WINDOW_BACKEND_SUPPORTS_RASTER)
 Window* window::create_raster(
 	StringRef /*title*/,
 	UVec2 /*size*/,
 	WindowFlags /*flags*/,
 	Allocator& /*allocator*/
 ) {
-	TOGO_ASSERT(false, "raster window not supported in the lib/window backend");
+	TOGO_ASSERT(false, "raster windows are not supported by the lib/window backend");
 }
 
 Pixmap& window::backbuffer(Window* /*window*/) {
-	TOGO_ASSERT(false, "raster window not supported in the lib/window backend");
+	TOGO_ASSERT(false, "raster windows are not supported by the lib/window backend");
 }
 
 void window::push_backbuffer(Window* /*window*/, ArrayRef<UVec4 const> /*areas*/) {
-	TOGO_ASSERT(false, "raster window not supported in the lib/window backend");
+	TOGO_ASSERT(false, "raster windows are not supported by the lib/window backend");
 }
-#else
+#endif
+
+#if !defined(TOGO_WINDOW_BACKEND_SUPPORTS_OPENGL)
 Window* window::create_opengl(
 	StringRef /*title*/,
 	UVec2 /*size*/,
@@ -126,23 +121,23 @@ Window* window::create_opengl(
 	Window* /*share_with*/,
 	Allocator& /*allocator*/
 ) {
-	TOGO_ASSERT(false, "OpenGL window not supported in the lib/window backend");
+	TOGO_ASSERT(false, "OpenGL windows are not supported by the lib/window backend");
 }
 
 void window::set_swap_mode(Window* /*window*/, WindowSwapMode /*mode*/) {
-	TOGO_ASSERT(false, "OpenGL window not supported in the lib/window backend");
+	TOGO_ASSERT(false, "OpenGL windows are not supported by the lib/window backend");
 }
 
 void window::bind_context(Window* /*window*/) {
-	TOGO_ASSERT(false, "OpenGL window not supported in the lib/window backend");
+	TOGO_ASSERT(false, "OpenGL windows are not supported by the lib/window backend");
 }
 
 void window::unbind_context() {
-	TOGO_ASSERT(false, "OpenGL window not supported in the lib/window backend");
+	TOGO_ASSERT(false, "OpenGL windows are not supported by the lib/window backend");
 }
 
 void window::swap_buffers(Window* /*window*/) {
-	TOGO_ASSERT(false, "OpenGL window not supported in the lib/window backend");
+	TOGO_ASSERT(false, "OpenGL windows are not supported by the lib/window backend");
 }
 #endif
 

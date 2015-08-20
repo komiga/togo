@@ -30,25 +30,20 @@ namespace togo {
 /// GLFW window backend.
 #define TOGO_WINDOW_BACKEND_GLFW 2
 
-/// System-dependent window backend for raster graphics.
-///
-/// Uses the following by OS:
-///
-/// - Linux: XCB
-#define TOGO_WINDOW_BACKEND_RASTER 3
-
 #if defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
 	/// Set the window backend.
 	///
 	/// Options:
 	///
-	/// - #TOGO_WINDOW_BACKEND_SDL (OpenGL)
+	/// - #TOGO_WINDOW_BACKEND_SDL (OpenGL, raster)
 	/// - #TOGO_WINDOW_BACKEND_GLFW (OpenGL)
-	/// - #TOGO_WINDOW_BACKEND_RASTER
 	#define TOGO_CONFIG_WINDOW_BACKEND
 
-	/// Whether OpenGL is supported by the backend.
-	#define TOGO_WINDOW_BACKEND_USES_OPENGL
+	/// Defined if OpenGL windows are supported by the backend.
+	#define TOGO_WINDOW_BACKEND_SUPPORTS_OPENGL
+
+	/// Defined if raster windows are supported by the backend.
+	#define TOGO_WINDOW_BACKEND_SUPPORTS_RASTER
 #else
 	#if !defined(TOGO_CONFIG_WINDOW_BACKEND)
 		#error "window backend has not been selected"
@@ -56,9 +51,10 @@ namespace togo {
 
 	#if (TOGO_CONFIG_WINDOW_BACKEND == TOGO_WINDOW_BACKEND_SDL) || \
 		(TOGO_CONFIG_WINDOW_BACKEND == TOGO_WINDOW_BACKEND_GLFW)
-		#define TOGO_WINDOW_BACKEND_USES_OPENGL
-	#elif (TOGO_CONFIG_WINDOW_BACKEND != TOGO_WINDOW_BACKEND_RASTER)
-		#error "TOGO_CONFIG_WINDOW_BACKEND has an invalid value"
+		#define TOGO_WINDOW_BACKEND_SUPPORTS_OPENGL
+	#endif
+	#if (TOGO_CONFIG_WINDOW_BACKEND == TOGO_WINDOW_BACKEND_SDL)
+		#define TOGO_WINDOW_BACKEND_SUPPORTS_RASTER
 	#endif
 #endif // defined(DOXYGEN_CONSISTS_SOLELY_OF_UNICORNS_AND_CONFETTI)
 

@@ -13,7 +13,7 @@
 #include <togo/window/window/types.hpp>
 #include <togo/window/input/types.hpp>
 
-#if defined(TOGO_WINDOW_BACKEND_USES_OPENGL)
+#if defined(TOGO_WINDOW_BACKEND_SUPPORTS_OPENGL)
 	#include <togo/window/window/impl/opengl.hpp>
 #endif
 
@@ -21,12 +21,6 @@
 	#include <togo/window/window/impl/sdl.hpp>
 #elif (TOGO_CONFIG_WINDOW_BACKEND == TOGO_WINDOW_BACKEND_GLFW)
 	#include <togo/window/window/impl/glfw.hpp>
-#elif (TOGO_CONFIG_WINDOW_BACKEND == TOGO_WINDOW_BACKEND_RASTER)
-	#if defined(TOGO_PLATFORM_LINUX)
-		#include <togo/window/window/impl/raster_xcb.hpp>
-	#else
-		#error "raster window backend not supported on this platform"
-	#endif
 #endif
 
 namespace togo {

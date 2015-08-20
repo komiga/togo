@@ -66,7 +66,7 @@ void set_title(Window* window, StringRef title);
 /// window.
 void set_mouse_lock(Window* window, bool enable);
 
-/// Get raster window backbuffer.
+/// Raster window backbuffer.
 Pixmap& backbuffer(Window* window);
 
 /// Push areas of the backbuffer to the window.
