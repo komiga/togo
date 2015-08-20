@@ -205,6 +205,13 @@ bool input_buffer::poll(
 				event->window_resize.new_size.height
 			);
 			break;
+		case InputEventType::window_backbuffer_dirtied:
+			TOGO_TEST_LOGF(
+				"input event: %p => "
+				"window_backbuffer_dirtied\n",
+				event->window
+			);
+			break;
 		}
 	#endif
 	switch (type) {

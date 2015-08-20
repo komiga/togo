@@ -31,6 +31,7 @@ enum class InputEventType : unsigned {
 	window_focus,
 	window_close_request,
 	window_resize,
+	window_backbuffer_dirtied,
 };
 
 enum : unsigned {
@@ -248,6 +249,11 @@ struct WindowResizeEvent {
 	UVec2 new_size;
 };
 
+/// Raster window backbuffer dirtied event.
+struct WindowBackbufferDirtiedEvent {
+	Window* window;
+};
+
 /// Input event union.
 ///
 /// @warning Members should only be accessed by the reported event
@@ -261,6 +267,7 @@ union InputEvent {
 	WindowFocusEvent const window_focus;
 	WindowCloseRequestEvent const window_close_request;
 	WindowResizeEvent const window_resize;
+	WindowBackbufferDirtiedEvent const window_backbuffer_dirtied;
 };
 
 /** @} */ // end of doc-group lib_window_input

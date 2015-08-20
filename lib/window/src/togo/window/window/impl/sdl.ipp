@@ -549,6 +549,13 @@ void window::process_events(InputBuffer& ib) {
 			break;
 		}
 		switch (event.window.event) {
+		case SDL_WINDOWEVENT_EXPOSED:
+			object_buffer::write(
+				window->_input_buffer->_buffer,
+				InputEventType::window_backbuffer_dirtied,
+				WindowBackbufferDirtiedEvent{window}
+			);
+			break;
 		case SDL_WINDOWEVENT_RESIZED:
 			update_backbuffer_pixmap(window);
 			if (
