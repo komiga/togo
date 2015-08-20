@@ -69,6 +69,9 @@ void set_mouse_lock(Window* window, bool enable);
 /// Raster window backbuffer.
 Pixmap& backbuffer(Window* window);
 
+/// Push the entire backbuffer to the window.
+void push_backbuffer(Window* window);
+
 /// Push areas of the backbuffer to the window.
 void push_backbuffer(Window* window, ArrayRef<UVec4 const> areas);
 
