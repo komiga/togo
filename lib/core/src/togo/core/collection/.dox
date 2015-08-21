@@ -5,6 +5,12 @@
 @ingroup lib_core
 @details
 
+Array is currently the only collection that supports the
+enable_collection_construction_and_destruction trait. Others will incur a copy
+at best, and fail compilation at worst (due to missing ctors or assignment
+operators). Other dynamic collections use Array underneath, so any operations
+directly using Array will use the appropriate state management.
+
 @warning None of these types are thread-safe.
 
 */

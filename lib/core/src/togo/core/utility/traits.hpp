@@ -287,6 +287,10 @@ struct enable_enum_bitwise_ops : false_type {};
 template<class>
 struct allow_collection_value_type : false_type {};
 
+/// Enables constructions and destruction of elements in a dynamic collection.
+template<class>
+struct enable_collection_construction_and_destruction : false_type {};
+
 /** @} */ // end of doc-group lib_core_utility
 
 } // namespace togo

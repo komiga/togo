@@ -20,6 +20,7 @@
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/collection/types.hpp>
+#include <togo/core/collection/npod.hpp>
 
 #include <cstring>
 
@@ -33,6 +34,7 @@ namespace array {
 
 template<class T>
 inline Array<T>::~Array() {
+	collection_npod_destruct(_data, _data + _size);
 	_allocator->deallocate(_data);
 }
 
@@ -64,6 +66,7 @@ inline Array<T>::Array(Array<T>&& other)
 /// Move assignment operator.
 template<class T>
 inline Array<T>& Array<T>::operator=(Array<T>&& other) {
+	collection_npod_destruct(_data, _data + _size);
 	_allocator->deallocate(_data);
 	_size = other._size;
 	_capacity = other._capacity;
@@ -181,6 +184,7 @@ void set_capacity(Array<T>& a, u32_fast const new_capacity) {
 
 	// Effectively a resize
 	if (new_capacity < a._size) {
+		collection_npod_destruct(a._data + new_capacity, a._data + a._size);
 		a._size = new_capacity;
 	}
 
@@ -227,6 +231,11 @@ inline void resize(Array<T>& a, u32_fast const new_size) {
 	if (new_size > a._capacity) {
 		grow(a, new_size);
 	}
+	if (new_size > a._size) {
+		collection_npod_construct(a._data + a._size, a._data + new_size);
+	} else if (new_size < a._size) {
+		collection_npod_destruct(a._data + new_size, a._data + a._size);
+	}
 	a._size = new_size;
 }
 
@@ -264,6 +273,7 @@ template<class T>
 inline void pop_back(Array<T>& a) {
 	TOGO_DEBUG_ASSERTE(any(a));
 	--a._size;
+	collection_npod_destruct(a._data + a._size, a._data + a._size + 1);
 }
 
 /// Remove an item by index.
@@ -274,6 +284,7 @@ inline void remove(Array<T>& a, unsigned const i) {
 	TOGO_DEBUG_ASSERTE(any(a));
 	TOGO_DEBUG_ASSERTE(i < a._size);
 	--a._size;
+	collection_npod_destruct(a._data + i, a._data + i + 1);
 	if (i < a._size) {
 		std::memmove(
 			a._data + i, a._data + i + 1,
@@ -302,9 +313,7 @@ inline void remove_over(Array<T>& a, unsigned const i) {
 	TOGO_DEBUG_ASSERTE(any(a));
 	TOGO_DEBUG_ASSERTE(i < a._size);
 	--a._size;
-	if (i < a._size) {
-		a._data[i] = a._data[a._size];
-	}
+	collection_npod_remove_over(a._data, a._size, i);
 }
 
 /// Remove-overwrite an item by address.
@@ -326,10 +335,11 @@ template<class T>
 inline void copy(Array<T>& dst, Array<T> const& src) {
 	// If resize would incur memcpy(), prevent it
 	if (src._size > dst._capacity) {
-		dst._allocator->deallocate(dst._data);
+		set_capacity(dst, 0);
 	}
-	resize(dst, src._size);
-	std::memcpy(dst._data, src._data, src._size * sizeof(T));
+	reserve(dst, src._size);
+	collection_npod_copy(dst._data, dst._size, src._data, src._size);
+	dst._size = src._size;
 }
 
 /** @} */ // end of doc-group lib_core_array

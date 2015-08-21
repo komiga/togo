@@ -74,6 +74,9 @@ using array::Array;
 namespace fixed_array {
 
 /// Fixed-capacity array of POD objects.
+///
+/// @note This collection is not dynamic and is this not affected by
+/// the enable_collection_construction_and_destruction trait.
 template<class T, unsigned N>
 struct FixedArray {
 	TOGO_CONSTRAIN_POD_COLLECTION(T);
