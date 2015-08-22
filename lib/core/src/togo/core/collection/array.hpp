@@ -268,6 +268,16 @@ inline T& push_back(Array<T>& a, T const& item) {
 	return a._data[a._size++] = item;
 }
 
+/// Add an item to the end (in-place construction). The array will grow if needed.
+template<class T, class... P>
+inline T& push_back_inplace(Array<T>& a, P&&... init) {
+	if (!space(a)) {
+		grow(a);
+	}
+	new(a._data + a._size++) T(forward<P>(init)...);
+	return back(a);
+}
+
 /// Remove the last item.
 template<class T>
 inline void pop_back(Array<T>& a) {
