@@ -91,9 +91,7 @@ WorldID world_manager::create(WorldManager& wm) {
 		queue::pop_front(wm._free_indices);
 	} else {
 		index = array::size(wm._instances);
-		array::increase_size(wm._instances, 1);
-		auto& instance = array::back(wm._instances);
-		new(&instance) WorldInstance(*wm._instances._allocator);
+		auto& instance = array::push_back_inplace(wm._instances, *wm._instances._allocator);
 		hash_map::reserve(
 			instance.component_managers,
 			hash_map::size(wm._component_manager_defs)
