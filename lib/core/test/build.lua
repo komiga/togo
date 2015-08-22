@@ -13,6 +13,7 @@ togo.make_tests("collection", {
 	["array"] = {nil, configs},
 	["fixed_array"] = {nil, configs},
 	["hash_map"] = {nil, configs},
+	["npod"] = {nil, configs},
 	["priority_queue"] = {nil, configs},
 	["queue"] = {nil, configs},
 })
