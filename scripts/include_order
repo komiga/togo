@@ -1,0 +1,68 @@
+
+local function find_name(name, children)
+	for _, node in pairs(children) do
+		if node.name == name then
+			return true
+		end
+	end
+	return false
+end
+
+return function(config)
+	M = function(name, children)
+		children = children or {}
+		table.insert(children, 1, N("types"))
+		if not find_name(name, children) then
+			table.insert(children, 2, N(name))
+		end
+		return N(name, children)
+	end
+	I = function(name, children)
+		children = children or {}
+		table.insert(children, 1, N("types"))
+		table.insert(children, 2, N("private"))
+		return N(name, children)
+	end
+
+	local nodes = {}
+	local function do_group(root, prefix, name)
+		local dir = string.format("%s/%s", root, name)
+		local children = dofile(dir .. "/include_order") or {}
+		table.insert(children, 1, N("config"))
+		table.insert(children, 2, N("types"))
+		table.insert(nodes, N(prefix .. name, children))
+		if config then
+			table.insert(config.paths, dir .. "/src")
+			if root == "lib" then
+				table.insert(config.paths, dir .. "/test")
+			end
+		end
+	end
+
+	for _, name in pairs(togo_libraries()) do
+		do_group("lib", "", name)
+	end
+	for _, name in pairs(togo_tools()) do
+		do_group("tool", "tool_", name)
+	end
+	M, I = nil, nil
+
+	return R(
+		"togo", nodes,
+		-- extension order
+		{"hpp", "ipp", "gen_interface"},
+		-- path values
+		{},
+		-- value filter
+		function(_, path, extension, value)
+			if string.match(path, "^togo/[^/]+/config$") then
+				value.path = 1
+			elseif string.match(path, "^togo/[^/]+/types$") then
+				value.path = 2
+			elseif extension == "gen_interface" then
+				-- Force to the bottom of the include block
+				value.path = -1
+			end
+		end
+	)
+end
