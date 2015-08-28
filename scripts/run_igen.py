@@ -4,200 +4,20 @@ print("run_igen")
 
 import os
 import sys
-import time
-import re
-import hashlib
-import json
-from mako.template import Template
 
 IGEN_ROOT = os.environ["IGEN_ROOT"]
 assert IGEN_ROOT, "IGEN_ROOT not set"
 
 sys.path.append(os.path.join(IGEN_ROOT, "src"))
 
-from igen.include import *
-from igen import igen
-from igen.util import *
+from igen import interface
 
-os.stat_float_times(False)
-cindex.Config.set_library_path(IGEN_ROOT)
+interface.configure(IGEN_ROOT, "togo", "tmp", "scripts/igen_interface.template")
 
-G.F_TEMPLATE = "scripts/igen_interface.template"
-G.F_CACHE = "tmp/igen_cache"
-G.F_USERS = "tmp/igen_users"
+c = interface.Collector()
+c.add_groups("lib", "")
+c.add_groups("tool", "tool_")
+c.collect()
+c.write()
 
-G.PASS_ANNOTATIONS = [
-	"igen_interface",
-	"igen_private",
-]
-
-arg_sep_index = sys.argv.index("--")
-argv = sys.argv[1:arg_sep_index]
-argv_rest = sys.argv[arg_sep_index + 1:]
-
-def opt(name):
-	return (
-		os.environ.get(name.upper(), False) or
-		("--" + name) in argv
-	)
-
-G.debug = opt("debug") != False
-G.do_force = opt("force") != False
-G.do_check = opt("check") != False or G.do_force
-G.template = Template(filename = G.F_TEMPLATE)
-G.cache = {}
-
-if os.path.isfile(G.F_CACHE):
-	with open(G.F_CACHE, "r") as f:
-		G.cache = json.load(f)
-
-flag_exclusions = {
-	"-MMD",
-	"-MP",
-}
-G.clang_args = [
-	"-fsyntax-only",
-	"-DIGEN_RUNNING",
-] + [a for a in argv_rest if a not in flag_exclusions]
-
-#if G.debug:
-#	print("clang_args: %r" % G.clang_args)
-
-def mtime(path):
-	if os.path.exists(path):
-		stat = os.stat(path)
-		return stat.st_mtime
-	return 0
-
-class Source:
-	def __init__(self, spec):
-		self.path = spec["path"]
-		self.included = spec["included"]
-		assert os.path.exists(self.path), "source does not exist: %s" % (self.path)
-		self.time = mtime(self.path)
-
-class Interface:
-	def __init__(self, spec):
-		self.path = spec["path"]
-		self.sources = [
-			Source(source_spec) for source_spec in spec["sources"]
-		]
-		self.gen_path = spec["gen_path"]
-		self.doc_group = spec["doc_group"]
-		self.doc_path = os.path.join(
-			"doc/gen_interface",
-			re.sub(r'(.+)/src/togo/(.+)\..+$', r'\1_\2.dox', self.path).replace("/", "_")
-		)
-
-		self.group = None
-		self.data = None
-		self.data_hash = None
-
-		assert len(self.sources) > 0, "no sources for %s" % (self.gen_path)
-
-		cache = G.cache.get(self.gen_path, {})
-		self.check_time = cache.get("check_time", 0)
-		self.path_time = mtime(self.path)
-
-		self.needs_check = (
-			G.do_check or
-			self.check_time < self.path_time or
-			True in (self.check_time < source.time for source in self.sources)
-		)
-
-		gen_exists = os.path.isfile(self.gen_path)
-		self.gen_hash = None
-		if self.needs_check and gen_exists:
-			with open(self.gen_path, "r") as f:
-				self.gen_hash = hashlib.md5(f.read()).digest()
-		elif not gen_exists:
-			# Make sure the file exists, since we're parsing the hierarchy
-			# that #includes it. Due to -fsyntax-only this doesn't cause
-			# issues, but it's better to be on the safe side.
-			with open(self.gen_path, "w") as f:
-				pass
-
-	def link_doc(self):
-		if not os.path.exists("doc/gen_interface"):
-			os.mkdir("doc/gen_interface")
-		if os.path.exists(self.doc_path):
-			os.remove(self.doc_path)
-		os.symlink(os.path.join("../..", self.gen_path), self.doc_path)
-
-	def load(self):
-		def pre_filter(cursor):
-			path = cursor.location.file.name
-			#path = re.sub(
-			#	r'^tmp/include/togo/([^/]+)/(.+)$',
-			#	r'lib/\1/src/\2',
-			#	cursor.location.file.name
-			#)
-			return (
-				True in (s.path == path for s in self.sources) and (
-					cursor.raw_comment != None or
-					has_annotation(cursor, G.PASS_ANNOTATIONS)
-				)
-			)
-		def post_filter(function):
-			# function.xqn == self.namespace or
-			function.annotations = get_annotations(function.cursor)
-			function.anno_private = "igen_private" in function.annotations
-			return True
-
-		self.group = igen.Group(None)
-		for source in self.sources:
-			if source.included:
-				# Skip sources that are included by the interface
-				continue
-			funcs = igen.parse_and_collect(source.path, G.clang_args, pre_filter, post_filter)
-			self.group.add_funcs(funcs)
-
-		self.data = G.template.render_unicode(
-			group = self.group,
-			interface = self,
-		).encode("utf-8", "replace")
-		self.data_hash = not G.do_force and hashlib.md5(self.data).digest() or None
-		self.needs_build = G.do_force or self.data_hash != self.gen_hash
-		self.check_time = int(time.mktime(time.localtime()))
-
-	def write(self):
-		with open(self.gen_path, "w") as f:
-			f.write(self.data)
-
-	def set_cache(self):
-		G.cache[self.gen_path] = {
-			"check_time" : self.check_time,
-		}
-
-G.interfaces = {}
-with open(G.F_USERS, "r") as f:
-	users = json.load(f)["users"]
-	for spec in users:
-		i = Interface(spec)
-		G.interfaces[i.gen_path] = i
-
-for i in G.interfaces.values():
-	if not i.needs_check:
-		continue
-
-	print("\ncheck: %s" % (i.gen_path))
-	for source in i.sources:
-		print("  from %s%s" % (source.path, source.included and " (included)" or ""))
-	i.load()
-	if G.debug and len(i.group.funcs) > 0:
-		print("")
-		for f in i.group.funcs:
-			print("  %s" % f.signature_fqn())
-
-	if not i.needs_build:
-		continue
-	print("writing")
-	i.write()
-	i.link_doc()
-
-G.cache = {}
-for i in G.interfaces.values():
-	i.set_cache()
-
-with open(G.F_CACHE, "w") as f:
-	json.dump(G.cache, f)
+interface.build(sys.argv)

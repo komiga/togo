@@ -1,7 +1,0 @@
-#!/bin/bash
-
-echo "collect_igen_users"
-
-ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-
-lua5.2 "$ROOT/collect_igen_users.lua"

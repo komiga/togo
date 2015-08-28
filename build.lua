@@ -314,7 +314,6 @@ precore.make_config_scoped("togo.projects", {
 	configuration {"gmake"}
 		prebuildcommands {
 			"$(SILENT) mkdir -p ./tmp",
-			"$(SILENT) ./scripts/collect_igen_users",
 			"$(SILENT) ./scripts/run_igen.py -- $(ALL_CXXFLAGS)",
 			"$(SILENT) exit 0",
 		}
