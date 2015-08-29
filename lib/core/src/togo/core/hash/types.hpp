@@ -75,7 +75,7 @@ TOGO_CONSTRAIN_SAME(hash64, am::detail::hash::fnv_hash_type<hash::LENGTH64>);
 	@{
 */
 
-/// H-bit hash combiner.
+/// Generic hash combiner.
 template<class H>
 struct HashCombiner {
 	static_assert(
