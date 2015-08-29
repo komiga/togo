@@ -36,7 +36,7 @@ bool string::compare_equal(StringRef const& lhs, StringRef const& rhs) {
 /// The capacity of dst must be at least src.size + 1.
 void string::copy(char* const dst, unsigned const capacity, StringRef const& src) {
 	TOGO_ASSERT(capacity > src.size, "dst not large enough to store src + NUL");
-	if (!src.empty()) {
+	if (src.any()) {
 		std::memcpy(dst, src.data, src.size);
 	}
 	dst[src.size] = '\0';
