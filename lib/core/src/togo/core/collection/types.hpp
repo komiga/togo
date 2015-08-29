@@ -36,8 +36,6 @@ namespace array {
 /// Dynamic array of POD objects.
 template<class T>
 struct Array {
-	TOGO_CONSTRAIN_POD_COLLECTION(T);
-
 	u32_fast _size;
 	u32_fast _capacity;
 	T* _data;
@@ -118,8 +116,6 @@ namespace queue {
 /// Dynamic double-ended queue of POD objects.
 template<class T>
 struct Queue {
-	TOGO_CONSTRAIN_POD_COLLECTION(T);
-
 	Array<T> _data;
 	u32_fast _head;
 	u32_fast _size;
@@ -155,8 +151,6 @@ namespace priority_queue {
 /// Priority queue of POD objects.
 template<class T>
 struct PriorityQueue {
-	TOGO_CONSTRAIN_POD_COLLECTION(T);
-
 	/// Less-than comparison function type.
 	using less_func_type = bool (
 		T const& x,
@@ -207,7 +201,6 @@ struct HashMapNode {
 /// Hash map of POD objects.
 template<class K, class T>
 struct HashMap {
-	TOGO_CONSTRAIN_POD_COLLECTION(T);
 	#if defined(TOGO_USE_CONSTRAINTS)
 		static_assert(
 			is_same<K, hash32>::value ||

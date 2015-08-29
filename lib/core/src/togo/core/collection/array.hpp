@@ -48,7 +48,9 @@ inline Array<T>::Array(Allocator& allocator)
 	, _capacity(0)
 	, _data(nullptr)
 	, _allocator(&allocator)
-{}
+{
+	TOGO_CONSTRAIN_POD_COLLECTION(T);
+}
 
 /// Move constructor.
 template<class T>
@@ -58,6 +60,7 @@ inline Array<T>::Array(Array<T>&& other)
 	, _data(other._data)
 	, _allocator(other._allocator)
 {
+	TOGO_CONSTRAIN_POD_COLLECTION(T);
 	other._size = 0;
 	other._capacity = 0;
 	other._data = nullptr;
