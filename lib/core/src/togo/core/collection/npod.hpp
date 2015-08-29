@@ -60,7 +60,7 @@ struct collection_npod_impl<T, true> {
 		}
 		T* end = dst + dst_size;
 		for (; dst < end; ++dst, ++src) {
-			(*dst) = *src;
+			*dst = *src;
 		}
 		end += src_size - dst_size;
 		for (; dst < end; ++dst, ++src) {
