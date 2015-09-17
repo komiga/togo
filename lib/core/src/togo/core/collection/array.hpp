@@ -337,7 +337,7 @@ inline void remove_over(Array<T>& a, T const* const ptr) {
 	TOGO_ASSERTE(ptr != nullptr);
 	TOGO_DEBUG_ASSERTE(any(a));
 	TOGO_DEBUG_ASSERTE(array::begin(a) <= ptr && ptr < array::end(a));
-	remove_over(a, (ptr - a._data) / sizeof(T));
+	remove_over(a, ptr - a._data);
 }
 
 /// Copy array.
