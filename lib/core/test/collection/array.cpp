@@ -99,7 +99,7 @@ signed main() {
 	array::remove(a, 0);
 	TOGO_ASSERTE(array::empty(a));
 
-	// Remove-overwrite
+	// Remove-overwrite by index
 	count = 4;
 	while (count--) {
 		array::push_back(a, 3 - count);
@@ -117,6 +117,26 @@ signed main() {
 	TOGO_ASSERTE(a[0] == 1);
 
 	array::remove_over(a, 0);
+	TOGO_ASSERTE(array::empty(a));
+
+	// Remove-overwrite by pointer
+	count = 4;
+	while (count--) {
+		array::push_back(a, 3 - count);
+	}
+	array::remove_over(a, end(a) - 3);
+	TOGO_ASSERTE(a[0] == 0);
+	TOGO_ASSERTE(a[1] == 3);
+	TOGO_ASSERTE(a[2] == 2);
+
+	array::remove_over(a, end(a) - 1);
+	TOGO_ASSERTE(a[0] == 0);
+	TOGO_ASSERTE(a[1] == 3);
+
+	array::remove_over(a, begin(a));
+	TOGO_ASSERTE(a[0] == 3);
+
+	array::remove_over(a, begin(a));
 	TOGO_ASSERTE(array::empty(a));
 
 	return 0;
