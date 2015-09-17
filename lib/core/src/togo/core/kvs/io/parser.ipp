@@ -113,7 +113,7 @@ struct parse_f64_adaptor<false> {
 };
 
 inline static f64 parse_f64(char const* const cstr) {
-	return parse_f64_adaptor<sizeof(double) >= sizeof(f64)>::parse(cstr);
+	return parse_f64_adaptor<sizeof(double) == sizeof(f64)>::parse(cstr);
 }
 
 static bool parser_error(
