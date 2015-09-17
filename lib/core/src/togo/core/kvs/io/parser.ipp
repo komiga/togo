@@ -143,9 +143,6 @@ static bool parser_error(
 #define PARSER_ERROR_UNEXPECTED(p, what) \
 	PARSER_ERRORF(p, "unexpected %s: '%c'", what, p.c)
 
-#define PARSER_ERROR_STREAM(p, what) \
-	PARSER_ERRORF(p, "%s: stream read failure", what)
-
 inline static bool parser_is_identifier_lead(Parser const& p) {
 	return
 		(p.c >= 'a' && p.c <= 'z') ||
@@ -295,7 +292,7 @@ static bool parser_next(Parser& p) {
 	if (status.eof()) {
 		p.c = PC_EOF;
 	} else if (status.fail()) {
-		return false;
+		return PARSER_ERROR(p, "stream read failure");
 	}
 	if (p.c == '\n') {
 		++p.line;
@@ -325,7 +322,7 @@ static bool parser_skip_comment(Parser& p) {
 				return true;
 			}
 		}
-		return PARSER_ERROR_STREAM(p, "in comment");
+		return false;
 	} else if (p.c == '*') {
 		bool tail = false;
 		while (parser_next(p)) {
@@ -333,16 +330,20 @@ static bool parser_skip_comment(Parser& p) {
 			case PC_EOF:
 				return PARSER_ERROR(p, "expected end of block comment, got EOF");
 
-			case '*': tail = true; break;
+			case '*':
+				tail = true;
+				break;
+
 			case '/':
 				if (tail) {
 					return true;
 				}
+				break;
 
 			default: tail = false; break;
 			}
 		}
-		return PARSER_ERROR_STREAM(p, "in comment block");
+		return false;
 	} else if (p.c == PC_EOF) {
 		return PARSER_ERROR(p, "expected '/' or '*' to continue comment lead, got EOF");
 	} else {
@@ -421,7 +422,7 @@ static bool parser_read_number(Parser& p) {
 		}
 		parser_buffer_add(p);
 	} while (parser_next(p));
-	return PARSER_ERROR_STREAM(p, "in number");
+	return false;
 
 l_assign_value:
 	p.flags |= PF_CARRY;
@@ -463,7 +464,7 @@ static bool parser_read_string(Parser& p) {
 		}
 		parser_buffer_add(p);
 	} while (parser_next(p));
-	return PARSER_ERROR_STREAM(p, "in unquoted string");
+	return false;
 
 l_assign_value:
 	p.flags |= PF_CARRY;
@@ -507,7 +508,7 @@ static bool parser_read_string_quote(Parser& p) {
 		}
 		parser_buffer_add(p);
 	}
-	return PARSER_ERROR_STREAM(p, "in double-quote bounded string");
+	return false;
 }
 
 static bool parser_read_string_block(Parser& p) {
@@ -536,7 +537,7 @@ static bool parser_read_string_block(Parser& p) {
 		}
 		parser_buffer_add(p);
 	}
-	return PARSER_ERROR_STREAM(p, "in block-quote bounded string");
+	return false;
 }
 
 static bool parser_read_vector_whole(Parser& p) {
@@ -583,7 +584,7 @@ static bool parser_read_vector_whole(Parser& p) {
 			break;
 		}
 	}
-	return PARSER_ERROR_STREAM(p, "in vector");
+	return false;
 }
 
 static void parser_stage_name(Parser& p) {
