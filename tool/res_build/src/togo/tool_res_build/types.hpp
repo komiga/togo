@@ -177,7 +177,7 @@ struct GfxCompiler {
 	@{
 */
 
-// Tooling interface.
+/// Tooling interface.
 struct Interface {
 	CompilerManager _manager;
 	GfxCompiler _gfx_compiler;
