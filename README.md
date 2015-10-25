@@ -40,17 +40,11 @@ Windowing library.
 
 Dependencies:
 
-1. Backend (one of):
-  1. OpenGL:
-    1. [SDL](http://libsdl.org/download-2.0.php) >= **2.0.3**
-    2. [GLFW](http://www.glfw.org/download.html) >= **3.0.4**
-  2. Raster:
-    1. XCB (Linux):
-      1. [xcb](http://xcb.freedesktop.org) >= **1.11**
-      2. [xcb-wm-util](http://cgit.freedesktop.org/xcb/util-wm/tree/) (HEAD)
-2. With OpenGL backend:
-  1. [GLEW](http://glew.sourceforge.net/index.html) >= **1.11.0**
-3. With raster backend:
+1. [GLEW](http://glew.sourceforge.net/index.html) >= **1.13.0**
+2. Backend (one of):
+  1. [SDL](http://libsdl.org/download-2.0.php) >= **2.0.3** (*OpenGL, raster*)
+  2. [GLFW](http://www.glfw.org/download.html) >= **3.0.4** (*OpenGL*)
+3. With raster backends:
   1. `lib/image`
 
 ### Library: game

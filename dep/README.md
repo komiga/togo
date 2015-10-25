@@ -6,22 +6,17 @@ proper directories).
 
 ### lib/core
 
-* [All the Maths‽](https://github.com/komiga/am) (HEAD) into `am/`:
+1. [All the Maths‽](https://github.com/komiga/am) (HEAD) into `am/`:
 
   `git clone git://github.com/komiga/am.git am/`
 
 ### lib/window
 
-* Backend (one of):
-
-  1. OpenGL:
-    1. [SDL](http://libsdl.org/download-2.0.php) >= **2.0.3** into `sdl/`
-    2. [GLFW](http://www.glfw.org/download.html) >= **3.0.4** into `glfw/`
-  2. Raster:
-    1. XCB (Linux):
-      1. [xcb](http://xcb.freedesktop.org) >= **1.11** into `xcb/`
-      2. [xcb-wm-util](http://cgit.freedesktop.org/xcb/util-wm/tree/) (HEAD) into `xcb-util-wm/`
+1. [GLEW](http://glew.sourceforge.net/index.html) >= **1.13.0** into `glew/`
+2. Backend (one of):
+  1. [SDL](http://libsdl.org/download-2.0.php) >= **2.0.3** into `sdl/`
+  2. [GLFW](http://www.glfw.org/download.html) >= **3.0.4** into `glfw/`
 
 ### lib/game
 
-* [GLEW](http://glew.sourceforge.net/index.html) >= **1.11.0** into `glew/`
+`lib/game` has no external dependencies.
