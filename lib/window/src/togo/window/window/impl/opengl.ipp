@@ -8,6 +8,7 @@
 #include <togo/window/config.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/log/log.hpp>
+#include <togo/core/string/string.hpp>
 #include <togo/window/window/impl/types.hpp>
 #include <togo/window/window/impl/opengl.hpp>
 
@@ -33,8 +34,14 @@ char const* gl_get_error() {
 	#undef TOGO_RETURN_ERROR
 }
 
+inline static void log_gl_string(StringRef name, GLenum id) {
+	auto value = reinterpret_cast<char const*>(glGetString(id));
+	TOGO_LOGF("%.*s = %s\n", name.size, name.data, value ? value : "(null)");
+}
+
 void glew_init() {
 	if (!_globals.glew_initialized) {
+		{
 		glewExperimental = GL_TRUE;
 		GLenum const err = glewInit();
 		TOGO_ASSERTF(
@@ -43,6 +50,30 @@ void glew_init() {
 			glewGetErrorString(err)
 		);
 		TOGO_GLCE();
+		}
+
+		#define LOG_GL_STRING(name) \
+			log_gl_string(#name, name)
+
+		LOG_GL_STRING(GL_VENDOR);
+		LOG_GL_STRING(GL_VERSION);
+		LOG_GL_STRING(GL_SHADING_LANGUAGE_VERSION);
+		LOG_GL_STRING(GL_RENDERER);
+
+		#undef LOG_GL_STRING
+
+		#if defined(TOGO_DEBUG)
+		{GLint num = 0;
+		TOGO_GLCE_X(glGetIntegerv(GL_NUM_EXTENSIONS, &num));
+		TOGO_LOGF("OpenGL extensions (%d):\n", num);
+		for (signed i = 0; i < num; ++i) {
+			auto value = glGetStringi(GL_EXTENSIONS, i);
+			if (value) {
+				TOGO_LOGF("    %s\n", value);
+			}
+		}}
+		#endif
+
 		_globals.glew_initialized = true;
 	}
 }
