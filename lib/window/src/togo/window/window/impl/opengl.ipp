@@ -55,6 +55,7 @@ void glew_init() {
 		#define LOG_GL_STRING(name) \
 			log_gl_string(#name, name)
 
+		TOGO_LOGF("GLEW_VERSION = %s\n", glewGetString(GLEW_VERSION));
 		LOG_GL_STRING(GL_VENDOR);
 		LOG_GL_STRING(GL_VERSION);
 		LOG_GL_STRING(GL_SHADING_LANGUAGE_VERSION);
