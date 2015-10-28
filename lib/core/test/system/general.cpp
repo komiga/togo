@@ -36,15 +36,15 @@ signed main() {
 
 	// Timers
 	TOGO_LOG("\n");
-	float const start = system::time_monotonic();
+	double const start = system::time_monotonic();
 	system::sleep_ms(1000u);
-	float const d_1000ms = system::time_monotonic() - start;
+	double const d_1000ms = system::time_monotonic() - start;
 	system::sleep_ms(100u);
-	float const d_100ms = system::time_monotonic() - start;
+	double const d_100ms = system::time_monotonic() - start;
 	system::sleep_ms(10u);
-	float const d_10ms = system::time_monotonic() - start;
+	double const d_10ms = system::time_monotonic() - start;
 	system::sleep_ms(1u);
-	float const d_1ms = system::time_monotonic() - start;
+	double const d_1ms = system::time_monotonic() - start;
 
 	TOGO_LOGF("start       : time_monotonic() = %.6f\n", start);
 	TOGO_LOGF("1000ms delay: time_monotonic() = %.6f\n", d_1000ms);

@@ -39,7 +39,7 @@ void sleep_ms(unsigned duration_ms);
 ///
 /// The return value should have a precision of milliseconds or
 /// better (typically nanoseconds).
-float time_monotonic();
+f64 time_monotonic();
 
 /// Get environment variable value.
 ///

@@ -50,7 +50,7 @@ void system::sleep_ms(unsigned duration_ms) {
 	timespec duration;
 	timespec remaining;
 	duration.tv_sec = duration_ms / 1000;
-	duration.tv_nsec = (duration_ms % 1000) * 1000000; // 10^6
+	duration.tv_nsec = (duration_ms % 1000) * 1e6;
 	signed err = 0;
 	do {
 		err = ::nanosleep(&duration, &remaining);
@@ -63,7 +63,7 @@ void system::sleep_ms(unsigned duration_ms) {
 	}
 }
 
-float system::time_monotonic() {
+f64 system::time_monotonic() {
 	timespec ts;
 	signed const err = ::clock_gettime(CLOCK_MONOTONIC, &ts);
 	TOGO_ASSERTF(
@@ -72,7 +72,7 @@ float system::time_monotonic() {
 		errno,
 		std::strerror(errno)
 	);
-	return static_cast<float>(ts.tv_sec) + static_cast<float>(ts.tv_nsec) / 1e9;
+	return static_cast<f64>(ts.tv_sec) + static_cast<f64>(ts.tv_nsec / 1e9);
 }
 
 StringRef system::environment_variable(StringRef const& name) {
