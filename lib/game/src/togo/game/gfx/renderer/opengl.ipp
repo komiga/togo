@@ -204,8 +204,8 @@ gfx::Renderer* renderer::create(
 	// Check extensions
 	for (auto const& extension : gl_extensions) {
 		TOGO_ASSERTF(
-			glewIsSupported(extension.name.data),
-			"OpenGL extension '%.*s' is required",
+			*extension.value,
+			"required OpenGL extension '%.*s' is not available",
 			extension.name.size, extension.name.data
 		);
 	}
