@@ -35,7 +35,7 @@ template<class Data>
 inline App<Data>::App(
 	ArrayRef<char const* const> args,
 	StringRef base_path,
-	float update_freq
+	f32 update_freq
 )
 	: AppBase(
 		reinterpret_cast<AppBase::destruct_func_type&>(AppModel<Data>::destruct),
@@ -80,7 +80,7 @@ inline AppBase& init(
 	Allocator& allocator,
 	ArrayRef<char const* const> args,
 	StringRef base_path,
-	float update_freq
+	f32 update_freq
 ) {
 	auto* const app = TOGO_CONSTRUCT(
 		allocator, App<Data>,

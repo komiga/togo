@@ -38,7 +38,7 @@ struct AppModel {
 
 	static void init(App<Data>& app);
 	static void shutdown(App<Data>& app);
-	static void update(App<Data>& app, float dt);
+	static void update(App<Data>& app, f32 dt);
 	static void render(App<Data>& app);
 };
 
@@ -47,7 +47,7 @@ struct AppBase {
 	using destruct_func_type = void (AppBase& app_base);
 	using init_func_type = void (AppBase& app_base);
 	using shutdown_func_type = void (AppBase& app_base);
-	using update_func_type = void (AppBase& app_base, float dt);
+	using update_func_type = void (AppBase& app_base, f32 dt);
 	using render_func_type = void (AppBase& app_base);
 
 	destruct_func_type& _func_destruct;
@@ -67,7 +67,7 @@ struct AppBase {
 	InputBuffer input_buffer;
 	gfx::Renderer* renderer;
 
-	float _update_freq;
+	f32 _update_freq;
 	bool _quit;
 
 	AppBase() = delete;
@@ -85,7 +85,7 @@ struct AppBase {
 		render_func_type& func_render,
 		ArrayRef<char const* const> args,
 		StringRef base_path,
-		float update_freq
+		f32 update_freq
 	);
 };
 
@@ -107,7 +107,7 @@ struct App
 	App(
 		ArrayRef<char const* const> args,
 		StringRef base_path,
-		float update_freq
+		f32 update_freq
 	);
 };
 

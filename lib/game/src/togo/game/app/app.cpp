@@ -42,7 +42,7 @@ AppBase::AppBase(
 	render_func_type& func_render,
 	ArrayRef<char const* const> args,
 	StringRef const base_path,
-	float update_freq
+	f32 update_freq
 )
 	: _func_destruct(func_destruct)
 	, _func_init(func_init)
@@ -149,7 +149,7 @@ void app::shutdown() {
 }
 
 IGEN_PRIVATE
-void app::update(AppBase& app, float dt) {
+void app::update(AppBase& app, f32 dt) {
 	InputEventType event_type{};
 	InputEvent const* event = nullptr;
 	input_buffer::update(app.input_buffer);
@@ -193,11 +193,11 @@ void app::render(AppBase& app) {
 /// This will run the main loop until a quit is signaled.
 void app::run() {
 	auto& app = app::instance();
-	float const update_freq = app._update_freq;
-	float time_prev = system::time_monotonic();
-	float time_next;
-	float time_delta;
-	float time_accum = update_freq;
+	f32 const update_freq = app._update_freq;
+	f64 time_prev = system::time_monotonic();
+	f64 time_next;
+	f32 time_delta;
+	f32 time_accum = update_freq;
 	bool do_render = false;
 	while (!app._quit) {
 		time_next = system::time_monotonic();
