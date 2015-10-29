@@ -35,9 +35,10 @@ Dependencies:
 
 Game engine.
 
-This library takes significant inspiration from [bitsquid](http://bitsquid.se),
-who have [written about](https://github.com/niklasfrykholm/blog) their design
-in great detail.
+This library takes significant inspiration from bitsquid
+(now [Stingray](http://stingrayengine.com/)), who have
+[written about](https://github.com/niklasfrykholm/blog) their design in great
+detail.
 
 Dependencies:
 
