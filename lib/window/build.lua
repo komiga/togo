@@ -12,7 +12,6 @@ precore.make_config("togo.lib.window.backend.opt", {
 		allowed = {
 			{"sdl", "SDL2 OpenGL backend (default)"},
 			{"glfw", "GLFW OpenGL backend"},
-			{"raster", "system-dependent raster backend (XCB on Linux, ...)"},
 		}
 	},
 	init_handler = function()
@@ -64,33 +63,6 @@ precore.make_config("togo.lib.window.backend.dep", nil, {
 				links {
 					":libglfw3.a",
 				}
-		end
-	elseif backend == "raster" then
-		configuration {"linux"}
-			defines {
-				"TOGO_CONFIG_WINDOW_BACKEND=TOGO_WINDOW_BACKEND_RASTER",
-			}
-			includedirs {
-				G"${DEP_PATH}/xcb-util-wm/include/",
-				G"${DEP_PATH}/xcb-util-keysyms/include/",
-				G"${DEP_PATH}/xcb/include/",
-			}
-		if not precore.env_project()["NO_LINK"] then
-			libdirs {
-				G"${DEP_PATH}/xcb-util-wm/lib/",
-				G"${DEP_PATH}/xcb-util-keysyms/lib/",
-				G"${DEP_PATH}/xcb/lib/",
-			}
-			links {
-				":libxcb-ewmh.a",
-				":libxcb-icccm.a",
-				":libxcb-keysyms.a",
-				":libxcb.a",
-
-				-- Dependencies
-				"Xau",
-				"Xdmcp",
-			}
 		end
 	end
 
