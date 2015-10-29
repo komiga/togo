@@ -1,24 +1,8 @@
 
 ## What be it?
 
-**togo** is a collection of libraries with data-oriented design at heart.
-
-## Core design
-
-togo is optimization-routed to an extent that is possibly harmful.
-Interfaces are kept separate from types to reduce compilation time, and most
-data structures are “open” in that they can be modified by anything. It aims
-to make friends with the cache through careful data design & utilization.
-
-togo uses the C++ stdlib only minimally. It supplies its own collections and
-allocators (in which the stdlib is… lacking) and most other constructs.
-If we can write it, we probably do, primarily because the implementation will
-then be license-free, consistent, easier to debug, and aligned with togo's
-design.
-
-Systems are decoupled for locality, flexibility in storage, and encapsulation.
-Systems are easier to understand and *much* easier to maintain when they are
-decoupled — i.e., when they have few explicit dependencies on other systems.
+**togo** is a collection of libraries with simplicity and rapid iteration at
+heart.
 
 ## Components
 
@@ -62,7 +46,7 @@ Dependencies:
 ### Tool: res_build
 
 Resource package compiler for the game library. Interface is available as a
-static library for extension/automation.
+static library for extension and automation.
 
 Dependencies:
 
