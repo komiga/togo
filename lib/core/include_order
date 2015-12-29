@@ -75,6 +75,7 @@ return {
 			N("binary"),
 		}),
 	}),
+	M("lua", {}),
 	M("serialization", {
 		N("serializer"),
 		N("support"),
