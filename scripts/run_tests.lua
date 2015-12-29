@@ -64,7 +64,7 @@ for _, group_name in pairs(group_names) do
 			if group.data.excluded[name] then
 				printf("EXCLUDED: %s / %s", group_name, name)
 			else
-				table.insert(group.tests, file)
+				table.insert(group.tests, {name = name, path = file})
 			end
 		end
 	end
@@ -75,16 +75,16 @@ function run()
 	for _, group in pairs(groups) do
 		printf("\nGROUP: %s", group.name)
 		lfs.chdir(group.root)
-		for _, path in pairs(group.tests) do
-			local cmd = "./" .. path
-			local args = group.data.args[path]
+		for _, test in pairs(group.tests) do
+			local cmd = "./" .. test.path
+			local args = group.data.args[test.name]
 			if args then
 				cmd = cmd .. " " .. args
 			end
 			printf("\nRUNNING: %s", cmd)
 			local exit_code = os.execute(cmd)
 			if exit_code ~= 0 then
-				printf("ERROR: '%s' failed with exit code %d", path, exit_code)
+				printf("ERROR: '%s' failed with exit code %d", test.path, exit_code)
 				return -1
 			end
 		end
