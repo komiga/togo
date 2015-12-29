@@ -7,7 +7,7 @@ precore.make_config("togo.lib.core.luajit2.dep", nil, {
 {project = function(p)
 	configuration {}
 		includedirs {
-			G"${DEP_PATH}/luajit/include/luajit-2.0/",
+			G"${DEP_PATH}/luajit/include/",
 		}
 
 	if not precore.env_project()["NO_LINK"] then
@@ -25,7 +25,7 @@ precore.make_config("togo.lib.core.dep", {
 }, {
 "togo.base",
 "am.dep",
--- "togo.lib.core.luajit2.dep",
+"togo.lib.core.luajit2.dep",
 {project = function(p)
 	togo.library_config("core")
 
