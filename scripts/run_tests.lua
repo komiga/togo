@@ -18,6 +18,7 @@ group_data["core"] = {
 	},
 	args = {
 		["utility/args"] = '-a --b=1234 --c="goats" cmd -d a1 a2 "a3" 1 false true',
+		["lua/general"] = 'lua/util.lua',
 	},
 }
 
