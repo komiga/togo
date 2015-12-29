@@ -76,3 +76,7 @@ togo.make_tests("utility", {
 	["endian"] = {nil, configs},
 	["args"] = {nil, configs},
 })
+
+togo.make_tests("lua", {
+	["general"] = {nil, configs},
+})
