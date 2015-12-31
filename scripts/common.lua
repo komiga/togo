@@ -4,7 +4,8 @@ function table_last(t)
 end
 
 function split_path(path)
-	return string.match(path, "^(%.?%.?[^%.]*)%.?([^%.\\/]*)$")
+	local name, extension = string.match(path, "^(%.?%.?.*)%.([^%.\\/]*)$")
+	return (name or path), extension
 end
 
 function dirname(path)
