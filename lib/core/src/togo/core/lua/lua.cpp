@@ -55,10 +55,12 @@ signed lua::pcall_error_message_handler(lua_State* L) {
 
 namespace {
 
-static char const
-li_module_util[] =
+static LuaModuleRef const li_modules[]{
+{
+	"togo.Util",
 	#include <togo/core/lua/Util.lua>
-;
+},
+};
 
 static signed package_preloader(lua_State* L) {
 	StringRef source = lua::get_string(L, lua_upvalueindex(1));
@@ -85,21 +87,23 @@ static signed package_preloader(lua_State* L) {
 
 } // anonymous namespace
 
-/// Put Lua source in package.preload[modname].
+/// Put module in package.preload[modname].
 ///
 /// source must be valid as long as the state is alive.
-void lua::put_package_preload(lua_State* L, StringRef modname, StringRef source) {
+void lua::preload_module(lua_State* L, LuaModuleRef const& module) {
 	lua_getfield(L, LUA_REGISTRYINDEX, "_PRELOAD");
-	lua::push_string(L, modname);
-	lua::push_string(L, source);
+	lua::push_string(L, module.name);
+	lua::push_string(L, module.source);
 	lua_pushcclosure(L, package_preloader, 1);
-	lua_rawset(L, -3); // _PRELOAD[modname] = closure{package_preloader, source}
+	lua_rawset(L, -3); // _PRELOAD[module.name] = closure{package_preloader, module.source}
 	lua_pop(L, 1); // _PRELOAD
 }
 
 /// Register core interfaces.
 void lua::register_core(lua_State* L) {
-	lua::put_package_preload(L, "togo.Util", li_module_util);
+	for (auto& module : li_modules) {
+		lua::preload_module(L, module);
+	}
 }
 
 } // namespace togo

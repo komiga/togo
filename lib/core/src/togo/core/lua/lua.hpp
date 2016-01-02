@@ -15,6 +15,7 @@
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/memory/types.hpp>
 #include <togo/core/string/string.hpp>
+#include <togo/core/lua/types.hpp>
 
 extern "C" {
 	#include <luajit-2.0/lua.h>
