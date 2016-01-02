@@ -28,7 +28,7 @@ namespace togo {
 namespace lua {
 
 /**
-	@addtogroup lua
+	@addtogroup lib_core_lua
 	@{
 */
 
@@ -77,7 +77,7 @@ inline void push_lightuserdata(lua_State* L, void* p) {
 	}
 }
 
-/** @} */ // end of doc-group lua
+/** @} */ // end of doc-group lib_core_lua
 
 } // namespace lua
 } // namespace togo
