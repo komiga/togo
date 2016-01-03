@@ -79,6 +79,11 @@ bool remove_file(StringRef const& path);
 /// If dest already exists, this will fail.
 bool move_file(StringRef const& src, StringRef const& dest);
 
+/// Copy a file.
+///
+/// Unless overwrite == true, this will fail if the destination already exists.
+bool copy_file(StringRef const& src, StringRef const& dest, bool overwrite = false);
+
 /// Create a directory.
 ///
 /// If the directory already exists, this will fail.

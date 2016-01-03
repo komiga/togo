@@ -19,6 +19,7 @@
 #include <linux/limits.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/sendfile.h>
 #include <fcntl.h>
 
 namespace togo {
@@ -84,6 +85,23 @@ inline static bool stat_wrapper(
 		if (errno != ENOENT) {
 			TOGO_LOG_DEBUGF(
 				"stat_wrapper: errno = %d, %s\n",
+				errno, std::strerror(errno)
+			);
+		}
+		return false;
+	}
+	return true;
+}
+
+inline static bool fstat_wrapper(
+	signed fd,
+	struct ::stat& stat_buf
+) {
+	signed const err = ::fstat(fd, &stat_buf);
+	if (err != 0) {
+		if (errno != ENOENT) {
+			TOGO_LOG_DEBUGF(
+				"fstat_wrapper: errno = %d, %s\n",
 				errno, std::strerror(errno)
 			);
 		}
@@ -180,6 +198,90 @@ bool filesystem::move_file(StringRef const& src, StringRef const& dest) {
 		return false;
 	}
 	return true;
+}
+
+bool filesystem::copy_file(StringRef const& src, StringRef const& dest, bool overwrite) {
+	bool success = false;
+	signed fd_src, fd_dest;
+	struct ::stat stat_buf{};
+	mode_t mode = 0;
+	off_t size = 0;
+	off_t offset = 0;
+
+	fd_src = ::open(src.data, O_RDONLY);
+	if (fd_src == -1) {
+		TOGO_LOG_DEBUGF(
+			"copy_file: open(src): errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+		goto l_exit;
+	}
+	if (!fstat_wrapper(fd_src, stat_buf)) {
+		goto l_close_src;
+	}
+
+	mode = stat_buf.st_mode;
+	size = stat_buf.st_size;
+
+	fd_dest = ::open(
+		dest.data,
+		O_CREAT | O_WRONLY | (overwrite ? O_TRUNC : O_EXCL),
+		mode
+	);
+	if (fd_dest == -1) {
+		TOGO_LOG_DEBUGF(
+			"copy_file: create(dest): errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+		goto l_close_src;
+	}
+	if (!fstat_wrapper(fd_dest, stat_buf)) {
+		goto l_close;
+	}
+	if (mode != stat_buf.st_mode) {
+		if (::fchmod(fd_dest, mode) == -1) {
+			TOGO_LOG_DEBUGF(
+				"copy_file: fchmod(dest, mode): errno = %d, %s\n",
+				errno, std::strerror(errno)
+			);
+			goto l_close;
+		}
+	}
+
+	while (offset != size) {
+		auto written = ::sendfile(fd_dest, fd_src, &offset, size - offset);
+		if (written == -1) {
+			if (errno == EAGAIN) {
+				continue;
+			}
+			TOGO_LOG_DEBUGF(
+				"copy_file: sendfile(dest, src): errno = %d, %s\n",
+				errno, std::strerror(errno)
+			);
+			goto l_close;
+		}
+	}
+
+	success = true;
+
+l_close:
+	if (::close(fd_dest) != 0) {
+		TOGO_LOG_DEBUGF(
+			"copy_file: close(dest): errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+	}
+
+l_close_src:
+	if (::close(fd_src) != 0) {
+		TOGO_LOG_DEBUGF(
+			"copy_file: close(src): errno = %d, %s\n",
+			errno, std::strerror(errno)
+		);
+	}
+
+l_exit:
+	return success;
 }
 
 bool filesystem::create_directory(StringRef const& path) {
