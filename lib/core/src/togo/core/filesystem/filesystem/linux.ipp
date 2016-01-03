@@ -143,29 +143,53 @@ u64 filesystem::file_size(StringRef const& path) {
 	return static_cast<u64>(stat_buf.st_size);
 }
 
-bool filesystem::create_file(StringRef const& path) {
-	signed const fd = ::open(
-		path.data,
-		O_CREAT | O_WRONLY | O_EXCL,
+bool filesystem::create_file(StringRef const& path, bool overwrite) {
+	bool success = false;
+	mode_t mode =
 		// rw- rw- r--
 		/* user  */ S_IRUSR | S_IWUSR |
 		/* group */ S_IRGRP | S_IWGRP |
 		/* other */ S_IROTH
+	;
+	struct ::stat stat_buf{};
+	signed const fd = ::open(
+		path.data,
+		O_CREAT | O_WRONLY | (overwrite ? O_TRUNC : O_EXCL),
+		mode
 	);
 	if (fd == -1) {
 		TOGO_LOG_DEBUGF(
 			"create_file: errno = %d, %s\n",
 			errno, std::strerror(errno)
 		);
-		return false;
+		goto l_exit;
 	}
+
+	if (!fstat_wrapper(fd, stat_buf)) {
+		goto l_close;
+	}
+	if (mode != stat_buf.st_mode) {
+		if (::fchmod(fd, mode) == -1) {
+			TOGO_LOG_DEBUGF(
+				"create_file: fchmod(): errno = %d, %s\n",
+				errno, std::strerror(errno)
+			);
+			goto l_close;
+		}
+	}
+
+	success = true;
+
+l_close:
 	if (::close(fd) != 0) {
 		TOGO_LOG_DEBUGF(
 			"create_file: close(): errno = %d, %s\n",
 			errno, std::strerror(errno)
 		);
 	}
-	return true;
+
+l_exit:
+	return success;
 }
 
 bool filesystem::remove_file(StringRef const& path) {

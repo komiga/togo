@@ -68,8 +68,8 @@ u64 file_size(StringRef const& path);
 
 /// Create a file.
 ///
-/// If the file already exists, this will fail.
-bool create_file(StringRef const& path);
+/// Unless overwrite == true, this will fail if the destination already exists.
+bool create_file(StringRef const& path, bool overwrite = false);
 
 /// Remove a file.
 bool remove_file(StringRef const& path);
