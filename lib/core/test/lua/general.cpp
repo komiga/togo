@@ -18,6 +18,7 @@ signed main(signed argc, char* argv[]) {
 	TOGO_ASSERTE(L);
 	luaL_openlibs(L);
 	lua::register_core(L);
+	filesystem::register_lua_interface(L);
 
 	lua_pushcfunction(L, lua::pcall_error_message_handler);
 	for (signed i = 1; i < argc; ++i) {
