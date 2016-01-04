@@ -156,7 +156,7 @@ inline unsigned trim_trailing_slashes(FixedArray<char, N>& string) {
 		fixed_array::begin(string),
 		size
 	);
-	if (new_size < size) {
+	if (new_size != size) {
 		fixed_array::resize(string, new_size + 1);
 	}
 	return new_size;
@@ -173,7 +173,7 @@ inline unsigned ensure_trailing_slash(FixedArray<char, N>& string) {
 		fixed_array::capacity(string),
 		size
 	);
-	if (new_size < size) {
+	if (new_size != size) {
 		fixed_array::resize(string, new_size + 1);
 	}
 	return new_size;
