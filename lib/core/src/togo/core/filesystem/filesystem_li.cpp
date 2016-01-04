@@ -23,6 +23,83 @@ TOGO_LI_FUNC_DEF(destroy) {
 
 namespace filesystem {
 
+TOGO_LI_FUNC_DEF(working_dir) {
+	FixedArray<char, 256> path{};
+	filesystem::working_dir(path);
+	lua::push_value(L, path);
+	return 1;
+}
+
+TOGO_LI_FUNC_DEF(set_working_dir) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, filesystem::set_working_dir(path));
+	return 1;
+}
+
+TOGO_LI_FUNC_DEF(is_file) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, filesystem::is_file(path));
+	return 1;
+}
+
+TOGO_LI_FUNC_DEF(is_directory) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, filesystem::is_directory(path));
+	return 1;
+}
+
+TOGO_LI_FUNC_DEF(time_last_modified) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, filesystem::time_last_modified(path));
+	return 1;
+}
+
+TOGO_LI_FUNC_DEF(file_size) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, filesystem::file_size(path));
+	return 1;
+}
+
+TOGO_LI_FUNC_DEF(create_file) {
+	auto path = lua::get_string(L, 1);
+	bool overwrite = luaL_opt(L, lua::get_boolean, 2, false);
+	lua::push_value(L, filesystem::create_file(path, overwrite));
+	return 1;
+}
+
+TOGO_LI_FUNC_DEF(remove_file) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, filesystem::remove_file(path));
+	return 1;
+}
+
+TOGO_LI_FUNC_DEF(move_file) {
+	auto src = lua::get_string(L, 1);
+	auto dest = lua::get_string(L, 2);
+	lua::push_value(L, filesystem::move_file(src, dest));
+	return 1;
+}
+
+TOGO_LI_FUNC_DEF(copy_file) {
+	auto src = lua::get_string(L, 1);
+	auto dest = lua::get_string(L, 2);
+	bool overwrite = luaL_opt(L, lua::get_boolean, 3, false);
+	lua::push_value(L, filesystem::copy_file(src, dest, overwrite));
+	return 1;
+}
+
+TOGO_LI_FUNC_DEF(create_directory) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, filesystem::create_directory(path));
+	return 1;
+}
+
+TOGO_LI_FUNC_DEF(remove_directory) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, filesystem::remove_directory(path));
+	return 1;
+}
+
 // -> entry.path, entry.type
 TOGO_LI_FUNC_DEF(iterate_dir_iter) {
 	auto& reader = *lua::get_userdata<DirectoryReader>(L, 1);
@@ -57,6 +134,19 @@ TOGO_LI_FUNC_DEF(iterate_dir) {
 } // namespace filesystem
 
 static luaL_reg const li_funcs[]{
+	TOGO_LI_FUNC_REF(filesystem, working_dir)
+	TOGO_LI_FUNC_REF(filesystem, set_working_dir)
+	TOGO_LI_FUNC_REF(filesystem, is_file)
+	TOGO_LI_FUNC_REF(filesystem, is_directory)
+	TOGO_LI_FUNC_REF(filesystem, time_last_modified)
+	TOGO_LI_FUNC_REF(filesystem, file_size)
+	TOGO_LI_FUNC_REF(filesystem, create_file)
+	TOGO_LI_FUNC_REF(filesystem, remove_file)
+	TOGO_LI_FUNC_REF(filesystem, move_file)
+	TOGO_LI_FUNC_REF(filesystem, copy_file)
+	TOGO_LI_FUNC_REF(filesystem, create_directory)
+	TOGO_LI_FUNC_REF(filesystem, remove_directory)
+
 	TOGO_LI_FUNC_REF(filesystem, iterate_dir)
 	{nullptr, nullptr}
 };
