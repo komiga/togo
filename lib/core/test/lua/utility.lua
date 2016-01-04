@@ -8,9 +8,8 @@ end
 
 print_preload()
 
-local U = require "togo.Util"
+local U = require "togo.utility"
 
 U.log("util test")
 
 print_preload()
-

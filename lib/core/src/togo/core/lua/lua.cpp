@@ -57,8 +57,8 @@ namespace {
 
 static LuaModuleRef const li_modules[]{
 {
-	"togo.Util",
-	#include <togo/core/lua/Util.lua>
+	"togo.utility",
+	#include <togo/core/utility/utility.lua>
 },
 };
 
@@ -97,7 +97,7 @@ void lua::preload_module(lua_State* L, LuaModuleRef const& module) {
 	lua_pop(L, 1); // _PRELOAD
 }
 
-/// Register core interfaces.
+/// Register basic interfaces.
 void lua::register_core(lua_State* L) {
 	lua_createtable(L, 0, 32);
 	lua::table_set_copy_raw(L, LUA_REGISTRYINDEX, "togo_class", -1);

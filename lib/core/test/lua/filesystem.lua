@@ -1,6 +1,6 @@
 
-local U = require "togo.Util"
-local FS = require "togo.Filesystem"
+local U = require "togo.utility"
+local FS = require "togo.filesystem"
 
 U.print("%d", FS.EntryType.file)
 U.print("%d", FS.EntryType.dir)

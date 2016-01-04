@@ -289,6 +289,11 @@ function M.set_functable(t, func)
 	t.__class_static.__call = func
 end
 
+function M.is_functable(x)
+	local mt = getmetatable(x)
+	return mt and mt.__call ~= nil
+end
+
 function M.class(c)
 	if c == nil then
 		c = {}

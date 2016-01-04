@@ -64,7 +64,7 @@ static luaL_reg const li_funcs[]{
 /// Register the Lua interface.
 void filesystem::register_lua_interface(lua_State* L) {
 	lua::register_userdata<DirectoryReader>(L, directory_reader::li_destroy);
-	luaL_register(L, "togo.Filesystem", li_funcs);
+	luaL_register(L, "togo.filesystem", li_funcs);
 
 	lua_createtable(L, 0, 3);
 	lua::table_set_copy_raw(L, -4, "EntryType", -1);
