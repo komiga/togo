@@ -7,8 +7,10 @@
 #include <togo/core/error/assert.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/log/log.hpp>
+#include <togo/core/collection/fixed_array.hpp>
 #include <togo/core/string/string.hpp>
 #include <togo/core/filesystem/filesystem.hpp>
+#include <togo/core/filesystem/filesystem/private.hpp>
 
 #include <cerrno>
 #include <cstring>
@@ -16,7 +18,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include <linux/limits.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/sendfile.h>
@@ -24,32 +25,31 @@
 
 namespace togo {
 
+namespace {
+	static thread_local FixedArray<char, TOGO_PATH_MAX> _cstring_temp{};
+} // anonymous namespace
+
 StringRef filesystem::exec_dir() {
-	static unsigned exec_dir_str_size{0};
-	static char exec_dir_str[PATH_MAX]{'\0'};
-	if (exec_dir_str_size == 0) {
-		ssize_t size = ::readlink(
-			"/proc/self/exe",
-			exec_dir_str,
-			array_extent(exec_dir_str) - 1
-		);
+	static FixedArray<char, TOGO_PATH_MAX> path{};
+	if (fixed_array::empty(path)) {
+		ssize_t size = ::readlink("/proc/self/exe", begin(path), fixed_array::capacity(path) - 1);
 		if (size == -1) {
 			TOGO_LOG_DEBUGF(
 				"exec_dir: errno = %d, %s\n",
 				errno, std::strerror(errno)
 			);
 		} else {
-			for (ssize_t i = size - 1; i >= 0; --i) {
-				if (exec_dir_str[i] == '/') {
-					size = i;
-					break;
-				}
+			fixed_array::resize(path, max(1u, static_cast<unsigned>(size)));
+			auto dir = filesystem::path_dir(path);
+			if (dir.data == begin(path)) {
+				fixed_array::resize(path, dir.size + 1);
+				fixed_array::back(path) = '\0';
+			} else {
+				string::copy(path, dir);
 			}
-			exec_dir_str_size = max(1u, static_cast<unsigned>(size));
-			exec_dir_str[exec_dir_str_size] = '\0';
 		}
 	}
-	return {exec_dir_str, exec_dir_str_size};
+	return path;
 }
 
 unsigned filesystem::working_dir(char* str, unsigned capacity) {
@@ -65,7 +65,7 @@ unsigned filesystem::working_dir(char* str, unsigned capacity) {
 }
 
 bool filesystem::set_working_dir(StringRef const& path) {
-	signed const err = ::chdir(path.data);
+	signed const err = ::chdir(filesystem::to_cstring(path).data);
 	if (err != 0) {
 		TOGO_LOG_DEBUGF(
 			"set_working_dir: errno = %d, %s\n",
@@ -112,7 +112,7 @@ inline static bool fstat_wrapper(
 
 bool filesystem::is_file(StringRef const& path) {
 	struct ::stat stat_buf{};
-	if (!stat_wrapper(path, stat_buf)) {
+	if (!stat_wrapper(filesystem::to_cstring(path), stat_buf)) {
 		return false;
 	}
 	return S_ISREG(stat_buf.st_mode);
@@ -120,7 +120,7 @@ bool filesystem::is_file(StringRef const& path) {
 
 bool filesystem::is_directory(StringRef const& path) {
 	struct ::stat stat_buf{};
-	if (!stat_wrapper(path, stat_buf)) {
+	if (!stat_wrapper(filesystem::to_cstring(path), stat_buf)) {
 		return false;
 	}
 	return S_ISDIR(stat_buf.st_mode);
@@ -128,7 +128,7 @@ bool filesystem::is_directory(StringRef const& path) {
 
 u64 filesystem::time_last_modified(StringRef const& path) {
 	struct ::stat stat_buf{};
-	if (!stat_wrapper(path, stat_buf)) {
+	if (!stat_wrapper(filesystem::to_cstring(path), stat_buf)) {
 		return 0;
 	}
 	return static_cast<u64>(stat_buf.st_ctime);
@@ -136,7 +136,7 @@ u64 filesystem::time_last_modified(StringRef const& path) {
 
 u64 filesystem::file_size(StringRef const& path) {
 	struct ::stat stat_buf{};
-	if (!stat_wrapper(path, stat_buf) || !S_ISREG(stat_buf.st_mode)) {
+	if (!stat_wrapper(filesystem::to_cstring(path), stat_buf) || !S_ISREG(stat_buf.st_mode)) {
 		return 0;
 	}
 	TOGO_ASSERTE(stat_buf.st_size >= 0);
@@ -153,7 +153,7 @@ bool filesystem::create_file(StringRef const& path, bool overwrite) {
 	;
 	struct ::stat stat_buf{};
 	signed const fd = ::open(
-		path.data,
+		filesystem::to_cstring(path).data,
 		O_CREAT | O_WRONLY | (overwrite ? O_TRUNC : O_EXCL),
 		mode
 	);
@@ -193,7 +193,7 @@ l_exit:
 }
 
 bool filesystem::remove_file(StringRef const& path) {
-	signed const err = ::unlink(path.data);
+	signed const err = ::unlink(filesystem::to_cstring(path).data);
 	if (err != 0) {
 		TOGO_LOG_DEBUGF(
 			"remove_file: errno = %d, %s\n",
@@ -205,7 +205,11 @@ bool filesystem::remove_file(StringRef const& path) {
 }
 
 bool filesystem::move_file(StringRef const& src, StringRef const& dest) {
-	signed err = ::link(src.data, dest.data);
+	auto src_cstr = filesystem::to_cstring(src);
+	signed err = ::link(
+		src_cstr.data,
+		filesystem::to_cstring(dest, &_cstring_temp).data
+	);
 	if (err != 0) {
 		TOGO_LOG_DEBUGF(
 			"move_file: link(): errno = %d, %s\n",
@@ -213,7 +217,7 @@ bool filesystem::move_file(StringRef const& src, StringRef const& dest) {
 		);
 		return false;
 	}
-	err = ::unlink(src.data);
+	err = ::unlink(src_cstr.data);
 	if (err != 0) {
 		TOGO_LOG_DEBUGF(
 			"move_file: unlink(): errno = %d, %s\n",
@@ -232,7 +236,7 @@ bool filesystem::copy_file(StringRef const& src, StringRef const& dest, bool ove
 	off_t size = 0;
 	off_t offset = 0;
 
-	fd_src = ::open(src.data, O_RDONLY);
+	fd_src = ::open(filesystem::to_cstring(src).data, O_RDONLY);
 	if (fd_src == -1) {
 		TOGO_LOG_DEBUGF(
 			"copy_file: open(src): errno = %d, %s\n",
@@ -248,7 +252,7 @@ bool filesystem::copy_file(StringRef const& src, StringRef const& dest, bool ove
 	size = stat_buf.st_size;
 
 	fd_dest = ::open(
-		dest.data,
+		filesystem::to_cstring(dest).data,
 		O_CREAT | O_WRONLY | (overwrite ? O_TRUNC : O_EXCL),
 		mode
 	);
@@ -310,7 +314,7 @@ l_exit:
 
 bool filesystem::create_directory(StringRef const& path) {
 	signed const err = ::mkdir(
-		path.data,
+		filesystem::to_cstring(path).data,
 		// rwx rwx r-x
 		/* user  */ S_IRWXU |
 		/* group */ S_IRWXG |
@@ -327,7 +331,7 @@ bool filesystem::create_directory(StringRef const& path) {
 }
 
 bool filesystem::remove_directory(StringRef const& path) {
-	signed const err = ::rmdir(path.data);
+	signed const err = ::rmdir(filesystem::to_cstring(path).data);
 	if (err != 0) {
 		TOGO_LOG_DEBUGF(
 			"remove_directory: errno = %d, %s\n",

@@ -5,7 +5,10 @@
 @ingroup lib_core
 @details
 
-All paths must be NUL-terminated. All returned/assigned paths are
-NUL-terminated.
+All returned/assigned paths are NUL-terminated, excepting the path-part
+functions, which return views into the given path.
+
+Paths need not be NUL-terminated, but will incur a copy if not NUL-terminated
+where the underlying API requires it.
 
 */

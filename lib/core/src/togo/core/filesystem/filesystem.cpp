@@ -8,6 +8,7 @@
 #include <togo/core/filesystem/filesystem.hpp>
 
 #if defined(TOGO_PLATFORM_LINUX)
+	#include <togo/core/filesystem/filesystem/private.ipp>
 	#include <togo/core/filesystem/filesystem/linux.ipp>
 #else
 	#error "unimplemented for target platform"
