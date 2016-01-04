@@ -64,7 +64,7 @@ unsigned filesystem::working_dir(char* str, unsigned capacity) {
 	return string::size(str);
 }
 
-bool filesystem::set_working_dir(StringRef const& path) {
+bool filesystem::set_working_dir(StringRef path) {
 	signed const err = ::chdir(filesystem::to_cstring(path).data);
 	if (err != 0) {
 		TOGO_LOG_DEBUGF(
@@ -110,7 +110,7 @@ inline static bool fstat_wrapper(
 	return true;
 }
 
-bool filesystem::exists(StringRef const& path) {
+bool filesystem::exists(StringRef path) {
 	if (::access(filesystem::to_cstring(path).data, F_OK) != 0) {
 		// Thanks, POSIX!
 		if (errno != EACCES && errno != ENOENT) {
@@ -124,7 +124,7 @@ bool filesystem::exists(StringRef const& path) {
 	return true;
 }
 
-bool filesystem::is_file(StringRef const& path) {
+bool filesystem::is_file(StringRef path) {
 	struct ::stat stat_buf{};
 	if (!stat_wrapper(filesystem::to_cstring(path), stat_buf)) {
 		return false;
@@ -132,7 +132,7 @@ bool filesystem::is_file(StringRef const& path) {
 	return S_ISREG(stat_buf.st_mode);
 }
 
-bool filesystem::is_directory(StringRef const& path) {
+bool filesystem::is_directory(StringRef path) {
 	struct ::stat stat_buf{};
 	if (!stat_wrapper(filesystem::to_cstring(path), stat_buf)) {
 		return false;
@@ -140,7 +140,7 @@ bool filesystem::is_directory(StringRef const& path) {
 	return S_ISDIR(stat_buf.st_mode);
 }
 
-u64 filesystem::time_last_modified(StringRef const& path) {
+u64 filesystem::time_last_modified(StringRef path) {
 	struct ::stat stat_buf{};
 	if (!stat_wrapper(filesystem::to_cstring(path), stat_buf)) {
 		return 0;
@@ -148,7 +148,7 @@ u64 filesystem::time_last_modified(StringRef const& path) {
 	return static_cast<u64>(stat_buf.st_ctime);
 }
 
-u64 filesystem::file_size(StringRef const& path) {
+u64 filesystem::file_size(StringRef path) {
 	struct ::stat stat_buf{};
 	if (!stat_wrapper(filesystem::to_cstring(path), stat_buf) || !S_ISREG(stat_buf.st_mode)) {
 		return 0;
@@ -157,7 +157,7 @@ u64 filesystem::file_size(StringRef const& path) {
 	return static_cast<u64>(stat_buf.st_size);
 }
 
-bool filesystem::create_file(StringRef const& path, bool overwrite) {
+bool filesystem::create_file(StringRef path, bool overwrite) {
 	bool success = false;
 	mode_t mode =
 		// rw- rw- r--
@@ -206,8 +206,12 @@ l_exit:
 	return success;
 }
 
-bool filesystem::remove_file(StringRef const& path) {
-	signed const err = ::unlink(filesystem::to_cstring(path).data);
+bool filesystem::remove_file(StringRef path, bool accept_nonexistent) {
+	path = filesystem::to_cstring(path);
+	if (accept_nonexistent && !filesystem::exists(path)) {
+		return true;
+	}
+	signed const err = ::unlink(path.data);
 	if (err != 0) {
 		TOGO_LOG_DEBUGF(
 			"remove_file: errno = %d, %s\n",
@@ -218,10 +222,10 @@ bool filesystem::remove_file(StringRef const& path) {
 	return true;
 }
 
-bool filesystem::move_file(StringRef const& src, StringRef const& dest) {
-	auto src_cstr = filesystem::to_cstring(src);
+bool filesystem::move_file(StringRef src, StringRef dest) {
+	src = filesystem::to_cstring(src);
 	signed err = ::link(
-		src_cstr.data,
+		src.data,
 		filesystem::to_cstring(dest, &_cstring_temp).data
 	);
 	if (err != 0) {
@@ -231,7 +235,7 @@ bool filesystem::move_file(StringRef const& src, StringRef const& dest) {
 		);
 		return false;
 	}
-	err = ::unlink(src_cstr.data);
+	err = ::unlink(src.data);
 	if (err != 0) {
 		TOGO_LOG_DEBUGF(
 			"move_file: unlink(): errno = %d, %s\n",
@@ -242,7 +246,7 @@ bool filesystem::move_file(StringRef const& src, StringRef const& dest) {
 	return true;
 }
 
-bool filesystem::copy_file(StringRef const& src, StringRef const& dest, bool overwrite) {
+bool filesystem::copy_file(StringRef src, StringRef dest, bool overwrite) {
 	bool success = false;
 	signed fd_src, fd_dest;
 	struct ::stat stat_buf{};
@@ -326,9 +330,13 @@ l_exit:
 	return success;
 }
 
-bool filesystem::create_directory(StringRef const& path) {
+bool filesystem::create_directory(StringRef path, bool accept_exists) {
+	path = filesystem::to_cstring(path);
+	if (accept_exists && filesystem::is_directory(path)) {
+		return true;
+	}
 	signed const err = ::mkdir(
-		filesystem::to_cstring(path).data,
+		path.data,
 		// rwx rwx r-x
 		/* user  */ S_IRWXU |
 		/* group */ S_IRWXG |
@@ -344,8 +352,12 @@ bool filesystem::create_directory(StringRef const& path) {
 	return true;
 }
 
-bool filesystem::remove_directory(StringRef const& path) {
-	signed const err = ::rmdir(filesystem::to_cstring(path).data);
+bool filesystem::remove_directory(StringRef path, bool accept_nonexistent) {
+	path = filesystem::to_cstring(path);
+	if (accept_nonexistent && !filesystem::exists(path)) {
+		return true;
+	}
+	signed const err = ::rmdir(path.data);
 	if (err != 0) {
 		TOGO_LOG_DEBUGF(
 			"remove_directory: errno = %d, %s\n",

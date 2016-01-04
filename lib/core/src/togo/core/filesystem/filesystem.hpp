@@ -51,55 +51,61 @@ inline unsigned working_dir(FixedArray<char, N>& str) {
 }
 
 /// Set the working directory path.
-bool set_working_dir(StringRef const& path);
+bool set_working_dir(StringRef path);
 
 /// Whether path exists.
-bool exists(StringRef const& path);
+bool exists(StringRef path);
 
 /// Whether path is a file.
-bool is_file(StringRef const& path);
+bool is_file(StringRef path);
 
 /// Whether path is a directory.
-bool is_directory(StringRef const& path);
+bool is_directory(StringRef path);
 
 /// Last-modified time of file in seconds since the POSIX epoch.
 ///
 /// Returns 0 on error. Only time-travelers would have a legitimate reason
 /// for such a timestamp, and they are not welcome here.
-u64 time_last_modified(StringRef const& path);
+u64 time_last_modified(StringRef path);
 
 /// Size of file in bytes.
 ///
 /// Returns 0 on error.
-u64 file_size(StringRef const& path);
+u64 file_size(StringRef path);
 
 /// Create a file.
 ///
 /// Unless overwrite == true, this will fail if the destination already exists.
-bool create_file(StringRef const& path, bool overwrite = false);
+bool create_file(StringRef path, bool overwrite = false);
 
 /// Remove a file.
-bool remove_file(StringRef const& path);
+///
+/// Unless accept_nonexistent == true, this will fail if the file does not
+/// exist.
+bool remove_file(StringRef path, bool accept_nonexistent = false);
 
 /// Move a file.
 ///
 /// If dest already exists, this will fail.
-bool move_file(StringRef const& src, StringRef const& dest);
+bool move_file(StringRef src, StringRef dest);
 
 /// Copy a file.
 ///
 /// Unless overwrite == true, this will fail if the destination already exists.
-bool copy_file(StringRef const& src, StringRef const& dest, bool overwrite = false);
+bool copy_file(StringRef src, StringRef dest, bool overwrite = false);
 
 /// Create a directory.
 ///
-/// If the directory already exists, this will fail.
-bool create_directory(StringRef const& path);
+/// Unless accept_exists == true, this will fail if the directory already
+/// exists.
+bool create_directory(StringRef path, bool accept_exists = false);
 
 /// Remove a directory.
 ///
 /// The directory must be empty.
-bool remove_directory(StringRef const& path);
+/// Unless accept_nonexistent == true, this will fail if the directory does not
+/// exist.
+bool remove_directory(StringRef path, bool accept_nonexistent = false);
 
 /** @} */ // end of doc-group lib_core_filesystem
 
