@@ -8,7 +8,29 @@
 
 using namespace togo;
 
+#define PATH_TEST(f, a, b) \
+	path_test(#f, filesystem:: f, a, b)
+
+void path_test(StringRef name, StringRef (f)(StringRef const&), StringRef a, StringRef b) {
+	StringRef r = f(a);
+	TOGO_ASSERTF(
+		string::compare_equal(b, r),
+		"%s: '%s' => '%.*s' but wanted '%s'",
+		name.data, a.data, r.size, r.data, b.data
+	);
+}
+
 signed main() {
+	// Paths
+	PATH_TEST(path_dir, "", ".");
+	PATH_TEST(path_dir, ".", ".");
+	PATH_TEST(path_dir, "..", ".");
+	PATH_TEST(path_dir, "c", ".");
+	PATH_TEST(path_dir, "c/", ".");
+	PATH_TEST(path_dir, "/", "/");
+	PATH_TEST(path_dir, "/a", "/");
+	PATH_TEST(path_dir, "a/b/c", "a/b");
+
 	StringRef const exec_dir = filesystem::exec_dir();
 	TOGO_LOGF("exec_dir: '%.*s'\n", exec_dir.size, exec_dir.data);
 
