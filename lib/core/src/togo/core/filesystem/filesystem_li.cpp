@@ -4,8 +4,6 @@
 */
 
 #include <togo/core/config.hpp>
-#include <togo/core/log/log.hpp>
-#include <togo/core/error/assert.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/filesystem/filesystem.hpp>
 #include <togo/core/filesystem/directory_reader.hpp>
@@ -25,18 +23,20 @@ TOGO_LI_FUNC_DEF(destroy) {
 
 namespace filesystem {
 
+// -> entry.path, entry.type
 TOGO_LI_FUNC_DEF(iterate_dir_iter) {
 	auto& reader = *lua::get_userdata<DirectoryReader>(L, 1);
 	auto type_mask = static_cast<DirectoryEntry::Type>(lua::get_integer(L, lua_upvalueindex(1)));
 	DirectoryEntry entry{};
 	if (directory_reader::read(reader, entry, type_mask)) {
 		lua::push_value(L, entry.path);
-		lua::push_value(L, signed_cast(entry.type));
+		lua::push_value(L, unsigned_cast(entry.type));
 		return 2;
 	}
 	return 0;
 }
 
+// Iterate over a directory.
 TOGO_LI_FUNC_DEF(iterate_dir) {
 	auto path = lua::get_string(L, 1);
 	auto type_mask = lua::get_integer(L, 2);
@@ -46,10 +46,10 @@ TOGO_LI_FUNC_DEF(iterate_dir) {
 	lua::push_value(L, type_mask);
 	lua_pushcclosure(L, TOGO_LI_FUNC(iterate_dir_iter), 1);
 	auto& reader = *lua::new_userdata<DirectoryReader>(L);
-	lua::push_value(L, signed_cast(type_mask));
+	lua::push_value(L, unsigned_cast(type_mask));
 	if (!directory_reader::open(reader, path, recursive, ignore_dotfiles)) {
 		lua_pop(L, 3);
-		return 0;
+		return luaL_error(L, "failed to open directory for reading: %s", path.data);
 	}
 	return 3;
 }
@@ -68,9 +68,9 @@ void filesystem::register_lua_interface(lua_State* L) {
 
 	lua_createtable(L, 0, 3);
 	lua::table_set_copy_raw(L, -4, "EntryType", -1);
-	lua::table_set_raw(L, "file", signed_cast(DirectoryEntry::Type::file));
-	lua::table_set_raw(L, "dir" , signed_cast(DirectoryEntry::Type::dir));
-	lua::table_set_raw(L, "all" , signed_cast(DirectoryEntry::Type::all));
+	lua::table_set_raw(L, "file", unsigned_cast(DirectoryEntry::Type::file));
+	lua::table_set_raw(L, "dir" , unsigned_cast(DirectoryEntry::Type::dir));
+	lua::table_set_raw(L, "all" , unsigned_cast(DirectoryEntry::Type::all));
 	lua_pop(L, 1);
 
 	lua_pop(L, 1); // module table
