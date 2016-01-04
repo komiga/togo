@@ -117,14 +117,15 @@ TOGO_LI_FUNC_DEF(iterate_dir_iter) {
 TOGO_LI_FUNC_DEF(iterate_dir) {
 	auto path = lua::get_string(L, 1);
 	auto type_mask = lua::get_integer(L, 2);
-	bool recursive = luaL_opt(L, lua::get_boolean, 3, true);
-	bool ignore_dotfiles = luaL_opt(L, lua::get_boolean, 4, false);
+	bool prepend_path = luaL_opt(L, lua::get_boolean, 3, true);
+	bool recursive = luaL_opt(L, lua::get_boolean, 4, true);
+	bool ignore_dotfiles = luaL_opt(L, lua::get_boolean, 5, false);
 
 	lua::push_value(L, type_mask);
 	lua_pushcclosure(L, TOGO_LI_FUNC(iterate_dir_iter), 1);
 	auto& reader = *lua::new_userdata<DirectoryReader>(L);
 	lua::push_value(L, unsigned_cast(type_mask));
-	if (!directory_reader::open(reader, path, recursive, ignore_dotfiles)) {
+	if (!directory_reader::open(reader, path, prepend_path, recursive, ignore_dotfiles)) {
 		lua_pop(L, 3);
 		return luaL_error(L, "failed to open directory for reading: %s", path.data);
 	}

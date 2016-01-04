@@ -29,12 +29,15 @@ namespace directory_reader {
 
 /// Open directory.
 ///
+/// If prepend_path is true, read entries will include the directory path.
+///
 /// An assertion will fail if the directory reader is already open.
 /// ignore_dotfiles will ignore regular directories and files that
 /// start with ".".
 bool open(
 	DirectoryReader& reader,
 	StringRef const& path,
+	bool prepend_path,
 	bool recursive,
 	bool ignore_dotfiles
 );

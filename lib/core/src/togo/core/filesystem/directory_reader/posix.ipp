@@ -22,7 +22,8 @@
 namespace togo {
 
 PosixDirectoryReaderImpl::PosixDirectoryReaderImpl()
-	: current_size(0)
+	: base_size(0)
+	, current_size(0)
 	, nodes()
 	, path()
 {}
@@ -30,6 +31,7 @@ PosixDirectoryReaderImpl::PosixDirectoryReaderImpl()
 bool directory_reader::open(
 	DirectoryReader& reader,
 	StringRef const& path,
+	bool const prepend_path,
 	bool const recursive,
 	bool const ignore_dotfiles
 ) {
@@ -39,11 +41,17 @@ bool directory_reader::open(
 		"the reader is already open"
 	);
 
-	directory_reader::set_options(reader, recursive, ignore_dotfiles);
+	directory_reader::set_options(reader, prepend_path, recursive, ignore_dotfiles);
 	string::copy(impl.path, path);
 	string::trim_trailing_slashes(impl.path);
 	fixed_array::back(impl.path) = '/';
 	fixed_array::push_back(impl.path, '\0');
+
+	if (directory_reader::option_prepend_path(reader)) {
+		impl.base_size = 0;
+	} else {
+		impl.base_size = string::size(impl.path);
+	}
 
 	DIR* const handle = ::opendir(fixed_array::begin(impl.path));
 	if (handle) {
@@ -154,7 +162,7 @@ bool directory_reader::read(
 			if (enum_bool(type_mask & DirectoryEntry::Type::dir)) {
 				entry.type = DirectoryEntry::Type::dir;
 				entry.path = impl.path;
-				return true;
+				goto l_return_entry;
 			}
 			break;
 
@@ -163,7 +171,7 @@ bool directory_reader::read(
 				string::append(impl.path, entry_name);
 				entry.type = DirectoryEntry::Type::file;
 				entry.path = impl.path;
-				return true;
+				goto l_return_entry;
 			}
 			break;
 
@@ -172,6 +180,11 @@ bool directory_reader::read(
 		}
 	}
 	return false;
+
+l_return_entry:
+	entry.path.data += impl.base_size;
+	entry.path.size -= impl.base_size;
+	return true;
 }
 
 } // namespace togo

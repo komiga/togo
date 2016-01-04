@@ -19,6 +19,7 @@ struct PosixDirectoryReaderImpl {
 		u32 size;
 	};
 
+	u32 base_size;
 	u32 current_size;
 	FixedArray<Node, 32> nodes;
 	FixedArray<char, 384> path;
