@@ -58,16 +58,27 @@ namespace {
 static LuaModuleRef const li_modules[]{
 {
 	"togo.utility",
+	"togo/core/utility/utility.lua",
 	#include <togo/core/utility/utility.lua>
 },
 };
 
 static signed package_preloader(lua_State* L) {
-	StringRef source = lua::get_string(L, lua_upvalueindex(1));
+	StringRef specified_chunk_name = lua::get_string(L, lua_upvalueindex(1));
+	StringRef source = lua::get_string(L, lua_upvalueindex(2));
 	StringRef modname = lua::get_string(L, 1);
+	FixedArray<char, 128> chunk_name{};
+
+	string::append(chunk_name, "@");
+	if (specified_chunk_name.any()) {
+		string::append(chunk_name, specified_chunk_name);
+	} else {
+		string::append(chunk_name, modname);
+	}
+
 	lua::push_value(L, lua::pcall_error_message_handler);
 	// -> chunk
-	if (luaL_loadbufferx(L, source.data, source.size, modname.data, "t")) {
+	if (luaL_loadbufferx(L, source.data, source.size, begin(chunk_name), "t")) {
 		return lua_error(L);
 	}
 	// -> return
@@ -91,9 +102,10 @@ static signed package_preloader(lua_State* L) {
 void lua::preload_module(lua_State* L, LuaModuleRef const& module) {
 	lua::table_get_raw(L, LUA_REGISTRYINDEX, "_PRELOAD");
 	lua::push_value(L, module.name);
+	lua::push_value(L, module.chunk_name);
 	lua::push_value(L, module.source);
-	lua_pushcclosure(L, package_preloader, 1);
-	lua_rawset(L, -3); // _PRELOAD[module.name] = closure{package_preloader, module.source}
+	lua_pushcclosure(L, package_preloader, 2);
+	lua_rawset(L, -3); // _PRELOAD[module.name] = closure{package_preloader, module.chunk_name, module.source}
 	lua_pop(L, 1); // _PRELOAD
 }
 

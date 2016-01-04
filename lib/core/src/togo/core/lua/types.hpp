@@ -61,6 +61,7 @@ using LuaCFunction = signed(lua_State* L);
 /// Lua module source reference.
 struct LuaModuleRef {
 	StringRef name;
+	StringRef chunk_name;
 	StringRef source;
 };
 
