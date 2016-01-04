@@ -23,12 +23,12 @@ void test_path(
 	bool const valid = resource::parse_path(path, pp);
 	TOGO_LOGF("%s: '%.*s'\n", valid ? "valid  " : "invalid", path.size, path.data);
 	if (valid) {
-		TOGO_LOGF("  name: 0x%016lx '%.*s'\n", pp.name_hash, pp.name.size, pp.name.data);
-		TOGO_LOGF("  type: 0x%08x%8s '%.*s'\n", pp.type_hash, "", pp.type.size, pp.type.data);
-		TOGO_LOGF("  tags: 0x%016lx [", pp.tags_hash);
+		TOGO_LOGF("  name: %016lx '%.*s'\n", pp.name_hash, pp.name.size, pp.name.data);
+		TOGO_LOGF("  type: %08x%8s '%.*s'\n", pp.type_hash, "", pp.type.size, pp.type.data);
+		TOGO_LOGF("  tags: %016lx [", pp.tags_hash);
 		for (unsigned i = 0; i < fixed_array::size(pp.tags); ++i) {
 			TOGO_LOGF(
-				"0x%08x '%.*s'%.*s",
+				"%08x '%.*s'%.*s",
 				pp.tags[i].hash,
 				pp.tags[i].name.size,
 				pp.tags[i].name.data,
