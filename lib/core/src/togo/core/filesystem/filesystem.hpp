@@ -9,11 +9,15 @@
 
 #pragma once
 
+// igen-source: filesystem/filesystem_li.cpp
+
 #include <togo/core/config.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/collection/fixed_array.hpp>
 #include <togo/core/string/types.hpp>
 #include <togo/core/filesystem/types.hpp>
+
+#include <togo/core/filesystem/filesystem.gen_interface>
 
 namespace togo {
 

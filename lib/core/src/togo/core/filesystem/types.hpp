@@ -16,6 +16,7 @@
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/collection/types.hpp>
 #include <togo/core/string/types.hpp>
+#include <togo/core/lua/types.hpp>
 
 #if defined(TOGO_PLATFORM_IS_POSIX)
 	#include <togo/core/filesystem/directory_reader/posix.hpp>
@@ -62,6 +63,8 @@ struct DirectoryEntry {
 
 /// Directory reader.
 struct DirectoryReader {
+	TOGO_LUA_MARK_USERDATA(DirectoryReader);
+
 	u32 _options;
 	DirectoryReaderImpl _impl;
 

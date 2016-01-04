@@ -20,7 +20,6 @@
 #include <togo/core/filesystem/types.hpp>
 
 namespace togo {
-
 namespace directory_reader {
 
 /**
@@ -56,5 +55,4 @@ bool read(
 /** @} */ // end of doc-group lib_core_filesystem_directory_reader
 
 } // namespace directory_reader
-
 } // namespace togo

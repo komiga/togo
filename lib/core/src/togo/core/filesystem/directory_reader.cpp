@@ -15,6 +15,8 @@
 
 namespace togo {
 
+TOGO_LUA_MARK_USERDATA_ANCHOR(DirectoryReader);
+
 DirectoryReader::DirectoryReader()
 	: _options(0)
 	, _impl()
