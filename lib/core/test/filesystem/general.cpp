@@ -72,9 +72,12 @@ signed main() {
 
 	// Directory creation
 	TOGO_ASSERTE(!filesystem::is_directory(TEST_DIR));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR, true));
+
 	TOGO_ASSERTE(filesystem::create_directory(TEST_DIR));
 	TOGO_ASSERTE(filesystem::is_directory(TEST_DIR));
 	TOGO_ASSERTE(!filesystem::create_directory(TEST_DIR));
+	TOGO_ASSERTE(filesystem::create_directory(TEST_DIR, true));
 	TOGO_ASSERTE(
 		filesystem::time_last_modified(TEST_DIR) >
 		system::secs_since_epoch() - 2
@@ -115,6 +118,7 @@ signed main() {
 	TOGO_ASSERTE(filesystem::remove_file(TEST_FILE));
 	TOGO_ASSERTE(!filesystem::is_file(TEST_FILE));
 	TOGO_ASSERTE(!filesystem::remove_file(TEST_FILE));
+	TOGO_ASSERTE(filesystem::remove_file(TEST_FILE, true));
 	TOGO_ASSERTE(filesystem::file_size(TEST_FILE) == 0);
 
 	TOGO_ASSERTE(filesystem::remove_file(TEST_FILE_COPIED));
@@ -125,6 +129,7 @@ signed main() {
 	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR));
 	TOGO_ASSERTE(!filesystem::is_directory(TEST_DIR));
 	TOGO_ASSERTE(!filesystem::remove_directory(TEST_DIR));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR, true));
 
 	return 0;
 }
