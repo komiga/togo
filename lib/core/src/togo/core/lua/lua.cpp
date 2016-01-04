@@ -65,7 +65,7 @@ static LuaModuleRef const li_modules[]{
 static signed package_preloader(lua_State* L) {
 	StringRef source = lua::get_string(L, lua_upvalueindex(1));
 	StringRef modname = lua::get_string(L, 1);
-	lua_pushcfunction(L, lua::pcall_error_message_handler);
+	lua::push_value(L, lua::pcall_error_message_handler);
 	// -> chunk
 	if (luaL_loadbufferx(L, source.data, source.size, modname.data, "t")) {
 		return lua_error(L);
@@ -77,10 +77,8 @@ static signed package_preloader(lua_State* L) {
 	lua_remove(L, -2); // pcall_message_handler
 
 	// remove preloader
-	lua_getfield(L, LUA_REGISTRYINDEX, "_PRELOAD");
-	lua::push_string(L, modname);
-	lua_pushnil(L);
-	lua_rawset(L, -3); // _PRELOAD[modname] = nil
+	lua::table_get_raw(L, LUA_REGISTRYINDEX, "_PRELOAD");
+	lua::table_set_raw(L, modname, null_tag{});
 	lua_pop(L, 1); // _PRELOAD
 	return 1;
 }
@@ -91,9 +89,9 @@ static signed package_preloader(lua_State* L) {
 ///
 /// source must be valid as long as the state is alive.
 void lua::preload_module(lua_State* L, LuaModuleRef const& module) {
-	lua_getfield(L, LUA_REGISTRYINDEX, "_PRELOAD");
-	lua::push_string(L, module.name);
-	lua::push_string(L, module.source);
+	lua::table_get_raw(L, LUA_REGISTRYINDEX, "_PRELOAD");
+	lua::push_value(L, module.name);
+	lua::push_value(L, module.source);
 	lua_pushcclosure(L, package_preloader, 1);
 	lua_rawset(L, -3); // _PRELOAD[module.name] = closure{package_preloader, module.source}
 	lua_pop(L, 1); // _PRELOAD
@@ -101,6 +99,10 @@ void lua::preload_module(lua_State* L, LuaModuleRef const& module) {
 
 /// Register core interfaces.
 void lua::register_core(lua_State* L) {
+	lua_createtable(L, 0, 32);
+	lua::table_set_copy_raw(L, LUA_REGISTRYINDEX, "togo_class", -1);
+	lua_pop(L, 1);
+
 	for (auto& module : li_modules) {
 		lua::preload_module(L, module);
 	}
