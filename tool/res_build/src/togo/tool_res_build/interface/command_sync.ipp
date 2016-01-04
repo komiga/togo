@@ -22,35 +22,33 @@ static bool sync_package(
 	//   A: resource added
 	//   I: ignored (path-parse failed or no resource handler for type)
 	bool no_status_logs = true;
-	#define TOGO_LOG_STATUS_(status, post)							\
+	#define TOGO_LOG_STATUS_(path, status, post)					\
 		TOGO_LOGF(													\
 			" %c  %.*s / %.*s " post "\n",							\
 			status,													\
 			pkg_name.size, pkg_name.data,							\
-			path.size, path.data									\
+			string::size(path), begin(path)							\
 		);															\
 		no_status_logs = false
 
 	{// Remove resources that have been deleted
-	StringRef path;
 	for (auto const& metadata : package_compiler::manifest(pkg)) {
 		if (metadata.id == 0) {
 			// Skip holes
 			continue;
 		}
 
-		path = metadata.path;
-		if (filesystem::is_file(path)) {
-			TOGO_LOG_STATUS_('N', "");
+		if (filesystem::is_file(metadata.path)) {
+			TOGO_LOG_STATUS_(metadata.path, 'N', "");
 		} else {
-			TOGO_LOG_STATUS_('D', "");
+			TOGO_LOG_STATUS_(metadata.path, 'D', "");
 			package_compiler::remove_resource(pkg, metadata.id);
 		}
 	}}
 
 	{// Read new files in the package tree
 	DirectoryReader dir_reader{};
-	if (!directory_reader::open(dir_reader, ".", true, true)) {
+	if (!directory_reader::open(dir_reader, ".", false, true, true)) {
 		TOGO_LOG_ERRORF(
 			"failed to open directory for package '%.*s': '%.*s'\n",
 			pkg_name.size, pkg_name.data,
@@ -61,21 +59,14 @@ static bool sync_package(
 
 	ResourcePathParts pp;
 	DirectoryEntry entry;
-	StringRef path;
 	while (directory_reader::read(dir_reader, entry, DirectoryEntry::Type::file)) {
-		path = {
-			entry.path.data + 2,
-			static_cast<unsigned>(
-				max(static_cast<signed>(entry.path.size) - 2, signed{0})
-			)
-		};
-		if (!resource::parse_path(path, pp)) {
-			TOGO_LOG_STATUS_('I', "(path parse failed)");
+		if (!resource::parse_path(entry.path, pp)) {
+			TOGO_LOG_STATUS_(entry.path, 'I', "(path parse failed)");
 		} else if (!compiler_manager::has_compiler(interface._manager, pp.type_hash)) {
-			TOGO_LOG_STATUS_('I', "(no compiler for type)");
+			TOGO_LOG_STATUS_(entry.path, 'I', "(no compiler for type)");
 		} else if (package_compiler::find_resource_id(pkg, pp, false) == 0) {
-			TOGO_LOG_STATUS_('A', "");
-			package_compiler::add_resource(pkg, path, pp);
+			TOGO_LOG_STATUS_(entry.path, 'A', "");
+			package_compiler::add_resource(pkg, entry.path, pp);
 		}
 	}
 	directory_reader::close(dir_reader);
