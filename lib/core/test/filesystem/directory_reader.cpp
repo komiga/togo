@@ -40,7 +40,7 @@ signed main() {
 		{false, type_file, ROOT "/inner_dir/file"}
 	};
 
-	TOGO_ASSERTE(directory_reader::open(reader, ROOT, true, true));
+	TOGO_ASSERTE(directory_reader::open(reader, ROOT, true, true, true));
 	while (directory_reader::read(reader, entry, type_mask)) {
 		match = nullptr;
 		for (auto& x : expected_entries) {

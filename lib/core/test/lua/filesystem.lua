@@ -12,6 +12,6 @@ local entry_type_name = {
 	[FS.EntryType.all] = "all",
 }
 
-for path, entry_type in FS.iterate_dir(".", FS.EntryType.all, true, true) do
+for path, entry_type in FS.iterate_dir(".", FS.EntryType.all, false, true, true) do
 	U.print("%-4s %s", entry_type_name[entry_type], path)
 end
