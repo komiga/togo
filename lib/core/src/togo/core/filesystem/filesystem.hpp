@@ -53,6 +53,9 @@ inline unsigned working_dir(FixedArray<char, N>& str) {
 /// Set the working directory path.
 bool set_working_dir(StringRef const& path);
 
+/// Whether path exists.
+bool exists(StringRef const& path);
+
 /// Whether path is a file.
 bool is_file(StringRef const& path);
 

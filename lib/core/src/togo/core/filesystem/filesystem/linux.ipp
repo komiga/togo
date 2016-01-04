@@ -110,6 +110,20 @@ inline static bool fstat_wrapper(
 	return true;
 }
 
+bool filesystem::exists(StringRef const& path) {
+	if (::access(filesystem::to_cstring(path).data, F_OK) != 0) {
+		// Thanks, POSIX!
+		if (errno != EACCES && errno != ENOENT) {
+			TOGO_LOG_DEBUGF(
+				"exists: errno = %d, %s\n",
+				errno, std::strerror(errno)
+			);
+		}
+		return false;
+	}
+	return true;
+}
+
 bool filesystem::is_file(StringRef const& path) {
 	struct ::stat stat_buf{};
 	if (!stat_wrapper(filesystem::to_cstring(path), stat_buf)) {
