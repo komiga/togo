@@ -12,3 +12,23 @@
 #else
 	#error "unimplemented for target platform"
 #endif
+
+namespace togo {
+
+/// Get the directory part of a path.
+StringRef filesystem::path_dir(StringRef const& path) {
+	auto p = path.data + path.size - 1;
+	if (path.size > 1) {
+		while (*p == '/') {
+			--p;
+		}
+	}
+	for (; p >= path.data; --p) {
+		if (*p == '/') {
+			return {path.data, static_cast<unsigned>(p - path.data + (p == path.data))};
+		}
+	}
+	return ".";
+}
+
+} // namespace togo
