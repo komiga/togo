@@ -70,6 +70,11 @@ inline unsigned size(Array<char> const& string) {
 	;
 }
 
+/// Get the size of a string reference.
+inline unsigned size(StringRef const& string) {
+	return string.size;
+}
+
 /// Copy string.
 ///
 /// dst will be NUL-terminated.
