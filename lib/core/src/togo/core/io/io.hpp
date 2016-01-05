@@ -9,13 +9,19 @@
 
 #pragma once
 
+// igen-source: io/io_li.cpp
+
 #include <togo/core/config.hpp>
 #include <togo/core/types.hpp>
+#include <togo/core/collection/types.hpp>
 #include <togo/core/utility/types.hpp>
 #include <togo/core/utility/constraints.hpp>
 #include <togo/core/utility/endian.hpp>
 #include <togo/core/io/types.hpp>
 #include <togo/core/io/proto.hpp>
+#include <togo/core/lua/types.hpp>
+
+#include <togo/core/io/io.gen_interface>
 
 namespace togo {
 namespace io {
