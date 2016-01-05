@@ -170,12 +170,16 @@ function M.log(msg, ...)
 	print(M.get_trace(1) .. ": " .. string.format(msg, ...))
 end
 
-function M.log_debug(msg, ...)
-	M.type_assert(msg, "string")
-	if M.debug then
-		print(M.get_trace(1) .. ": debug: " .. string.format(msg, ...))
+function M.log_debug_closure(m)
+	return function(msg, ...)
+		M.type_assert(msg, "string")
+		if m.debug then
+			print(M.get_trace(1) .. ": debug: " .. string.format(msg, ...))
+		end
 	end
 end
+
+M.log_debug = M.log_debug_closure(M)
 
 function M.min(x, y)
 	return x < y and x or y
