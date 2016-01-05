@@ -136,12 +136,11 @@ TOGO_LI_FUNC_DEF(iterate_dir) {
 	lua::push_value(L, type_mask);
 	lua_pushcclosure(L, TOGO_LI_FUNC(iterate_dir_iter), 1);
 	auto& reader = *lua::new_userdata<DirectoryReader>(L);
-	lua::push_value(L, unsigned_cast(type_mask));
 	if (!directory_reader::open(reader, path, prepend_path, recursive, ignore_dotfiles)) {
-		lua_pop(L, 3);
+		lua_pop(L, 2);
 		return luaL_error(L, "failed to open directory for reading: %s", path.data);
 	}
-	return 3;
+	return 2;
 }
 
 } // namespace filesystem
