@@ -21,7 +21,7 @@ TOGO_LI_FUNC_DEF(read_file) {
 
 	FileReader stream;
 	if (!stream.open(path)) {
-		return luaL_error(L, "failed to open file for reading: %.*s", path.size, path.data);
+		return luaL_error(L, "failed to open file for reading: %s", path.data);
 	}
 	u64 remaining = filesystem::file_size(path);
 	Array<char> data{memory::scratch_allocator()};
@@ -30,7 +30,7 @@ TOGO_LI_FUNC_DEF(read_file) {
 	unsigned read_size;
 	while (remaining) {
 		if (!io::read(stream, p, remaining, &read_size)) {
-			return luaL_error(L, "failed to read chunk from file: %.*s", path.size, path.data);
+			return luaL_error(L, "failed to read chunk from file: %s", path.data);
 		}
 		remaining -= read_size;
 		p += read_size;
@@ -48,10 +48,10 @@ TOGO_LI_FUNC_DEF(write_file) {
 
 	FileWriter stream;
 	if (!stream.open(path, false)) {
-		return luaL_error(L, "failed to open file for writing: %.*s", path.size, path.data);
+		return luaL_error(L, "failed to open file for writing: %s", path.data);
 	}
 	if (!io::write(stream, data.data, data.size)) {
-		return luaL_error(L, "failed to write file: %.*s", path.size, path.data);
+		return luaL_error(L, "failed to write file: %s", path.data);
 	}
 	stream.close();
 	return 0;
