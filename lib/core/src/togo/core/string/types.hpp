@@ -21,6 +21,11 @@ namespace fixed_array {
 	struct FixedArray; // external
 } // namespace fixed_array
 
+namespace array {
+	template<class T>
+	struct Array; // external
+} // namespace array
+
 /**
 	@addtogroup lib_core_string
 	@{
@@ -45,6 +50,7 @@ struct StringRef {
 	constexpr StringRef(char const (&data)[N]);
 	template<unsigned N>
 	StringRef(fixed_array::FixedArray<char, N> const& array);
+	StringRef(array::Array<char> const& array);
 
 	bool valid() const;
 	bool any() const;
