@@ -49,6 +49,8 @@ struct StringRef {
 	bool valid() const;
 	bool any() const;
 	bool empty() const;
+
+	char operator[](unsigned const i) const;
 };
 
 /** @} */ // end of doc-group lib_core_string

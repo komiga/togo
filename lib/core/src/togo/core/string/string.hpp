@@ -241,6 +241,12 @@ inline bool StringRef::empty() const {
 	return size == 0;
 }
 
+/// Get value by index.
+inline char StringRef::operator[](unsigned const i) const {
+	TOGO_DEBUG_ASSERTE(i < size);
+	return data[i];
+}
+
 /** @cond INTERNAL */
 inline char const* begin(StringRef const& str) { return str.data; }
 inline char const* cbegin(StringRef const& str) { return str.data; }
