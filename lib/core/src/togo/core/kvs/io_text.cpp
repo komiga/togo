@@ -182,7 +182,7 @@ static bool kvs_write_collection(
 inline static unsigned quote_level(StringRef const& str) {
 	unsigned level = str.empty() ? 1 : 0;
 	if (str.size >= 1) {
-		if (is_number_lead(static_cast<signed>(str.data[0]))) {
+		if (is_number_lead(static_cast<signed>(str[0]))) {
 			level = 1;
 		}
 	}

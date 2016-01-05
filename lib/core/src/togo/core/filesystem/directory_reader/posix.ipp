@@ -123,7 +123,7 @@ bool directory_reader::read(
 		StringRef const entry_name{ent->d_name, cstr_tag{}};
 		if (
 			directory_reader::option_ignore_dotfiles(reader) &&
-			entry_name.data[0] == '.'
+			entry_name[0] == '.'
 		) {
 			continue;
 		}

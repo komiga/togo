@@ -45,13 +45,13 @@ bool resource::parse_path(
 	unsigned tag_first = NOT_FOUND;
 	ResourcePathParts::Tag tag;
 	for (unsigned i = 0; i < path.size; ++i) {
-		if (path.data[i] == '.') {
+		if (path[i] == '.') {
 			if (ext_i == NOT_FOUND) {
 				ext_i = i;
 			} else {
 				return false;
 			}
-		} else if (path.data[i] == '#') {
+		} else if (path[i] == '#') {
 			if (tag_i == NOT_FOUND) {
 				tag_first = i;
 			} else if (tag_i == i || fixed_array::space(pp.tags) == 0) {
@@ -75,8 +75,8 @@ bool resource::parse_path(
 		ext_i == NOT_FOUND || ext_i == 0 || ext_i == last_index ||
 		ext_i > tag_first  || type_last - type_first == 0 ||
 		tag_i == path.size ||
-		path.data[ext_i - 1] == '/' ||
-		path.data[ext_i - 1] == '\\'
+		path[ext_i - 1] == '/' ||
+		path[ext_i - 1] == '\\'
 	) {
 		return false;
 	}
