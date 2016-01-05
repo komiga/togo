@@ -21,7 +21,8 @@ TOGO_LI_FUNC_DEF(read_file) {
 
 	FileReader stream;
 	if (!stream.open(path)) {
-		return luaL_error(L, "failed to open file for reading: %s", path.data);
+		lua::push_value(L, null_tag{});
+		return 1;
 	}
 	u64 remaining = filesystem::file_size(path);
 	Array<char> data{memory::scratch_allocator()};
@@ -30,7 +31,9 @@ TOGO_LI_FUNC_DEF(read_file) {
 	unsigned read_size;
 	while (remaining) {
 		if (!io::read(stream, p, remaining, &read_size)) {
-			return luaL_error(L, "failed to read chunk from file: %s", path.data);
+			stream.close();
+			lua::push_value(L, null_tag{});
+			return 1;
 		}
 		remaining -= read_size;
 		p += read_size;
@@ -46,15 +49,20 @@ TOGO_LI_FUNC_DEF(write_file) {
 	auto path = lua::get_string(L, 1);
 	auto data = lua::get_string(L, 2);
 
+	bool success = false;
 	FileWriter stream;
 	if (!stream.open(path, false)) {
-		return luaL_error(L, "failed to open file for writing: %s", path.data);
+		goto l_exit;
 	}
 	if (!io::write(stream, data.data, data.size)) {
-		return luaL_error(L, "failed to write file: %s", path.data);
+		goto l_exit;
 	}
+	success = true;
+
+l_exit:
 	stream.close();
-	return 0;
+	lua::push_value(L, success);
+	return 1;
 }
 
 } // namespace io
