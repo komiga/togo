@@ -29,6 +29,12 @@ TOGO_LI_FUNC_DEF(path_dir) {
 	return 1;
 }
 
+TOGO_LI_FUNC_DEF(path_file) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, filesystem::path_file(path));
+	return 1;
+}
+
 TOGO_LI_FUNC_DEF(working_dir) {
 	FixedArray<char, 256> path{};
 	filesystem::working_dir(path);
@@ -142,6 +148,8 @@ TOGO_LI_FUNC_DEF(iterate_dir) {
 
 static luaL_reg const li_funcs[]{
 	TOGO_LI_FUNC_REF(filesystem, path_dir)
+	TOGO_LI_FUNC_REF(filesystem, path_file)
+
 	TOGO_LI_FUNC_REF(filesystem, working_dir)
 	TOGO_LI_FUNC_REF(filesystem, set_working_dir)
 	TOGO_LI_FUNC_REF(filesystem, is_file)
