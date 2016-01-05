@@ -4,11 +4,15 @@
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/filesystem/filesystem.hpp>
+#include <togo/core/io/io.hpp>
 #include <togo/core/lua/lua.hpp>
+
+#include <togo/support/test.hpp>
 
 using namespace togo;
 
 signed main(signed argc, char* argv[]) {
+	memory_init();
 	if (argc == 1) {
 		TOGO_LOG("usage: general.elf script [...]");
 		return 1;
@@ -19,13 +23,14 @@ signed main(signed argc, char* argv[]) {
 	luaL_openlibs(L);
 	lua::register_core(L);
 	filesystem::register_lua_interface(L);
+	io::register_lua_interface(L);
 
 	lua::push_value(L, lua::pcall_error_message_handler);
 	for (signed i = 1; i < argc; ++i) {
 		StringRef path{argv[i], cstr_tag{}};
 		TOGO_ASSERTF(
 			filesystem::is_file(path),
-			"error: path is either not a file or does not exist: %.*s\n",
+			"path is either not a file or does not exist: %.*s\n",
 			path.size, path.data
 		);
 
