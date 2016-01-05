@@ -20,13 +20,14 @@ signed main(signed argc, char* argv[]) {
 	lua::register_core(L);
 	filesystem::register_lua_interface(L);
 
-	lua_pushcfunction(L, lua::pcall_error_message_handler);
+	lua::push_value(L, lua::pcall_error_message_handler);
 	for (signed i = 1; i < argc; ++i) {
 		StringRef path{argv[i], cstr_tag{}};
-		if (!filesystem::is_file(path)) {
-			TOGO_LOGF("error: path is either not a file or does not exist: %.*s\n", path.size, path.data);
-			continue;
-		}
+		TOGO_ASSERTF(
+			filesystem::is_file(path),
+			"error: path is either not a file or does not exist: %.*s\n",
+			path.size, path.data
+		);
 
 		if (luaL_loadfile(L, path.data)) {
 			auto error = lua::get_string(L, -1);
