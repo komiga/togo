@@ -3,11 +3,13 @@ local U = require "togo.utility"
 local IO = require "togo.io"
 
 do
-	local test_file = "data/lua_io"
+	local inaccessible_path = "inaccessible/path"
+	local test_path = "data/lua_io"
 	local test_data = [[test]]
 
-	IO.write_file(test_file, test_data)
-	local data = IO.read_file(test_file)
+	U.assert(IO.write_file(inaccessible_path, test_data) == false)
+	U.assert(IO.read_file(inaccessible_path) == nil)
 
-	U.assert(data == test_data)
+	U.assert(IO.write_file(test_path, test_data) == true)
+	U.assert(IO.read_file(test_path) == test_data)
 end
