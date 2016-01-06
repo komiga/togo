@@ -153,7 +153,10 @@ signed main() {
 	TOGO_ASSERTE(!filesystem::remove_file(TEST_FILE_COPIED));
 
 	// Directory removal
+	TOGO_ASSERTE(filesystem::is_empty_directory(TEST_DIR, false));
 	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR));
+	TOGO_ASSERTE(filesystem::is_empty_directory(TEST_DIR, true));
+	TOGO_ASSERTE(!filesystem::is_empty_directory(TEST_DIR, false));
 	TOGO_ASSERTE(!filesystem::is_directory(TEST_DIR));
 	TOGO_ASSERTE(!filesystem::remove_directory(TEST_DIR));
 	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR, true));
