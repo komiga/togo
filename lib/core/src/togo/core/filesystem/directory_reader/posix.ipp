@@ -72,12 +72,11 @@ void directory_reader::close(
 ) {
 	auto& impl = reader._impl;
 	if (fixed_array::any(impl.nodes)) {
-		while (fixed_array::any(impl.nodes)) {
-			auto const& node = fixed_array::back(impl.nodes);
+		for (auto it = end(impl.nodes) - 1; it >= begin(impl.nodes); --it) {
 			// NB: It doesn't really matter if this fails, as its only error is
 			// when the handle has been invalidated (e.g., if the directory was
 			// unlinked from the filesystem), which is no concern of ours.
-			(void)(::closedir(node.handle));
+			(void)(::closedir(it->handle));
 		}
 		fixed_array::clear(impl.nodes);
 		fixed_array::clear(impl.path);
