@@ -81,7 +81,8 @@ TOGO_LI_FUNC_DEF(create_file) {
 
 TOGO_LI_FUNC_DEF(remove_file) {
 	auto path = lua::get_string(L, 1);
-	lua::push_value(L, filesystem::remove_file(path));
+	bool accept_nonexistent = luaL_opt(L, lua::get_boolean, 2, false);
+	lua::push_value(L, filesystem::remove_file(path, accept_nonexistent));
 	return 1;
 }
 
@@ -102,13 +103,15 @@ TOGO_LI_FUNC_DEF(copy_file) {
 
 TOGO_LI_FUNC_DEF(create_directory) {
 	auto path = lua::get_string(L, 1);
-	lua::push_value(L, filesystem::create_directory(path));
+	bool accept_exists = luaL_opt(L, lua::get_boolean, 2, false);
+	lua::push_value(L, filesystem::create_directory(path, accept_exists));
 	return 1;
 }
 
 TOGO_LI_FUNC_DEF(remove_directory) {
 	auto path = lua::get_string(L, 1);
-	lua::push_value(L, filesystem::remove_directory(path));
+	bool accept_nonexistent = luaL_opt(L, lua::get_boolean, 2, false);
+	lua::push_value(L, filesystem::remove_directory(path, accept_nonexistent));
 	return 1;
 }
 
