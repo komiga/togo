@@ -60,6 +60,13 @@ TOGO_LI_FUNC_DEF(is_directory) {
 	return 1;
 }
 
+TOGO_LI_FUNC_DEF(is_empty_directory) {
+	auto path = lua::get_string(L, 1);
+	bool accept_nonexistent = luaL_opt(L, lua::get_boolean, 2, false);
+	lua::push_value(L, filesystem::is_empty_directory(path, accept_nonexistent));
+	return 1;
+}
+
 TOGO_LI_FUNC_DEF(time_last_modified) {
 	auto path = lua::get_string(L, 1);
 	lua::push_value(L, filesystem::time_last_modified(path));
@@ -156,6 +163,7 @@ static luaL_reg const li_funcs[]{
 	TOGO_LI_FUNC_REF(filesystem, set_working_dir)
 	TOGO_LI_FUNC_REF(filesystem, is_file)
 	TOGO_LI_FUNC_REF(filesystem, is_directory)
+	TOGO_LI_FUNC_REF(filesystem, is_empty_directory)
 	TOGO_LI_FUNC_REF(filesystem, time_last_modified)
 	TOGO_LI_FUNC_REF(filesystem, file_size)
 	TOGO_LI_FUNC_REF(filesystem, create_file)
