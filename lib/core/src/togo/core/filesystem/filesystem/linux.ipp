@@ -11,6 +11,7 @@
 #include <togo/core/string/string.hpp>
 #include <togo/core/filesystem/filesystem.hpp>
 #include <togo/core/filesystem/filesystem/private.hpp>
+#include <togo/core/filesystem/directory_reader.hpp>
 
 #include <cerrno>
 #include <cstring>
@@ -138,6 +139,24 @@ bool filesystem::is_directory(StringRef path) {
 		return false;
 	}
 	return S_ISDIR(stat_buf.st_mode);
+}
+
+bool filesystem::is_empty_directory(StringRef path, bool accept_nonexistent) {
+	path = filesystem::to_cstring(path);
+	if (!filesystem::is_directory(path)) {
+		return accept_nonexistent;
+	}
+	DirectoryReader reader;
+	if (!directory_reader::open(reader, path, false, false, false)) {
+		return false;
+	}
+	bool empty;
+	{
+		DirectoryEntry entry;
+		empty = !directory_reader::read(reader, entry, DirectoryEntry::Type::all);
+	}
+	directory_reader::close(reader);
+	return empty;
 }
 
 u64 filesystem::time_last_modified(StringRef path) {

@@ -62,6 +62,12 @@ bool is_file(StringRef path);
 /// Whether path is a directory.
 bool is_directory(StringRef path);
 
+/// Whether path is an empty directory.
+///
+/// Unless accept_nonexistent == true, this will return false if the directory
+/// does not exist.
+bool is_empty_directory(StringRef path, bool accept_nonexistent = false);
+
 /// Last-modified time of file in seconds since the POSIX epoch.
 ///
 /// Returns 0 on error. Only time-travelers would have a legitimate reason
