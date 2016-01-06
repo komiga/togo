@@ -74,7 +74,10 @@ void directory_reader::close(
 	if (fixed_array::any(impl.nodes)) {
 		while (fixed_array::any(impl.nodes)) {
 			auto const& node = fixed_array::back(impl.nodes);
-			TOGO_DEBUG_ASSERTE(::closedir(node.handle));
+			// NB: It doesn't really matter if this fails, as its only error is
+			// when the handle has been invalidated (e.g., if the directory was
+			// unlinked from the filesystem), which is no concern of ours.
+			(void)(::closedir(node.handle));
 		}
 		fixed_array::clear(impl.nodes);
 		fixed_array::clear(impl.path);
