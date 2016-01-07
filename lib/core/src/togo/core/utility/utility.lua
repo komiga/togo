@@ -1,8 +1,8 @@
 u8R""__RAW_STRING__(
 
 togo = togo or {}
-togo.Util = togo.Util or {}
-local M = togo.Util
+togo.utility = togo.utility or {}
+local M = togo.utility
 
 M.debug = false
 
@@ -70,7 +70,7 @@ function M.type_assert(x, tc, opt, level)
 	M.assertl(
 		level + 1,
 		(opt and x == nil) or M.is_type(x, tc),
-		"Util.type_assert: '%s' (a %s) is not of type %s",
+		"utility.type_assert: '%s' (a %s) is not of type %s",
 		tostring(x), tostring(type(x)), tostring(tc)
 	)
 	return x
@@ -91,7 +91,7 @@ function M.type_assert_any(x, types, opt, level)
 	end
 	M.assertl(
 		level + 1, false,
-		"Util.type_assert_any: '%s' (a %s) is not of any types specified",
+		"utility.type_assert_any: '%s' (a %s) is not of any types specified",
 		tostring(x), tostring(type(x))
 	)
 	return x
