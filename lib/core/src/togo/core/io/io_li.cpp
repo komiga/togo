@@ -67,18 +67,21 @@ l_exit:
 
 } // namespace io
 
-static luaL_reg const li_funcs[]{
+static LuaModuleFunctionArray const li_funcs{
 	TOGO_LI_FUNC_REF(io, read_file)
 	TOGO_LI_FUNC_REF(io, write_file)
+};
 
-	{nullptr, nullptr}
+static LuaModuleRef const li_module{
+	"togo.io",
+	"togo/core/io/io.lua",
+	li_funcs,
+	#include <togo/core/io/io.lua>
 };
 
 /// Register the Lua interface.
 void io::register_lua_interface(lua_State* L) {
-	luaL_register(L, "togo.io", li_funcs);
-	lua_pop(L, 1); // module table
+	lua::preload_module(L, li_module);
 }
 
 } // namespace togo
-
