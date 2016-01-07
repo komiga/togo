@@ -6,9 +6,9 @@
 #include <togo/core/config.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/collection/array.hpp>
+#include <togo/core/filesystem/filesystem.hpp>
 #include <togo/core/io/io.hpp>
 #include <togo/core/io/file_stream.hpp>
-#include <togo/core/filesystem/filesystem.hpp>
 #include <togo/core/lua/lua.hpp>
 
 namespace togo {

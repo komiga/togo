@@ -4,8 +4,8 @@
 */
 
 #include <togo/core/config.hpp>
-#include <togo/core/utility/args.hpp>
 #include <togo/core/utility/utility.hpp>
+#include <togo/core/utility/args.hpp>
 #include <togo/core/memory/temp_allocator.hpp>
 #include <togo/core/kvs/kvs.hpp>
 #include <togo/core/lua/lua.hpp>

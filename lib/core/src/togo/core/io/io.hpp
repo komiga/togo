@@ -13,10 +13,10 @@
 
 #include <togo/core/config.hpp>
 #include <togo/core/types.hpp>
-#include <togo/core/collection/types.hpp>
 #include <togo/core/utility/types.hpp>
 #include <togo/core/utility/constraints.hpp>
 #include <togo/core/utility/endian.hpp>
+#include <togo/core/collection/types.hpp>
 #include <togo/core/io/types.hpp>
 #include <togo/core/io/proto.hpp>
 #include <togo/core/lua/types.hpp>
