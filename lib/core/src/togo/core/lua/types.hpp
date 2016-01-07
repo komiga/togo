@@ -58,10 +58,20 @@ using LuaFloat = LUA_NUMBER;
 /// Lua C function.
 using LuaCFunction = signed(lua_State* L);
 
+/// Lua module function.
+struct LuaModuleFunction {
+	StringRef name;
+	LuaCFunction* func;
+};
+
+/// Lua module function static array type.
+using LuaModuleFunctionArray = LuaModuleFunction const[];
+
 /// Lua module source reference.
 struct LuaModuleRef {
 	StringRef name;
 	StringRef chunk_name;
+	ArrayRef<LuaModuleFunction const> funcs;
 	StringRef source;
 };
 

@@ -55,17 +55,13 @@ signed lua::pcall_error_message_handler(lua_State* L) {
 
 namespace {
 
-static LuaModuleRef const li_modules[]{
-{
-	"togo.utility",
-	"togo/core/utility/utility.lua",
-	#include <togo/core/utility/utility.lua>
-},
-};
-
 static signed package_preloader(lua_State* L) {
 	StringRef specified_chunk_name = lua::get_string(L, lua_upvalueindex(1));
 	StringRef source = lua::get_string(L, lua_upvalueindex(2));
+	auto funcs = array_cref(
+		unsigned_cast(lua::get_integer(L, lua_upvalueindex(3))),
+		lua::get_lightuserdata_typed<LuaModuleFunction const>(L, lua_upvalueindex(4))
+	);
 	StringRef modname = lua::get_string(L, 1);
 	FixedArray<char, 128> chunk_name{};
 
@@ -81,17 +77,23 @@ static signed package_preloader(lua_State* L) {
 	if (luaL_loadbufferx(L, source.data, source.size, begin(chunk_name), "t")) {
 		return lua_error(L);
 	}
-	// -> return
+	// -> result
 	if (lua_pcall(L, 0, 1, -2)) {
 		return lua_error(L);
 	}
 	lua_remove(L, -2); // pcall_message_handler
 
+	if (begin(funcs) && lua_type(L, -1) == LUA_TTABLE) {
+		for (auto const& mf : funcs) {
+			lua::table_set(L, mf.name, mf.func);
+		}
+	}
+
 	// remove preloader
 	lua::table_get_raw(L, LUA_REGISTRYINDEX, "_PRELOAD");
 	lua::table_set_raw(L, modname, null_tag{});
 	lua_pop(L, 1); // _PRELOAD
-	return 1;
+	return 1; // result
 }
 
 } // anonymous namespace
@@ -104,8 +106,10 @@ void lua::preload_module(lua_State* L, LuaModuleRef const& module) {
 	lua::push_value(L, module.name);
 	lua::push_value(L, module.chunk_name);
 	lua::push_value(L, module.source);
-	lua_pushcclosure(L, package_preloader, 2);
-	lua_rawset(L, -3); // _PRELOAD[module.name] = closure{package_preloader, module.chunk_name, module.source}
+	lua::push_value(L, module.funcs.size());
+	lua::push_lightuserdata(L, const_cast<LuaModuleFunction*>(begin(module.funcs)));
+	lua_pushcclosure(L, package_preloader, 4);
+	lua_rawset(L, -3); // _PRELOAD[module.name] = closure
 	lua_pop(L, 1); // _PRELOAD
 }
 
@@ -114,10 +118,6 @@ void lua::register_core(lua_State* L) {
 	lua_createtable(L, 0, 32);
 	lua::table_set_copy_raw(L, LUA_REGISTRYINDEX, "togo_class", -1);
 	lua_pop(L, 1);
-
-	for (auto& module : li_modules) {
-		lua::preload_module(L, module);
-	}
 }
 
 } // namespace togo
