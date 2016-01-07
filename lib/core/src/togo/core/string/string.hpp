@@ -10,7 +10,7 @@
 #pragma once
 
 #include <togo/core/config.hpp>
-#include <togo/core/utility/tags.hpp>
+#include <togo/core/utility/types.hpp>
 #include <togo/core/collection/fixed_array.hpp>
 #include <togo/core/collection/array.hpp>
 #include <togo/core/string/types.hpp>

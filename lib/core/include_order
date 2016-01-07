@@ -4,7 +4,6 @@ return {
 		N("assert"),
 	}),
 	M("utility", {
-		N("tags"),
 		N("traits"),
 		N("constraints"),
 		N("utility"),

@@ -11,7 +11,7 @@
 #pragma once
 
 #include <togo/core/config.hpp>
-#include <togo/core/utility/tags.hpp>
+#include <togo/core/utility/types.hpp>
 
 namespace togo {
 

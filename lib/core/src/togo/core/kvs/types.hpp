@@ -12,7 +12,7 @@
 
 #include <togo/core/config.hpp>
 #include <togo/core/types.hpp>
-#include <togo/core/utility/tags.hpp>
+#include <togo/core/utility/types.hpp>
 #include <togo/core/utility/traits.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/math/types.hpp>
