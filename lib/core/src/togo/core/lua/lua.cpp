@@ -118,6 +118,8 @@ void lua::register_core(lua_State* L) {
 	lua_createtable(L, 0, 32);
 	lua::table_set_copy_raw(L, LUA_REGISTRYINDEX, "togo_class", -1);
 	lua_pop(L, 1);
+
+	utility::register_lua_interface(L);
 }
 
 } // namespace togo
