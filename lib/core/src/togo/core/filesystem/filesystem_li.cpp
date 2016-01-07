@@ -153,9 +153,26 @@ TOGO_LI_FUNC_DEF(iterate_dir) {
 	return 2;
 }
 
+TOGO_LI_FUNC_DEF(__module_init__) {
+	lua::register_userdata<DirectoryReader>(L, directory_reader::li_destroy);
+
+	lua_createtable(L, 0, 3);
+	lua::table_set_copy_raw(L, 1, "EntryType", -1);
+	lua::table_set_raw(L, "file", unsigned_cast(DirectoryEntry::Type::file));
+	lua::table_set_raw(L, "dir" , unsigned_cast(DirectoryEntry::Type::dir));
+	lua::table_set_raw(L, "all" , unsigned_cast(DirectoryEntry::Type::all));
+	lua_pop(L, 1);
+
+	return 0;
+}
+
 } // namespace filesystem
 
-static luaL_reg const li_funcs[]{
+namespace {
+
+static LuaModuleFunctionArray const li_funcs{
+	TOGO_LI_FUNC_REF(filesystem, __module_init__)
+
 	TOGO_LI_FUNC_REF(filesystem, path_dir)
 	TOGO_LI_FUNC_REF(filesystem, path_file)
 
@@ -174,22 +191,20 @@ static luaL_reg const li_funcs[]{
 	TOGO_LI_FUNC_REF(filesystem, remove_directory)
 
 	TOGO_LI_FUNC_REF(filesystem, iterate_dir)
-	{nullptr, nullptr}
 };
+
+static LuaModuleRef const li_module{
+	"togo.filesystem",
+	"togo/core/filesystem/filesystem.lua",
+	li_funcs,
+	#include <togo/core/filesystem/filesystem.lua>
+};
+
+} // anonymous namespace
 
 /// Register the Lua interface.
 void filesystem::register_lua_interface(lua_State* L) {
-	lua::register_userdata<DirectoryReader>(L, directory_reader::li_destroy);
-	luaL_register(L, "togo.filesystem", li_funcs);
-
-	lua_createtable(L, 0, 3);
-	lua::table_set_copy_raw(L, -4, "EntryType", -1);
-	lua::table_set_raw(L, "file", unsigned_cast(DirectoryEntry::Type::file));
-	lua::table_set_raw(L, "dir" , unsigned_cast(DirectoryEntry::Type::dir));
-	lua::table_set_raw(L, "all" , unsigned_cast(DirectoryEntry::Type::all));
-	lua_pop(L, 1);
-
-	lua_pop(L, 1); // module table
+	lua::preload_module(L, li_module);
 }
 
 } // namespace togo
