@@ -125,13 +125,13 @@ inline void table_set_raw(lua_State* L, StringRef name, T value) {
 	lua::table_set_raw(L, -3, name, value);
 }
 
-/// Fetch the value of table[name] and push it on the stack (with getfield).
+/// Fetch the value of table[name] and push it on the stack (with gettable).
 inline void table_get(lua_State* L, signed table, StringRef name) {
 	lua::push_value(L, name);
 	lua_gettable(L, table);
 }
 
-/// Fetch the value of top_of_stack[name] and push it on the stack (with getfield).
+/// Fetch the value of top_of_stack[name] and push it on the stack (with gettable).
 inline void table_get(lua_State* L, StringRef name) {
 	lua::table_get(L, -2, name);
 }
