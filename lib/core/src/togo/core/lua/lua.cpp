@@ -81,18 +81,32 @@ static signed package_preloader(lua_State* L) {
 	if (lua_pcall(L, 0, 1, -2)) {
 		return lua_error(L);
 	}
-	lua_remove(L, -2); // pcall_message_handler
 
-	if (begin(funcs) && lua_type(L, -1) == LUA_TTABLE) {
+	if (lua_type(L, -1) != LUA_TTABLE) {
+		luaL_error(L, "wanted a table return value from module, but got a %s", luaL_typename(L, -1));
+	}
+	if (begin(funcs)) {
 		for (auto const& mf : funcs) {
 			lua::table_set(L, mf.name, mf.func);
 		}
+	}
+
+	lua::table_get(L, "__module_init__");
+	if (lua_type(L, -1) == LUA_TFUNCTION) {
+		lua_pushvalue(L, -2);
+		if (lua_pcall(L, 1, 0, -3)) {
+			return lua_error(L);
+		}
+	} else {
+		lua_pop(L, 1);
 	}
 
 	// remove preloader
 	lua::table_get_raw(L, LUA_REGISTRYINDEX, "_PRELOAD");
 	lua::table_set_raw(L, modname, null_tag{});
 	lua_pop(L, 1); // _PRELOAD
+
+	lua_remove(L, -2); // pcall_message_handler
 	return 1; // result
 }
 
