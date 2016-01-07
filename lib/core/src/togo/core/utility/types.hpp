@@ -49,7 +49,46 @@ enum class Endian : unsigned {
 
 /// Array reference.
 template<class T>
-struct ArrayRef;
+struct ArrayRef {
+	T* _begin;
+	T* _end;
+
+	ArrayRef(null_ref_tag const)
+		: _begin(nullptr)
+		, _end(nullptr)
+	{}
+
+	ArrayRef(T* const begin, T* const end)
+		: _begin(begin)
+		, _end(end)
+	{}
+
+	ArrayRef(unsigned const size, T* const data)
+		: ArrayRef(data, data + size)
+	{}
+
+	template<unsigned N>
+	ArrayRef(T (&data)[N])
+		: ArrayRef(data, data + N)
+	{}
+
+	template<class U/*, class = enable_if<std::is_convertible<U, T>::value>*/>
+	ArrayRef(ArrayRef<U> const& other)
+		: _begin(other._begin)
+		, _end(other._end)
+	{}
+
+	/// Number of items.
+	unsigned size() const {
+		return _end - _begin;
+	}
+
+	/// Get value by index.
+	T& operator[](unsigned const i);
+
+	/// Get value by index.
+	T const& operator[](unsigned const i) const;
+};
 
 /** @} */ // end of doc-group lib_core_utility
 

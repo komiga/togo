@@ -229,44 +229,19 @@ inline constexpr FlagT& operator&=(FlagT& x, FlagT const& y) noexcept {
 
 /** @name Collection utilities */ /// @{
 
+/// Get value by index.
 template<class T>
-struct ArrayRef {
-	T* _begin;
-	T* _end;
+inline T& ArrayRef<T>::operator[](unsigned const i) {
+	TOGO_DEBUG_ASSERTE(_begin + i < _end);
+	return _begin[i];
+}
 
-	inline ArrayRef(null_ref_tag const)
-		: _begin(nullptr)
-		, _end(nullptr)
-	{}
-
-	inline ArrayRef(T* const begin, T* const end)
-		: _begin(begin)
-		, _end(end)
-	{}
-
-	template<class U, class = enable_if<std::is_convertible<U, T>::value>>
-	inline ArrayRef(ArrayRef<U> const& other)
-		: _begin(other._begin)
-		, _end(other._end)
-	{}
-
-	/// Number of items.
-	unsigned size() const {
-		return _end - _begin;
-	}
-
-	/// Get value by index.
-	T& operator[](unsigned const i) {
-		TOGO_DEBUG_ASSERTE(_begin + i < _end);
-		return _begin[i];
-	}
-
-	/// Get value by index.
-	T const& operator[](unsigned const i) const {
-		TOGO_DEBUG_ASSERTE(_begin + i < _end);
-		return _begin[i];
-	}
-};
+/// Get value by index.
+template<class T>
+inline T const& ArrayRef<T>::operator[](unsigned const i) const {
+	TOGO_DEBUG_ASSERTE(_begin + i < _end);
+	return _begin[i];
+}
 
 /// Make reference to array.
 template<class T>
