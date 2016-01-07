@@ -2,7 +2,7 @@
 #include <togo/core/config.hpp>
 #include <togo/core/types.hpp>
 #include <togo/core/error/assert.hpp>
-#include <togo/core/utility/tags.hpp>
+#include <togo/core/utility/types.hpp>
 #include <togo/core/utility/traits.hpp>
 #include <togo/core/utility/constraints.hpp>
 #include <togo/core/utility/utility.hpp>
