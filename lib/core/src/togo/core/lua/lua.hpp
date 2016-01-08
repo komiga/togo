@@ -278,9 +278,10 @@ inline T* new_userdata(lua_State* L, P&&... p) {
 /// Get an argument from the stack as userdata (typed).
 template<class T>
 inline T* get_userdata(lua_State* L, signed narg, bool require = true) {
-	if (lua_type(L, narg) != LUA_TUSERDATA) {
+	{auto type = lua_type(L, narg);
+	if (type != LUA_TUSERDATA && type != LUA_TNIL) {
 		luaL_argerror(L, narg, "expected userdata");
-	}
+	}}
 	auto p = lua_touserdata(L, narg);
 	if (require && !p) {
 		luaL_argerror(L, narg, "value must be non-null");
@@ -311,9 +312,10 @@ inline void push_lightuserdata(lua_State* L, void* p) {
 
 /// Get an argument from the stack as light userdata.
 inline void* get_lightuserdata(lua_State* L, signed narg, bool require = true) {
-	if (lua_type(L, narg) != LUA_TLIGHTUSERDATA) {
+	{auto type = lua_type(L, narg);
+	if (type != LUA_TLIGHTUSERDATA && type != LUA_TNIL) {
 		luaL_argerror(L, narg, "expected light userdata");
-	}
+	}}
 	auto p = lua_touserdata(L, narg);
 	if (require && !p) {
 		luaL_argerror(L, narg, "value must be non-null");
