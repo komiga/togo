@@ -60,7 +60,7 @@ static signed package_preloader(lua_State* L) {
 	StringRef source = lua::get_string(L, lua_upvalueindex(2));
 	auto funcs = array_cref(
 		unsigned_cast(lua::get_integer(L, lua_upvalueindex(3))),
-		lua::get_lightuserdata_typed<LuaModuleFunction const>(L, lua_upvalueindex(4))
+		lua::get_lightuserdata_typed<LuaModuleFunction const>(L, lua_upvalueindex(4), false)
 	);
 	StringRef modname = lua::get_string(L, 1);
 	FixedArray<char, 128> chunk_name{};
