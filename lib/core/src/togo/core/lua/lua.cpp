@@ -55,7 +55,7 @@ signed lua::pcall_error_message_handler(lua_State* L) {
 
 namespace {
 
-static signed package_preloader(lua_State* L) {
+static signed module_loader(lua_State* L) {
 	StringRef specified_chunk_name = lua::get_string(L, lua_upvalueindex(1));
 	StringRef source = lua::get_string(L, lua_upvalueindex(2));
 	auto funcs = array_cref(
@@ -111,6 +111,31 @@ static signed package_preloader(lua_State* L) {
 	return 1; // result
 }
 
+static void push_module_loader(lua_State* L, LuaModuleRef const& module) {
+	lua::push_value(L, module.chunk_name);
+	lua::push_value(L, module.source);
+	lua::push_value(L, module.funcs.size());
+	lua::push_lightuserdata(L, const_cast<LuaModuleFunction*>(begin(module.funcs)));
+	lua_pushcclosure(L, module_loader, 4);
+}
+
+static void call_module_loader(lua_State* L, StringRef name, bool return_module) {
+	lua::push_value(L, name);
+	if (lua_pcall(L, 1, 1, -3)) {
+		auto err = lua::get_string(L, -1);
+		TOGO_ASSERTF(false, "error loading module: %.*s", err.size, err.data);
+	}
+	lua_remove(L, -2); // pcall_message_handler
+
+	lua::table_get_raw(L, LUA_REGISTRYINDEX, "_LOADED");
+	lua::table_set_copy_raw(L, name, -2);
+	lua_pop(L, 1); // _LOADED
+
+	if (!return_module) {
+		lua_pop(L, 1);
+	}
+}
+
 } // anonymous namespace
 
 /// Put module in package.preload[modname].
@@ -119,13 +144,52 @@ static signed package_preloader(lua_State* L) {
 void lua::preload_module(lua_State* L, LuaModuleRef const& module) {
 	lua::table_get_raw(L, LUA_REGISTRYINDEX, "_PRELOAD");
 	lua::push_value(L, module.name);
-	lua::push_value(L, module.chunk_name);
-	lua::push_value(L, module.source);
-	lua::push_value(L, module.funcs.size());
-	lua::push_lightuserdata(L, const_cast<LuaModuleFunction*>(begin(module.funcs)));
-	lua_pushcclosure(L, package_preloader, 4);
+	push_module_loader(L, module);
 	lua_rawset(L, -3); // _PRELOAD[module.name] = closure
 	lua_pop(L, 1); // _PRELOAD
+}
+
+/// Load module.
+///
+/// If return_module == true, this will return the module table at the top of
+/// the stack.
+void lua::load_module(
+	lua_State* L,
+	LuaModuleRef const& module,
+	bool return_module IGEN_DEFAULT(false)
+) {
+	lua::push_value(L, lua::pcall_error_message_handler);
+	push_module_loader(L, module);
+	call_module_loader(L, module.name, return_module);
+}
+
+/// Load module by name.
+void lua::load_module(
+	lua_State* L,
+	StringRef name,
+	bool return_module IGEN_DEFAULT(false)
+) {
+	lua::table_get_raw(L, LUA_REGISTRYINDEX, "_LOADED");
+	lua::table_get_raw(L, name);
+	lua_remove(L, -2);
+	if (lua_type(L, -1) != LUA_TNIL) {
+		if (!return_module) {
+			lua_pop(L, 1);
+		}
+		return;
+	}
+
+	lua::push_value(L, lua::pcall_error_message_handler);
+	lua::table_get_raw(L, LUA_REGISTRYINDEX, "_PRELOAD");
+	lua::table_get_raw(L, name);
+	lua_remove(L, -2);
+
+	TOGO_ASSERTF(
+		lua_type(L, -1) == LUA_TFUNCTION,
+		"module not found in _LOADED or _PRELOAD: %.*s",
+		name.size, name.data
+	);
+	call_module_loader(L, name, return_module);
 }
 
 /// Register basic interfaces.
