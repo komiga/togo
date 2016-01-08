@@ -78,7 +78,8 @@ static signed package_preloader(lua_State* L) {
 		return lua_error(L);
 	}
 	// -> result
-	if (lua_pcall(L, 0, 1, -2)) {
+	lua::push_value(L, modname);
+	if (lua_pcall(L, 1, 1, -3)) {
 		return lua_error(L);
 	}
 
