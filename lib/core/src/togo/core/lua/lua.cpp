@@ -119,11 +119,16 @@ static void call_module_loader(lua_State* L, StringRef name, bool return_module)
 		auto err = lua::get_string(L, -1);
 		TOGO_ASSERTF(false, "error loading module: %.*s", err.size, err.data);
 	}
-	lua_remove(L, -2); // pcall_message_handler
+	lua_remove(L, -2); // pcall_error_message_handler
 
 	lua::table_get_raw(L, LUA_REGISTRYINDEX, "_LOADED");
-	lua::table_set_copy_raw(L, name, -2);
-	lua_pop(L, 1); // _LOADED
+	{auto rtype = lua_type(L, -2);
+	if (rtype == LUA_TNIL || (rtype == LUA_TBOOLEAN && !lua::get_boolean(L, -2))) {
+		lua::table_set_raw(L, name, true);
+	} else {
+		lua::table_set_copy_raw(L, name, -2);
+	}}
+	lua_pop(L, 1);
 
 	if (!return_module) {
 		lua_pop(L, 1);
