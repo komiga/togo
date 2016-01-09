@@ -72,16 +72,13 @@ static signed module_loader(lua_State* L) {
 		string::append(chunk_name, modname);
 	}
 
-	lua::push_value(L, lua::pcall_error_message_handler);
-	// -> chunk
 	if (luaL_loadbufferx(L, source.data, source.size, begin(chunk_name), "t")) {
 		return lua_error(L);
 	}
-	// -> result
+	// -> chunk
 	lua::push_value(L, modname);
-	if (lua_pcall(L, 1, 1, -3)) {
-		return lua_error(L);
-	}
+	lua_call(L, 1, 1);
+	// -> result
 
 	if (lua_type(L, -1) != LUA_TTABLE) {
 		luaL_error(L, "wanted a table return value from module, but got a %s", luaL_typename(L, -1));
@@ -95,9 +92,7 @@ static signed module_loader(lua_State* L) {
 	lua::table_get(L, "__module_init__");
 	if (lua_type(L, -1) == LUA_TFUNCTION) {
 		lua_pushvalue(L, -2);
-		if (lua_pcall(L, 1, 0, -3)) {
-			return lua_error(L);
-		}
+		lua_call(L, 1, 0);
 	} else {
 		lua_pop(L, 1);
 	}
@@ -105,9 +100,8 @@ static signed module_loader(lua_State* L) {
 	// remove preloader
 	lua::table_get_raw(L, LUA_REGISTRYINDEX, "_PRELOAD");
 	lua::table_set_raw(L, modname, null_tag{});
-	lua_pop(L, 1); // _PRELOAD
+	lua_pop(L, 1);
 
-	lua_remove(L, -2); // pcall_message_handler
 	return 1; // result
 }
 
