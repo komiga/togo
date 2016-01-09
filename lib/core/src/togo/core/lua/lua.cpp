@@ -178,6 +178,7 @@ void lua::load_module(
 		}
 		return;
 	}
+	lua_pop(L, 1);
 
 	lua::push_value(L, lua::pcall_error_message_handler);
 	lua::table_get_raw(L, LUA_REGISTRYINDEX, "_PRELOAD");
