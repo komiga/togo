@@ -243,7 +243,7 @@ inline void table_set_copy_index_raw(lua_State* L, signed index, signed value) {
 }
 
 template<class T>
-inline void register_userdata(lua_State* L, LuaCFunction destroy) {
+inline void register_userdata(lua_State* L, LuaCFunction destroy, bool keep_metatable = false) {
 	lua::table_get_raw(L, LUA_REGISTRYINDEX, "togo_class");
 	TOGO_ASSERT(!lua_isnil(L, -1), "core was not registered");
 
@@ -257,7 +257,11 @@ inline void register_userdata(lua_State* L, LuaCFunction destroy) {
 
 	// togo_class[T::lua_metatable_name] = metatable
 	lua::table_set_copy_raw(L, -4, T::lua_metatable_name, -1);
-	lua_pop(L, 2); // metatable, togo_class
+	lua_remove(L, -2); // togo_class
+
+	if (!keep_metatable) {
+		lua_pop(L, 1);
+	}
 }
 
 /// Push a new userdata to the stack and setup its metatable.
