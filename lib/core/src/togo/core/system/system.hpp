@@ -9,10 +9,14 @@
 
 #pragma once
 
+// igen-source: system/system_li.cpp
+
 #include <togo/core/config.hpp>
 #include <togo/core/types.hpp>
 #include <togo/core/collection/fixed_array.hpp>
 #include <togo/core/string/types.hpp>
+#include <togo/core/lua/types.hpp>
+
 #include <togo/core/system/system.gen_interface>
 
 namespace togo {
