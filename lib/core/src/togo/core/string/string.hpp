@@ -81,7 +81,7 @@ inline unsigned size(StringRef const& string) {
 /// The capacity of dst (N) must be at least src.size + 1.
 template<unsigned N>
 inline void copy(char (&dst)[N], StringRef const& src) {
-	copy(dst, N, src);
+	string::copy(dst, N, src);
 }
 
 /// Copy string.
@@ -94,7 +94,7 @@ inline void copy(
 	StringRef const& src
 ) {
 	fixed_array::resize(dst, src.size + 1);
-	copy(fixed_array::begin(dst), fixed_array::size(dst), src);
+	string::copy(fixed_array::begin(dst), fixed_array::size(dst), src);
 }
 
 /// Copy string.
@@ -105,7 +105,7 @@ inline void copy(
 	StringRef const& src
 ) {
 	array::resize(dst, src.size + 1);
-	copy(array::begin(dst), array::size(dst), src);
+	string::copy(array::begin(dst), array::size(dst), src);
 }
 
 /// Append to string.
@@ -118,7 +118,7 @@ inline void append(
 	unsigned const size,
 	StringRef const& str
 ) {
-	copy(dst + size, capacity, str);
+	string::copy(dst + size, capacity, str);
 }
 
 /// Append to string.
@@ -127,7 +127,7 @@ inline void append(
 /// The capacity of dst (N) must be at least size + str.size + 1.
 template<unsigned N>
 inline void append(char (&dst)[N], unsigned const size, StringRef const& str) {
-	copy(dst + size, N, str);
+	string::copy(dst + size, N, str);
 }
 
 /// Append to string.
@@ -139,7 +139,7 @@ template<unsigned N>
 inline void append(FixedArray<char, N>& dst, StringRef const& str) {
 	unsigned const size = string::size(dst);
 	fixed_array::resize(dst, size + str.size + 1);
-	copy(fixed_array::begin(dst) + size, str.size + 1, str);
+	string::copy(fixed_array::begin(dst) + size, str.size + 1, str);
 }
 
 /// Append to string.
@@ -148,7 +148,7 @@ inline void append(FixedArray<char, N>& dst, StringRef const& str) {
 inline void append(Array<char>& dst, StringRef const& str) {
 	unsigned const size = string::size(dst);
 	array::resize(dst, size + str.size + 1);
-	copy(array::begin(dst) + size, str.size + 1, str);
+	string::copy(array::begin(dst) + size, str.size + 1, str);
 }
 
 /// Trim trailing slashes from string.
@@ -157,7 +157,7 @@ inline void append(Array<char>& dst, StringRef const& str) {
 template<unsigned N>
 inline unsigned trim_trailing_slashes(FixedArray<char, N>& string) {
 	unsigned const size = string::size(string);
-	unsigned const new_size = trim_trailing_slashes(
+	unsigned const new_size = string::trim_trailing_slashes(
 		fixed_array::begin(string),
 		size
 	);
@@ -173,7 +173,7 @@ inline unsigned trim_trailing_slashes(FixedArray<char, N>& string) {
 template<unsigned N>
 inline unsigned ensure_trailing_slash(FixedArray<char, N>& string) {
 	unsigned const size = string::size(string);
-	unsigned const new_size = ensure_trailing_slash(
+	unsigned const new_size = string::ensure_trailing_slash(
 		fixed_array::begin(string),
 		fixed_array::capacity(string),
 		size
