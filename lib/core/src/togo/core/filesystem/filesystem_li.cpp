@@ -132,6 +132,7 @@ TOGO_LI_FUNC_DEF(iterate_dir_iter) {
 		lua::push_value(L, unsigned_cast(entry.type));
 		return 2;
 	}
+	directory_reader::close(reader);
 	return 0;
 }
 
