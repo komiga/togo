@@ -24,10 +24,14 @@ function M.optional_in(table, name, default)
 end
 
 function M.type_class(x)
-	if type(x) == "table" and x.__index then
-		return x.__index
+	local t = type(x)
+	if t == "table" then
+		local mt = getmetatable(x)
+		if mt then
+			return mt
+		end
 	end
-	return type(x)
+	return t
 end
 
 function M.is_type(x, tc, basic)
@@ -49,9 +53,16 @@ function M.is_type_any(x, types, opt)
 	return false
 end
 
-function M.is_class(x, of)
-	if type(x) == "table" and x.__index then
-		return of and x.__index == of or x.__class_static ~= nil
+function M.is_instance(x, of)
+	if type(x) == "table" then
+		local mt = getmetatable(x)
+		if mt then
+			if of then
+				return mt == of
+			else
+				return mt == rawget(mt, "__index")
+			end
+		end
 	end
 	return false
 end
