@@ -49,6 +49,13 @@ function M.is_type_any(x, types, opt)
 	return false
 end
 
+function M.is_class(x, of)
+	if type(x) == "table" and x.__index then
+		return of and x.__index == of or x.__class_static ~= nil
+	end
+	return false
+end
+
 function M.get_trace(level)
 	local info = debug.getinfo(level + 2, "Sl")
 	-- return M.pad_left(info.short_src, 28) .. " @ " .. M.pad_right(tostring(info.currentline), 4)
