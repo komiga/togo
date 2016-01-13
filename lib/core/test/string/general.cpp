@@ -1,12 +1,49 @@
 
 #include <togo/core/error/assert.hpp>
 #include <togo/core/utility/utility.hpp>
+#include <togo/core/log/log.hpp>
 #include <togo/core/collection/fixed_array.hpp>
 #include <togo/core/string/string.hpp>
 
 #include <cstring>
 
 using namespace togo;
+
+#define PATH_TEST(f, path, expected) \
+	path_test(#f, string:: f, path, expected)
+
+#define PATH_TEST(f, path, expected) \
+	path_test(#f, string:: f, path, expected)
+
+#define PATH_TEST_PARTS(path, dir, file) do { \
+	PATH_TEST(path_dir, path, dir); \
+	PATH_TEST(path_file, path, file); \
+	} while(false)
+
+static StringRef nothing_or(StringRef str) {
+	return str.any() ? str : "<>";
+}
+
+static void path_test(
+	StringRef name,
+	StringRef (f)(StringRef const&),
+	StringRef path,
+	StringRef expected
+) {
+	StringRef result = f(path);
+	StringRef print_result = nothing_or(result);
+	TOGO_LOGF(
+		"%-10s: %-8s => %.*s\n",
+		name.data,
+		nothing_or(path).data,
+		print_result.size, print_result.data
+	);
+	TOGO_ASSERTF(
+		string::compare_equal(expected, result),
+		"  wanted %s",
+		nothing_or(expected).data
+	);
+}
 
 signed main() {
 	{
@@ -112,6 +149,19 @@ signed main() {
 
 		#undef TEST_TRIM
 	}
+
+	// Paths
+	PATH_TEST_PARTS(""       , ""    , ""   );
+	PATH_TEST_PARTS("."      , "."   , ""   );
+	PATH_TEST_PARTS(".."     , ".."  , ""   );
+	PATH_TEST_PARTS("/."     , "/."  , ""   );
+	PATH_TEST_PARTS("/.."    , "/.." , ""   );
+	PATH_TEST_PARTS("c"      , ""    , "c"  );
+	PATH_TEST_PARTS("a/"     , "a"   , ""   );
+	PATH_TEST_PARTS("/"      , "/"   , ""   );
+	PATH_TEST_PARTS("/a"     , "/"   , "a"  );
+	PATH_TEST_PARTS("a/b/c"  , "a/b" , "c"  );
+	PATH_TEST_PARTS("a/b/c.d", "a/b" , "c.d");
 
 	return 0;
 }

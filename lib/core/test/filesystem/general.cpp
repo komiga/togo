@@ -8,56 +8,7 @@
 
 using namespace togo;
 
-#define PATH_TEST(f, path, expected) \
-	path_test(#f, filesystem:: f, path, expected)
-
-#define PATH_TEST(f, path, expected) \
-	path_test(#f, filesystem:: f, path, expected)
-
-#define PATH_TEST_PARTS(path, dir, file) do { \
-	PATH_TEST(path_dir, path, dir); \
-	PATH_TEST(path_file, path, file); \
-	} while(false)
-
-StringRef nothing_or(StringRef str) {
-	return str.any() ? str : "<>";
-}
-
-void path_test(
-	StringRef name,
-	StringRef (f)(StringRef const&),
-	StringRef path,
-	StringRef expected
-) {
-	StringRef result = f(path);
-	StringRef print_result = nothing_or(result);
-	TOGO_LOGF(
-		"%-10s: %-8s => %.*s\n",
-		name.data,
-		nothing_or(path).data,
-		print_result.size, print_result.data
-	);
-	TOGO_ASSERTF(
-		string::compare_equal(expected, result),
-		"  wanted %s",
-		nothing_or(expected).data
-	);
-}
-
 signed main() {
-	// Paths
-	PATH_TEST_PARTS(""       , ""    , ""   );
-	PATH_TEST_PARTS("."      , "."   , ""   );
-	PATH_TEST_PARTS(".."     , ".."  , ""   );
-	PATH_TEST_PARTS("/."     , "/."  , ""   );
-	PATH_TEST_PARTS("/.."    , "/.." , ""   );
-	PATH_TEST_PARTS("c"      , ""    , "c"  );
-	PATH_TEST_PARTS("a/"     , "a"   , ""   );
-	PATH_TEST_PARTS("/"      , "/"   , ""   );
-	PATH_TEST_PARTS("/a"     , "/"   , "a"  );
-	PATH_TEST_PARTS("a/b/c"  , "a/b" , "c"  );
-	PATH_TEST_PARTS("a/b/c.d", "a/b" , "c.d");
-
 	StringRef const exec_dir = filesystem::exec_dir();
 	TOGO_LOGF("exec_dir: '%.*s'\n", exec_dir.size, exec_dir.data);
 
