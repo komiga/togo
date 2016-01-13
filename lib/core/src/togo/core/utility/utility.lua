@@ -211,54 +211,46 @@ function M.clamp(x, min, max)
 	return x < min and min or x > max and max or x
 end
 
-local BYTE_SLASH = string.byte('/', 1)
+local BYTE_FSLASH = string.byte('/', 1)
+local BYTE_BSLASH = string.byte('\\', 1)
 local BYTE_DOT = string.byte('.', 1)
+
+function M.trim_leading_slashes(s)
+	local b
+	for i = 1, #s do
+		b = string.byte(s, i)
+		if b ~= BYTE_FSLASH and b ~= BYTE_BSLASH then
+			return string.sub(s, i, -1)
+		end
+	end
+	return s
+end
+
+function M.trim_trailing_slashes(s)
+	local b
+	for i = #s, 1, -1 do
+		b = string.byte(s, i)
+		if b ~= BYTE_FSLASH and b ~= BYTE_BSLASH then
+			return string.sub(s, 1, i)
+		end
+	end
+	return s
+end
+
+function M.trim_slashes(s)
+	return M.trim_leading_slashes(M.trim_trailing_slashes(s))
+end
 
 -- a/b/c -> a
 -- a -> nil
 function M.rootname(s)
 	M.type_assert(s, "string")
 	for i = 1, #s do
-		if string.byte(s, i) == BYTE_SLASH then
+		if string.byte(s, i) == BYTE_FSLASH then
 			return string.sub(s, 1, i - 1)
 		end
 	end
 	return nil
-end
-
--- a/b/c -> a/b
--- c -> c
-function M.dirname(s)
-	M.type_assert(s, "string")
-	for i = #s, 1, -1 do
-		if string.byte(s, i) == BYTE_SLASH then
-			return string.sub(s, 1, i - 1)
-		end
-	end
-	return s
-end
-
--- a/b/c -> c
--- c -> c
-function M.basename(s)
-	M.type_assert(s, "string")
-	local d = 0
-	for i = #s, 1, -1 do
-		if string.byte(s, i) == BYTE_DOT then
-			d = i
-			break
-		end
-	end
-	for i = #s, 1, -1 do
-		if string.byte(s, i) == BYTE_SLASH and i ~= #s then
-			if i < d then
-				return string.sub(s, i + 1, d - 1)
-			else
-				return string.sub(s, i + 1, #s)
-			end
-		end
-	end
-	return s
 end
 
 function M.strip_extension(s)
@@ -266,7 +258,7 @@ function M.strip_extension(s)
 	local b = nil
 	for i = #s, 1, -1 do
 		b = string.byte(s, i)
-		if b == BYTE_SLASH then
+		if b == BYTE_FSLASH then
 			break
 		elseif b == BYTE_DOT then
 			return string.sub(s, 1, i - 1)
@@ -280,7 +272,7 @@ function M.file_extension(s)
 	local b
 	for i = #s, 1, -1 do
 		b = string.byte(s, i)
-		if b == BYTE_SLASH then
+		if b == BYTE_FSLASH then
 			break
 		elseif b == BYTE_DOT then
 			return string.sub(s, i + 1, #s)
