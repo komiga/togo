@@ -41,7 +41,7 @@ StringRef filesystem::exec_dir() {
 			);
 		} else {
 			fixed_array::resize(path, max(1u, static_cast<unsigned>(size)));
-			auto dir = filesystem::path_dir(path);
+			auto dir = string::path_dir(path);
 			if (dir.data == begin(path)) {
 				fixed_array::resize(path, dir.size + 1);
 				fixed_array::back(path) = '\0';

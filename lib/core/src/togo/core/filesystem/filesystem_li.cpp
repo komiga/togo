@@ -23,18 +23,6 @@ TOGO_LI_FUNC_DEF(destroy) {
 
 namespace filesystem {
 
-TOGO_LI_FUNC_DEF(path_dir) {
-	auto path = lua::get_string(L, 1);
-	lua::push_value(L, filesystem::path_dir(path));
-	return 1;
-}
-
-TOGO_LI_FUNC_DEF(path_file) {
-	auto path = lua::get_string(L, 1);
-	lua::push_value(L, filesystem::path_file(path));
-	return 1;
-}
-
 TOGO_LI_FUNC_DEF(working_dir) {
 	FixedArray<char, 256> path{};
 	filesystem::working_dir(path);
@@ -173,9 +161,6 @@ namespace {
 
 static LuaModuleFunctionArray const li_funcs{
 	TOGO_LI_FUNC_REF(filesystem, __module_init__)
-
-	TOGO_LI_FUNC_REF(filesystem, path_dir)
-	TOGO_LI_FUNC_REF(filesystem, path_file)
 
 	TOGO_LI_FUNC_REF(filesystem, working_dir)
 	TOGO_LI_FUNC_REF(filesystem, set_working_dir)

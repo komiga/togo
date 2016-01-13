@@ -7,6 +7,7 @@
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/utility/args.hpp>
 #include <togo/core/memory/temp_allocator.hpp>
+#include <togo/core/string/string.hpp>
 #include <togo/core/kvs/kvs.hpp>
 #include <togo/core/lua/lua.hpp>
 
@@ -60,10 +61,29 @@ TOGO_LI_FUNC_DEF(parse_args) {
 
 } // namespace utility
 
+namespace string {
+
+TOGO_LI_FUNC_DEF(path_dir) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, string::path_dir(path));
+	return 1;
+}
+
+TOGO_LI_FUNC_DEF(path_file) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, string::path_file(path));
+	return 1;
+}
+
+} // namespace string
+
 namespace {
 
 static LuaModuleFunctionArray const li_funcs{
 	TOGO_LI_FUNC_REF(utility, parse_args)
+
+	TOGO_LI_FUNC_REF(string, path_dir)
+	TOGO_LI_FUNC_REF(string, path_file)
 };
 
 static LuaModuleRef const li_module{
