@@ -336,6 +336,18 @@ inline T* get_lightuserdata_typed(lua_State* L, signed narg, bool require = true
 	return static_cast<T*>(get_lightuserdata(L, narg, require));
 }
 
+/// Get an argument from the stack as userdata or light userdata (typed).
+///
+/// This is an unchecked cast for light userdata.
+template<class T>
+inline T* get_pointer(lua_State* L, signed narg, bool require = true) {
+	if (lua_type(L, narg) == LUA_TUSERDATA) {
+		return get_userdata<T>(L, narg, require);
+	} else {
+		return get_lightuserdata_typed<T>(L, narg, require);
+	}
+}
+
 /** @} */ // end of doc-group lib_core_lua
 
 } // namespace lua
