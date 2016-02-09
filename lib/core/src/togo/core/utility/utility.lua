@@ -115,8 +115,8 @@ function M.type_assert_any(x, types, opt, level)
 	return x
 end
 
-function M.table_last(table)
-	M.assert(#table > 0)
+function M.table_last(table, allow_empty)
+	M.assert(#table > 0 or allow_empty)
 	return table[#table]
 end
 
