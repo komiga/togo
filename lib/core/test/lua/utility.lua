@@ -15,6 +15,19 @@ U.log("util test")
 print_preload()
 
 do
+	local t = {
+		{"/x/", "x"},
+		{"/x", "x"},
+		{"x", "x"},
+	}
+	for _, p in pairs(t) do
+		local r = U.trim_slashes(p[1])
+		U.print("%s -> %s", p[1], r)
+		U.assert(r == p[2])
+	end
+end
+
+do
 	local command_parsed, opt, cmd_opt, cmd = U.parse_args({
 		"exec",
 		"-a",
