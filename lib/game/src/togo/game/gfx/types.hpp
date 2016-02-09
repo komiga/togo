@@ -49,6 +49,7 @@ namespace gfx {
 #define TOGO_GFX_CONFIG_NUM_PIPES 8
 #define TOGO_GFX_CONFIG_NUM_VIEWPORTS 8
 #define TOGO_GFX_PIPE_NUM_LAYERS 32
+#define TOGO_GFX_LAYER_NUM_RTS 4
 #define TOGO_GFX_LAYER_NUM_GENERATORS 16
 
 #define TOGO_GFX_NUM_BUFFERS 2048
@@ -477,7 +478,7 @@ struct Layer {
 	};
 
 	hash32 name_hash;
-	FixedArray<hash32, 4> rts;
+	FixedArray<hash32, TOGO_GFX_LAYER_NUM_RTS> rts;
 	hash32 dst;
 	Order order;
 	u32 seq_base;
