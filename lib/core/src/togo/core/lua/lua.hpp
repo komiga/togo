@@ -253,7 +253,9 @@ inline void register_userdata(lua_State* L, LuaCFunction destroy, bool keep_meta
 
 	lua_createtable(L, 0, 1);
 	lua::table_set_copy_raw(L, "__index", -1);
-	lua::table_set_raw(L, "__gc", destroy);
+	if (destroy) {
+		lua::table_set_raw(L, "__gc", destroy);
+	}
 
 	// togo_class[T::lua_metatable_name] = metatable
 	lua::table_set_copy_raw(L, -4, T::lua_metatable_name, -1);
