@@ -306,7 +306,7 @@ void package_compiler::remove_resource(PackageCompiler& pkg, u32 const id) {
 
 /// Read package data.
 void package_compiler::read(PackageCompiler& pkg) {
-	pkg._name_hash = RES_NAME_NULL;
+	pkg._name_hash = PKG_NAME_NULL;
 	string::copy(pkg._name, "");
 	hash_map::clear(pkg._lookup);
 	array::clear(pkg._manifest);
