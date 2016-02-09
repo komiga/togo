@@ -14,8 +14,6 @@
 #include <togo/core/string/string.hpp>
 #include <togo/core/hash/types.hpp>
 
-#include <am/hash/fnv.hpp>
-
 // TODO: Build constexpr version of MurmurHash2 or MurmurHash3
 // (both lengths) and use it instead of FNV-1a
 
@@ -28,42 +26,159 @@ namespace hash {
 	@{
 */
 
-/// Calculate H-bit hash.
+/// Number of bytes consumed.
 template<class H>
-inline H calc_generic(
-	char const* const data,
+inline unsigned size(H const& s) {
+	return s.size;
+}
+
+/// Whether any bytes have been consumed.
+template<class H>
+inline bool any(H const& s) {
+	return hash::size(s) > 0;
+}
+
+/// Whether no bytes have been consumed.
+template<class H>
+inline bool empty(H const& s) {
+	return hash::size(s) == 0;
+}
+
+namespace {
+
+template<hash::Size S>
+struct FNVInternals;
+
+template<>
+struct FNVInternals<hash::HS32> {
+	static constexpr u32 const prime = 0x01000193;
+	static constexpr u32 const offset_basis = 0x811c9dc5;
+};
+
+template<>
+struct FNVInternals<hash::HS64> {
+	static constexpr u64 const prime = 0x00000100000001b3;
+	static constexpr u64 const offset_basis = 0xcbf29ce484222325;
+};
+
+} // anonymous namespace
+
+/// Initialize hasher.
+template<hash::Size S>
+inline FNV1a<S>::FNV1a() {
+	init(*this);
+}
+
+/// Initialize hasher.
+template<hash::Size S>
+inline void init(FNV1a<S>& s) {
+	s.value = FNVInternals<S>::offset_basis;
+	s.size = 0;
+}
+
+/// Add bytes to hasher.
+template<hash::Size S>
+inline void add(
+	FNV1a<S>& s,
+	u8 const* const data,
 	unsigned const size
 ) {
-	return
-		size != 0
-		? am::hash::calc<typename hash::traits<H>::impl>(data, size)
-		: hash::traits<H>::identity
+	for (unsigned i = 0; i < size; ++i) {
+		s.value ^= data[i];
+		s.value *= FNVInternals<S>::prime;
+	}
+	s.size += size;
+}
+
+/// Value of hasher.
+template<hash::Size S>
+inline typename FNV1a<S>::Value value(FNV1a<S> const& s) {
+	return hash::empty(s) ? FNV1a<S>::identity : s.value;
+}
+
+template<hash::Size S>
+inline typename FNV1a<S>::Value FNV1a<S>::calc(
+	u8 const* const data,
+	unsigned const size
+) {
+	FNV1a<S> s;
+	hash::init(s);
+	hash::add(s, data, size);
+	return hash::value(s);
+}
+
+template<hash::Size S>
+constexpr typename FNV1a<S>::Value FNV1a<S>::calc_ce_seq(
+	char const* const data,
+	unsigned const size,
+	unsigned const index,
+	typename FNV1a<S>::Value const value
+) {
+	return (index < size)
+		? calc_ce_seq(
+			data, size,
+			index + 1u,
+			(value ^ data[index]) * FNVInternals<S>::prime
+		)
+		: value
 	;
 }
 
-/// Calculate H-bit hash from string reference.
-template<class H>
-inline H calc_generic(StringRef const& ref) {
-	return hash::calc_generic<H>(ref.data, ref.size);
-}
-
-/// Calculate H-bit hash (constexpr).
-template<class H>
-inline constexpr H calc_generic_ce(
+template<hash::Size S>
+constexpr typename FNV1a<S>::Value FNV1a<S>::calc_ce(
 	char const* const data,
 	unsigned const size
 ) {
-	return
-		size != 0
-		? am::hash::calc_ce<typename hash::traits<H>::impl>(data, size)
-		: hash::traits<H>::identity
+	return size == 0
+		? FNV1a<S>::identity
+		: calc_ce_seq(data, size, 0, FNVInternals<S>::offset_basis)
 	;
 }
 
-/// Calculate H-bit hash from string reference (constexpr).
+/// Add string to hasher.
 template<class H>
-inline constexpr H calc_generic_ce(StringRef const& ref) {
-	return hash::calc_generic_ce<H>(ref.data, ref.size);
+inline void add(
+	H& s,
+	char const* const data,
+	unsigned size
+) {
+	hash::add(s, reinterpret_cast<u8 const*>(data), size);
+}
+
+/// Add string to hasher.
+template<class H>
+inline void add(H& s, StringRef const& str) {
+	hash::add(s, str.data, str.size);
+}
+
+/// Calculate hash.
+template<class H>
+inline typename H::Value calc(
+	char const* const data,
+	unsigned const size
+) {
+	return H::calc(reinterpret_cast<u8 const*>(data), size);
+}
+
+/// Calculate hash.
+template<class H>
+inline typename H::Value calc(StringRef const& ref) {
+	return H::calc(reinterpret_cast<u8 const*>(ref.data), ref.size);
+}
+
+/// Calculate hash.
+template<class H>
+inline constexpr typename H::Value calc_ce(
+	char const* const data,
+	unsigned const size
+) {
+	return H::calc_ce(data, size);
+}
+
+/// Calculate hash.
+template<class H>
+inline constexpr typename H::Value calc_ce(StringRef const& ref) {
+	return H::calc_ce(ref.data, ref.size);
 }
 
 /// Calculate 32-bit hash.
@@ -71,25 +186,25 @@ inline hash32 calc32(
 	char const* const data,
 	unsigned const size
 ) {
-	return hash::calc_generic<hash32>(data, size);
+	return calc<Default32>(data, size);
 }
 
 /// Calculate 32-bit hash from string reference.
 inline hash32 calc32(StringRef const& ref) {
-	return hash::calc_generic<hash32>(ref.data, ref.size);
+	return calc<Default32>(ref);
 }
 
-/// Calculate 32-bit hash  (constexpr).
+/// Calculate 32-bit hash (constexpr).
 inline constexpr hash32 calc32_ce(
 	char const* const data,
 	unsigned const size
 ) {
-	return hash::calc_generic_ce<hash32>(data, size);
+	return calc_ce<Default32>(data, size);
 }
 
-/// Calculate 32-bit hash from string reference  (constexpr).
+/// Calculate 32-bit hash from string reference (constexpr).
 inline constexpr hash32 calc32_ce(StringRef const& ref) {
-	return hash::calc_generic_ce<hash32>(ref.data, ref.size);
+	return calc_ce<Default32>(ref);
 }
 
 /// Calculate 64-bit hash.
@@ -97,12 +212,12 @@ inline hash64 calc64(
 	char const* const data,
 	unsigned const size
 ) {
-	return hash::calc_generic<hash64>(data, size);
+	return calc<Default64>(data, size);
 }
 
 /// Calculate 64-bit hash from string reference.
 inline hash64 calc64(StringRef const& ref) {
-	return hash::calc_generic<hash64>(ref.data, ref.size);
+	return calc<Default64>(ref);
 }
 
 /// Calculate 64-bit hash (constexpr).
@@ -110,12 +225,12 @@ inline constexpr hash64 calc64_ce(
 	char const* const data,
 	unsigned const size
 ) {
-	return hash::calc_generic_ce<hash64>(data, size);
+	return calc_ce<Default64>(data, size);
 }
 
 /// Calculate 64-bit hash from string reference (constexpr).
 inline constexpr hash64 calc64_ce(StringRef const& ref) {
-	return hash::calc_generic_ce<hash64>(ref.data, ref.size);
+	return calc_ce<Default64>(ref);
 }
 
 /** @} */ // end of doc-group lib_core_hash

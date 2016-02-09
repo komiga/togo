@@ -5,4 +5,8 @@
 @ingroup lib_core
 @details
 
+@note Although the togo implementations are under the MIT license,
+the FNV algorithms themselves are in the public domain. No copyright is
+claimed on them.
+
 */

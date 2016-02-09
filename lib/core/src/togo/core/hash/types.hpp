@@ -14,9 +14,6 @@
 #include <togo/core/types.hpp>
 #include <togo/core/utility/constraints.hpp>
 
-#include <am/hash/common.hpp>
-#include <am/hash/fnv.hpp>
-
 namespace togo {
 
 /**
@@ -26,81 +23,99 @@ namespace togo {
 
 namespace hash {
 
-/// Hash value type lengths.
-static constexpr auto const
-/// 32-bit hash length.
-LENGTH32 = am::hash::HashLength::HL32,
-/// 64-bit hash length.
-LENGTH64 = am::hash::HashLength::HL64;
+/// Hash value sizes.
+enum Size : unsigned {
+	/// 32-bit hash.
+	HS32 = 4u,
+	/// 64-bit hash.
+	HS64 = 8u,
+};
+
+/** @cond INTERNAL */
+template<hash::Size S>
+struct ValueImpl {
+	struct type {
+		union {
+			u8 data[static_cast<unsigned>(S)];
+			u32 chunks[static_cast<unsigned>(S) >> 2];
+		};
+	};
+};
+
+template<>
+struct ValueImpl<hash::HS32> {
+	using type = hash32;
+};
+template<>
+struct ValueImpl<hash::HS64> {
+	using type = hash64;
+};
+/** @endcond */ // INTERNAL
+
+/// Hash value type.
+template<hash::Size S>
+using Value = typename ValueImpl<S>::type;
+
+/// FNV-1a hasher.
+template<hash::Size S>
+struct FNV1a {
+	static_assert(
+		S == hash::HS32 || S == hash::HS64,
+		"FNV-1a is only implemented for 32- and 64-bit hash values"
+	);
+
+	using Value = hash::Value<S>;
+
+	static constexpr Value const identity = 0;
+
+	Value value;
+	unsigned size;
+
+	FNV1a();
+
+	static Value
+	calc(
+		u8 const* const data,
+		unsigned const size
+	);
+
+	static constexpr Value
+	calc_ce_seq(
+		char const* const data,
+		unsigned const size,
+		unsigned const index,
+		Value const value
+	);
+
+	static constexpr Value
+	calc_ce(
+		char const* const data,
+		unsigned const size
+	);
+};
+
+/// Default hasher.
+template<hash::Size S>
+using Default = hash::FNV1a<S>;
+
+/// Default hasher (32-bit).
+using Default32 = Default<hash::HS32>;
+/// Default hasher (64-bit).
+using Default64 = Default<hash::HS64>;
 
 /// 32-bit hash values.
-enum : hash32 {
-	/// 32-bit hash identity (hash of nothing).
-	IDENTITY32 = 0,
+enum : Default32::Value {
+    /// 32-bit hash identity (hash of nothing).
+    IDENTITY32 = Default32::identity,
 };
 
 /// 64-bit hash values.
-enum : hash64 {
-	/// 64-bit hash identity (hash of nothing).
-	IDENTITY64 = 0,
+enum : Default64::Value {
+    /// 64-bit hash identity (hash of nothing).
+    IDENTITY64 = Default64::identity,
 };
-
-/// Hash value type properties.
-///
-/// length and identity constants are supplied for hash value types.
-template<class H>
-struct traits;
-
-/** @cond INTERNAL */
-template<> struct traits<hash32> {
-	static constexpr auto const length = hash::LENGTH32;
-	static constexpr auto const identity = hash::IDENTITY32;
-	using impl = am::hash::fnv1a<length>;
-};
-
-template<> struct traits<hash64> {
-	static constexpr auto const length = hash::LENGTH64;
-	static constexpr auto const identity = hash::IDENTITY64;
-	using impl = am::hash::fnv1a<length>;
-};
-
-TOGO_CONSTRAIN_SAME(hash32, am::detail::hash::fnv_hash_type<hash::LENGTH32>);
-TOGO_CONSTRAIN_SAME(hash64, am::detail::hash::fnv_hash_type<hash::LENGTH64>);
-/** @endcond */
 
 } // namespace hash
-
-/**
-	@addtogroup lib_core_hash_combiner
-	@{
-*/
-
-/// Generic hash combiner.
-template<class H>
-struct HashCombiner {
-	static_assert(
-		is_same<H, hash32>::value ||
-		is_same<H, hash64>::value,
-		"H must be a hash value type"
-	);
-
-	am::hash::fnv1a_combiner<hash::traits<H>::length> _impl;
-
-	~HashCombiner() = default;
-	HashCombiner() = default;
-	HashCombiner(HashCombiner const&) = default;
-	HashCombiner(HashCombiner&&) = default;
-	HashCombiner& operator=(HashCombiner const&) = default;
-	HashCombiner& operator=(HashCombiner&&) = default;
-};
-
-/// 32-bit hash combiner.
-using HashCombiner32 = HashCombiner<hash32>;
-
-/// 64-bit hash combiner.
-using HashCombiner64 = HashCombiner<hash64>;
-
-/** @} */ // end of doc-group lib_core_hash_combiner
 
 /** @} */ // end of doc-group lib_core_hash
 
