@@ -35,20 +35,25 @@ enum : u32 {
 	SER_FORMAT_VERSION_PKG_MANIFEST = 3,
 };
 
+/// Resource type hasher.
+using ResourceTypeHasher = hash::Default32;
 /// Resource type.
-using ResourceType = hash32;
+using ResourceType = ResourceTypeHasher::Value;
 
+/// Resource name hasher.
+using ResourceNameHasher = hash::Default64;
 /// Resource name hash.
-using ResourceNameHash = hash64;
+using ResourceNameHash = ResourceNameHasher::Value;
 
+/// Combined resource tags hasher.
+using ResourceTagsHasher = hash::Default64;
 /// Combined resource tags hash.
-using ResourceTagsHash = hash64;
+using ResourceTagsHash = ResourceTagsHasher::Value;
 
-/// Combined resource tags hash combiner.
-using ResourceTagsHashCombiner = HashCombiner64;
-
+/// Package name hasher.
+using ResourcePackageNameHasher = hash::Default32;
 /// Package name hash.
-using ResourcePackageNameHash = hash32;
+using ResourcePackageNameHash = ResourcePackageNameHasher::Value;
 
 /** @cond INTERNAL */
 static_assert(
@@ -74,7 +79,7 @@ operator"" _resource_type(
 	char const* const data,
 	std::size_t const size
 ) {
-	return hash::calc32_ce(data, size);
+	return hash::calc_ce<ResourceTypeHasher>(data, size);
 }
 
 /// Resource name hash literal.
@@ -83,7 +88,7 @@ operator"" _resource_name(
 	char const* const data,
 	std::size_t const size
 ) {
-	return hash::calc64_ce(data, size);
+	return hash::calc_ce<ResourceNameHasher>(data, size);
 }
 
 /// Combined resource tags hash literal.
@@ -96,7 +101,7 @@ operator"" _resource_tags(
 	char const* const data,
 	std::size_t const size
 ) {
-	return hash::calc64_ce(data, size);
+	return hash::calc_ce<ResourceTagsHasher>(data, size);
 }
 
 /// Package name hash literal.
@@ -105,7 +110,7 @@ operator"" _resource_package_name(
 	char const* const data,
 	std::size_t const size
 ) {
-	return hash::calc32_ce(data, size);
+	return hash::calc_ce<ResourcePackageNameHasher>(data, size);
 }
 
 /// Resource types.

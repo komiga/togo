@@ -37,8 +37,11 @@ namespace game {
 	@{
 */
 
+/// Component name hasher.
+using ComponentNameHasher = hash::Default32;
+
 /// Component name hash.
-using ComponentNameHash = hash32;
+using ComponentNameHash = ComponentNameHasher::Value;
 
 /// Component name hash literal.
 inline constexpr ComponentNameHash
@@ -46,7 +49,7 @@ operator"" _component_name(
 	char const* const data,
 	std::size_t const size
 ) {
-	return hash::calc32_ce(data, size);
+	return hash::calc_ce<ComponentNameHasher>(data, size);
 }
 
 /// Component manager definition.

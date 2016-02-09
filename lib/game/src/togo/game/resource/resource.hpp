@@ -13,7 +13,6 @@
 #include <togo/core/error/assert.hpp>
 #include <togo/core/string/types.hpp>
 #include <togo/core/hash/hash.hpp>
-#include <togo/core/hash/hash_combiner.hpp>
 #include <togo/game/resource/types.hpp>
 #include <togo/game/resource/resource_package.hpp>
 #include <togo/game/resource/resource.gen_interface>
@@ -30,12 +29,12 @@ namespace resource {
 
 /// Calculate hash of resource type.
 inline ResourceType hash_type(StringRef const& type) {
-	return hash::calc32(type);
+	return hash::calc<ResourceTypeHasher>(type);
 }
 
 /// Calculate hash of resource name.
 inline ResourceNameHash hash_name(StringRef const& name) {
-	return hash::calc64(name);
+	return hash::calc<ResourceNameHasher>(name);
 }
 
 /// Calculate hash of resource tags.
@@ -43,11 +42,11 @@ inline ResourceTagsHash hash_tags(
 	StringRef const* const tags,
 	unsigned const num_tags
 ) {
-	ResourceTagsHashCombiner combiner{};
+	ResourceTagsHasher state{};
 	for (unsigned i = 0; i < num_tags; ++i) {
-		hash_combiner::add(combiner, tags[i]);
+		hash::add(state, tags[i]);
 	}
-	return hash_combiner::value(combiner);
+	return hash::value(state);
 }
 
 /// Calculate hash of resource tags.
@@ -55,16 +54,16 @@ inline ResourceTagsHash hash_tags(
 	ResourcePathParts::Tag const* const tags,
 	unsigned const num_tags
 ) {
-	ResourceTagsHashCombiner combiner{};
+	ResourceTagsHasher state{};
 	for (unsigned i = 0; i < num_tags; ++i) {
-		hash_combiner::add(combiner, tags[i].name);
+		hash::add(state, tags[i].name);
 	}
-	return hash_combiner::value(combiner);
+	return hash::value(state);
 }
 
 /// Calculate hash of resource package name.
 inline ResourcePackageNameHash hash_package_name(StringRef const& name) {
-	return hash::calc32(name);
+	return hash::calc<ResourcePackageNameHasher>(name);
 }
 
 /** @} */ // end of doc-group lib_game_resource

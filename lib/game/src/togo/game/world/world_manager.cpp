@@ -67,7 +67,7 @@ void world_manager::register_component_manager(
 	ComponentManagerDef const& def
 ) {
 	TOGO_DEBUG_ASSERTE(
-		def.name_hash != hash::IDENTITY32 &&
+		def.name_hash != ComponentNameHasher::identity &&
 		def.func_create &&
 		def.func_destroy &&
 		def.func_clear
