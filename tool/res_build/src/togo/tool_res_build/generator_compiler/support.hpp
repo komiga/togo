@@ -33,7 +33,7 @@ inline bool rc_find_shared_resource(
 	return false;
 }
 
-inline static bool rc_get_render_target(
+inline bool rc_get_render_target(
 	StringRef const context,
 	gfx::RenderConfig const& render_config,
 	KVS const& k_var,
