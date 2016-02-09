@@ -305,10 +305,10 @@ static bool read_pipe(
 				kvs::name_size(k_pipe), kvs::name(k_pipe)
 			);
 			return false;
-		} else if (kvs::size(*k_layer_rts) > TOGO_GFX_PIPE_NUM_LAYERS) {
+		} else if (kvs::size(*k_layer_rts) > TOGO_GFX_LAYER_NUM_RTS) {
 			TOGO_LOG_ERRORF(
 				"malformed render_config: too many RTs defined (max = %u)\n",
-				TOGO_GFX_PIPE_NUM_LAYERS
+				TOGO_GFX_LAYER_NUM_RTS
 			);
 			return false;
 		}
