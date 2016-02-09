@@ -30,9 +30,7 @@ return {
 		N("sort"),
 	}),
 	M("string", {}),
-	M("hash", {
-		N("hash_combiner"),
-	}),
+	M("hash", {}),
 	M("system", {
 		I("system", {
 			N("linux"),
