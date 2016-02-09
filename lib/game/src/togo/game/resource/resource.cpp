@@ -61,7 +61,7 @@ bool resource::parse_path(
 					path.data + tag_i,
 					i - tag_i
 				};
-				tag.hash = hash::calc32(tag.name);
+				tag.hash = resource::hash_tag(tag.name);
 				fixed_array::push_back(pp.tags, tag);
 			}
 			tag_i = i + 1;
@@ -92,11 +92,11 @@ bool resource::parse_path(
 			path.data + tag_i,
 			path.size - tag_i
 		};
-		tag.hash = hash::calc32(tag.name);
+		tag.hash = resource::hash_tag(tag.name);
 		fixed_array::push_back(pp.tags, tag);
 	}
 	sort_insertion(begin(pp.tags), end(pp.tags), TagLessThan{});
-	pp.tags_hash = resource::hash_tags(
+	pp.tag_glob_hash = resource::hash_tag_glob(
 		begin(pp.tags),
 		fixed_array::size(pp.tags)
 	);

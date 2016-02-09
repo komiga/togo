@@ -45,10 +45,15 @@ using ResourceNameHasher = hash::Default64;
 /// Resource name hash.
 using ResourceNameHash = ResourceNameHasher::Value;
 
-/// Combined resource tags hasher.
-using ResourceTagsHasher = hash::Default64;
-/// Combined resource tags hash.
-using ResourceTagsHash = ResourceTagsHasher::Value;
+/// Resource tag hasher.
+using ResourceTagHasher = hash::Default32;
+/// Resource tag hash.
+using ResourceTagHash = ResourceTagHasher::Value;
+
+/// Resource tag glob hasher.
+using ResourceTagGlobHasher = hash::Default64;
+/// Resource tag glob hash.
+using ResourceTagGlobHash = ResourceTagGlobHasher::Value;
 
 /// Package name hasher.
 using ResourcePackageNameHasher = hash::Default32;
@@ -57,18 +62,28 @@ using ResourcePackageNameHash = ResourcePackageNameHasher::Value;
 
 /** @cond INTERNAL */
 static_assert(
-	is_same<ResourceType, hash32>::value,
-	"changed ResourceType type breaks binary formats,"
+	is_same<ResourceTypeHasher, hash::FNV1a<hash::HS32>>::value,
+	"changed ResourceTypeHasher type breaks binary formats,"
 	" hash functions, and likely other things"
 );
 static_assert(
-	is_same<ResourceNameHash, hash64>::value,
-	"changed ResourceNameHash type breaks binary formats,"
+	is_same<ResourceNameHasher, hash::FNV1a<hash::HS64>>::value,
+	"changed ResourceNameHasher type breaks binary formats,"
 	" hash functions, and likely other things"
 );
 static_assert(
-	is_same<ResourceTagsHash, hash64>::value,
-	"changed ResourceTagsHash type breaks binary formats,"
+	is_same<ResourceTagHasher, hash::FNV1a<hash::HS32>>::value,
+	"changed ResourceTagHasher type breaks binary formats,"
+	" hash functions, and likely other things"
+);
+static_assert(
+	is_same<ResourceTagGlobHasher, hash::FNV1a<hash::HS64>>::value,
+	"changed ResourceTagGlobHasher type breaks binary formats,"
+	" hash functions, and likely other things"
+);
+static_assert(
+	is_same<ResourcePackageNameHasher, hash::FNV1a<hash::HS32>>::value,
+	"changed ResourcePackageNameHasher type breaks binary formats,"
 	" hash functions, and likely other things"
 );
 /** @endcond */ // INTERNAL
@@ -91,17 +106,26 @@ operator"" _resource_name(
 	return hash::calc_ce<ResourceNameHasher>(data, size);
 }
 
-/// Combined resource tags hash literal.
-///
-/// Note that this only takes a single string. Tags should be sorted
-/// and separator-less for the return value of this literal to be
-/// compatible with the runtime combiner-based hash function.
-inline constexpr ResourceTagsHash
-operator"" _resource_tags(
+/// Resource tag hash literal.
+inline constexpr ResourceTagHash
+operator"" _resource_tag(
 	char const* const data,
 	std::size_t const size
 ) {
-	return hash::calc_ce<ResourceTagsHasher>(data, size);
+	return hash::calc_ce<ResourceTagHasher>(data, size);
+}
+
+/// Resource tag glob hash literal.
+///
+/// Note that this only takes a single string. Tags should be sorted
+/// and separator-less for the return value of this literal to be
+/// compatible with the runtime hash function.
+inline constexpr ResourceTagGlobHash
+operator"" _resource_tag_glob(
+	char const* const data,
+	std::size_t const size
+) {
+	return hash::calc_ce<ResourceTagGlobHasher>(data, size);
 }
 
 /// Package name hash literal.
@@ -140,10 +164,16 @@ enum : ResourceNameHash {
 	RES_NAME_SHADER_CONFIG = "togo/gfx/shader-config"_resource_name,
 };
 
-/// Combined resource tags.
-enum : ResourceTagsHash {
-	/// Null tags.
-	RES_TAGS_NULL = ""_resource_tags,
+/// Resource tags.
+enum : ResourceTagHash {
+	/// Null tag.
+	RES_TAG_NULL = ""_resource_tag,
+};
+
+/// Resource tag globs.
+enum : ResourceTagGlobHash {
+	/// Null tag glob.
+	RES_TAG_GLOB_NULL = ""_resource_tag_glob,
 };
 
 /// Resource package names.
@@ -156,12 +186,12 @@ enum : ResourcePackageNameHash {
 struct ResourcePathParts {
 	struct Tag {
 		StringRef name{};
-		hash32 hash;
+		ResourceTagHash hash;
 	};
 
 	ResourceType type_hash;
 	ResourceNameHash name_hash;
-	ResourceTagsHash tags_hash;
+	ResourceTagGlobHash tag_glob_hash;
 	StringRef type{};
 	StringRef name{};
 	FixedArray<Tag, 8> tags;
@@ -193,7 +223,7 @@ struct ResourceMetadata {
 
 	// Serial
 	ResourceNameHash name_hash;
-	ResourceTagsHash tags_hash;
+	ResourceTagGlobHash tag_glob_hash;
 	ResourceType type;
 	u32 data_format_version;
 	u32 data_offset;

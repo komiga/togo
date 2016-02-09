@@ -192,12 +192,12 @@ PackageCompiler::LookupNode* package_compiler::find_node(
 ///
 /// 0 is returned if a resource was not found.
 /// If tags_lenient is true, a tag-less entry will match if there is
-/// no resource with tags_hash exactly.
+/// no resource with tag_glob_hash exactly.
 u32 package_compiler::find_resource_id(
 	PackageCompiler const& pkg,
 	ResourceType const type,
 	ResourceNameHash const name_hash,
-	ResourceTagsHash const tags_hash,
+	ResourceTagGlobHash const tag_glob_hash,
 	bool const tags_lenient
 ) {
 	auto const* node = hash_map::find_node(pkg._lookup, name_hash);
@@ -210,11 +210,11 @@ u32 package_compiler::find_resource_id(
 		) {
 			continue;
 		}
-		if (tags_hash == metadata.tags_hash) {
+		if (tag_glob_hash == metadata.tag_glob_hash) {
 			return metadata.id;
 		} else if (
 			tags_lenient &&
-			metadata.tags_hash == RES_TAGS_NULL
+			metadata.tag_glob_hash == RES_TAG_GLOB_NULL
 		) {
 			id_lenient = metadata.id;
 		}
@@ -237,7 +237,7 @@ u32 package_compiler::add_resource(
 	auto& metadata = array::back(pkg._manifest);
 	metadata.id = array::size(pkg._manifest);
 	metadata.name_hash = path_parts.name_hash;
-	metadata.tags_hash = path_parts.tags_hash;
+	metadata.tag_glob_hash = path_parts.tag_glob_hash;
 	metadata.type = path_parts.type_hash;
 	metadata.data_format_version = 0;
 	metadata.data_offset = 0;
@@ -293,7 +293,7 @@ void package_compiler::remove_resource(PackageCompiler& pkg, u32 const id) {
 	// Leave hole at ID
 	metadata.id = 0;
 	metadata.name_hash = RES_NAME_NULL;
-	metadata.tags_hash = RES_TAGS_NULL;
+	metadata.tag_glob_hash = RES_TAG_GLOB_NULL;
 	metadata.type = RES_TYPE_NULL;
 	metadata.data_format_version = 0;
 	metadata.data_offset = 0;

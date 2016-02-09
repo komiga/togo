@@ -88,7 +88,7 @@ inline u32 find_resource_id(
 		pkg,
 		path_parts.type_hash,
 		path_parts.name_hash,
-		path_parts.tags_hash,
+		path_parts.tag_glob_hash,
 		tags_lenient
 	);
 }

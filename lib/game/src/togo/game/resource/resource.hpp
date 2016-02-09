@@ -37,24 +37,29 @@ inline ResourceNameHash hash_name(StringRef const& name) {
 	return hash::calc<ResourceNameHasher>(name);
 }
 
-/// Calculate hash of resource tags.
-inline ResourceTagsHash hash_tags(
+/// Calculate hash of resource tag.
+inline ResourceNameHash hash_tag(StringRef const& name) {
+	return hash::calc<ResourceTagHasher>(name);
+}
+
+/// Calculate hash of resource tag glob.
+inline ResourceTagGlobHash hash_tag_glob(
 	StringRef const* const tags,
 	unsigned const num_tags
 ) {
-	ResourceTagsHasher state{};
+	ResourceTagGlobHasher state{};
 	for (unsigned i = 0; i < num_tags; ++i) {
 		hash::add(state, tags[i]);
 	}
 	return hash::value(state);
 }
 
-/// Calculate hash of resource tags.
-inline ResourceTagsHash hash_tags(
+/// Calculate hash of resource tag glob.
+inline ResourceTagGlobHash hash_tag_glob(
 	ResourcePathParts::Tag const* const tags,
 	unsigned const num_tags
 ) {
-	ResourceTagsHasher state{};
+	ResourceTagGlobHasher state{};
 	for (unsigned i = 0; i < num_tags; ++i) {
 		hash::add(state, tags[i].name);
 	}

@@ -25,7 +25,7 @@ void test_path(
 	if (valid) {
 		TOGO_LOGF("   name: %016lx '%.*s'\n", pp.name_hash, pp.name.size, pp.name.data);
 		TOGO_LOGF("   type: %08x%8s '%.*s'\n", pp.type_hash, "", pp.type.size, pp.type.data);
-		TOGO_LOGF("   tags: %016lx [", pp.tags_hash);
+		TOGO_LOGF("   tags: %016lx [", pp.tag_glob_hash);
 		for (unsigned i = 0; i < fixed_array::size(pp.tags); ++i) {
 			TOGO_LOGF(
 				"%08x '%.*s'%.*s",
@@ -45,14 +45,12 @@ void test_path(
 		TOGO_ASSERTE(string::compare_equal(name, pp.name));
 		TOGO_ASSERTE(
 			fixed_array::empty(pp.tags) ==
-			(pp.tags_hash == RES_TAGS_NULL)
+			(pp.tag_glob_hash == RES_TAG_GLOB_NULL)
 		);
 
 		for (unsigned i = 0; i < fixed_array::size(pp.tags); ++i) {
 			auto const name = *(begin(tags) + i);
-			auto const hash = hash::calc_generic<
-				decltype(ResourcePathParts::Tag::hash)
-			>(name);
+			auto const hash = resource::hash_tag(name);
 			TOGO_ASSERTE(hash == pp.tags[i].hash);
 			TOGO_ASSERTE(string::compare_equal(name, pp.tags[i].name));
 		}

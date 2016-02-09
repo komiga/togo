@@ -188,11 +188,11 @@ bool compiler_manager::has_resource(
 	CompilerManager const& cm,
 	ResourceType const type,
 	ResourceNameHash const name_hash,
-	ResourceTagsHash const tags_hash IGEN_DEFAULT(RES_TAGS_NULL)
+	ResourceTagGlobHash const tag_glob_hash IGEN_DEFAULT(RES_TAG_GLOB_NULL)
 ) {
 	for (auto const* pkg : cm._packages) {
 		if (package_compiler::find_resource_id(
-			*pkg, type, name_hash, tags_hash, false
+			*pkg, type, name_hash, tag_glob_hash, false
 		) != 0) {
 			return true;
 		}
