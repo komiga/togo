@@ -1,8 +1,6 @@
 
 local S, G, R = precore.helpers()
 
-precore.import(G"${DEP_PATH}/am")
-
 precore.make_config("togo.lib.core.luajit2.dep", nil, {
 {project = function(p)
 	configuration {}
@@ -24,7 +22,6 @@ precore.make_config("togo.lib.core.dep", {
 	reverse = true,
 }, {
 "togo.base",
-"am.dep",
 "togo.lib.core.luajit2.dep",
 {project = function(p)
 	togo.library_config("core")

@@ -13,20 +13,6 @@
 
 #pragma once
 
-// AM‽ configuration
-#include <am/config_values.hpp>
-
-/** @cond INTERNAL */
-#ifdef AM_CONFIG_IMPLICIT_LINEAR_INTERFACE
-	#undef AM_CONFIG_IMPLICIT_LINEAR_INTERFACE
-#endif
-#define AM_CONFIG_FLOAT_PRECISION AM_PRECISION_MEDIUM
-#define AM_CONFIG_VECTOR_TYPES AM_FLAG_TYPE_FLOAT | AM_FLAG_TYPE_INT | AM_FLAG_TYPE_UINT
-#define AM_CONFIG_MATRIX_TYPES AM_FLAG_TYPE_FLOAT
-/** @endcond */ // INTERNAL
-
-#include <am/config.hpp>
-
 namespace togo {
 
 /**

@@ -31,7 +31,7 @@ bool kvs::read_text(KVS& root, IReader& stream, ParserInfo& pinfo) {
 		{allocator},
 		{allocator},
 		1, 0, PC_EOF,
-		Vec4{Vec4::ctor_no_init{}}, 0,
+		Vec4{no_init_tag{}}, 0,
 		PF_NONE,
 		PS_NAME,
 		PV_NONE

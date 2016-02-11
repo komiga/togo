@@ -16,6 +16,10 @@
 #include <togo/core/utility/traits.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/math/types.hpp>
+#include <togo/core/math/vector/1_type.hpp>
+#include <togo/core/math/vector/2_type.hpp>
+#include <togo/core/math/vector/3_type.hpp>
+#include <togo/core/math/vector/4_type.hpp>
 #include <togo/core/string/types.hpp>
 #include <togo/core/hash/hash.hpp>
 

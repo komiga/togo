@@ -5,8 +5,4 @@
 @ingroup lib_core
 @details
 
-Most operations are part of AM. They are imported by using declarations,
-so they do not show up in the documentation. See AM's linear module
-documentation for vector and matrix operations. togo imports all of them.
-
 */
