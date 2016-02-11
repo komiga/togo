@@ -8,11 +8,7 @@ heart.
 
 ### Library: core
 
-Basic support library. All other libraries depend on it.
-
-Dependencies:
-
-1. [All the Maths‽](https://github.com/komiga/am) (HEAD)
+Core library. All other libraries depend on it.
 
 ### Library: image
 

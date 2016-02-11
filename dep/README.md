@@ -6,11 +6,7 @@ proper directories).
 
 ### lib/core
 
-1. [All the Maths‽](https://github.com/komiga/am) (HEAD) into `am/`:
-
-  `git clone git://github.com/komiga/am.git`
-
-2. [LuaJIT](http://luajit.org/download.html) >= 2.0.4 into `luajit/`
+1. [LuaJIT](http://luajit.org/download.html) >= 2.0.4 into `luajit/`
 
 ### lib/window
 
