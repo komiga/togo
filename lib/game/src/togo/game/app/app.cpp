@@ -135,10 +135,12 @@ void app::shutdown() {
 	resource_manager::clear_resources(app.resource_manager);
 	gfx::renderer::destroy(app.renderer);
 	app.renderer = nullptr;
+
 	input_buffer::remove_window(app.input_buffer, app.window);
 	window::destroy(app.window);
 	app.window = nullptr;
 	window::shutdown();
+
 	resource_manager::clear_packages(app.resource_manager);
 	resource_manager::clear_handlers(app.resource_manager);
 
