@@ -5,7 +5,6 @@
 
 #include <togo/window/config.hpp>
 #include <togo/core/error/assert.hpp>
-#include <togo/core/math/types.hpp>
 #include <togo/window/window/types.hpp>
 #include <togo/window/window/window.hpp>
 #include <togo/window/window/impl/types.hpp>

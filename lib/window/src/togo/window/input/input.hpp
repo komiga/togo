@@ -10,7 +10,6 @@
 #pragma once
 
 #include <togo/window/config.hpp>
-#include <togo/core/math/types.hpp>
 #include <togo/window/window/types.hpp>
 #include <togo/window/input/types.hpp>
 #include <togo/window/input/input.gen_interface>

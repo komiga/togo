@@ -1,7 +1,9 @@
 
 #include <togo/core/error/assert.hpp>
 #include <togo/core/utility/utility.hpp>
-#include <togo/core/math/math.hpp>
+#include <togo/core/math/types.hpp>
+#include <togo/core/math/vector/2.hpp>
+#include <togo/core/math/vector/3_type.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/window/window/window.hpp>
 #include <togo/window/input/input.hpp>

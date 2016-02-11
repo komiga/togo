@@ -8,6 +8,7 @@
 #include <togo/game/config.hpp>
 #include <togo/core/types.hpp>
 #include <togo/core/memory/types.hpp>
+#include <togo/core/math/vector/2_type.hpp>
 #include <togo/core/collection/types.hpp>
 #include <togo/core/hash/hash.hpp>
 #include <togo/core/threading/types.hpp>

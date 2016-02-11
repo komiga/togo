@@ -6,7 +6,6 @@
 #include <togo/image/config.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/utility/utility.hpp>
-#include <togo/core/math/math.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/image/pixmap/pixmap.hpp>

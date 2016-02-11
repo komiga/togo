@@ -12,6 +12,7 @@
 
 #include <togo/window/config.hpp>
 #include <togo/core/math/types.hpp>
+#include <togo/core/math/vector/2_type.hpp>
 #include <togo/core/memory/types.hpp>
 #include <togo/core/io/object_buffer_type.hpp>
 #include <togo/window/window/types.hpp>

@@ -6,7 +6,6 @@
 #include <togo/game/config.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/utility/utility.hpp>
-#include <togo/core/math/types.hpp>
 #include <togo/core/collection/hash_map.hpp>
 #include <togo/core/algorithm/sort.hpp>
 #include <togo/core/threading/condvar.hpp>

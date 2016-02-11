@@ -16,7 +16,7 @@
 
 #include <togo/game/config.hpp>
 #include <togo/core/utility/types.hpp>
-#include <togo/core/math/types.hpp>
+#include <togo/core/math/vector/2_type.hpp>
 #include <togo/core/threading/types.hpp>
 #include <togo/window/window/types.hpp>
 #include <togo/game/entity/types.hpp>

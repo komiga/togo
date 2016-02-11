@@ -12,7 +12,7 @@
 
 #include <togo/image/config.hpp>
 #include <togo/image/types.hpp>
-#include <togo/core/math/types.hpp>
+#include <togo/core/math/vector/2_type.hpp>
 
 namespace togo {
 

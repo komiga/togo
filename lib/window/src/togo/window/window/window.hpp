@@ -12,6 +12,8 @@
 #include <togo/window/config.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/math/types.hpp>
+#include <togo/core/math/vector/2_type.hpp>
+#include <togo/core/math/vector/4_type.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/string/types.hpp>
 #include <togo/image/pixmap/types.hpp>

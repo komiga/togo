@@ -15,6 +15,7 @@
 #include <togo/core/utility/traits.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/math/types.hpp>
+#include <togo/core/math/matrix/4x4_type.hpp>
 #include <togo/core/collection/types.hpp>
 #include <togo/core/hash/hash.hpp>
 #include <togo/core/serialization/types.hpp>

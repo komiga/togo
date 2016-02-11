@@ -1,6 +1,7 @@
 
 #include <togo/core/error/assert.hpp>
 #include <togo/core/math/types.hpp>
+#include <togo/core/math/vector/2_type.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/string/string.hpp>
 #include <togo/core/system/system.hpp>

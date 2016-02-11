@@ -1,7 +1,10 @@
 
 #include <togo/core/error/assert.hpp>
 #include <togo/core/utility/utility.hpp>
-#include <togo/core/math/math.hpp>
+#include <togo/core/math/vector/1.hpp>
+#include <togo/core/math/vector/2.hpp>
+#include <togo/core/math/vector/3.hpp>
+#include <togo/core/math/vector/4.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/collection/array.hpp>
 #include <togo/core/string/string.hpp>
