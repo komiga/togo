@@ -242,6 +242,10 @@ inline void table_set_copy_index_raw(lua_State* L, signed index, signed value) {
 	lua::table_set_copy_index_raw(L, -2, index, value);
 }
 
+/// Register userdata.
+///
+/// If keep_metatable is true, the new metatable is kept at the top of the
+/// stack.
 template<class T>
 inline void register_userdata(lua_State* L, LuaCFunction destroy, bool keep_metatable = false) {
 	lua::table_get_raw(L, LUA_REGISTRYINDEX, "togo_class");
