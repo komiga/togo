@@ -12,7 +12,7 @@ return {
 	}),
 	M("math", {
 		N("traits"),
-		N("interpolation"),
+		node_value_post(
 		N("vector", {
 			N("1_type"),
 			N("2_type"),
@@ -22,7 +22,8 @@ return {
 			N("2"),
 			N("3"),
 			N("4"),
-		}),
+		})),
+		node_value_post(
 		N("matrix", {
 			N("2x2_type"),
 			N("2x3_type"),
@@ -42,7 +43,8 @@ return {
 			N("4x2"),
 			N("4x3"),
 			N("4x4"),
-		}),
+		})),
+		N("interpolation"),
 	}),
 	M("log", {
 		N("test"),
