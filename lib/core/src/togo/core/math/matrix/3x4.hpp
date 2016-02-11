@@ -13,9 +13,9 @@
 #pragma once
 
 #include <togo/core/config.hpp>
+#include <togo/core/error/assert.hpp>
 #include <togo/core/utility/types.hpp>
 #include <togo/core/utility/traits.hpp>
-#include <togo/core/error/assert.hpp>
 #include <togo/core/math/types.hpp>
 #include <togo/core/math/traits.hpp>
 #include <togo/core/math/matrix/2x4_type.hpp>

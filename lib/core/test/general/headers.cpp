@@ -18,6 +18,7 @@
 #include <togo/core/math/vector/2.hpp>
 #include <togo/core/math/vector/3.hpp>
 #include <togo/core/math/vector/4.hpp>
+#include <togo/core/math/vector.hpp>
 #include <togo/core/math/matrix/2x2_type.hpp>
 #include <togo/core/math/matrix/2x3_type.hpp>
 #include <togo/core/math/matrix/2x4_type.hpp>
@@ -36,9 +37,8 @@
 #include <togo/core/math/matrix/4x2.hpp>
 #include <togo/core/math/matrix/4x3.hpp>
 #include <togo/core/math/matrix/4x4.hpp>
-#include <togo/core/math/interpolation.hpp>
 #include <togo/core/math/matrix.hpp>
-#include <togo/core/math/vector.hpp>
+#include <togo/core/math/interpolation.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/log/test.hpp>
 #include <togo/core/log/test_unconfigure.hpp>
