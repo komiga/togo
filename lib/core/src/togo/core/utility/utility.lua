@@ -13,7 +13,10 @@ function M.ternary(cond, x, y)
 end
 
 function M.optional(value, default)
-	return (value ~= nil) and value or default
+	if (value ~= nil) then
+		return value
+	end
+	return default
 end
 
 function M.optional_in(table, name, default)
