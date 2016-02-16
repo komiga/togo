@@ -467,14 +467,14 @@ inline KVS::KVS(StringRef const& name, Vec3 const& value) : KVS(value) { kvs::se
 /// Construct with name and 4-dimensional vector value.
 inline KVS::KVS(StringRef const& name, Vec4 const& value) : KVS(value) { kvs::set_name(*this, name); }
 
-/// Get value by index.
+/// Value at index.
 inline KVS& KVS::operator[](unsigned const i) {
 	TOGO_ASSERTE(kvs::is_type_any(*this, type_mask_collection));
 	TOGO_DEBUG_ASSERTE(i < _value.collection.size);
 	return _value.collection.data[i];
 }
 
-/// Get value by index.
+/// Value at index.
 inline KVS const& KVS::operator[](unsigned const i) const {
 	TOGO_ASSERTE(kvs::is_type_any(*this, type_mask_collection));
 	TOGO_DEBUG_ASSERTE(i < _value.collection.size);
