@@ -13,7 +13,7 @@ function M.ternary(cond, x, y)
 end
 
 function M.optional(value, default)
-	if (value ~= nil) then
+	if value ~= nil then
 		return value
 	end
 	return default
