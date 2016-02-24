@@ -17,7 +17,7 @@ group_data["core"] = {
 		["algorithm/sort"] = true,
 	},
 	args = {
-		["utility/args"] = '-a --b=1234 --c="goats" cmd -d a1 a2 "a3" 1 false true',
+		["utility/args"] = '-a --b=1234 --c="goats" cmd -d - -- --- a1 a2 "a3" 1 false true',
 		["lua/general"] = 'lua/utility.lua lua/filesystem.lua lua/io.lua',
 	},
 }
