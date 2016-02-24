@@ -38,29 +38,32 @@ bool parse_args(
 	char const* str;
 	signed pos;
 	signed pos_eq;
-	bool dashed;
+	signed num_dashes;
 	KVS* k_current = &k_options;
 	for (aidx = 1; argc > aidx; ++aidx) {
 		str = argv[aidx];
 		pos = 0;
 		pos_eq = 0;
-		dashed = false;
+		num_dashes = 0;
 		for (; str[pos] != '\0'; ++pos) {
-			if (pos == 0 && str[pos] == '-') {
-				dashed = true;
+			if (str[pos] == '-' && num_dashes == pos) {
+				++num_dashes;
 			} else if (str[pos] == '=') {
 				pos_eq = pos;
 				break;
 			}
 		}
 		for (; str[pos] != '\0'; ++pos) {
-			// Continue to the end of the string
-			// (pos becomes size of string)
+			// Continue to the end of the string (pos becomes size of string)
 		}
 		if (pos_eq == 0) {
 			pos_eq = pos;
 		}
-		if (dashed) {
+		if (num_dashes == pos) {
+			// Consists only of dashes
+			num_dashes = 0;
+		}
+		if (num_dashes == 1 || num_dashes == 2) {
 			KVS& back = kvs::push_back(
 				*k_current,
 				KVS{StringRef{str, unsigned_cast(pos_eq)}, null_tag{}}
