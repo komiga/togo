@@ -158,16 +158,16 @@ IOStatus FileReader::read(
 	TOGO_DEBUG_ASSERT(_data.handle, "cannot perform IO on a closed stream");
 	std::clearerr(_data.handle);
 	std::size_t const op_read_size = std::fread(data, 1, size, _data.handle);
-	if (op_read_size != size && errno != 0) {
+	file_set_status(_data);
+	if (_data.status.fail()) {
 		TOGO_LOG_DEBUGF(
-			"failed to read requested size (%zu != %u): %d, %s\n",
-			op_read_size, size, errno, std::strerror(errno)
+			"failed to read requested size (read %zub, requested %ub)\n",
+			op_read_size, size
 		);
 	}
 	if (read_size) {
 		*read_size = static_cast<unsigned>(op_read_size);
 	}
-	file_set_status(_data);
 	return status();
 }
 
@@ -212,13 +212,13 @@ IOStatus FileWriter::write(
 	TOGO_DEBUG_ASSERT(_data.handle, "cannot perform IO on a closed stream");
 	std::clearerr(_data.handle);
 	std::size_t const write_size = std::fwrite(data, 1, size, _data.handle);
-	if (write_size != size) {
+	file_set_status(_data);
+	if (_data.status.fail()) {
 		TOGO_LOG_DEBUGF(
-			"failed to write requested size (%zu != %u): %d, %s\n",
-			write_size, size, errno, std::strerror(errno)
+			"failed to write requested size (wrote %zub, requested %ub)\n",
+			write_size, size
 		);
 	}
-	file_set_status(_data);
 	return status();
 }
 
