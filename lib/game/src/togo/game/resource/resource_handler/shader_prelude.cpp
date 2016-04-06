@@ -29,7 +29,7 @@ static ResourceValue load(
 	void* const type_data,
 	ResourceManager& manager,
 	ResourcePackage& package,
-	ResourceMetadata const& metadata
+	Resource const& resource
 ) {
 	auto* const renderer = static_cast<gfx::Renderer*>(type_data);
 	auto& def = *TOGO_CONSTRUCT(
@@ -38,7 +38,7 @@ static ResourceValue load(
 	);
 
 	{// Deserialize resource
-	ResourceStreamLock lock{package, metadata.id};
+	ResourceStreamLock lock{package, resource.metadata.id};
 	BinaryInputSerializer ser{lock.stream()};
 	ser % def;
 	}
@@ -65,10 +65,10 @@ static ResourceValue load(
 static void unload(
 	void* const type_data,
 	ResourceManager& /*manager*/,
-	ResourceValue const resource
+	Resource const& resource
 ) {
 	auto* const renderer = static_cast<gfx::Renderer*>(type_data);
-	auto* const def = static_cast<gfx::ShaderDef*>(resource.pointer);
+	auto* const def = static_cast<gfx::ShaderDef*>(resource.value.pointer);
 	TOGO_DESTROY(*renderer->_allocator, def);
 }
 

@@ -23,7 +23,7 @@ static ResourceValue load(
 	void* const type_data,
 	ResourceManager& /*manager*/,
 	ResourcePackage& package,
-	ResourceMetadata const& metadata
+	Resource const& resource
 ) {
 	TOGO_DEBUG_ASSERTE(type_data == nullptr);
 	TestResource* const test_resource = TOGO_CONSTRUCT(
@@ -31,7 +31,7 @@ static ResourceValue load(
 	);
 
 	{// Deserialize resource
-	ResourceStreamLock lock{package, metadata.id};
+	ResourceStreamLock lock{package, resource.metadata.id};
 	BinaryInputSerializer ser{lock.stream()};
 	ser % *test_resource;
 	}
@@ -41,10 +41,10 @@ static ResourceValue load(
 static void unload(
 	void* const type_data,
 	ResourceManager& /*manager*/,
-	ResourceValue const resource
+	Resource const& resource
 ) {
 	TOGO_DEBUG_ASSERTE(type_data == nullptr);
-	auto const* test_resource = static_cast<TestResource*>(resource.pointer);
+	auto const* test_resource = static_cast<TestResource*>(resource.value.pointer);
 	TOGO_DESTROY(memory::default_allocator(), test_resource);
 }
 

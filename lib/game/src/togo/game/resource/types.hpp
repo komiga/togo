@@ -254,6 +254,19 @@ union ResourceValue {
 	}
 };
 
+/// Runtime resource storage.
+struct Resource {
+	/// Properties.
+	enum : u32 {
+		MASK_FLAG = 0xFF,
+		F_ACTIVE = 1 << 0,
+	};
+
+	u32 properties;
+	ResourceMetadata metadata;
+	ResourceValue value;
+};
+
 /// Test resource.
 struct TestResource {
 	s64 x;
@@ -305,14 +318,14 @@ struct ResourceHandler {
 		void* const type_data,
 		ResourceManager& manager,
 		ResourcePackage& package,
-		ResourceMetadata const& metadata
+		Resource const& resource
 	);
 
 	/// Unload a resource.
 	using unload_func_type = void (
 		void* const type_data,
 		ResourceManager& manager,
-		ResourceValue const resource
+		Resource const& resource
 	);
 
 	ResourceType type;
@@ -337,7 +350,7 @@ struct ResourcePackage {
 	u32 _open_resource_id;
 	FileReader _stream;
 	HashMap<ResourceNameHash, u32> _lookup;
-	Array<ResourceMetadata> _manifest;
+	Array<Resource> _manifest;
 	FixedArray<char, 48> _name;
 	FixedArray<char, 256> _path;
 
@@ -365,15 +378,10 @@ struct ResourcePackage {
 
 /// Resource manager.
 struct ResourceManager {
-	struct TypedResourceValue {
-		ResourceValue value;
-		ResourceType type;
-	};
-
-	using ActiveNode = HashMapNode<ResourceNameHash, TypedResourceValue>;
+	using ActiveNode = HashMapNode<ResourceNameHash, Resource*>;
 
 	HashMap<ResourceType, ResourceHandler> _handlers;
-	HashMap<ResourceNameHash, TypedResourceValue> _resources;
+	HashMap<ResourceNameHash, Resource*> _resources;
 	Array<ResourcePackage*> _packages;
 	FixedArray<char, 128> _base_path;
 

@@ -22,7 +22,7 @@
 #include <togo/core/serialization/array.hpp>
 #include <togo/core/serialization/string.hpp>
 #include <togo/game/resource/resource.hpp>
-#include <togo/game/serialization/resource/resource_metadata.hpp>
+#include <togo/game/serialization/resource/resource.hpp>
 #include <togo/tool_res_build/package_compiler.hpp>
 
 namespace togo {

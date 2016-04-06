@@ -36,7 +36,7 @@ static void push_def(
 ) {
 	for (auto const dep_name : def.prelude) {
 		auto const* const dep_def = static_cast<gfx::ShaderDef const*>(
-			resource_manager::find_resource(manager, RES_TYPE_SHADER_PRELUDE, dep_name).pointer
+			resource_manager::find_active(manager, RES_TYPE_SHADER_PRELUDE, dep_name).pointer
 		);
 		TOGO_DEBUG_ASSERTE(dep_def);
 		push_def(spec, stage, *dep_def, manager, push_param_blocks);
@@ -139,13 +139,13 @@ static ResourceValue load(
 	void* const type_data,
 	ResourceManager& manager,
 	ResourcePackage& package,
-	ResourceMetadata const& metadata
+	Resource const& resource
 ) {
 	auto* const renderer = static_cast<gfx::Renderer*>(type_data);
 	auto& def = renderer->_shader_stage;
 
 	{// Deserialize resource
-	ResourceStreamLock lock{package, metadata.id};
+	ResourceStreamLock lock{package, resource.metadata.id};
 	BinaryInputSerializer ser{lock.stream()};
 	ser % def;
 	}
@@ -192,10 +192,10 @@ static ResourceValue load(
 static void unload(
 	void* const type_data,
 	ResourceManager& /*manager*/,
-	ResourceValue const resource
+	Resource const& resource
 ) {
 	auto* const renderer = static_cast<gfx::Renderer*>(type_data);
-	gfx::ShaderID const id{resource.uinteger};
+	gfx::ShaderID const id{resource.value.uinteger};
 	gfx::renderer::destroy_shader(renderer, id);
 }
 

@@ -19,7 +19,7 @@ namespace game {
 
 namespace resource_manager {
 
-static ResourceMetadata const* resource_metadata(
+static Resource* find_in_manifest(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash,
@@ -38,13 +38,13 @@ static ResourceMetadata const* resource_metadata(
 		if (!node) {
 			continue;
 		}
-		ResourceMetadata const& metadata = resource_package::resource_metadata(
+		auto& resource = resource_package::resource(
 			**it_pkg, node->value
 		);
 		// TODO: Tag filter
-		if (metadata.type == type) {
+		if (resource.metadata.type == type) {
 			package = *it_pkg;
-			return &metadata;
+			return const_cast<Resource*>(&resource);
 		}
 	}
 	return nullptr;
@@ -57,11 +57,64 @@ static ResourceManager::ActiveNode* find_active_node(
 ) {
 	auto* node = hash_map::find_node(rm._resources, name_hash);
 	for (; node; node = hash_map::next_node(rm._resources, node)) {
-		if (node->value.type == type) {
+		if (node->value->metadata.type == type) {
 			return node;
 		}
 	}
 	return nullptr;
+}
+
+static void unload_resource_impl(
+	ResourceManager& rm,
+	Resource& resource,
+	ResourceHandler const* handler
+) {
+#if defined(TOGO_DEBUG)
+	auto const& metadata = resource.metadata;
+	TOGO_LOG_DEBUGF(
+		"resource_manager: unload [%08x %016lx %016lx %-4u]\n",
+		metadata.type,
+		metadata.name_hash,
+		metadata.tag_glob_hash,
+		metadata.id
+	);
+#endif
+
+	handler->func_unload(handler->type_data, rm, resource);
+	resource.value = nullptr;
+	resource.properties &= ~Resource::F_ACTIVE;
+}
+
+static unsigned unload_package_impl(
+	ResourceManager& rm,
+	ResourcePackage& pkg
+) {
+	// TODO: optimize?
+	if (hash_map::empty(rm._resources)) {
+		return 0;
+	}
+	unsigned num = 0;
+	auto* const head = begin(pkg._manifest);
+	auto* const tail = end(pkg._manifest);
+
+	auto& resources = rm._resources._data;
+	ResourceType type = RES_TYPE_NULL;
+	ResourceHandler const* handler;
+	for (unsigned i = 0; i < array::size(resources); ++i) {
+		auto& node = resources[i];
+		auto* resource = node.value;
+		if (resource >= head && resource < tail) {
+			if (resource->metadata.type != type) {
+				type = resource->metadata.type;
+				handler = hash_map::find(rm._handlers, type);
+				TOGO_DEBUG_ASSERTE(handler);
+			}
+			resource_manager::unload_resource_impl(rm, *resource, handler);
+			hash_map::remove(rm._resources, &node);
+			++num;
+		}
+	}
+	return num;
 }
 
 } // namespace resource_manager
@@ -163,6 +216,22 @@ ResourcePackageNameHash resource_manager::add_package(
 	return resource_package::name_hash(*pkg);
 }
 
+/// Unload all active resources in package.
+///
+/// Returns the number of resources unloaded.
+unsigned resource_manager::unload_package(
+	ResourceManager& rm,
+	ResourcePackageNameHash const name_hash
+) {
+	for (unsigned i = 0; i < array::size(rm._packages); ++i) {
+		auto* const pkg = rm._packages[i];
+		if (name_hash == resource_package::name_hash(*pkg)) {
+			return resource_manager::unload_package_impl(rm, *pkg);
+		}
+	}
+	TOGO_ASSERT(false, "package not found");
+}
+
 /// Remove package.
 void resource_manager::remove_package(
 	ResourceManager& rm,
@@ -172,7 +241,7 @@ void resource_manager::remove_package(
 	for (unsigned i = 0; i < array::size(rm._packages); ++i) {
 		auto* const pkg = rm._packages[i];
 		if (name_hash == resource_package::name_hash(*pkg)) {
-			// TODO: Unload active resources from the package
+			resource_manager::unload_package_impl(rm, *pkg);
 			resource_package::close(*pkg);
 			TOGO_DESTROY(allocator, pkg);
 			array::remove(rm._packages, i);
@@ -200,10 +269,10 @@ bool resource_manager::has_resource(
 	ResourceNameHash const name_hash
 ) {
 	ResourcePackage* pkg = nullptr;
-	ResourceMetadata const* metadata = resource_manager::resource_metadata(
+	auto const* resource = resource_manager::find_in_manifest(
 		rm, type, name_hash, pkg
 	);
-	return metadata != nullptr;
+	return resource != nullptr;
 }
 
 /// Load resource.
@@ -216,35 +285,36 @@ ResourceValue resource_manager::load_resource(
 ) {
 	TOGO_DEBUG_ASSERTE(hash_map::has(rm._handlers, type));
 	{// Lookup existing value
-	auto const existing_value = resource_manager::find_resource(rm, type, name_hash);
+	auto const existing_value = resource_manager::find_active(rm, type, name_hash);
 	if (existing_value.valid()) {
 		return existing_value;
 	}}
 
-	// Load
 	auto const* const handler = hash_map::find(rm._handlers, type);
 	ResourcePackage* pkg = nullptr;
-	ResourceMetadata const* metadata = resource_manager::resource_metadata(
+	auto* resource = resource_manager::find_in_manifest(
 		rm, type, name_hash, pkg
 	);
-	if (!metadata) {
+	if (!resource) {
 		TOGO_LOG_ERRORF(
 			"resource not found: [%08x %016lx]\n",
 			type, name_hash
 		);
 		return nullptr;
 	}
-	if (handler->format_version != metadata->data_format_version) {
+
+	auto& metadata = resource->metadata;
+	if (handler->format_version != metadata.data_format_version) {
 		TOGO_LOG_ERRORF(
 			"resource handler format version mismatch against [%08x %016lx]: %u != %u\n",
-			type, name_hash, handler->format_version, metadata->data_format_version
+			type, name_hash, handler->format_version, metadata.data_format_version
 		);
 		return nullptr;
 	}
-	StringRef const pkg_name{resource_package::name(*pkg)};
 	ResourceValue const load_value = handler->func_load(
-		handler->type_data, rm, *pkg, *metadata
+		handler->type_data, rm, *pkg, *resource
 	);
+	StringRef const pkg_name{resource_package::name(*pkg)};
 	if (!load_value.valid()) {
 		TOGO_LOG_ERRORF(
 			"failed to load resource from package '%.*s': [%08x %016lx]\n",
@@ -253,7 +323,16 @@ ResourceValue resource_manager::load_resource(
 		);
 		return nullptr;
 	}
-	hash_map::push(rm._resources, name_hash, {load_value, type});
+	TOGO_LOG_DEBUGF(
+		"resource_manager:   load [%08x %016lx %016lx %-4u]\n",
+		metadata.type,
+		metadata.name_hash,
+		metadata.tag_glob_hash,
+		metadata.id
+	);
+	resource->value = load_value;
+	resource->properties |= Resource::F_ACTIVE;
+	hash_map::push(rm._resources, name_hash, resource);
 	return load_value;
 }
 
@@ -266,8 +345,9 @@ void resource_manager::unload_resource(
 	TOGO_DEBUG_ASSERTE(hash_map::has(rm._handlers, type));
 	auto* const node = resource_manager::find_active_node(rm, type, name_hash);
 	if (node) {
+		auto& resource = *node->value;
 		auto const* const handler = hash_map::find(rm._handlers, type);
-		handler->func_unload(handler->type_data, rm, node->value.value);
+		resource_manager::unload_resource_impl(rm, resource, handler);
 		hash_map::remove(rm._resources, node);
 	}
 }
@@ -277,27 +357,28 @@ void resource_manager::clear_resources(ResourceManager& rm) {
 	ResourceType type = RES_TYPE_NULL;
 	ResourceHandler const* handler;
 	for (auto const& node : rm._resources) {
-		if (node.value.type != type) {
-			type = node.value.type;
+		auto& resource = *node.value;
+		if (resource.metadata.type != type) {
+			type = resource.metadata.type;
 			handler = hash_map::find(rm._handlers, type);
 			TOGO_DEBUG_ASSERTE(handler);
 		}
 		// FIXME: func_unload() may make invalid requests as we aren't
 		// removing the nodes in-loop. Block find_active_node() requests
 		// during clear or remove nodes?
-		handler->func_unload(handler->type_data, rm, node.value.value);
+		resource_manager::unload_resource_impl(rm, resource, handler);
 	}
 	hash_map::clear(rm._resources);
 }
 
-/// Find resource by type and name.
-ResourceValue resource_manager::find_resource(
+/// Find active resource by type and name.
+ResourceValue resource_manager::find_active(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash
 ) {
 	auto const* const node = resource_manager::find_active_node(rm, type, name_hash);
-	return node ? node->value.value : nullptr;
+	return node ? node->value->value : nullptr;
 }
 
 } // namespace game

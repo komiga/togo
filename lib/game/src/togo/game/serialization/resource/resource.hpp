@@ -1,4 +1,4 @@
-#line 2 "togo/game/serialization/resource/resource_metadata.hpp"
+#line 2 "togo/game/serialization/resource/resource.hpp"
 /**
 @copyright MIT license; see @ref index or the accompanying LICENSE file.
 
@@ -34,6 +34,15 @@ serialize(serializer_tag, Ser& ser, ResourceMetadata& value_unsafe) {
 		% value.data_format_version
 		% value.data_offset
 		% value.data_size
+	;
+}
+
+template<class Ser>
+inline void
+serialize(serializer_tag, Ser& ser, Resource& value_unsafe) {
+	auto& value = serializer_cast_safe<Ser>(value_unsafe);
+	ser
+		% value.metadata
 	;
 }
 

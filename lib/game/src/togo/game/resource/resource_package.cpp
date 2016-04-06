@@ -19,7 +19,7 @@
 #include <togo/game/resource/resource.hpp>
 #include <togo/game/resource/resource_package.hpp>
 #include <togo/game/resource/resource_manager.hpp>
-#include <togo/game/serialization/resource/resource_metadata.hpp>
+#include <togo/game/serialization/resource/resource.hpp>
 
 namespace togo {
 namespace game {
@@ -70,7 +70,7 @@ void resource_package::open(
 
 	ser % make_ser_collection<u32>(pkg._manifest);
 	for (u32 i = 0; i < array::size(pkg._manifest); ++i) {
-		auto& metadata = pkg._manifest[i];
+		auto& metadata = pkg._manifest[i].metadata;
 		if (metadata.type == RES_TYPE_NULL) {
 			metadata.id = 0;
 			continue;
@@ -93,17 +93,17 @@ void resource_package::close(
 	pkg._stream.close();
 }
 
-/// Resource metadata for ID.
+/// Resource for ID.
 ///
 /// An assertion will fail if the ID is invalid.
-ResourceMetadata const& resource_package::resource_metadata(
+Resource const& resource_package::resource(
 	ResourcePackage const& pkg,
 	u32 const id
 ) {
 	TOGO_ASSERT(id > 0 && id <= array::size(pkg._manifest), "invalid ID");
-	auto const& metadata = pkg._manifest[id - 1];
-	TOGO_DEBUG_ASSERT(metadata.id != 0, "null entry");
-	return metadata;
+	auto& resource = pkg._manifest[id - 1];
+	TOGO_DEBUG_ASSERT(resource.metadata.id != 0, "null entry");
+	return resource;
 }
 
 /// Find lookup node by resource name.
@@ -124,7 +124,7 @@ IReader* resource_package::open_resource_stream(
 ) {
 	TOGO_ASSERT(pkg._stream.is_open(), "package is not open");
 	TOGO_ASSERT(pkg._open_resource_id == 0, "a resource stream is already open");
-	auto const& metadata = resource_package::resource_metadata(pkg, id);
+	auto const& metadata = resource_package::resource(pkg, id).metadata;
 	TOGO_ASSERTE(io::seek_to(pkg._stream, metadata.data_offset));
 	pkg._open_resource_id = id;
 	return &pkg._stream;
@@ -139,9 +139,9 @@ void resource_package::close_resource_stream(
 	TOGO_ASSERT(pkg._stream.is_open(), "package is not open");
 	TOGO_ASSERT(pkg._open_resource_id != 0, "no resource stream is open");
 	#if defined(TOGO_DEBUG)
-		auto const& metadata = resource_package::resource_metadata(
+		auto const& metadata = resource_package::resource(
 			pkg, pkg._open_resource_id
-		);
+		).metadata;
 		auto const stream_pos = io::position(pkg._stream);
 		TOGO_DEBUG_ASSERTE(
 			stream_pos >= metadata.data_offset &&

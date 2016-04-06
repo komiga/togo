@@ -29,7 +29,7 @@ return {
 			N("render_config"),
 		}),
 		N("resource", {
-			N("resource_metadata"),
+			N("resource"),
 			N("test_resource"),
 		}),
 	}),

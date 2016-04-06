@@ -23,7 +23,7 @@ static ResourceValue load(
 	void* const /*type_data*/,
 	ResourceManager& /*manager*/,
 	ResourcePackage& package,
-	ResourceMetadata const& metadata
+	Resource const& resource
 ) {
 	auto* const packed_config = TOGO_CONSTRUCT(
 		memory::default_allocator(), gfx::PackedRenderConfig, {
@@ -31,7 +31,7 @@ static ResourceValue load(
 	});
 
 	{// Deserialize resource
-	ResourceStreamLock lock{package, metadata.id};
+	ResourceStreamLock lock{package, resource.metadata.id};
 	BinaryInputSerializer ser{lock.stream()};
 	ser % *packed_config;
 	}
@@ -41,9 +41,9 @@ static ResourceValue load(
 static void unload(
 	void* const /*type_data*/,
 	ResourceManager& /*manager*/,
-	ResourceValue const resource
+	Resource const& resource
 ) {
-	auto const* packed_config = static_cast<gfx::PackedRenderConfig*>(resource.pointer);
+	auto const* packed_config = static_cast<gfx::PackedRenderConfig*>(resource.value.pointer);
 	TOGO_DESTROY(memory::default_allocator(), packed_config);
 }
 
