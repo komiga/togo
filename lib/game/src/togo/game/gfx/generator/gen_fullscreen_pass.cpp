@@ -26,6 +26,7 @@ namespace generator {
 namespace gen_fullscreen_pass {
 
 struct UnitData {
+	ResourceNameHash shader_name_hash;
 	gfx::CmdRenderFullscreenPass cmd;
 };
 
@@ -33,9 +34,20 @@ struct DefData {
 	Array<UnitData> unit_storage;
 };
 
+static void destroy_units(
+	DefData* def_data,
+	gfx::Renderer* renderer
+) {
+	auto& app = app::instance();
+	for (auto& unit_data : def_data->unit_storage) {
+		resource::unref_shader(app.resource_manager, unit_data.shader_name_hash);
+		gfx::renderer::destroy_framebuffer(renderer, unit_data.cmd.framebuffer_id);
+	}
+}
+
 static void init(
 	gfx::GeneratorDef& def,
-	gfx::Renderer* /*renderer*/
+	gfx::Renderer* renderer
 ) {
 	if (!def.data) {
 		def.data = TOGO_CONSTRUCT(
@@ -45,15 +57,17 @@ static void init(
 	} else {
 		// Reinitialization
 		auto def_data = static_cast<DefData*>(def.data);
+		destroy_units(def_data, renderer);
 		array::clear(def_data->unit_storage);
 	}
 }
 
 static void destroy(
 	gfx::GeneratorDef const& def,
-	gfx::Renderer* /*renderer*/
+	gfx::Renderer* renderer
 ) {
 	auto def_data = static_cast<DefData*>(def.data);
+	destroy_units(def_data, renderer);
 	TOGO_DESTROY(memory::default_allocator(), def_data);
 }
 
