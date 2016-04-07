@@ -69,7 +69,7 @@ void gen_test_proxy_init(
 		renderer, array_extent(triangle_vertices), 0, {},
 		{{data->buffer, &triangle_vformat, 0}}
 	);
-	data->shader = resource::load_shader(
+	data->shader = resource::ref_shader(
 		app.resource_manager,
 		"test/gfx/generic"_resource_name
 	);
@@ -139,7 +139,7 @@ void TestAppModel::init(TestApp& app) {
 			gen_test_proxy_exec
 		}
 	);
-	auto* render_config = resource::load_render_config(
+	auto* render_config = resource::ref_render_config(
 		app.resource_manager,
 		"test/gfx/pipeline"_resource_name
 	);
@@ -151,8 +151,8 @@ void TestAppModel::init(TestApp& app) {
 
 template<>
 void TestAppModel::shutdown(TestApp& app) {
-	world_manager::destroy(app.world_manager, app.data.world);
 	entity_manager::destroy(app.entity_manager, app.data.camera);
+	world_manager::destroy(app.world_manager, app.data.world);
 }
 
 template<>

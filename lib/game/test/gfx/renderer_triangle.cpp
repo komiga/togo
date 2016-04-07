@@ -121,7 +121,7 @@ void TestAppModel::init(TestApp& app) {
 	);
 
 	// Load shader
-	app.data.shader = resource::load_shader(
+	app.data.shader = resource::ref_shader(
 		app.resource_manager,
 		"test/gfx/simple-oscillate"_resource_name
 	);

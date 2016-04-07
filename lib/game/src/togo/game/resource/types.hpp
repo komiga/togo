@@ -258,8 +258,12 @@ union ResourceValue {
 struct Resource {
 	/// Properties.
 	enum : u32 {
-		MASK_FLAG = 0xFF,
-		F_ACTIVE = 1 << 0,
+		S_NUM_REFS = 0,
+		P_NUM_REFS = 0xFFFF,
+
+		S_FLAG = 16,
+		M_FLAG = 0xFFFF,
+		F_ACTIVE = 1 << S_FLAG,
 	};
 
 	u32 properties;

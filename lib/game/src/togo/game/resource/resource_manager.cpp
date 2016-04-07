@@ -19,36 +19,22 @@ namespace game {
 
 namespace resource_manager {
 
-static Resource* find_in_manifest(
-	ResourceManager& rm,
-	ResourceType const type,
-	ResourceNameHash const name_hash,
-	ResourcePackage*& package
-) {
-	if (array::empty(rm._packages)) {
-		return nullptr;
-	}
-	ResourcePackage::LookupNode* node;
-	for (
-		auto* it_pkg = array::end(rm._packages) - 1;
-		it_pkg >= array::begin(rm._packages);
-		--it_pkg
-	) {
-		node = resource_package::find_node(**it_pkg, name_hash);
-		if (!node) {
-			continue;
-		}
-		auto& resource = resource_package::resource(
-			**it_pkg, node->value
-		);
-		// TODO: Tag filter
-		if (resource.metadata.type == type) {
-			package = *it_pkg;
-			return const_cast<Resource*>(&resource);
-		}
-	}
-	return nullptr;
-}
+#if defined(TOGO_DEBUG)
+#define TOGO_LOG_RESOURCE_MANAGER_ACTION(action, resource_) do {			\
+	auto const& metadata = (resource_).metadata;							\
+	TOGO_LOG_DEBUGF(														\
+		"resource_manager: %6s [%08x %016lx %016lx %-4u] R %-3u\n",			\
+		action,																\
+		metadata.type,														\
+		metadata.name_hash,													\
+		metadata.tag_glob_hash,												\
+		metadata.id,														\
+		resource::num_refs(resource_)										\
+	);																		\
+} while(false)
+#else
+#define TOGO_LOG_RESOURCE_MANAGER_ACTION(action, resource_)
+#endif
 
 static ResourceManager::ActiveNode* find_active_node(
 	ResourceManager& rm,
@@ -64,22 +50,12 @@ static ResourceManager::ActiveNode* find_active_node(
 	return nullptr;
 }
 
-static void unload_resource_impl(
+static void unload_impl(
 	ResourceManager& rm,
 	Resource& resource,
 	ResourceHandler const* handler
 ) {
-#if defined(TOGO_DEBUG)
-	auto const& metadata = resource.metadata;
-	TOGO_LOG_DEBUGF(
-		"resource_manager: unload [%08x %016lx %016lx %-4u]\n",
-		metadata.type,
-		metadata.name_hash,
-		metadata.tag_glob_hash,
-		metadata.id
-	);
-#endif
-
+	TOGO_LOG_RESOURCE_MANAGER_ACTION("unload", resource);
 	handler->func_unload(handler->type_data, rm, resource);
 	resource.value = nullptr;
 	resource.properties &= ~Resource::F_ACTIVE;
@@ -109,7 +85,7 @@ static unsigned unload_package_impl(
 				handler = hash_map::find(rm._handlers, type);
 				TOGO_DEBUG_ASSERTE(handler);
 			}
-			resource_manager::unload_resource_impl(rm, *resource, handler);
+			resource_manager::unload_impl(rm, *resource, handler);
 			hash_map::remove(rm._resources, &node);
 			++num;
 		}
@@ -263,14 +239,13 @@ void resource_manager::clear_packages(ResourceManager& rm) {
 }
 
 /// Whether a resource matching (type, name_hash) exists.
-bool resource_manager::has_resource(
+bool resource_manager::has(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash
 ) {
-	ResourcePackage* pkg = nullptr;
-	auto const* resource = resource_manager::find_in_manifest(
-		rm, type, name_hash, pkg
+	auto const* resource = resource_manager::find_manifest(
+		rm, type, name_hash, nullptr
 	);
 	return resource != nullptr;
 }
@@ -278,22 +253,22 @@ bool resource_manager::has_resource(
 /// Load resource.
 ///
 /// The resource is not reloaded if it is already loaded.
-ResourceValue resource_manager::load_resource(
+Resource* resource_manager::load(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash
 ) {
 	TOGO_DEBUG_ASSERTE(hash_map::has(rm._handlers, type));
 	{// Lookup existing value
-	auto const existing_value = resource_manager::find_active(rm, type, name_hash);
-	if (existing_value.valid()) {
-		return existing_value;
+	auto* active = resource_manager::find_active(rm, type, name_hash);
+	if (active) {
+		return active;
 	}}
 
 	auto const* const handler = hash_map::find(rm._handlers, type);
 	ResourcePackage* pkg = nullptr;
-	auto* resource = resource_manager::find_in_manifest(
-		rm, type, name_hash, pkg
+	auto* resource = resource_manager::find_manifest(
+		rm, type, name_hash, &pkg
 	);
 	if (!resource) {
 		TOGO_LOG_ERRORF(
@@ -323,21 +298,30 @@ ResourceValue resource_manager::load_resource(
 		);
 		return nullptr;
 	}
-	TOGO_LOG_DEBUGF(
-		"resource_manager:   load [%08x %016lx %016lx %-4u]\n",
-		metadata.type,
-		metadata.name_hash,
-		metadata.tag_glob_hash,
-		metadata.id
-	);
+	TOGO_LOG_RESOURCE_MANAGER_ACTION("load", *resource);
 	resource->value = load_value;
 	resource->properties |= Resource::F_ACTIVE;
 	hash_map::push(rm._resources, name_hash, resource);
-	return load_value;
+	return resource;
+}
+
+/// Load resource and add reference.
+///
+/// The resource is not reloaded if it is already loaded.
+Resource* resource_manager::ref_load(
+	ResourceManager& rm,
+	ResourceType const type,
+	ResourceNameHash const name_hash
+) {
+	auto* resource = resource_manager::load(rm, type, name_hash);
+	if (resource) {
+		resource_manager::ref(rm, *resource);
+	}
+	return resource;
 }
 
 /// Unload resource.
-void resource_manager::unload_resource(
+void resource_manager::unload(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash
@@ -347,7 +331,7 @@ void resource_manager::unload_resource(
 	if (node) {
 		auto& resource = *node->value;
 		auto const* const handler = hash_map::find(rm._handlers, type);
-		resource_manager::unload_resource_impl(rm, resource, handler);
+		resource_manager::unload_impl(rm, resource, handler);
 		hash_map::remove(rm._resources, node);
 	}
 }
@@ -366,19 +350,103 @@ void resource_manager::clear_resources(ResourceManager& rm) {
 		// FIXME: func_unload() may make invalid requests as we aren't
 		// removing the nodes in-loop. Block find_active_node() requests
 		// during clear or remove nodes?
-		resource_manager::unload_resource_impl(rm, resource, handler);
+		resource_manager::unload_impl(rm, resource, handler);
 	}
 	hash_map::clear(rm._resources);
 }
 
+/// Find resource by type and name.
+Resource* resource_manager::find_manifest(
+	ResourceManager& rm,
+	ResourceType const type,
+	ResourceNameHash const name_hash,
+	ResourcePackage** package
+) {
+	if (array::empty(rm._packages)) {
+		return nullptr;
+	}
+	ResourcePackage::LookupNode* node;
+	for (
+		auto* it_pkg = array::end(rm._packages) - 1;
+		it_pkg >= array::begin(rm._packages);
+		--it_pkg
+	) {
+		node = resource_package::find_node(**it_pkg, name_hash);
+		if (!node) {
+			continue;
+		}
+		auto& resource = resource_package::resource(
+			**it_pkg, node->value
+		);
+		// TODO: Tag filter
+		if (resource.metadata.type == type) {
+			if (package) {
+				*package = *it_pkg;
+			}
+			return const_cast<Resource*>(&resource);
+		}
+	}
+	return nullptr;
+}
+
 /// Find active resource by type and name.
-ResourceValue resource_manager::find_active(
+Resource* resource_manager::find_active(
 	ResourceManager& rm,
 	ResourceType const type,
 	ResourceNameHash const name_hash
 ) {
 	auto const* const node = resource_manager::find_active_node(rm, type, name_hash);
-	return node ? node->value->value : nullptr;
+	return node ? node->value : nullptr;
+}
+
+/// Add a resource reference.
+///
+/// Returns resource's number of references.
+unsigned resource_manager::ref(
+	ResourceManager& /*rm*/,
+	Resource& resource
+) {
+	unsigned num_refs = resource::num_refs(resource);
+	resource::set_num_refs(resource, ++num_refs);
+	TOGO_LOG_RESOURCE_MANAGER_ACTION("ref", resource);
+	return num_refs;
+}
+
+/// Remove a resource reference.
+///
+/// Returns resource's number of references.
+unsigned resource_manager::unref(
+	ResourceManager& rm,
+	Resource& resource
+) {
+	// TODO: queue for task?
+	unsigned num_refs = resource::num_refs(resource);
+	TOGO_DEBUG_ASSERTE(num_refs > 0);
+	resource::set_num_refs(resource, --num_refs);
+	TOGO_LOG_RESOURCE_MANAGER_ACTION("unref", resource);
+
+	if (num_refs == 0) {
+		resource_manager::unload(rm, resource.metadata.type, resource.metadata.name_hash);
+	}
+	return num_refs;
+}
+
+/// Remove a resource reference.
+///
+/// Returns resource's number of references.
+unsigned resource_manager::unref(
+	ResourceManager& rm,
+	ResourceType const type,
+	ResourceNameHash const name_hash,
+	bool const strict IGEN_DEFAULT(true)
+) {
+	auto* resource = resource_manager::find_active(rm, type, name_hash);
+	if (resource) {
+		return resource_manager::unref(rm, *resource);
+	} else {
+		TOGO_ASSERT(strict, "resource not found (strict unref)");
+	}
+	return 0;
 }
 
 } // namespace game

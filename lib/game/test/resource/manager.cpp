@@ -37,21 +37,19 @@ void test(
 ) {
 	TOGO_ASSERTE(!resource_manager::find_active(
 		rm, RES_TYPE_TEST, name_hash
-	).valid());
-	auto const* test_resource = static_cast<TestResource*>(
-		resource_manager::load_resource(rm, RES_TYPE_TEST, name_hash).pointer
-	);
+	));
+	auto const* test_resource = resource_manager::load(rm, RES_TYPE_TEST, name_hash);
 	TOGO_ASSERTE(static_cast<bool>(test_resource) == expect_success);
 	TOGO_ASSERTE(test_resource == resource_manager::find_active(
 		rm, RES_TYPE_TEST, name_hash
-	).pointer);
+	));
 	if (test_resource) {
-		TOGO_ASSERTE(test_resource->x == x);
-		resource_manager::unload_resource(rm, RES_TYPE_TEST, name_hash);
+		TOGO_ASSERTE(static_cast<TestResource*>(test_resource->value.pointer)->x == x);
+		resource_manager::unload(rm, RES_TYPE_TEST, name_hash);
 		test_resource = nullptr;
 		TOGO_ASSERTE(!resource_manager::find_active(
 			rm, RES_TYPE_TEST, name_hash
-		).valid());
+		));
 	}
 }
 

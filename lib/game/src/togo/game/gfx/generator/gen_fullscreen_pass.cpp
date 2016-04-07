@@ -89,7 +89,7 @@ static void read(
 	;
 
 	UnitData unit_data;
-	unit_data.cmd.shader_id = resource::load_shader(
+	unit_data.cmd.shader_id = resource::ref_shader(
 		app.resource_manager, ser_data.shader_name_hash
 	);
 

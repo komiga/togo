@@ -71,6 +71,18 @@ inline ResourcePackageNameHash hash_package_name(StringRef const& name) {
 	return hash::calc<ResourcePackageNameHasher>(name);
 }
 
+/// Number of references to the resource.
+inline unsigned num_refs(Resource const& resource) {
+	return (resource.properties >> Resource::S_NUM_REFS) & Resource::P_NUM_REFS;
+}
+
+/// Set the number of references to the resource.
+inline void set_num_refs(Resource& resource, unsigned const num_refs) {
+	TOGO_DEBUG_ASSERTE(num_refs <= Resource::P_NUM_REFS);
+	resource.properties &= ~Resource::P_NUM_REFS;
+	resource.properties |= (num_refs & Resource::P_NUM_REFS) << Resource::S_NUM_REFS;
+}
+
 /** @} */ // end of doc-group lib_game_resource
 
 } // namespace resource

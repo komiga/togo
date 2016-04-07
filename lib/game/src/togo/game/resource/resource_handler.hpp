@@ -33,32 +33,42 @@ namespace resource {
 	@{
 */
 
-/// Load a shader.
-///
-/// An assertion will fail if the shader failed to load.
-inline gfx::ShaderID load_shader(
+/// Load or reference a shader.
+inline gfx::ShaderID ref_shader(
 	ResourceManager& rm,
 	ResourceNameHash const name_hash
 ) {
-	gfx::ShaderID const id{
-		resource_manager::load_resource(rm, RES_TYPE_SHADER, name_hash).uinteger
-	};
-	TOGO_ASSERT(id.valid(), "failed to load shader");
-	return id;
+	auto* resource = resource_manager::load(rm, RES_TYPE_SHADER, name_hash);
+	TOGO_ASSERT(resource, "failed to load shader");
+	resource_manager::ref(rm, *resource);
+	return gfx::ShaderID{resource->value.uinteger};
 }
 
-/// Load a render configuration.
-///
-/// An assertion will fail if the load failed.
-inline gfx::PackedRenderConfig* load_render_config(
+/// Unreference a shader.
+inline unsigned unref_shader(
 	ResourceManager& rm,
 	ResourceNameHash const name_hash
 ) {
-	auto* packed_config = static_cast<gfx::PackedRenderConfig*>(
-		resource_manager::load_resource(rm, RES_TYPE_RENDER_CONFIG, name_hash).pointer
-	);
-	TOGO_ASSERT(packed_config, "failed to load render_config");
-	return packed_config;
+	return resource_manager::unref(rm, RES_TYPE_SHADER, name_hash);
+}
+
+/// Load or reference a render configuration.
+inline gfx::PackedRenderConfig* ref_render_config(
+	ResourceManager& rm,
+	ResourceNameHash const name_hash
+) {
+	auto* resource = resource_manager::load(rm, RES_TYPE_RENDER_CONFIG, name_hash);
+	TOGO_ASSERT(resource, "failed to load render_config");
+	resource_manager::ref(rm, *resource);
+	return static_cast<gfx::PackedRenderConfig*>(resource->value.pointer);
+}
+
+/// Unreference a render configuration.
+inline unsigned unref_render_config(
+	ResourceManager& rm,
+	ResourceNameHash const name_hash
+) {
+	return resource_manager::unref(rm, RES_TYPE_RENDER_CONFIG, name_hash);
 }
 
 /** @} */ // end of doc-group lib_game_resource

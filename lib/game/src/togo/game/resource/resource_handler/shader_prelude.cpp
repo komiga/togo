@@ -54,7 +54,7 @@ static ResourceValue load(
 	// Load dependencies
 	for (auto const dep_name : def.prelude) {
 		TOGO_ASSERTF(
-			resource_manager::load_resource(manager, RES_TYPE_SHADER_PRELUDE, dep_name).valid(),
+			resource_manager::load(manager, RES_TYPE_SHADER_PRELUDE, dep_name),
 			"failed to load shader dependency: [%16lx]",
 			dep_name
 		);

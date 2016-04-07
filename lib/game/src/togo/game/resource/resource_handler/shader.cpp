@@ -35,11 +35,13 @@ static void push_def(
 	bool const push_param_blocks
 ) {
 	for (auto const dep_name : def.prelude) {
-		auto const* const dep_def = static_cast<gfx::ShaderDef const*>(
-			resource_manager::find_active(manager, RES_TYPE_SHADER_PRELUDE, dep_name).pointer
+		auto* dep_resource = resource_manager::find_active(manager, RES_TYPE_SHADER_PRELUDE, dep_name);
+		TOGO_DEBUG_ASSERTE(dep_resource);
+		push_def(
+			spec, stage,
+			*static_cast<gfx::ShaderDef const*>(dep_resource->value.pointer),
+			manager, push_param_blocks
 		);
-		TOGO_DEBUG_ASSERTE(dep_def);
-		push_def(spec, stage, *dep_def, manager, push_param_blocks);
 	}
 
 	// Push sources
@@ -76,16 +78,18 @@ static void add_stage(
 	fixed_array::clear(stage.sources);
 
 	// Push shared configuration if it exists
-	if (resource_manager::has_resource(
+	if (resource_manager::has(
 		manager, RES_TYPE_SHADER_PRELUDE, RES_NAME_SHADER_CONFIG
 	)) {
-		auto const* const shader_config_def = static_cast<gfx::ShaderDef const*>(
-			resource_manager::load_resource(
-				manager, RES_TYPE_SHADER_PRELUDE, RES_NAME_SHADER_CONFIG
-			).pointer
+		auto const config_resource = resource_manager::load(
+			manager, RES_TYPE_SHADER_PRELUDE, RES_NAME_SHADER_CONFIG
 		);
-		if (shader_config_def) {
-			push_def(spec, stage, *shader_config_def, manager, push_param_blocks);
+		if (config_resource) {
+			push_def(
+				spec, stage,
+				*static_cast<gfx::ShaderDef const*>(config_resource->value.pointer),
+				manager, push_param_blocks
+			);
 		}
 	}
 
@@ -160,8 +164,9 @@ static ResourceValue load(
 
 	// Load dependencies
 	for (auto const dep_name : def.prelude) {
+		auto prelude_resource = resource_manager::load(manager, RES_TYPE_SHADER_PRELUDE, dep_name);
 		TOGO_ASSERTF(
-			resource_manager::load_resource(manager, RES_TYPE_SHADER_PRELUDE, dep_name).valid(),
+			prelude_resource,
 			"failed to load shader dependency: [%16lx]",
 			dep_name
 		);
