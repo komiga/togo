@@ -77,7 +77,7 @@ static unsigned unload_package_impl(
 	auto& resources = rm._resources._data;
 	ResourceType type = RES_TYPE_NULL;
 	ResourceHandler const* handler;
-	for (unsigned i = 0; i < array::size(resources); ++i) {
+	for (unsigned i = 0; i < array::size(resources);) {
 		auto& node = resources[i];
 		auto* resource = node.value;
 		if (resource >= head && resource < tail) {
@@ -89,6 +89,8 @@ static unsigned unload_package_impl(
 			resource_manager::unload_impl(rm, *resource, handler);
 			hash_map::remove(rm._resources, &node);
 			++num;
+		} else {
+			++i;
 		}
 	}
 	return num;
