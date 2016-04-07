@@ -33,8 +33,14 @@ void renderer::init_base(gfx::Renderer* const renderer) {
 	}
 
 void renderer::teardown_base(gfx::Renderer* const renderer) {
-	fixed_array::clear(renderer->_shared_rts);
+	for (auto& entry : renderer->_generators) {
+		if (entry.value.func_destroy) {
+			entry.value.func_destroy(entry.value, renderer);
+		}
+	}
+	hash_map::clear(renderer->_generators);
 
+	fixed_array::clear(renderer->_shared_rts);
 	TOGO_GFX_RENDERER_TEARDOWN_RA_(_buffers, destroy_buffer);
 	TOGO_GFX_RENDERER_TEARDOWN_RA_(_buffer_bindings, destroy_buffer_binding);
 	//TOGO_GFX_RENDERER_TEARDOWN_RA_(_textures, destroy_texture);
@@ -46,12 +52,6 @@ void renderer::teardown_base(gfx::Renderer* const renderer) {
 		pb_name_hash = gfx::PB_NAME_NULL;
 	}
 	renderer->_num_active_draw_param_blocks = 0;
-	for (auto& entry : renderer->_generators) {
-		if (entry.value.func_destroy) {
-			entry.value.func_destroy(entry.value, renderer);
-		}
-	}
-	hash_map::clear(renderer->_generators);
 }
 
 void renderer::configure_base(
