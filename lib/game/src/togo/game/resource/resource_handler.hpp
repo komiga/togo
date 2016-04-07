@@ -38,9 +38,8 @@ inline gfx::ShaderID ref_shader(
 	ResourceManager& rm,
 	ResourceNameHash const name_hash
 ) {
-	auto* resource = resource_manager::load(rm, RES_TYPE_SHADER, name_hash);
+	auto* resource = resource_manager::ref_load(rm, RES_TYPE_SHADER, name_hash);
 	TOGO_ASSERT(resource, "failed to load shader");
-	resource_manager::ref(rm, *resource);
 	return gfx::ShaderID{resource->value.uinteger};
 }
 
@@ -57,9 +56,8 @@ inline gfx::PackedRenderConfig* ref_render_config(
 	ResourceManager& rm,
 	ResourceNameHash const name_hash
 ) {
-	auto* resource = resource_manager::load(rm, RES_TYPE_RENDER_CONFIG, name_hash);
+	auto* resource = resource_manager::ref_load(rm, RES_TYPE_RENDER_CONFIG, name_hash);
 	TOGO_ASSERT(resource, "failed to load render_config");
-	resource_manager::ref(rm, *resource);
 	return static_cast<gfx::PackedRenderConfig*>(resource->value.pointer);
 }
 
