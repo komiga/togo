@@ -70,7 +70,11 @@ void resource_package::open(
 
 	ser % make_ser_collection<u32>(pkg._manifest);
 	for (u32 i = 0; i < array::size(pkg._manifest); ++i) {
-		auto& metadata = pkg._manifest[i].metadata;
+		auto& resource = pkg._manifest[i];
+		resource.properties = 0;
+		resource.value = nullptr;
+
+		auto& metadata = resource.metadata;
 		if (metadata.type == RES_TYPE_NULL) {
 			metadata.id = 0;
 			continue;
