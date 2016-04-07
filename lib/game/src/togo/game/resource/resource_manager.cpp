@@ -59,6 +59,7 @@ static void unload_impl(
 	handler->func_unload(handler->type_data, rm, resource);
 	resource.value = nullptr;
 	resource.properties &= ~Resource::F_ACTIVE;
+	resource::set_num_refs(resource, 0);
 }
 
 static unsigned unload_package_impl(
