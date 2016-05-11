@@ -325,6 +325,12 @@ function M.class(c)
 	return c
 end
 
+function M.make_empty_object(c)
+	local obj = {}
+	setmetatable(obj, c)
+	return obj
+end
+
 function M.module(name)
 	M.type_assert(name, "string")
 
