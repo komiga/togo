@@ -326,6 +326,7 @@ function M.class(c)
 end
 
 function M.make_empty_object(c)
+	M.assert(c ~= nil and type(c) == "table")
 	local obj = {}
 	setmetatable(obj, c)
 	return obj
