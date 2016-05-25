@@ -53,7 +53,7 @@ inline LuaInt get_integer(lua_State* L, signed narg) {
 /// Push a floating-point value to the stack.
 template<class T>
 inline enable_if<is_floating_point<T>::value, void> push_value(lua_State* L, T value) {
-	lua_pushinteger(L, value);
+	lua_pushnumber(L, value);
 }
 
 /// Get an argument from the stack as an integer.
