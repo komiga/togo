@@ -120,7 +120,6 @@ static bool set_opengl_debug_mode_impl(bool active) {
 	if (!_globals.opengl_initialized) {
 		return false;
 	}
-	TOGO_ASSERTE(GLAD_GL_KHR_debug);
 	if (GLAD_GL_KHR_debug) {
 		if (active) {
 			TOGO_GLCE(gl_set_cap_active(GL_DEBUG_OUTPUT, true));
