@@ -11,6 +11,7 @@
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/collection/fixed_array.hpp>
 #include <togo/window/window/impl/opengl.hpp>
+#include <togo/game/gfx/gfx.hpp>
 #include <togo/game/gfx/renderer.hpp>
 #include <togo/game/gfx/renderer/types.hpp>
 #include <togo/game/gfx/renderer/private.hpp>
@@ -349,18 +350,28 @@ gfx::BufferBindingID renderer::create_buffer_binding(
 		auto const& format = *vertex_binding.format;
 		for (unsigned i = 0; i < format._num_attribs; ++i) {
 			auto const& attrib = format._attribs[i];
-			// TODO: ... Does glVertexAttribIPointer() have to be used
-			// for integral types?
-			glVertexAttribPointer(
-				attrib_index,
-				attrib.num_components,
-				gfx::g_gl_primitive_type[unsigned_cast(attrib.type)],
-				attrib.normalize_fixed,
-				format._stride,
-				reinterpret_cast<void const*>(
-					vertex_binding.offset + format._offsets[i]
-				)
-			);
+			if (gfx::is_primitive_integral(attrib.type)) {
+				glVertexAttribIPointer(
+					attrib_index,
+					attrib.num_components,
+					gfx::g_gl_primitive_type[unsigned_cast(attrib.type)],
+					format._stride,
+					reinterpret_cast<void const*>(
+						vertex_binding.offset + format._offsets[i]
+					)
+				);
+			} else {
+				glVertexAttribPointer(
+					attrib_index,
+					attrib.num_components,
+					gfx::g_gl_primitive_type[unsigned_cast(attrib.type)],
+					attrib.normalize_fixed,
+					format._stride,
+					reinterpret_cast<void const*>(
+						vertex_binding.offset + format._offsets[i]
+					)
+				);
+			}
 			glEnableVertexAttribArray(attrib_index);
 			// TODO: Proper attribute index stride for matrices (and arrays?)
 			++attrib_index;
