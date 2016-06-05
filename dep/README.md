@@ -14,12 +14,12 @@ proper directories).
 
   ```
   git clone git@github.com:Dav1dde/glad.git glad/
-  ../scripts/glad-generate.sh   #default options
+  ../scripts/glad-generate.sh   # default options
   ```
 
 2. Backend (one of):
   1. [SDL](http://libsdl.org/download-2.0.php) >= **2.0.3** into `sdl/`
-  2. [GLFW](http://www.glfw.org/download.html) >= **3.0.4** into `glfw/`
+  2. [GLFW](http://www.glfw.org/download.html) >= **3.2** into `glfw/`
 
 ### lib/game
 
