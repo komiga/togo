@@ -39,26 +39,16 @@ inline static void log_gl_string(StringRef name, GLenum id) {
 	TOGO_LOGF("%.*s = %s\n", name.size, name.data, value ? value : "(null)");
 }
 
-void glew_init() {
-	if (_globals.glew_initialized) {
+void init_opengl() {
+	if (_globals.opengl_initialized) {
 		return;
 	}
 
-	{
-	glewExperimental = GL_TRUE;
-	GLenum const err = glewInit();
-	TOGO_ASSERTF(
-		err == GLEW_OK,
-		"failed to initialize GLEW: %s\n",
-		glewGetErrorString(err)
-	);
-	TOGO_GLCE();
-	}
+	TOGO_ASSERT(gladLoadGL(), "failed to initialize OpenGL");
 
 	#define LOG_GL_STRING(name) \
 		log_gl_string(#name, name)
 
-	TOGO_LOGF("GLEW_VERSION = %s\n", glewGetString(GLEW_VERSION));
 	LOG_GL_STRING(GL_VENDOR);
 	LOG_GL_STRING(GL_VERSION);
 	LOG_GL_STRING(GL_SHADING_LANGUAGE_VERSION);
@@ -78,7 +68,7 @@ void glew_init() {
 	}}
 	#endif
 
-	_globals.glew_initialized = true;
+	_globals.opengl_initialized = true;
 }
 
 } // namespace window

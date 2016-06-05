@@ -227,7 +227,7 @@ Window* window::create_opengl(
 	context = SDL_GL_CreateContext(handle);
 	TOGO_SDL_CHECK(!context);
 	TOGO_SDL_CHECK(SDL_GL_MakeCurrent(handle, context));
-	glew_init();
+	init_opengl();
 
 	return TOGO_CONSTRUCT(
 		allocator, Window, size, flags, config, allocator,

@@ -86,7 +86,7 @@ Window* window::create_opengl(
 	);
 	TOGO_ASSERT(handle, "failed to create window");
 	glfwMakeContextCurrent(handle);
-	glew_init();
+	init_opengl();
 
 	Window* const window = TOGO_CONSTRUCT(
 		allocator, Window, size, flags, config, allocator,

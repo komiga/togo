@@ -7,7 +7,7 @@
 
 #include <togo/window/config.hpp>
 
-#include <GL/glew.h>
+#include <togo/window/opengl.hpp>
 
 namespace togo {
 namespace window {
@@ -21,7 +21,7 @@ char const* gl_get_error();
 
 #define TOGO_GLCE_X(expr_) do { (expr_); TOGO_GLCE(); } while (false)
 
-void glew_init();
+void init_opengl();
 
 } // namespace window
 } // namespace togo

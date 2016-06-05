@@ -29,7 +29,7 @@ namespace window {
 
 struct Globals {
 	bool initialized;
-	bool glew_initialized;
+	bool opengl_initialized;
 	unsigned context_major;
 	unsigned context_minor;
 };
