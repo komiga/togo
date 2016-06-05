@@ -34,6 +34,113 @@ char const* gl_get_error() {
 	#undef TOGO_RETURN_ERROR
 }
 
+inline static void gl_set_cap_active(GLenum cap, bool enable) {
+	if (enable) {
+		glEnable(cap);
+	} else {
+		glDisable(cap);
+	}
+}
+
+struct NamedEnum {
+	StringRef name;
+	GLenum value;
+};
+
+
+NamedEnum const
+#define TOGO_NAMED_ENUM(name, value) {name, GL_DEBUG_ ## value},
+gl_enum_debug_source[]{
+	TOGO_NAMED_ENUM("api" , SOURCE_API)
+	TOGO_NAMED_ENUM("wsys", SOURCE_WINDOW_SYSTEM)
+	TOGO_NAMED_ENUM("scc" , SOURCE_SHADER_COMPILER)
+	TOGO_NAMED_ENUM("3rd" , SOURCE_THIRD_PARTY)
+	TOGO_NAMED_ENUM("user", SOURCE_APPLICATION)
+	TOGO_NAMED_ENUM("etc" , SOURCE_OTHER)
+},
+gl_enum_debug_type[]{
+	TOGO_NAMED_ENUM("error"     , TYPE_ERROR)
+	TOGO_NAMED_ENUM("deprecated", TYPE_DEPRECATED_BEHAVIOR)
+	TOGO_NAMED_ENUM("undef"     , TYPE_UNDEFINED_BEHAVIOR)
+	TOGO_NAMED_ENUM("port"      , TYPE_PORTABILITY)
+	TOGO_NAMED_ENUM("perf"      , TYPE_PERFORMANCE)
+	TOGO_NAMED_ENUM("etc"       , TYPE_OTHER)
+	TOGO_NAMED_ENUM("marker"    , TYPE_MARKER)
+	TOGO_NAMED_ENUM("push"      , TYPE_PUSH_GROUP)
+	TOGO_NAMED_ENUM("pop"       , TYPE_POP_GROUP)
+},
+gl_enum_debug_severity[]{
+	TOGO_NAMED_ENUM("fyi" , SEVERITY_NOTIFICATION)
+	TOGO_NAMED_ENUM("low" , SEVERITY_LOW)
+	TOGO_NAMED_ENUM("med" , SEVERITY_MEDIUM)
+	TOGO_NAMED_ENUM("high", SEVERITY_HIGH)
+}
+#undef TOGO_NAMED_ENUM
+;
+
+
+inline static StringRef get_enum_name(
+	ArrayRef<NamedEnum const> e,
+	GLenum value
+) {
+	for (auto& pair : e) {
+		if (pair.value == value) {
+			return pair.name;
+		}
+	}
+	return "???";
+}
+
+static void gl_debug_message_callback(
+	GLenum source,
+	GLenum type,
+	GLuint /*id*/,
+	GLenum severity,
+	GLsizei length,
+	GLchar const* message_data,
+	void const* /*userParam*/
+) {
+	auto severity_str = get_enum_name(gl_enum_debug_severity, severity);
+	auto source_str = get_enum_name(gl_enum_debug_source, source);
+	auto type_str = get_enum_name(gl_enum_debug_type, type);
+	StringRef message{message_data, unsigned_cast(length)};
+	if (message.size > 0 && message[message.size - 1] == '\n') {
+		--message.size;
+	}
+	TOGO_LOGF(
+		"OpenGL: debug: [%-4.*s] [%-4.*s] [%-10.*s] %.*s\n",
+		severity_str.size, severity_str.data,
+		source_str.size, source_str.data,
+		type_str.size, type_str.data,
+		message.size, message.data
+	);
+}
+
+static bool set_opengl_debug_mode_impl(bool active) {
+	if (!_globals.opengl_initialized) {
+		return false;
+	}
+	TOGO_ASSERTE(GLAD_GL_KHR_debug);
+	if (GLAD_GL_KHR_debug) {
+		if (active) {
+			TOGO_GLCE(gl_set_cap_active(GL_DEBUG_OUTPUT, true));
+			TOGO_GLCE(gl_set_cap_active(GL_DEBUG_OUTPUT_SYNCHRONOUS, true));
+			TOGO_GLCE(glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true));
+			TOGO_GLCE(glDebugMessageCallback(gl_debug_message_callback, nullptr));
+			TOGO_LOG("OpenGL: debug enabled\n");
+		} else if (glIsEnabled(GL_DEBUG_OUTPUT)) {
+			TOGO_GLCE(glDebugMessageCallback(nullptr, nullptr));
+			TOGO_GLCE(gl_set_cap_active(GL_DEBUG_OUTPUT_SYNCHRONOUS, false));
+			TOGO_GLCE(gl_set_cap_active(GL_DEBUG_OUTPUT, false));
+			TOGO_LOG("OpenGL: debug disabled\n");
+		}
+		return true;
+	} else if (active) {
+		TOGO_LOG_ERROR("GL_KHR_debug extension not supported\n");
+	}
+	return !active;
+}
+
 inline static void log_gl_string(StringRef name, GLenum id) {
 	auto value = reinterpret_cast<char const*>(glGetString(id));
 	TOGO_LOGF("%.*s = %s\n", name.size, name.data, value ? value : "(null)");
@@ -58,7 +165,7 @@ void init_opengl() {
 
 	#if defined(TOGO_DEBUG)
 	{GLint num = 0;
-	TOGO_GLCE_X(glGetIntegerv(GL_NUM_EXTENSIONS, &num));
+	glGetIntegerv(GL_NUM_EXTENSIONS, &num);
 	TOGO_LOGF("OpenGL extensions (%d):\n", num);
 	for (signed i = 0; i < num; ++i) {
 		auto value = glGetStringi(GL_EXTENSIONS, i);
@@ -69,6 +176,18 @@ void init_opengl() {
 	#endif
 
 	_globals.opengl_initialized = true;
+	set_opengl_debug_mode_impl(_globals.opengl_debug);
+}
+
+bool set_opengl_debug_mode(bool active) {
+	if (active == _globals.opengl_debug) {
+		return true;
+	}
+	_globals.opengl_debug = active;
+	if (!_globals.opengl_initialized) {
+		return true;
+	}
+	return set_opengl_debug_mode_impl(_globals.opengl_debug);
 }
 
 } // namespace window

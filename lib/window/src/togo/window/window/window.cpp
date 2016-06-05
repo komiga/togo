@@ -25,7 +25,15 @@ namespace togo {
 
 namespace window {
 
-Globals _globals{false, false, 0, 0};
+Globals _globals{
+	false, false,
+#if defined(TOGO_DEBUG)
+	true,
+#else
+	false,
+#endif
+	0, 0
+};
 
 } // namespace window
 
