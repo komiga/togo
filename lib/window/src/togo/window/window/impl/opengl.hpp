@@ -15,7 +15,7 @@ namespace window {
 char const* gl_get_error();
 
 #define TOGO_GLCE() \
-	do { while (char const* gl_error__ = gl_get_error()) { \
+	do { while (char const* gl_error__ = window::gl_get_error()) { \
 		TOGO_LOG_ERRORF("OpenGL error: %s\n", gl_error__); \
 	} } while (false)
 
