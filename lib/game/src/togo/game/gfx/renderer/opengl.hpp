@@ -11,16 +11,16 @@
 #include <togo/core/collection/types.hpp>
 #include <togo/game/gfx/types.hpp>
 
-#include <GL/glew.h>
+#include <togo/window/opengl.hpp>
 
 namespace togo {
 namespace game {
 namespace gfx {
 
-#define TOGO_GL_EXT(name) {"GL_" # name, &(__GLEW_ ## name)}
+#define TOGO_GL_EXT(name) {"GL_" # name, &GLAD_GL_ ## name}
 static struct {
 	StringRef name;
-	GLboolean const* value;
+	signed const* value;
 } const gl_extensions[]{
 	// Widely supported:
 	TOGO_GL_EXT(ARB_texture_non_power_of_two),
