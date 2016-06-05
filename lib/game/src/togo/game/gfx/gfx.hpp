@@ -38,6 +38,16 @@ inline gfx::GeneratorNameHash hash_viewport_name(StringRef const& name) {
 	return hash::calc32(name);
 }
 
+/// Test if a primitive is integral.
+inline bool is_primitive_integral(gfx::Primitive p) {
+	return p <= gfx::Primitive::u32;
+}
+
+/// Test if a primitive is floating-point.
+inline bool is_primitive_fp(gfx::Primitive p) {
+	return p == gfx::Primitive::f32 || p == gfx::Primitive::f64;
+}
+
 /** @} */ // end of doc-group lib_game_gfx
 
 } // namespace gfx
