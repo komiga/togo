@@ -14,7 +14,7 @@
 #include <togo/window/input/types.hpp>
 
 #if defined(TOGO_WINDOW_BACKEND_SUPPORTS_OPENGL)
-	#include <togo/window/window/impl/opengl.hpp>
+	#include <togo/window/opengl.hpp>
 #endif
 
 #if (TOGO_CONFIG_WINDOW_BACKEND == TOGO_WINDOW_BACKEND_SDL)

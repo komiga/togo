@@ -10,7 +10,7 @@
 #include <togo/core/log/log.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/collection/fixed_array.hpp>
-#include <togo/window/window/impl/opengl.hpp>
+#include <togo/window/opengl.hpp>
 #include <togo/game/gfx/gfx.hpp>
 #include <togo/game/gfx/renderer.hpp>
 #include <togo/game/gfx/renderer/types.hpp>

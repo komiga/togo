@@ -10,7 +10,12 @@
 #include <togo/core/log/log.hpp>
 #include <togo/core/string/string.hpp>
 #include <togo/window/window/impl/types.hpp>
-#include <togo/window/window/impl/opengl.hpp>
+#include <togo/window/opengl.hpp>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#include <glad/glad.c>
+#pragma GCC diagnostic pop
 
 namespace togo {
 namespace window {
@@ -47,7 +52,6 @@ struct NamedEnum {
 	GLenum value;
 };
 
-
 NamedEnum const
 #define TOGO_NAMED_ENUM(name, value) {name, GL_DEBUG_ ## value},
 gl_enum_debug_source[]{
@@ -77,7 +81,6 @@ gl_enum_debug_severity[]{
 }
 #undef TOGO_NAMED_ENUM
 ;
-
 
 inline static StringRef get_enum_name(
 	ArrayRef<NamedEnum const> e,
