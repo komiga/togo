@@ -20,25 +20,6 @@ namespace togo {
 namespace game {
 namespace gfx {
 
-char const* gl_get_error() {
-	#define TOGO_RETURN_ERROR(err_name_) \
-		case err_name_: return #err_name_;
-
-	GLenum const error_code = glGetError();
-	switch (error_code) {
-	case GL_NO_ERROR: return nullptr;
-	TOGO_RETURN_ERROR(GL_INVALID_ENUM)
-	TOGO_RETURN_ERROR(GL_INVALID_VALUE)
-	TOGO_RETURN_ERROR(GL_INVALID_OPERATION)
-	TOGO_RETURN_ERROR(GL_INVALID_FRAMEBUFFER_OPERATION)
-	TOGO_RETURN_ERROR(GL_OUT_OF_MEMORY)
-	TOGO_RETURN_ERROR(GL_STACK_OVERFLOW)
-	TOGO_RETURN_ERROR(GL_STACK_UNDERFLOW)
-	default: return "UNKNOWN";
-	}
-	#undef TOGO_RETURN_ERROR
-}
-
 namespace {
 
 enum : unsigned {
