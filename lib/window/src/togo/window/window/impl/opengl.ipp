@@ -183,12 +183,18 @@ void init_opengl() {
 	{GLint num = 0;
 	glGetIntegerv(GL_NUM_EXTENSIONS, &num);
 	TOGO_LOGF("OpenGL extensions (%d):\n", num);
-	for (signed i = 0; i < num; ++i) {
+	unsigned stride = 1;
+	for (signed i = 0; i < num; ++i, ++stride) {
 		auto value = glGetStringi(GL_EXTENSIONS, i);
 		if (value) {
-			TOGO_LOGF("    %s\n", value);
+			TOGO_LOGF("    %-40s", value);
+		}
+		if (stride == 2 && (i + 1) < num) {
+			TOGO_LOG("\n");
+			stride = 0;
 		}
 	}}
+	TOGO_LOG("\n");
 	#endif
 
 	_globals.opengl_initialized = true;
