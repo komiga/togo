@@ -145,7 +145,7 @@ static bool set_opengl_debug_mode_impl(bool active) {
 
 inline static void log_gl_string(StringRef name, GLenum id) {
 	auto value = reinterpret_cast<char const*>(glGetString(id));
-	TOGO_LOGF("%.*s = %s\n", name.size, name.data, value ? value : "(null)");
+	TOGO_LOGF("  %.*s = %s\n", name.size, name.data, value ? value : "(null)");
 }
 
 void init_opengl() {
@@ -158,12 +158,26 @@ void init_opengl() {
 	#define LOG_GL_STRING(name) \
 		log_gl_string(#name, name)
 
+	TOGO_LOG("OpenGL context properties:\n");
 	LOG_GL_STRING(GL_VENDOR);
 	LOG_GL_STRING(GL_VERSION);
 	LOG_GL_STRING(GL_SHADING_LANGUAGE_VERSION);
 	LOG_GL_STRING(GL_RENDERER);
 
 	#undef LOG_GL_STRING
+
+	#define LOG_GL_FLAG(flag) \
+		if (context_flags & (GL_CONTEXT_FLAG_ ## flag ## _BIT)) TOGO_LOG("  " #flag);
+
+	{GLint context_flags = 0;
+	glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
+	TOGO_LOG("  GL_CONTEXT_FLAGS:");
+		LOG_GL_FLAG(FORWARD_COMPATIBLE)
+		LOG_GL_FLAG(DEBUG)
+	TOGO_LOG("\n");
+	}
+
+	#undef LOG_GL_FLAG
 
 	#if defined(TOGO_DEBUG)
 	{GLint num = 0;
