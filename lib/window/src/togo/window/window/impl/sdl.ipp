@@ -38,10 +38,12 @@ void window::init_impl() {
 		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1));
 		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, _globals.context_major));
 		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, _globals.context_minor));
+		signed context_flags = _globals.opengl_debug ? SDL_GL_CONTEXT_DEBUG_FLAG : 0;
 		if (_globals.context_major >= 3) {
 			TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE));
-			TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG));
+			context_flags |= SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG;
 		}
+		TOGO_SDL_CHECK(SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, context_flags));
 	}
 	return;
 

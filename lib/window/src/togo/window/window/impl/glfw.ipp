@@ -26,6 +26,7 @@ void window::init_impl() {
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, _globals.context_major);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, _globals.context_minor);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, static_cast<signed>(_globals.opengl_debug));
 	if (_globals.context_major >= 3) {
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
