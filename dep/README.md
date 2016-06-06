@@ -14,7 +14,7 @@ proper directories).
 
   ```
   git clone git@github.com:Dav1dde/glad.git glad/
-  ../scripts/glad-generate.sh   # default options
+  ../scripts/glad-generate.sh   # default options (can be run anywhere)
   ```
 
 2. Backend (one of):
