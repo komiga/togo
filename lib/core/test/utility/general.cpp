@@ -25,6 +25,12 @@ static_assert(sizeof_empty<Empty&>() == 0, "");
 static_assert(sizeof_empty<NotEmpty>() == sizeof(NotEmpty), "");
 static_assert(sizeof_empty<NotEmpty&>() == sizeof(NotEmpty), "");
 
+static_assert(num_params() == 0, "");
+static_assert(num_params(1) == 1, "");
+static_assert(num_params(NotEmpty{}) == 1, "");
+static_assert(num_params(NotEmpty{}, NotEmpty{}) == 2, "");
+static_assert(num_params(E1::A, NotEmpty{}, NotEmpty{}) == 3, "");
+
 signed main() {
 	E1 e = E1::A & E1::A;
 	TOGO_ASSERTE(e == E1::A);
