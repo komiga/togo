@@ -34,7 +34,7 @@ template<unsigned S>
 class TempAllocator
 	: public JumpBlockAllocator
 {
-private:
+public:
 	static constexpr unsigned const
 	BUFFER_SIZE = S;
 
@@ -46,7 +46,6 @@ private:
 
 	char _buffer[BUFFER_SIZE];
 
-public:
 	TempAllocator(TempAllocator&&) = delete;
 	TempAllocator(TempAllocator const&) = delete;
 	TempAllocator& operator=(TempAllocator&&) = delete;

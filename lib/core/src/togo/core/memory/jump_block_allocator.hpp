@@ -46,14 +46,13 @@ namespace togo {
 class JumpBlockAllocator
 	: public Allocator
 {
-private:
+public:
 	char* _base_block;
 	char* _block_begin;
 	char* _block_end;
 	char* _put;
 	Allocator& _fallback_allocator;
 
-public:
 	JumpBlockAllocator(JumpBlockAllocator&&) = delete;
 	JumpBlockAllocator(JumpBlockAllocator const&) = delete;
 	JumpBlockAllocator& operator=(JumpBlockAllocator&&) = delete;
