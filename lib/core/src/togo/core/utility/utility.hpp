@@ -79,6 +79,27 @@ inline constexpr remove_ref<T>&& rvalue_ref(T&& x) noexcept {
 	return static_cast<remove_ref<T>&&>(x);
 }
 
+/** @cond INTERNAL */
+namespace {
+
+inline constexpr unsigned num_params_impl(unsigned sum) noexcept {
+	return sum;
+}
+
+template<class H, class... P>
+inline constexpr unsigned num_params_impl(unsigned sum, H&&, P&&... p) noexcept {
+	return num_params_impl(sum + 1, p...);
+}
+
+} // anonymous namespace
+/** @endcond */ // INTERNAL
+
+/// Count the number of parameters in a parameter pack.
+template<class... P>
+inline constexpr unsigned num_params(P&&... p) noexcept {
+	return num_params_impl(0, p...);
+}
+
 /// Retain value category when passing to another function.
 ///
 /// This is equivalent to std::forward().
