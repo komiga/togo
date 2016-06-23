@@ -109,6 +109,7 @@ struct KVS {
 		inline Value()
 			: _init()
 		{}
+		inline Value(no_init_tag const) {}
 	};
 
 	KVSType _type;

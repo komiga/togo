@@ -384,6 +384,7 @@ inline KVS::KVS(KVSType const type, no_init_tag const)
 	, _name_size(0)
 	, _name_hash(KVS_NAME_NULL)
 	, _name(nullptr)
+	, _value(no_init_tag{})
 {}
 
 /// Construct to type.
