@@ -30,7 +30,7 @@ namespace togo {
 ///
 /// Deallocation is a no-op; each fallback block in this allocator is
 /// only freed when the object dies. Active objects will be ignored in
-/// the destructor, so any non-POD types must be explicitly
+/// the destructor, so any resources must be explicitly
 /// deallocated & destroyed before the allocator is destroyed.
 ///
 /// This allocator does not take ownership of the base block.
@@ -85,6 +85,7 @@ public:
 	}
 
 	/// Returns the next free slice.
+	///
 	/// If the allocation would grow past the current block, a new
 	/// block will be allocated.
 	void* allocate(unsigned const size, unsigned const align = DEFAULT_ALIGNMENT) override;

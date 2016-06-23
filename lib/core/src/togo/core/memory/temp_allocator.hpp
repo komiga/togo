@@ -28,8 +28,8 @@ namespace togo {
 /// char[S] buffer as the base block. This allocator is not
 /// thread-safe.
 ///
-/// S is the number of bytes to store in the allocator directly.
-/// S must be a power of 2 at least twice the size of a pointer.
+/// S is the number of bytes in the buffer. S must be a power of 2 at least
+/// twice the size of a pointer.
 template<unsigned S>
 class TempAllocator
 	: public JumpBlockAllocator
