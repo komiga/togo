@@ -46,6 +46,7 @@ togo.make_tests("kvs", {
 togo.make_tests("memory", {
 	["init"] = {nil, configs},
 	["temp_allocator"] = {nil, configs},
+	["fixed_allocator"] = {nil, configs},
 })
 
 togo.make_tests("random", {
