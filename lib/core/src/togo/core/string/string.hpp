@@ -200,6 +200,11 @@ inline StringRef::StringRef(char const* const cstr, cstr_tag)
 	, size(string::size(cstr))
 {}
 
+/// Construct to bounded data.
+inline StringRef::StringRef(char const* const data, char const* const end)
+	: StringRef(data, static_cast<unsigned>(end - data))
+{}
+
 /// Construct to explicitly-sized data.
 inline constexpr StringRef::StringRef(char const* const data, unsigned const size)
 	: data(data)

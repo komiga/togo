@@ -45,6 +45,7 @@ struct StringRef {
 
 	StringRef();
 	StringRef(char const* const cstr, cstr_tag);
+	StringRef(char const* const data, char const* const end);
 	constexpr StringRef(char const* const data, unsigned const size);
 	template<unsigned N>
 	constexpr StringRef(char const (&data)[N]);
