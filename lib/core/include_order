@@ -51,6 +51,8 @@ return {
 		N("test_unconfigure"),
 	}),
 	M("memory", {
+		N("assert_allocator"),
+		N("fixed_allocator"),
 		N("jump_block_allocator"),
 		N("temp_allocator"),
 	}),
