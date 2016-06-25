@@ -82,6 +82,10 @@ togo.make_tests("utility", {
 	["args"] = {nil, configs},
 })
 
+togo.make_tests("parser", {
+	["general"] = {nil, configs},
+})
+
 togo.make_tests("lua", {
 	["general"] = {nil, configs},
 })
