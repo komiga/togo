@@ -21,6 +21,12 @@ namespace togo {
 
 // Forward declarations
 class Allocator;
+class AssertAllocator;
+template<unsigned S>
+class FixedAllocator;
+class JumpBlockAllocator;
+template<unsigned S>
+class TempAllocator;
 
 /// Memory constants.
 enum : unsigned {
