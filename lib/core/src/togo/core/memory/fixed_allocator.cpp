@@ -15,7 +15,7 @@ void* memory::fixed_allocator_allocate(
 	u8** put_pointer, u8* buffer_end,
 	unsigned const size, unsigned const align
 ) {
-	TOGO_ASSERTE(size != 0);
+	TOGO_DEBUG_ASSERTE(size != 0);
 	u8* p = pointer_align(*put_pointer, align);
 	TOGO_ASSERT((p + size) <= buffer_end, "allocator buffer overflow");
 	*put_pointer = p + size;
