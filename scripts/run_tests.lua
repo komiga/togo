@@ -16,6 +16,10 @@ group_data["core"] = {
 	excluded = {
 		["algorithm/sort"] = true,
 	},
+	should_fail = {
+		["memory/fixed_allocator_f1"] = true,
+		["memory/fixed_allocator_f2"] = true,
+	},
 	args = {
 		["utility/args"] = '-a --b=1234 --c="goats" cmd -d - -- --- a1 a2 "a3" 1 false true',
 		["lua/general"] = 'lua/utility.lua lua/filesystem.lua lua/io.lua',
@@ -24,6 +28,8 @@ group_data["core"] = {
 
 group_data["image"] = {
 	excluded = {
+	},
+	should_fail = {
 	},
 	args = {
 	},
@@ -34,6 +40,8 @@ group_data["window"] = {
 		-- ["window/window"] = true,
 		-- ["window/window_opengl"] = true,
 	},
+	should_fail = {
+	},
 	args = {
 	},
 }
@@ -43,6 +51,8 @@ group_data["game"] = {
 		-- ["app/general"] = true,
 		-- ["gfx/renderer_triangle"] = true,
 		-- ["gfx/renderer_pipeline"] = true,
+	},
+	should_fail = {
 	},
 	args = {
 	},
@@ -78,6 +88,7 @@ function run()
 		lfs.chdir(group.root)
 		for _, test in pairs(group.tests) do
 			local cmd = "./" .. test.path
+			local should_fail = group.data.should_fail[test.name]
 			local args = group.data.args[test.name]
 			if args then
 				cmd = cmd .. " " .. args
@@ -85,8 +96,12 @@ function run()
 			printf("\nRUNNING: %s", cmd)
 			local exit_code = os.execute(cmd)
 			if exit_code ~= 0 then
-				printf("ERROR: '%s' failed with exit code %d", test.path, exit_code)
-				return -1
+				if should_fail then
+					print("(expected)")
+				else
+					printf("ERROR: '%s' failed with exit code %d", test.path, exit_code)
+					return -1
+				end
 			end
 		end
 	end
