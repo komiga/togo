@@ -1,0 +1,13 @@
+
+/**
+
+@defgroup lib_core_parser Parser
+@ingroup lib_core
+@details
+
+Combinator-based recursive descent parser.
+
+All allocations on Parser construction aren't released, so you'll need a
+lenient allocator (such as FixedAllocator) to avoid errors.
+
+*/

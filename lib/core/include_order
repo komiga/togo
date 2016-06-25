@@ -103,6 +103,9 @@ return {
 		N("object_buffer_type"),
 		N("object_buffer"),
 	}),
+	M("parser", {
+		N("parse_state"),
+	}),
 	M("kvs", {
 		I("io", {
 			N("parser"),
