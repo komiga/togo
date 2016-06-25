@@ -9,8 +9,8 @@
 #include <togo/core/error/assert.hpp>
 #include <togo/core/log/log.hpp>
 #include <togo/core/string/string.hpp>
-#include <togo/window/window/impl/types.hpp>
 #include <togo/window/opengl.hpp>
+#include <togo/window/window/impl/types.hpp>
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"

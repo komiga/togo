@@ -1,5 +1,6 @@
 
 return {
+	N("opengl"),
 	M("window", {
 		I("impl", {
 			N("sdl"),
