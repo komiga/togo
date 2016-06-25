@@ -62,13 +62,13 @@ write(serializer_tag, BinaryOutputSerializer& ser, T const& value) {
 template<class T>
 inline enable_if<is_arithmetic<T>::value>
 read(serializer_tag, BinaryInputSerializer& ser, SerSequence<T>&& seq) {
-	TOGO_ASSERTE(io::read_array_endian(ser._stream, array_ref(seq.size, seq.ptr), ser._endian));
+	TOGO_ASSERTE(io::read_array_endian(ser._stream, array_ref(seq.ptr, seq.size), ser._endian));
 }
 
 template<class T>
 inline enable_if<is_arithmetic<T>::value>
 write(serializer_tag, BinaryOutputSerializer& ser, SerSequence<T> const& seq) {
-	TOGO_ASSERTE(io::write_array_endian(ser._stream, array_cref(seq.size, seq.ptr), ser._endian));
+	TOGO_ASSERTE(io::write_array_endian(ser._stream, array_cref(seq.ptr, seq.size), ser._endian));
 }
 
 // explicitly binary-serializable sequence

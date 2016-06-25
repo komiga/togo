@@ -343,7 +343,7 @@ gfx::BufferBindingID renderer::create_buffer_binding(
 
 	{// Attach vertex bindings
 	unsigned attrib_index = 0;
-	for (auto const& vertex_binding : array_ref(num_bindings, bindings)) {
+	for (auto const& vertex_binding : array_ref(bindings, num_bindings)) {
 		TOGO_ASSERTE(vertex_binding.id.valid());
 		bind_buffer(renderer, vertex_binding.id, GL_ARRAY_BUFFER);
 		TOGO_DEBUG_ASSERTE(vertex_binding.format);
@@ -560,7 +560,7 @@ gfx::FramebufferID renderer::create_framebuffer(
 
 	{// Bind color targets
 	unsigned binding_index = 0;
-	for (auto id : array_cref(num_color_targets, color_targets)) {
+	for (auto id : array_cref(color_targets, num_color_targets)) {
 		TOGO_ASSERTE(id.valid());
 		auto& render_target = resource_array::get(renderer->_render_targets, id);
 		TOGO_ASSERT(render_target.id == id, "invalid render target ID");
@@ -841,7 +841,7 @@ void renderer::render_buffers(
 
 	{// Bind parameter blocks
 	unsigned index = BASE_DRAW_PB_INDEX;
-	for (auto const& pb_binding : array_ref(num_draw_param_blocks, draw_param_blocks)) {
+	for (auto const& pb_binding : array_ref(draw_param_blocks, num_draw_param_blocks)) {
 		bind_param_block(
 			renderer, pb_binding.id, index, pb_binding.offset, pb_binding.size
 		);
@@ -856,7 +856,7 @@ void renderer::render_buffers(
 
 	{// Render!
 	unsigned index_data_type;
-	for (auto const id : array_ref(num_buffers, buffers)) {
+	for (auto const id : array_ref(buffers, num_buffers)) {
 		auto const& bb = resource_array::get(renderer->_buffer_bindings, id);
 		TOGO_ASSERT(bb.id == id, "invalid buffer binding ID");
 		glBindVertexArray(bb.va_handle);

@@ -98,13 +98,13 @@ inline T const& Array<T>::operator[](unsigned const i) const {
 /// Convert to array reference.
 template<class T>
 inline Array<T>::operator ArrayRef<T>() const {
-	return array_ref(_size, _data);
+	return array_ref(_data, _size);
 }
 
 /// Convert to array reference.
 template<class T>
 inline Array<T>::operator ArrayRef<T const>() const {
-	return array_ref(_size, _data);
+	return array_ref(_data, _size);
 }
 
 /// Number of items.

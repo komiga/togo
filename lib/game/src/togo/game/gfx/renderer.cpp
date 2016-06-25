@@ -342,7 +342,7 @@ void renderer::render_objects(
 	{// Execute commands
 	gfx::CmdType type;
 	void const* data_untyped;
-	for (auto const& key : array_ref(num_commands, keys)) {
+	for (auto const& key : array_ref(keys, num_commands)) {
 		type = *static_cast<gfx::CmdType const*>(key.data);
 		data_untyped = pointer_add(key.data, sizeof(gfx::CmdType));
 		TOGO_ASSERTE(type != gfx::CmdType::RenderWorld);

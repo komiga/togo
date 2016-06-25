@@ -63,7 +63,7 @@ struct ArrayRef {
 		, _end(end)
 	{}
 
-	ArrayRef(unsigned const size, T* const data)
+	ArrayRef(T* const data, unsigned const size)
 		: ArrayRef(data, data + size)
 	{}
 

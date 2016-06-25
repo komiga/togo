@@ -172,7 +172,7 @@ signed main(signed argc, char* argv[]) {
 
 	app::init<TestAppData>(
 		memory::default_allocator(),
-		array_ref(unsigned_cast(argc), argv),
+		array_ref(argv, unsigned_cast(argc)),
 		"data/project/package/",
 		1.0f / 30.0f
 	);

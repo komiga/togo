@@ -59,8 +59,8 @@ static signed module_loader(lua_State* L) {
 	StringRef specified_chunk_name = lua::get_string(L, lua_upvalueindex(1));
 	StringRef source = lua::get_string(L, lua_upvalueindex(2));
 	auto funcs = array_cref(
-		unsigned_cast(lua::get_integer(L, lua_upvalueindex(3))),
-		lua::get_lightuserdata_typed<LuaModuleFunction const>(L, lua_upvalueindex(4), false)
+		lua::get_lightuserdata_typed<LuaModuleFunction const>(L, lua_upvalueindex(4), false),
+		unsigned_cast(lua::get_integer(L, lua_upvalueindex(3)))
 	);
 	StringRef modname = lua::get_string(L, 1);
 	FixedArray<char, 128> chunk_name{};
