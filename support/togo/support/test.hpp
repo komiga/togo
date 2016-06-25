@@ -13,6 +13,8 @@
 
 #pragma once
 
+#include <togo/core/error/assert.hpp>
+#include <togo/core/log/log.hpp>
 #include <togo/core/memory/memory.hpp>
 
 /**
@@ -52,5 +54,12 @@ struct MemoryInitializer {
 void memory_init() {
 	static MemoryInitializer const _ci{};
 }
+
+/// Assert if an expression does not abort.
+#define TOGO_TEST_SHOULD_FAIL(expr_) do { \
+	TOGO_LOG_DEBUG("TOGO_TEST_SHOULD_FAIL: `" #expr_ "`\n"); \
+	(expr_); \
+	TOGO_ASSERT(false, "statement that should've failed did not"); \
+} while (false)
 
 /** @} */ // end of doc-group support_test
