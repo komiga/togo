@@ -17,6 +17,8 @@ group_data["core"] = {
 		["algorithm/sort"] = true,
 	},
 	should_fail = {
+		["memory/assert_allocator_f1"] = true,
+		["memory/assert_allocator_f2"] = true,
 		["memory/fixed_allocator_f1"] = true,
 		["memory/fixed_allocator_f2"] = true,
 	},

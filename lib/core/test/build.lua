@@ -45,10 +45,12 @@ togo.make_tests("kvs", {
 
 togo.make_tests("memory", {
 	["init"] = {nil, configs},
-	["temp_allocator"] = {nil, configs},
+	["assert_allocator_f1"] = {nil, configs},
+	["assert_allocator_f2"] = {nil, configs},
 	["fixed_allocator"] = {nil, configs},
 	["fixed_allocator_f1"] = {nil, configs},
 	["fixed_allocator_f2"] = {nil, configs},
+	["temp_allocator"] = {nil, configs},
 })
 
 togo.make_tests("random", {
