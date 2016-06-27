@@ -33,29 +33,21 @@ inline void series_add_parser(ParserData<T>&, Allocator&, unsigned) {}
 template<ParserType T, class... P>
 inline void series_add_parser(ParserData<T>& d, Allocator& a, unsigned i, Parser&& p, P&&... rest) {
 	d.p[i] = TOGO_CONSTRUCT(a, Parser, rvalue_ref(p));
-	TOGO_DEBUG_ASSERTE(d.p[i]->type <= ParserType::Close);
 	series_add_parser(d, a, i + 1, forward<P>(rest)...);
 }
 
 template<ParserType T, class... P>
 inline void series_add_parser(ParserData<T>& d, Allocator& a, unsigned i, Parser const& p, P&&... rest) {
 	d.p[i] = &p;
-	TOGO_DEBUG_ASSERTE(d.p[i]->type <= ParserType::Close);
 	series_add_parser(d, a, i + 1, forward<P>(rest)...);
 }
 
 } // anonymous namespace
 
+template<ParserType T>
 template<class... P>
-inline Any::ParserData(Allocator& a, P&&... p)
-	: num(num_params(p...))
-	, p(TOGO_ALLOCATE_N(a, Parser const*, num))
-{
-	series_add_parser(*this, a, 0, forward<P>(p)...);
-}
-
-template<class... P>
-inline All::ParserData(Allocator& a, P&&... p)
+inline ParserData<T, enable_if<is_series<T>::value>>
+::ParserData(Allocator& a, P&&... p)
 	: num(num_params(p...))
 	, p(TOGO_ALLOCATE_N(a, Parser const*, num))
 {
@@ -70,22 +62,26 @@ inline Maybe::ParserData(Allocator& a, Parser&& p)
 	: p(TOGO_CONSTRUCT(a, Parser, rvalue_ref(p)))
 {}
 
-inline Close::ParserData(close_func_type* f)
+template<ParserType T>
+inline ParserData<T, enable_if<is_conditional_call<T>::value>>
+::ParserData(parse_func_type* f)
 	: f(f)
 	, p(nullptr)
 {}
 
-inline Close::ParserData(close_func_type* f, Parser const& p)
+template<ParserType T>
+inline ParserData<T, enable_if<is_conditional_call<T>::value>>
+::ParserData(parse_func_type* f, Parser const& p)
 	: f(f)
 	, p(&p)
 {}
 
-inline Close::ParserData(Allocator& a, close_func_type* f, Parser&& p)
+template<ParserType T>
+inline ParserData<T, enable_if<is_conditional_call<T>::value>>
+::ParserData(Allocator& a, parse_func_type* f, Parser&& p)
 	: f(f)
 	, p(TOGO_CONSTRUCT(a, Parser, rvalue_ref(p)))
-{
-	TOGO_DEBUG_ASSERTE(this->p->type < ParserType::Close);
-}
+{}
 
 inline Parser::Parser(StringRef name)
 	: type(ParserType::Undefined)

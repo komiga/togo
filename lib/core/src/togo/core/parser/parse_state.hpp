@@ -22,7 +22,20 @@
 #include <togo/core/parser/parse_state.gen_interface>
 
 namespace togo {
-namespace parser {
+namespace parse_state {
+
+/// Initialize parser state.
+inline void init(ParseState& s) {
+	s.suppress_results = 0;
+	s.suppress_errors = 0;
+	parse_state::clear_results(s);
+	parse_state::reset_position(s);
+}
+
+/// Set parser state data from string.
+inline void set_data(ParseState& s, StringRef const data) {
+	parse_state::set_data(s, array_cref(data.data, data.size));
+}
 
 /// Increment error suppression counter.
 inline void suppress_errors(ParseState& s) {
@@ -90,12 +103,12 @@ inline void set_error(ParseState& s, char const* format, ...) {
 	}
 	va_list va;
 	va_start(va, format);
-	parser::set_error_va(s, format, va);
+	parse_state::set_error_va(s, format, va);
 	va_end(va);
 }
 
 /// Parse failure.
-inline ParseResultCode fail() {
+inline ParseResultCode fail(ParseState const&) {
 	return ParseResultCode::fail;
 }
 
@@ -107,7 +120,7 @@ inline ParseResultCode fail() {
 inline ParseResultCode fail(ParseState& s, char const* format, ...) {
 	va_list va;
 	va_start(va, format);
-	parser::set_error_va(s, format, va);
+	parse_state::set_error_va(s, format, va);
 	va_end(va);
 	return ParseResultCode::fail;
 }
@@ -117,7 +130,7 @@ inline ParseResultCode fail(ParseState& s, char const* format, ...) {
 /// Sets error if it hasn't been set before.
 inline ParseResultCode fail_expected_sub_match(ParseState& s, StringRef parser_name) {
 	if (!s.suppress_errors && s.error && fixed_array::empty(s.error->message)) {
-		parser::set_error(s,
+		parse_state::set_error(s,
 			"in %.*s: expected match, got none from sub-parser",
 			parser_name.size, parser_name.data
 		);
@@ -126,20 +139,20 @@ inline ParseResultCode fail_expected_sub_match(ParseState& s, StringRef parser_n
 }
 
 /// Speculative parse yielded no match.
-inline ParseResultCode no_match() {
+inline ParseResultCode no_match(ParseState const&) {
 	return ParseResultCode::no_match;
 }
 
 /// Parse success.
-inline ParseResultCode ok() {
+inline ParseResultCode ok(ParseState const&) {
 	return ParseResultCode::ok;
 }
 
 /// Parse success with result.
 inline ParseResultCode ok(ParseState& s, ParseResult&& r) {
-	parser::push(s, rvalue_ref(r));
+	parse_state::push(s, rvalue_ref(r));
 	return ParseResultCode::ok;
 }
 
-} // namespace parser
+} // namespace parse_state
 } // namespace togo

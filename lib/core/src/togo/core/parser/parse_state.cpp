@@ -14,8 +14,35 @@
 
 namespace togo {
 
+/// Reset parser state position.
+void parse_state::reset_position(ParseState& s) {
+	s.p = s.t = s.b;
+	s.line = 0;
+	s.column = 0;
+}
+
+/// Clear parser state results and error state.
+void parse_state::clear_results(ParseState& s) {
+	array::clear(s.results);
+	if (s.error) {
+		s.error->line = 0;
+		s.error->column = 0;
+		s.error->result_code = ParseResultCode::ok;
+		fixed_array::clear(s.error->message);
+	}
+}
+
+/// Set parser state data.
+void parse_state::set_data(ParseState& s, ArrayRef<char const> data) {
+	s.b = s.p = s.t = begin(data);
+	s.e = end(data);
+	if (s.b < s.e && *(s.e - 1) == '\0') {
+		--s.e;
+	}
+}
+
 /// Update line and column.
-void parser::update_text_position(ParseState& s) {
+void parse_state::update_text_position(ParseState& s) {
 	auto t = s.t;
 	auto p = s.t;
 	for (; p < s.p; ++p) {
@@ -30,7 +57,7 @@ void parser::update_text_position(ParseState& s) {
 }
 
 /// Set parse error (va_list).
-void parser::set_error_va(ParseState& s, char const* format, va_list va) {
+void parse_state::set_error_va(ParseState& s, char const* format, va_list va) {
 	if (s.suppress_errors || !s.error) {
 		return;
 	}
