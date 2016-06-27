@@ -8,6 +8,7 @@
 #include <togo/core/collection/array.hpp>
 #include <togo/core/string/string.hpp>
 #include <togo/core/parser/parser.hpp>
+#include <togo/core/parser/parse_state.hpp>
 
 using namespace togo;
 
@@ -28,11 +29,13 @@ static_assert(parser::sizeof_series(2, 2) == sizeof(Parser*) * 4 + sizeof(Parser
 #define DEBUG_PRINT_PARSER(p_) (void(0))
 #endif
 
-#define PARSE(p, s) parse(p, s, &error, nullptr)
-#define TEST(p, s) test(p, s, &error, nullptr)
-#define TEST_WHOLE(p, s) test_whole(p, s, &error, nullptr)
+#define PARSE(p_, s_) parse(p_, s_, &error, nullptr)
+#define TEST(p_, s_) test(p_, s_, &error, nullptr)
+#define TEST_WHOLE(p_, s_) test_whole(p_, s_, &error, nullptr)
 
-void f_close_nop(ParseState&, Parser const*, char const*, unsigned) {}
+ParseResultCode f_close_nop(Parser const*, ParseState& s, ParsePosition const&) {
+	return parse_state::ok(s);
+}
 
 signed main() {
 	memory::init();
@@ -296,11 +299,12 @@ signed main() {
 }
 
 {
-	parser::close_func_type* f = [](ParseState& s, Parser const*, char const* fp, unsigned fi) {
+	parser::parse_func_type* f = [](Parser const*, ParseState& s, ParsePosition const& from) {
 		TOGO_ASSERTE(size(s.results) == 1);
-		TOGO_ASSERTE(s.p == s.e && fp == s.b && fi == 0);
+		TOGO_ASSERTE(s.p == s.e && from.p == s.b && from.i == 0);
 		auto& r = s.results[0];
 		TOGO_ASSERTE(r.type == ParseResult::type_char && r.v.c == 'x');
+		return parse_state::ok(s);
 	};
 	FixedParserAllocator<0, 0, 1> a;
 	Parser const p{Close{a, f, Char{'x'}}};
@@ -311,11 +315,12 @@ signed main() {
 }
 
 {
-	parser::close_func_type* f = [](ParseState& s, Parser const*, char const* fp, unsigned fi) {
+	parser::parse_func_type* f = [](Parser const*, ParseState& s, ParsePosition const& from) {
 		TOGO_ASSERTE(size(s.results) == 2);
-		TOGO_ASSERTE(s.p == (s.b + 2) && fp == s.b && fi == 0);
+		TOGO_ASSERTE(s.p == (s.b + 2) && from.p == s.b && from.i == 0);
 		auto& r = s.results[0];
 		TOGO_ASSERTE(r.type == ParseResult::type_char && r.v.c == 'x');
+		return parse_state::ok(s);
 	};
 	FixedParserAllocator<0, 2, 1> a;
 	Parser const p{"duo", Close{a, f, All{a,
