@@ -27,10 +27,11 @@ ParseResultCode f_close_nop(Parser const*, ParseState& s, ParsePosition const&) 
 signed main() {
 	memory::init();
 
-	ParseError error{};
 #if defined(TOGO_DEBUG)
 	parser::s_debug_trace = true;
 #endif
+
+	ParseError error{};
 
 {
 	Parser const p{};

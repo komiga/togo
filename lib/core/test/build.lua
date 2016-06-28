@@ -84,6 +84,7 @@ togo.make_tests("utility", {
 
 togo.make_tests("parser", {
 	["general"] = {nil, configs},
+	["pdef"] = {nil, configs},
 })
 
 togo.make_tests("lua", {
