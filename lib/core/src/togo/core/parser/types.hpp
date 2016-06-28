@@ -338,7 +338,7 @@ struct ParseResult {
 
 	ParseResult(null_tag const) : type(type_null) {}
 	ParseResult(unsigned type, Value&& x) : type(type), v(rvalue_ref(x)) {}
-	ParseResult(Value&& x) : type(type_bool), v(x) {}
+	ParseResult(bool x) : type(type_bool), v(x) {}
 	ParseResult(char x) : type(type_char), v(x) {}
 	ParseResult(s64 x) : type(type_s64), v(x) {}
 	ParseResult(u64 x) : type(type_u64), v(x) {}
