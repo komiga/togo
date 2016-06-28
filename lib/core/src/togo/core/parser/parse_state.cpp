@@ -33,9 +33,9 @@ void parse_state::clear_results(ParseState& s) {
 }
 
 /// Set parser state data.
-void parse_state::set_data(ParseState& s, ArrayRef<char const> data) {
-	s.b = s.p = s.t = begin(data);
-	s.e = end(data);
+void parse_state::set_data(ParseState& s, char const* b, char const* e) {
+	s.b = s.p = s.t = b;
+	s.e = e;
 	if (s.b < s.e && *(s.e - 1) == '\0') {
 		--s.e;
 	}

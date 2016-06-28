@@ -449,7 +449,7 @@ bool parser::parse(
 ) {
 	TempAllocator<1024 * 2> a;
 	ParseState s{a, error, userdata};
-	parse_state::set_data(s, data);
+	parse_state::set_data_array(s, data);
 	return parser::parse(p, s);
 }
 
@@ -477,7 +477,7 @@ bool parser::test(
 ) {
 	AssertAllocator a;
 	ParseState s{a, error, userdata};
-	parse_state::set_data(s, data);
+	parse_state::set_data_array(s, data);
 	return parser::test(p, s);
 }
 
@@ -490,7 +490,7 @@ bool parser::test_whole(
 ) {
 	AssertAllocator a;
 	ParseState s{a, error, userdata};
-	parse_state::set_data(s, data);
+	parse_state::set_data_array(s, data);
 	return parser::test_whole(p, s);
 }
 

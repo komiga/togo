@@ -14,6 +14,7 @@
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/collection/fixed_array.hpp>
 #include <togo/core/collection/array.hpp>
+#include <togo/core/string/string.hpp>
 #include <togo/core/parser/types.hpp>
 #include <togo/core/parser/parse_state.hpp>
 
@@ -34,7 +35,12 @@ inline void init(ParseState& s) {
 
 /// Set parser state data from string.
 inline void set_data(ParseState& s, StringRef const data) {
-	parse_state::set_data(s, array_cref(data.data, data.size));
+	parse_state::set_data(s, begin(data), end(data));
+}
+
+/// Set parser state data from array reference.
+inline void set_data_array(ParseState& s, ArrayRef<char const> data) {
+	parse_state::set_data(s, begin(data), end(data));
 }
 
 /// Increment error suppression counter.
