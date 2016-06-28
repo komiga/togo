@@ -10,6 +10,8 @@
 #include <togo/core/parser/parser.hpp>
 #include <togo/core/parser/parse_state.hpp>
 
+#include "./common.hpp"
+
 using namespace togo;
 
 static_assert(parser::sizeof_series(0) == 0, "");
@@ -17,21 +19,6 @@ static_assert(parser::sizeof_series(0, 0) == 0, "");
 static_assert(parser::sizeof_series(1) == sizeof(Parser*), "");
 static_assert(parser::sizeof_series(2) == sizeof(Parser*) * 2, "");
 static_assert(parser::sizeof_series(2, 2) == sizeof(Parser*) * 4 + sizeof(Parser) * 2, "");
-
-#if defined(TOGO_DEBUG)
-
-#define DEBUG_PRINT_PARSER(p_) do { \
-	parser::debug_print_tree(p_); \
-	TOGO_LOG("\n"); \
-} while (false)
-
-#else
-#define DEBUG_PRINT_PARSER(p_) (void(0))
-#endif
-
-#define PARSE(p_, s_) parse(p_, s_, &error, nullptr)
-#define TEST(p_, s_) test(p_, s_, &error, nullptr)
-#define TEST_WHOLE(p_, s_) test_whole(p_, s_, &error, nullptr)
 
 ParseResultCode f_close_nop(Parser const*, ParseState& s, ParsePosition const&) {
 	return parse_state::ok(s);
