@@ -82,6 +82,20 @@ inline ParserData<T, enable_if<is_conditional_call<T>::value>>
 
 template<ParserType T>
 inline ParserData<T, enable_if<is_conditional_call<T>::value>>
+::ParserData(Parser const& p, parse_func_type* f)
+	: f(f)
+	, p(&p)
+{}
+
+template<ParserType T>
+inline ParserData<T, enable_if<is_conditional_call<T>::value>>
+::ParserData(Allocator& a, Parser&& p, parse_func_type* f)
+	: f(f)
+	, p(TOGO_CONSTRUCT(a, Parser, rvalue_ref(p)))
+{}
+
+template<ParserType T>
+inline ParserData<T, enable_if<is_conditional_call<T>::value>>
 ::ParserData(Allocator& a, parse_func_type* f, Parser&& p)
 	: f(f)
 	, p(TOGO_CONSTRUCT(a, Parser, rvalue_ref(p)))

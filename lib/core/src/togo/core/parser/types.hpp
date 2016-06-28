@@ -185,7 +185,9 @@ struct ParserData<T, enable_if<is_conditional_call<T>::value>> {
 
 	ParserData(parse_func_type* f);
 	ParserData(parse_func_type* f, Parser const& p);
+	ParserData(Parser const& p, parse_func_type* f);
 	ParserData(Allocator& a, parse_func_type* f, Parser&& p);
+	ParserData(Allocator& a, Parser&& p, parse_func_type* f);
 };
 
 /// Parser.
