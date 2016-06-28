@@ -306,7 +306,10 @@ static ParseResultCode parse_impl(ParseState& s, Parser const& p, ParsePosition 
 		if (d.p && parser::parse_do(*d.p, s) != ParseResultCode::ok) {
 			PARSE_RESULT(fail_expected_sub_match(s, "Close"));
 		}
-		PARSE_RESULT(d.f(d.p, s, from));
+		if (!s.suppress_results) {
+			PARSE_RESULT(d.f(d.p, s, from));
+		}
+		PARSE_RESULT(ok(s));
 	}
 
 	case ParserType::CloseTest: {
@@ -318,7 +321,11 @@ static ParseResultCode parse_impl(ParseState& s, Parser const& p, ParsePosition 
 			PARSE_RESULT(fail_expected_sub_match(s, "CloseTest"));
 		}
 		unsuppress_results(s);
-		PARSE_RESULT(d.f(d.p, s, from));
+		if (!s.suppress_results) {
+			PARSE_RESULT(d.f(d.p, s, from));
+		}
+		PARSE_RESULT(ok(s));
+	}
 	}
 	}
 	TOGO_DEBUG_ASSERTE(false);
