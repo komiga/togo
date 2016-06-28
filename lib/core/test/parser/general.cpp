@@ -182,6 +182,18 @@ signed main() {
 }
 
 {
+	FixedParserAllocator<0, 0, 1> a;
+	Parser const p{CloseTest{a, f_close_nop, Char{'x'}}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(p.type == ParserType::CloseTest);
+	TOGO_ASSERTE(p.s.CloseTest.f == f_close_nop);
+	TOGO_ASSERTE(p.s.CloseTest.p->type == ParserType::Char);
+	TOGO_ASSERTE(p.s.CloseTest.p->s.Char.c == 'x');
+}
+
+{
 	Parser const p{Char{'x'}};
 	TOGO_ASSERTE(TEST(p, "x"));
 	TOGO_ASSERTE(TEST(p, "xz"));
@@ -324,6 +336,26 @@ signed main() {
 	};
 	FixedParserAllocator<0, 2, 1> a;
 	Parser const p{"duo", Close{a, f, All{a,
+		Char{'x'},
+		Char{'y'}
+	}}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(PARSE(p, "xy"));
+	TOGO_ASSERTE(PARSE(p, "xyz"));
+	TOGO_ASSERTE(!PARSE(p, "y"));
+	TOGO_ASSERTE(!PARSE(p, ""));
+}
+
+{
+	parser::parse_func_type* f = [](Parser const*, ParseState& s, ParsePosition const& from) {
+		TOGO_ASSERTE(empty(s.results));
+		TOGO_ASSERTE(s.p == (s.b + 2) && from.p == s.b && from.i == 0);
+		return parse_state::ok(s);
+	};
+	FixedParserAllocator<0, 2, 1> a;
+	Parser const p{"duo", CloseTest{a, f, All{a,
 		Char{'x'},
 		Char{'y'}
 	}}};
