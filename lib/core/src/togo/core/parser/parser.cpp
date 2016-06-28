@@ -47,9 +47,9 @@ static_assert(array_extent(s_result_code_name) == parse_state::c_num_result_code
 } while (false)
 
 #define PARSE_TRACE(f_) \
-	PARSE_TRACE_PRINTF("parse trace:% *.d" f_, s_debug_trace_depth * 2, 0)
+	PARSE_TRACE_PRINTF("parse trace: %*.d" f_, s_debug_trace_depth * 2, 0)
 #define PARSE_TRACEF(f_, ...) \
-	PARSE_TRACE_PRINTF("parse trace:% *.d" f_, s_debug_trace_depth * 2, 0, __VA_ARGS__)
+	PARSE_TRACE_PRINTF("parse trace: %*.d" f_, s_debug_trace_depth * 2, 0, __VA_ARGS__)
 
 #define DECL_FORMAT "%.*s%s%.*s"
 
@@ -274,7 +274,7 @@ static ParseResultCode parse_impl(ParseState& s, Parser const& p, ParsePosition 
 
 IGEN_PRIVATE
 void parser::debug_print_tree(Parser const& p, unsigned tab IGEN_DEFAULT(0)) {
-	TOGO_LOGF("% *.d+ ", tab * 2, 0);
+	TOGO_LOGF("%*.d+ ", tab * 2, 0);
 	debug_print_shallow(p);
 	++tab;
 	switch (p.type) {
