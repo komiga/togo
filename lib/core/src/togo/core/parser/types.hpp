@@ -301,11 +301,7 @@ struct PDef {
 
 	/// <sign>?u64_dec => s64
 	static Parser const s64_dec;
-	/// <u64_hex>
-	static constexpr Parser const& s64_hex = u64_hex;
-	/// <u64_oct>
-	static constexpr Parser const& s64_oct = u64_oct;
-	/// (s64_dec|s64_hex|s64_oct) => s64
+	/// (s64_dec|u64_hex|u64_oct) => s64
 	static Parser const s64_any;
 };
 
