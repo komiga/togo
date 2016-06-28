@@ -84,6 +84,13 @@ inline void pop(ParseState& s, unsigned num = 1) {
 	s.results._size -= num;
 }
 
+/// Push a null result.
+inline void push(ParseState& s) {
+	if (!s.suppress_results) {
+		array::push_back(s.results, {null_tag{}});
+	}
+}
+
 /// Push result.
 inline void push(ParseState& s, ParseResult const& r) {
 	if (!s.suppress_results) {
