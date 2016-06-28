@@ -30,6 +30,10 @@ namespace {
 template<ParserType T>
 inline void series_add_parser(ParserData<T>&, Allocator&, unsigned) {}
 
+/// uuuuuuuughHHHHHHHHHHHHHHHHHH
+template<ParserType T, class... P>
+inline void series_add_parser(ParserData<T>& d, Allocator& a, unsigned i, Parser const& p, P&&... rest);
+
 template<ParserType T, class... P>
 inline void series_add_parser(ParserData<T>& d, Allocator& a, unsigned i, Parser&& p, P&&... rest) {
 	d.p[i] = TOGO_CONSTRUCT(a, Parser, rvalue_ref(p));
