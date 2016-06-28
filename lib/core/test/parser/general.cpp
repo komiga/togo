@@ -170,6 +170,24 @@ signed main() {
 }
 
 {
+	Parser const p1{Char{'x'}};
+	Parser const p2{Repeat{p1}};
+	TOGO_ASSERTE(p2.type == ParserType::Repeat);
+	TOGO_ASSERTE(p2.s.Repeat.p == &p1);
+}
+
+{
+	FixedParserAllocator<0, 0, 1> a;
+	Parser const p{Repeat{a, Char{'x'}}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(p.type == ParserType::Repeat);
+	TOGO_ASSERTE(p.s.Repeat.p->type == ParserType::Char);
+	TOGO_ASSERTE(p.s.Repeat.p->s.Char.c == 'x');
+}
+
+{
 	FixedParserAllocator<0, 0, 1> a;
 	Parser const p{Close{a, f_close_nop, Char{'x'}}};
 	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
@@ -308,6 +326,55 @@ signed main() {
 	TOGO_ASSERTE(!TEST_WHOLE(p, "x"));
 	TOGO_ASSERTE(!TEST_WHOLE(p, "z"));
 	TOGO_ASSERTE(!TEST_WHOLE(p, ""));
+}
+
+{
+	FixedParserAllocator<0, 0, 1> a;
+	Parser const p{Repeat{a, Char{'x'}}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(TEST(p, "x"));
+	TOGO_ASSERTE(TEST(p, "xxx"));
+	TOGO_ASSERTE(TEST(p, "xxxz"));
+	TOGO_ASSERTE(!TEST(p, "z"));
+	TOGO_ASSERTE(!TEST(p, ""));
+}
+
+{
+	FixedParserAllocator<0, 2, 1> a;
+	Parser const p{All{a,
+		Repeat{a, Char{'x'}},
+		Char{'y'}
+	}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(TEST(p, "xy"));
+	TOGO_ASSERTE(TEST(p, "xxy"));
+	TOGO_ASSERTE(TEST(p, "xxxxxxxxxxxxxxxxxxxy"));
+	TOGO_ASSERTE(TEST(p, "xyz"));
+	TOGO_ASSERTE(!TEST(p, "yz"));
+	TOGO_ASSERTE(!TEST(p, "y"));
+	TOGO_ASSERTE(!TEST(p, "xz"));
+	TOGO_ASSERTE(!TEST(p, "zxy"));
+	TOGO_ASSERTE(!TEST(p, "x"));
+	TOGO_ASSERTE(!TEST(p, "z"));
+	TOGO_ASSERTE(!TEST(p, ""));
+	TOGO_ASSERTE(!TEST(p, "xxz"));
+
+	TOGO_ASSERTE(TEST_WHOLE(p, "xy"));
+	TOGO_ASSERTE(TEST_WHOLE(p, "xxy"));
+	TOGO_ASSERTE(TEST_WHOLE(p, "xxxxxxxxxxxxxxxxxxxy"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "xyz"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "yz"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "y"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "xz"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "zxy"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "x"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "z"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, ""));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "xxz"));
 }
 
 {
