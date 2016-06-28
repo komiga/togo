@@ -34,9 +34,25 @@ signed main() {
 	ParseError error{};
 
 {
+	Parser const p{PMod::maybe, Nothing{}};
+	TOGO_ASSERTE(modifiers(p) == PMod::maybe);
+}
+
+{
+	Parser const p{PMod::test, Nothing{}};
+	TOGO_ASSERTE(modifiers(p) == PMod::test);
+}
+
+{
+	Parser const p{PMod::flatten, Nothing{}};
+	TOGO_ASSERTE(modifiers(p) == PMod::flatten);
+}
+
+{
 	Parser const p{};
 	DEBUG_PRINT_PARSER(p);
-	TOGO_ASSERTE(p.type == ParserType::Undefined);
+	TOGO_ASSERTE(type(p) == ParserType::Undefined);
+	TOGO_ASSERTE(modifiers(p) == PMod::none);
 	TOGO_ASSERTE(p.name_hash == hash::IDENTITY32);
 	TOGO_ASSERTE(p.name.empty() && !p.name.valid());
 }
@@ -44,7 +60,7 @@ signed main() {
 {
 	Parser const p{"test"};
 	DEBUG_PRINT_PARSER(p);
-	TOGO_ASSERTE(p.type == ParserType::Undefined);
+	TOGO_ASSERTE(type(p) == ParserType::Undefined);
 	TOGO_ASSERTE(p.name_hash == "test"_hash32);
 	TOGO_ASSERTE(p.name.any() && p.name.valid());
 	TOGO_ASSERTE(string::compare_equal(p.name, "test"));
@@ -53,45 +69,45 @@ signed main() {
 {
 	Parser const p{Nothing{}};
 	DEBUG_PRINT_PARSER(p);
-	TOGO_ASSERTE(p.type == ParserType::Nothing);
+	TOGO_ASSERTE(type(p) == ParserType::Nothing);
 }
 
 {
 	Parser const p{Empty{}};
 	DEBUG_PRINT_PARSER(p);
-	TOGO_ASSERTE(p.type == ParserType::Empty);
+	TOGO_ASSERTE(type(p) == ParserType::Empty);
 }
 
 {
 	Parser const p{Begin{}};
 	DEBUG_PRINT_PARSER(p);
-	TOGO_ASSERTE(p.type == ParserType::Begin);
+	TOGO_ASSERTE(type(p) == ParserType::Begin);
 }
 
 {
 	Parser const p{End{}};
 	DEBUG_PRINT_PARSER(p);
-	TOGO_ASSERTE(p.type == ParserType::End);
+	TOGO_ASSERTE(type(p) == ParserType::End);
 }
 
 {
 	Parser const p{Char{'x'}};
 	DEBUG_PRINT_PARSER(p);
-	TOGO_ASSERTE(p.type == ParserType::Char);
+	TOGO_ASSERTE(type(p) == ParserType::Char);
 	TOGO_ASSERTE(p.s.Char.c == 'x');
 }
 
 {
 	Parser const p{CharRange{'a', 'z'}};
 	DEBUG_PRINT_PARSER(p);
-	TOGO_ASSERTE(p.type == ParserType::CharRange);
+	TOGO_ASSERTE(type(p) == ParserType::CharRange);
 	TOGO_ASSERTE(p.s.CharRange.b == 'a' && p.s.CharRange.e == 'z');
 }
 
 {
 	Parser const p{String{"abcdef"}};
 	DEBUG_PRINT_PARSER(p);
-	TOGO_ASSERTE(p.type == ParserType::String);
+	TOGO_ASSERTE(type(p) == ParserType::String);
 	TOGO_ASSERTE(string::compare_equal(p.s.String.s, "abcdef"));
 }
 
@@ -102,7 +118,7 @@ signed main() {
 	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
 	DEBUG_PRINT_PARSER(p2);
 
-	TOGO_ASSERTE(p2.type == ParserType::Any);
+	TOGO_ASSERTE(type(p2) == ParserType::Any);
 	TOGO_ASSERTE(p2.s.Any.num == 1);
 	TOGO_ASSERTE(p2.s.Any.p[0] == &p1);
 }
@@ -114,12 +130,12 @@ signed main() {
 	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
 	DEBUG_PRINT_PARSER(p2);
 
-	TOGO_ASSERTE(p2.type == ParserType::Any);
+	TOGO_ASSERTE(type(p2) == ParserType::Any);
 	TOGO_ASSERTE(p2.s.Any.num == 2);
 	TOGO_ASSERTE(p2.s.Any.p[0] == &p1);
 
 	Parser const* p3 = p2.s.Any.p[1];
-	TOGO_ASSERTE(p3->type == ParserType::Char);
+	TOGO_ASSERTE(type(*p3) == ParserType::Char);
 	TOGO_ASSERTE(p3->s.Char.c == 'y');
 }
 
@@ -130,37 +146,19 @@ signed main() {
 	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
 	DEBUG_PRINT_PARSER(p2);
 
-	TOGO_ASSERTE(p2.type == ParserType::All);
+	TOGO_ASSERTE(type(p2) == ParserType::All);
 	TOGO_ASSERTE(p2.s.All.num == 2);
 	TOGO_ASSERTE(p2.s.All.p[0] == &p1);
 
 	Parser const* p3 = p2.s.All.p[1];
-	TOGO_ASSERTE(p3->type == ParserType::Char);
+	TOGO_ASSERTE(type(*p3) == ParserType::Char);
 	TOGO_ASSERTE(p3->s.Char.c == 'y');
 }
 
 {
 	Parser const p1{Char{'x'}};
-	Parser const p2{Maybe{p1}};
-	TOGO_ASSERTE(p2.type == ParserType::Maybe);
-	TOGO_ASSERTE(p2.s.Maybe.p == &p1);
-}
-
-{
-	FixedParserAllocator<0, 0, 1> a;
-	Parser const p{Maybe{a, Char{'x'}}};
-	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
-	DEBUG_PRINT_PARSER(p);
-
-	TOGO_ASSERTE(p.type == ParserType::Maybe);
-	TOGO_ASSERTE(p.s.Maybe.p->type == ParserType::Char);
-	TOGO_ASSERTE(p.s.Maybe.p->s.Char.c == 'x');
-}
-
-{
-	Parser const p1{Char{'x'}};
 	Parser const p2{Repeat{p1}};
-	TOGO_ASSERTE(p2.type == ParserType::Repeat);
+	TOGO_ASSERTE(type(p2) == ParserType::Repeat);
 	TOGO_ASSERTE(p2.s.Repeat.p == &p1);
 }
 
@@ -170,8 +168,8 @@ signed main() {
 	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
 	DEBUG_PRINT_PARSER(p);
 
-	TOGO_ASSERTE(p.type == ParserType::Repeat);
-	TOGO_ASSERTE(p.s.Repeat.p->type == ParserType::Char);
+	TOGO_ASSERTE(type(p) == ParserType::Repeat);
+	TOGO_ASSERTE(type(*p.s.Repeat.p) == ParserType::Char);
 	TOGO_ASSERTE(p.s.Repeat.p->s.Char.c == 'x');
 }
 
@@ -181,22 +179,10 @@ signed main() {
 	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
 	DEBUG_PRINT_PARSER(p);
 
-	TOGO_ASSERTE(p.type == ParserType::Close);
+	TOGO_ASSERTE(type(p) == ParserType::Close);
 	TOGO_ASSERTE(p.s.Close.f == f_close_nop);
-	TOGO_ASSERTE(p.s.Close.p->type == ParserType::Char);
+	TOGO_ASSERTE(type(*p.s.Close.p) == ParserType::Char);
 	TOGO_ASSERTE(p.s.Close.p->s.Char.c == 'x');
-}
-
-{
-	FixedParserAllocator<0, 0, 1> a;
-	Parser const p{CloseTest{a, f_close_nop, Char{'x'}}};
-	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
-	DEBUG_PRINT_PARSER(p);
-
-	TOGO_ASSERTE(p.type == ParserType::CloseTest);
-	TOGO_ASSERTE(p.s.CloseTest.f == f_close_nop);
-	TOGO_ASSERTE(p.s.CloseTest.p->type == ParserType::Char);
-	TOGO_ASSERTE(p.s.CloseTest.p->s.Char.c == 'x');
 }
 
 {
@@ -287,9 +273,9 @@ signed main() {
 }
 
 {
-	FixedParserAllocator<0, 2, 1> a;
+	FixedParserAllocator<0, 2> a;
 	Parser const p{All{a,
-		Maybe{a, Char{'x'}},
+		Parser{PMod::maybe, Char{'x'}},
 		Char{'y'}
 	}};
 	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
@@ -410,7 +396,7 @@ signed main() {
 		return parse_state::ok(s);
 	};
 	FixedParserAllocator<0, 2, 1> a;
-	Parser const p{"duo", CloseTest{a, f, All{a,
+	Parser const p{"duo", PMod::test, Close{a, f, All{a,
 		Char{'x'},
 		Char{'y'}
 	}}};
