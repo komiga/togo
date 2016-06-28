@@ -41,8 +41,6 @@ signed main() {
 	DEBUG_PRINT_PARSER(PDef::u64_any);
 
 	DEBUG_PRINT_PARSER(PDef::s64_dec);
-	DEBUG_PRINT_PARSER(PDef::u64_hex);
-	DEBUG_PRINT_PARSER(PDef::u64_oct);
 	DEBUG_PRINT_PARSER(PDef::s64_any);
 
 {
