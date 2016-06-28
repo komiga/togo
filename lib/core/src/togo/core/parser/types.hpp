@@ -268,6 +268,47 @@ using FixedParserAllocator = FixedAllocator<0
 	+ sizeof_n(num)
 >;
 
+/// Predefined parsers.
+struct PDef {
+	/// "null" => null
+	static Parser const null;
+	/// (true|false) => bool
+	static Parser const boolean;
+
+	/// [0-9] => char
+	static Parser const digit_dec;
+	/// <digit_dec>+ => slice
+	static Parser const digits_dec;
+
+	/// [0-9a-fA-F] => char
+	static Parser const digit_hex;
+	/// <digit_hex>+ => slice
+	static Parser const digits_hex;
+
+	/// [0-7] => char
+	static Parser const digit_oct;
+	/// [0-7]+ => slice
+	static Parser const digits_oct;
+
+	/// <digits>+([eE][\-+]?<digits>+)? => u64
+	static Parser const u64_dec;
+	/// 0[xX]<hex_digits>+ => u64
+	static Parser const u64_hex;
+	/// 0<oct_digits>+ => u64
+	static Parser const u64_oct;
+	/// (u64_dec|u64_hex|u64_oct) => u64
+	static Parser const u64_any;
+
+	/// <sign>?u64_dec => s64
+	static Parser const s64_dec;
+	/// <u64_hex>
+	static constexpr Parser const& s64_hex = u64_hex;
+	/// <u64_oct>
+	static constexpr Parser const& s64_oct = u64_oct;
+	/// (s64_dec|s64_hex|s64_oct) => s64
+	static Parser const s64_any;
+};
+
 } // namespace parser
 
 namespace parse_state {

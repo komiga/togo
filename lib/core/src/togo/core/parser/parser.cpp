@@ -26,6 +26,52 @@ bool s_debug_trace = false;
 #endif
 
 namespace {
+	FixedParserAllocator<1, 2 + 2, 1 + 2> pdef_storage;
+} // anonymous namespace
+
+#define TOGO_PDEF(name_, ...) \
+Parser const PDef :: name_{"PDef::" #name_, __VA_ARGS__};
+
+TOGO_PDEF(null, CloseTest{pdef_storage,
+	[](Parser const*, ParseState& s, ParsePosition const&) {
+		return ok(s, {null_tag{}});
+	},
+	String{"null"}
+})
+
+TOGO_PDEF(boolean, Any{pdef_storage,
+	CloseTest{pdef_storage, [](Parser const*, ParseState& s, ParsePosition const&) {
+		return ok(s, {true});
+	}, String{"true"}},
+	CloseTest{pdef_storage, [](Parser const*, ParseState& s, ParsePosition const&) {
+		return ok(s, {false});
+	}, String{"false"}}
+})
+
+TOGO_PDEF(digit_dec, CharRange{'0', '9'});
+TOGO_PDEF(digits_dec, Repeat{PDef::digit_dec});
+
+TOGO_PDEF(digit_hex, Any{pdef_storage,
+	digit_dec,
+	CharRange{'a', 'f'},
+	CharRange{'A', 'F'}
+});
+TOGO_PDEF(digits_hex, Repeat{PDef::digit_hex});
+
+TOGO_PDEF(digit_oct, CharRange{'0', '7'});
+TOGO_PDEF(digits_oct, Repeat{PDef::digit_oct});
+
+TOGO_PDEF(u64_dec, Undefined{}/*CloseFlatten{pdef_storage, PDef::digits_dec}*/);
+TOGO_PDEF(u64_hex, Undefined{});
+TOGO_PDEF(u64_oct, Undefined{});
+
+TOGO_PDEF(u64_any, Undefined{});
+TOGO_PDEF(s64_dec, Undefined{});
+TOGO_PDEF(s64_any, Undefined{});
+
+#undef TOGO_PDEF
+
+namespace {
 
 #if defined(TOGO_DEBUG)
 static thread_local unsigned s_debug_trace_depth = 0;
