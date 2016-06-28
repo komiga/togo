@@ -26,48 +26,142 @@ bool s_debug_trace = false;
 #endif
 
 namespace {
-	FixedParserAllocator<1, 2 + 2, 1 + 2> pdef_storage;
+
+static FixedParserAllocator<10, 11, 8> pdef_storage;
+
 } // anonymous namespace
 
 #define TOGO_PDEF(name_, ...) \
-Parser const PDef :: name_{"PDef::" #name_, __VA_ARGS__};
+Parser const PDef :: name_{"PDef." #name_, __VA_ARGS__};
 
-TOGO_PDEF(null, CloseTest{pdef_storage,
-	[](Parser const*, ParseState& s, ParsePosition const&) {
-		return ok(s, {null_tag{}});
-	},
-	String{"null"}
+TOGO_PDEF(null, PMod::test, Close{pdef_storage,
+String{"null"},
+[](Parser const*, ParseState& s, ParsePosition const&) {
+	return ok(s, {null_tag{}});
+}
 })
 
 TOGO_PDEF(boolean, Any{pdef_storage,
-	CloseTest{pdef_storage, [](Parser const*, ParseState& s, ParsePosition const&) {
+Parser{PMod::test, Close{pdef_storage,
+	String{"true"},
+	[](Parser const*, ParseState& s, ParsePosition const&) {
 		return ok(s, {true});
-	}, String{"true"}},
-	CloseTest{pdef_storage, [](Parser const*, ParseState& s, ParsePosition const&) {
+	}
+}},
+Parser{PMod::test, Close{pdef_storage,
+	String{"false"},
+	[](Parser const*, ParseState& s, ParsePosition const&) {
 		return ok(s, {false});
-	}, String{"false"}}
+	}
+}}
 })
 
 TOGO_PDEF(digit_dec, CharRange{'0', '9'});
 TOGO_PDEF(digits_dec, Repeat{PDef::digit_dec});
 
 TOGO_PDEF(digit_hex, Any{pdef_storage,
-	digit_dec,
-	CharRange{'a', 'f'},
-	CharRange{'A', 'F'}
+PDef::digit_dec,
+CharRange{'a', 'f'},
+CharRange{'A', 'F'}
 });
 TOGO_PDEF(digits_hex, Repeat{PDef::digit_hex});
 
 TOGO_PDEF(digit_oct, CharRange{'0', '7'});
 TOGO_PDEF(digits_oct, Repeat{PDef::digit_oct});
 
-TOGO_PDEF(u64_dec, Undefined{}/*CloseFlatten{pdef_storage, PDef::digits_dec}*/);
-TOGO_PDEF(u64_hex, Undefined{});
-TOGO_PDEF(u64_oct, Undefined{});
+TOGO_PDEF(u64_dec, PMod::flatten, Close{
+PDef::digits_dec,
+[](Parser const*, ParseState& s, ParsePosition const&) {
+	auto const& r = back(s.results);
+	auto e = r.v.s.e;
+	u64 value = 0;
+	for (auto p = r.v.s.b; p < e; ++p) {
+		value = (value << 1) + (value << 3) /*mul 10*/ + (*p - '0');
+	}
+	return ok(s, {value});
+}
+});
 
-TOGO_PDEF(u64_any, Undefined{});
-TOGO_PDEF(s64_dec, Undefined{});
-TOGO_PDEF(s64_any, Undefined{});
+TOGO_PDEF(u64_hex, PMod::flatten, Close{pdef_storage,
+All{pdef_storage,
+	Any{pdef_storage, String{"0x"}, String{"0X"}},
+	PDef::digits_hex
+},
+[](Parser const*, ParseState& s, ParsePosition const&) {
+	auto const& r = back(s.results);
+	u64 value = 0;
+	auto p = r.v.s.b + 2;
+	auto e = r.v.s.e;
+	for (; p < e && *p == '0'; ++p) {}
+	for (; p < e; ++p) {
+		char c = *p;
+		if (c <= '9') {
+			c -= '0';
+		} else if (c <= 'F') {
+			c -= 'A';
+		} else {
+			c -= 'a';
+		}
+		value = (value << 4) /*mul 16*/ + c;
+	}
+	return ok(s, {value});
+}
+});
+
+TOGO_PDEF(u64_oct, PMod::flatten, Close{pdef_storage,
+All{pdef_storage,
+	Char{'0'},
+	PDef::digits_oct
+},
+[](Parser const*, ParseState& s, ParsePosition const&) {
+	auto const& r = back(s.results);
+	u64 value = 0;
+	auto p = r.v.s.b + 1;
+	auto e = r.v.s.e;
+	for (; p < e && *p == '0'; ++p) {}
+	for (; p < e; ++p) {
+		value = (value * 7) + (*p - '0');
+	}
+	return ok(s, {value});
+}
+});
+
+TOGO_PDEF(u64_any, Any{pdef_storage,
+PDef::u64_hex,
+PDef::u64_oct,
+PDef::u64_dec
+});
+
+TOGO_PDEF(s64_dec, Close{pdef_storage,
+All{pdef_storage,
+	Parser{PMod::maybe, Any{pdef_storage,
+		Char{'-'}, Char{'+'}
+	}},
+	PDef::u64_dec
+},
+[](Parser const*, ParseState& s, ParsePosition const& pos) {
+	auto const& r = back(s.results);
+	bool sign = false;
+	if ((array::size(s.results) - pos.i) == 2) {
+		sign = s.results[pos.i].v.c == '-';
+	}
+	s64 value = sign ? -r.v.u : r.v.u;
+	return ok(s, {value});
+}
+});
+
+TOGO_PDEF(s64_any, Close{pdef_storage,
+Any{pdef_storage,
+	PDef::u64_hex,
+	PDef::u64_oct,
+	PDef::s64_dec
+},
+[](Parser const*, ParseState& s, ParsePosition const&) {
+	auto& r = back(s.results);
+	r.type = ParseResult::type_s64;
+	return ok(s);
+}
+});
 
 #undef TOGO_PDEF
 
