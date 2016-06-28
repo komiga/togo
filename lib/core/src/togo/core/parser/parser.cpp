@@ -103,7 +103,8 @@ static void debug_print_shallow(Parser const& p) {
 		TOGO_LOG("}\n");
 	}	break;
 
-	case ParserType::Maybe: {
+	case ParserType::Maybe:
+	case ParserType::Repeat: {
 		auto& d = p.s.Maybe;
 		PARSE_DEBUG_PRINT_DECL("{" DECL_FORMAT "}\n", *d.p);
 	}	break;
@@ -227,6 +228,20 @@ static ParseResultCode parse_impl(ParseState& s, Parser const& p, ParsePosition 
 		PARSE_RESULT(no_match(s));
 	}
 
+	case ParserType::Repeat: {
+		auto const& d = p.s.Repeat;
+		auto const& sub = *d.p;
+		ParseResultCode rc = parser::parse_do(sub, s);
+		if (rc == ParseResultCode::ok) {
+			suppress_errors(s);
+			do { rc = parser::parse_do(sub, s); } while (rc == ParseResultCode::ok);
+			unsuppress_errors(s);
+		} else {
+			PARSE_RESULT(fail(s));
+		}
+		PARSE_RESULT(ok(s));
+	}
+
 	case ParserType::Close: {
 		auto const& d = p.s.Close;
 		TOGO_DEBUG_ASSERTE(d.f);
@@ -281,6 +296,7 @@ void parser::debug_print_tree(Parser const& p, unsigned tab IGEN_DEFAULT(0)) {
 		break;
 
 	case ParserType::Maybe:
+	case ParserType::Repeat:
 		parser::debug_print_tree(*p.s.Maybe.p, tab);
 		break;
 
@@ -308,9 +324,12 @@ StringRef parser::type_name(ParserType type) {
 
 		"Any",
 		"All",
+
 		"Maybe",
+		"Repeat",
 
 		"Close",
+		"CloseTest",
 	};
 	static_assert(array_extent(s_type_name) == parser::c_num_types, "");
 	TOGO_DEBUG_ASSERTE(unsigned_cast(type) < parser::c_num_types);

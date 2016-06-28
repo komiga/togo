@@ -59,13 +59,15 @@ enum class ParserType : unsigned {
 	Any,
 	All,
 
+	// branch
 	Maybe,
+	Repeat,
 
 	// conditional_call
 	Close,
 	CloseTest,
 };
-static constexpr unsigned const c_num_types = unsigned_cast(ParserType::Close) + 1;
+static constexpr unsigned const c_num_types = unsigned_cast(ParserType::CloseTest) + 1;
 
 /// Parse function type.
 using parse_func_type = parse_state::ParseResultCode (
@@ -90,6 +92,11 @@ PARSER_TRAIT_TYPE(is_value)
 PARSER_TRAIT_TYPE(is_series)
 	|| T == ParserType::All
 	|| T == ParserType::Any
+;};
+
+PARSER_TRAIT_TYPE(is_branch)
+	|| T == ParserType::Maybe
+	|| T == ParserType::Repeat
 ;};
 
 PARSER_TRAIT_TYPE(is_conditional_call)
@@ -124,6 +131,8 @@ using All = ParserData<ParserType::All>;
 
 /// Match one or none.
 using Maybe = ParserData<ParserType::Maybe>;
+/// Match one or more.
+using Repeat = ParserData<ParserType::Repeat>;
 
 /// Match a parser and call a function if it succeeds.
 using Close = ParserData<ParserType::Close>;
@@ -161,8 +170,8 @@ struct ParserData<T, enable_if<is_series<T>::value>> {
 	ParserData(Allocator& a, P&&... p);
 };
 
-template<>
-struct ParserData<ParserType::Maybe> {
+template<ParserType T>
+struct ParserData<T, enable_if<is_branch<T>::value>> {
 	Parser const* p;
 
 	ParserData(Parser const& p);
@@ -194,6 +203,7 @@ struct Parser {
 		All All;
 
 		Maybe Maybe;
+		Repeat Repeat;
 
 		Close Close;
 		CloseTest CloseTest;
@@ -214,6 +224,7 @@ struct Parser {
 		Storage(parser::All&& d) : All(rvalue_ref(d)) {}
 
 		Storage(parser::Maybe&& d) : Maybe(rvalue_ref(d)) {}
+		Storage(parser::Repeat&& d) : Repeat(rvalue_ref(d)) {}
 
 		Storage(parser::Close&& d) : Close(rvalue_ref(d)) {}
 		Storage(parser::CloseTest&& d) : CloseTest(rvalue_ref(d)) {}
@@ -396,7 +407,9 @@ using parser::String;
 
 using parser::Any;
 using parser::All;
+
 using parser::Maybe;
+using parser::Repeat;
 
 using parser::Close;
 using parser::CloseTest;
@@ -410,5 +423,7 @@ using parse_state::ParseResult;
 using parse_state::ParsePosition;
 using parse_state::ParseError;
 using parse_state::ParseState;
+
+using parser::PDef;
 
 } // namespace togo

@@ -54,11 +54,15 @@ inline ParserData<T, enable_if<is_series<T>::value>>
 	series_add_parser(*this, a, 0, forward<P>(p)...);
 }
 
-inline Maybe::ParserData(Parser const& p)
+template<ParserType T>
+inline ParserData<T, enable_if<is_branch<T>::value>>
+::ParserData(Parser const& p)
 	: p(&p)
 {}
 
-inline Maybe::ParserData(Allocator& a, Parser&& p)
+template<ParserType T>
+inline ParserData<T, enable_if<is_branch<T>::value>>
+::ParserData(Allocator& a, Parser&& p)
 	: p(TOGO_CONSTRUCT(a, Parser, rvalue_ref(p)))
 {}
 
