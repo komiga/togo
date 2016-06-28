@@ -106,7 +106,7 @@ inline ParserData<T, enable_if<is_conditional_call<T>::value>>
 {}
 
 inline Parser::Parser(StringRef name)
-	: type(ParserType::Undefined)
+	: properties(unsigned_cast(ParserType::Undefined))
 	, name_hash(hash::calc32(name))
 	, name(name)
 	, s(no_init_tag{})
@@ -117,21 +117,41 @@ inline Parser::Parser()
 {}
 
 template<ParserType T>
-inline Parser::Parser(StringRef name, ParserData<T>&& d)
-	: type(T)
+inline Parser::Parser(StringRef name, ParserModifier mods, ParserData<T>&& d)
+	: properties(unsigned_cast(T) | (unsigned_cast(mods) << 16))
 	, name_hash(hash::calc32(name))
 	, name(name)
 	, s(forward<ParserData<T>&&>(d))
 {}
 
 template<ParserType T>
-inline Parser::Parser(ParserData<T>&& d)
-	: Parser(StringRef{}, forward<ParserData<T>&&>(d))
+inline Parser::Parser(StringRef name, ParserData<T>&& d)
+	: Parser(name, PMod::none, forward<ParserData<T>&&>(d))
 {}
+
+template<ParserType T>
+inline Parser::Parser(ParserData<T>&& d)
+	: Parser(StringRef{}, PMod::none, forward<ParserData<T>&&>(d))
+{}
+
+template<ParserType T>
+inline Parser::Parser(ParserModifier mods, ParserData<T>&& d)
+	: Parser(StringRef{}, mods, forward<ParserData<T>&&>(d))
+{}
+
+/// Type.
+inline ParserType type(Parser const& p) {
+	return static_cast<ParserType>(p.properties & ((1 << 16) - 1));
+}
+
+/// Modifiers.
+inline ParserModifier modifiers(Parser const& p) {
+	return static_cast<ParserModifier>((p.properties >> 16));
+}
 
 /// Type name of parser.
 inline StringRef type_name(Parser const& p) {
-	return parser::type_name(p.type);
+	return parser::type_name(parser::type(p));
 }
 
 } // namespace parser

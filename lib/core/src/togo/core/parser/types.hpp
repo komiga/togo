@@ -13,6 +13,7 @@
 #include <togo/core/config.hpp>
 #include <togo/core/types.hpp>
 #include <togo/core/utility/types.hpp>
+#include <togo/core/utility/traits.hpp>
 #include <togo/core/memory/types.hpp>
 #include <togo/core/collection/types.hpp>
 #include <togo/core/string/types.hpp>
@@ -60,14 +61,29 @@ enum class ParserType : unsigned {
 	All,
 
 	// branch
-	Maybe,
 	Repeat,
 
 	// conditional_call
 	Close,
-	CloseTest,
 };
-static constexpr unsigned const c_num_types = unsigned_cast(ParserType::CloseTest) + 1;
+static constexpr unsigned const c_num_types = unsigned_cast(ParserType::Close) + 1;
+
+/// Parser modifiers.
+///
+/// These are executed in order of definition.
+enum class ParserModifier : unsigned {
+	/// No modifiers.
+	none = 0,
+	/// Report no_match instead of failure.
+	maybe		= 1 << 0,
+	/// Suppress results.
+	test		= 1 << 1,
+	/// Suppress results and produce a slice for the parsed segment.
+	flatten		= 1 << 2,
+};
+static constexpr unsigned const c_last_option = unsigned_cast(ParserModifier::flatten);
+
+using PMod = ParserModifier;
 
 /// Parse function type.
 using parse_func_type = parse_state::ParseResultCode (
@@ -95,13 +111,11 @@ PARSER_TRAIT_TYPE(is_series)
 ;};
 
 PARSER_TRAIT_TYPE(is_branch)
-	|| T == ParserType::Maybe
 	|| T == ParserType::Repeat
 ;};
 
 PARSER_TRAIT_TYPE(is_conditional_call)
 	|| T == ParserType::Close
-	|| T == ParserType::CloseTest
 ;};
 
 #undef PARSER_TRAIT_TYPE
@@ -129,15 +143,11 @@ using Any = ParserData<ParserType::Any>;
 /// Match all in a series.
 using All = ParserData<ParserType::All>;
 
-/// Match one or none.
-using Maybe = ParserData<ParserType::Maybe>;
 /// Match one or more.
 using Repeat = ParserData<ParserType::Repeat>;
 
 /// Match a parser and call a function if it succeeds.
 using Close = ParserData<ParserType::Close>;
-/// Match a parser without producing results and call a function if it succeeds.
-using CloseTest = ParserData<ParserType::CloseTest>;
 
 template<> struct ParserData<ParserType::Undefined> {};
 template<> struct ParserData<ParserType::Nothing> {};
@@ -192,7 +202,8 @@ struct ParserData<T, enable_if<is_conditional_call<T>::value>> {
 
 /// Parser.
 struct Parser {
-	ParserType type;
+	// {u16 type; u16 modifiers;}
+	u32 properties;
 	hash32 name_hash;
 	StringRef name;
 
@@ -204,11 +215,9 @@ struct Parser {
 		Any Any;
 		All All;
 
-		Maybe Maybe;
 		Repeat Repeat;
 
 		Close Close;
-		CloseTest CloseTest;
 
 		Storage(no_init_tag) {}
 
@@ -225,11 +234,9 @@ struct Parser {
 		Storage(parser::Any&& d) : Any(rvalue_ref(d)) {}
 		Storage(parser::All&& d) : All(rvalue_ref(d)) {}
 
-		Storage(parser::Maybe&& d) : Maybe(rvalue_ref(d)) {}
 		Storage(parser::Repeat&& d) : Repeat(rvalue_ref(d)) {}
 
 		Storage(parser::Close&& d) : Close(rvalue_ref(d)) {}
-		Storage(parser::CloseTest&& d) : CloseTest(rvalue_ref(d)) {}
 	} s;
 
 	/// Construct named Undefined parser.
@@ -238,9 +245,17 @@ struct Parser {
 	/// Construct unnamed Undefined parser.
 	Parser();
 
+	/// Construct named parser with modifiers.
+	template<ParserType T>
+	Parser(StringRef name, ParserModifier mods, ParserData<T>&& d);
+
 	/// Construct named parser.
 	template<ParserType T>
 	Parser(StringRef name, ParserData<T>&& d);
+
+	/// Construct unnamed parser with modifiers.
+	template<ParserType T>
+	Parser(ParserModifier mods, ParserData<T>&& d);
 
 	/// Construct unnamed parser.
 	template<ParserType T>
@@ -434,6 +449,10 @@ struct ParseState {
 
 /** @} */ // end of doc-group lib_core_parser
 
+/** @cond INTERNAL */
+template<> struct enable_enum_bitwise_ops<parser::ParserModifier> : true_type {};
+/** @endcond */ // INTERNAL
+
 using parser::Undefined;
 using parser::Nothing;
 using parser::Empty;
@@ -447,13 +466,13 @@ using parser::String;
 using parser::Any;
 using parser::All;
 
-using parser::Maybe;
 using parser::Repeat;
 
 using parser::Close;
-using parser::CloseTest;
 
 using parser::ParserType;
+using parser::ParserModifier;
+using parser::PMod;
 using parser::Parser;
 using parser::FixedParserAllocator;
 

@@ -109,32 +109,27 @@ static_assert(array_extent(s_value_type_name) == ParseResult::type_user_base, ""
 #define PARSE_TRACEF(f_, ...) \
 	PARSE_TRACE_PRINTF("parse trace: %*.d" f_, s_debug_trace_depth * 2, 0, __VA_ARGS__)
 
-#define DECL_FORMAT "%.*s%s%.*s"
-
 //p_.name.any() ? p_.name : "<no-name>";
-#define PARSE_DEBUG_PRINT_DECL(f_, p_) do { \
-	StringRef _n = (p_).name; \
-	StringRef _t = parser::type_name(p_); \
-	TOGO_LOGF(f_, \
-		_n.size, _n.data, \
-		_n.any() ? " = " : "", \
-		_t.size, _t.data \
-	); \
-} while (false)
 
-#define PARSE_DEBUG_PRINT_DECLF(f_, p_, ...) do { \
-	StringRef _n = (p_).name; \
-	StringRef _t = parser::type_name(p_); \
-	TOGO_LOGF(f_, \
-		_n.size, _n.data, _n.any() ? " = " : "", \
-		_t.size, _t.data, \
-		__VA_ARGS__ \
-	); \
+#define PARSE_DEBUG_PRINT_DECL(p_) do { \
+	auto& _p = p_; \
+	StringRef _n = _p.name; \
+	StringRef _t = parser::type_name(_p); \
+	auto _o = parser::modifiers(_p); \
+	if (_n.any()) { TOGO_LOGF("%.*s = ", _n.size, _n.data); } \
+	TOGO_LOGF("%.*s", _t.size, _t.data); \
+	if (_o != PMod::none) { \
+		TOGO_LOGF("%s%s%s", \
+			enum_bool(_o & PMod::maybe) ? ":m" : "", \
+			enum_bool(_o & PMod::test) ? ":t" : "", \
+			enum_bool(_o & PMod::flatten) ? ":f" : "" \
+		); \
+	} \
 } while (false)
 
 static void debug_print_shallow(Parser const& p) {
-	PARSE_DEBUG_PRINT_DECL(DECL_FORMAT, p);
-	switch (p.type) {
+	PARSE_DEBUG_PRINT_DECL(p);
+	switch (type(p)) {
 	case ParserType::Undefined:
 	case ParserType::Nothing:
 	case ParserType::Empty:
@@ -152,26 +147,24 @@ static void debug_print_shallow(Parser const& p) {
 		TOGO_LOG("{");
 		auto& d = p.s.Any;
 		for (unsigned i = 0; i < d.num;) {
-			PARSE_DEBUG_PRINT_DECLF(
-				DECL_FORMAT "%s",
-				*d.p[i],
-				(++i < d.num) ? ", " : ""
-			);
+			PARSE_DEBUG_PRINT_DECL(*d.p[i]);
+			TOGO_LOG((++i < d.num) ? ", " : "");
 		}
 		TOGO_LOG("}\n");
 	}	break;
 
-	case ParserType::Maybe:
 	case ParserType::Repeat: {
-		auto& d = p.s.Maybe;
-		PARSE_DEBUG_PRINT_DECL("{" DECL_FORMAT "}\n", *d.p);
+		auto& d = p.s.Repeat;
+		TOGO_LOG("{");
+		PARSE_DEBUG_PRINT_DECL(*d.p);
+		TOGO_LOG("}\n");
 	}	break;
 
-	case ParserType::Close:
-	case ParserType::CloseTest: {
+	case ParserType::Close: {
 		auto& d = p.s.Close;
 		TOGO_LOGF("{0x%08lx, ", reinterpret_cast<std::uintptr_t>(d.p));
-		PARSE_DEBUG_PRINT_DECL(DECL_FORMAT "}\n", *d.p);
+		PARSE_DEBUG_PRINT_DECL(*d.p);
+		TOGO_LOG("}\n");
 	}	break;
 	}
 }
@@ -185,13 +178,64 @@ static void debug_print_shallow(Parser const& p) {
 
 #endif
 
-#define PARSE_RESULT(expr_) return expr_
+#define PARSE_RESULT(expr_) do { \
+	_result_rc = expr_; \
+	if (top_level && _result_rc == ParseResultCode::ok) { \
+		goto l_finalize; \
+	} \
+	return _result_rc; \
+} while (false)
 
 static Parser const s_parser_begin{Begin{}};
 static Parser const s_parser_end{End{}};
 
-static ParseResultCode parse_impl(ParseState& s, Parser const& p, ParsePosition const& from) {
-	switch (p.type) {
+static ParseResultCode parse_impl(
+	Parser const& p,
+	ParseState& s,
+	ParsePosition const& from,
+	ParserType const type,
+	ParserModifier const mods,
+	bool const top_level = false
+) {
+	ParseResultCode _result_rc;
+
+	if (mods == PMod::none) {
+		// pass
+	} else if (enum_bool(mods & PMod::maybe)) {
+		suppress_errors(s);
+		auto rc = parser::parse_impl(p, s, from, type, mods & ~PMod::maybe);
+		unsuppress_errors(s);
+		if (!!rc) {
+			TOGO_DEBUG_ASSERTE(rc != ParseResultCode::no_match || (from.p == s.p && from.i == s.results._size));
+			PARSE_RESULT(rc);
+		}
+		set_position(s, from);
+		PARSE_RESULT(no_match(s));
+	} else if (enum_bool(mods & PMod::test)) {
+		suppress_results(s);
+		auto rc = parser::parse_impl(p, s, from, type, mods & ~PMod::test);
+		unsuppress_results(s);
+		PARSE_RESULT(rc);
+	} else if (enum_bool(mods & PMod::flatten)) {
+		suppress_results(s);
+		auto rc = parser::parse_impl(p, s, from, type, mods & ~PMod::flatten);
+		unsuppress_results(s);
+		if (rc == ParseResultCode::ok && !s.suppress_results) {
+			TOGO_DEBUG_ASSERTE(from.i < size(s.results));
+			unsigned num = size(s.results) - from.i;
+			if (num) {
+				pop(s, num - 1);
+			} else {
+				push(s);
+			}
+			auto& r = back(s.results);
+			r.type = ParseResult::type_slice;
+			r.v.s = {from.p, s.p};
+		}
+		PARSE_RESULT(rc);
+	}
+
+	switch (type) {
 	case ParserType::Undefined:
 		TOGO_ASSERT(false, "tried to parse undefined parser");
 
@@ -273,19 +317,6 @@ static ParseResultCode parse_impl(ParseState& s, Parser const& p, ParsePosition 
 		PARSE_RESULT(ok(s));
 	}
 
-	case ParserType::Maybe: {
-		auto const& d = p.s.Maybe;
-		suppress_errors(s);
-		auto rc = parser::parse_do(*d.p, s);
-		unsuppress_errors(s);
-		if (!!rc) {
-			TOGO_DEBUG_ASSERTE(rc != ParseResultCode::no_match || (from.p == s.p && from.i == s.results._size));
-			PARSE_RESULT(rc);
-		}
-		set_position(s, from);
-		PARSE_RESULT(no_match(s));
-	}
-
 	case ParserType::Repeat: {
 		auto const& d = p.s.Repeat;
 		auto const& sub = *d.p;
@@ -306,30 +337,20 @@ static ParseResultCode parse_impl(ParseState& s, Parser const& p, ParsePosition 
 		if (d.p && parser::parse_do(*d.p, s) != ParseResultCode::ok) {
 			PARSE_RESULT(fail_expected_sub_match(s, "Close"));
 		}
-		if (!s.suppress_results) {
-			PARSE_RESULT(d.f(d.p, s, from));
-		}
 		PARSE_RESULT(ok(s));
-	}
-
-	case ParserType::CloseTest: {
-		auto const& d = p.s.CloseTest;
-		TOGO_DEBUG_ASSERTE(d.f);
-		suppress_results(s);
-		if (d.p && parser::parse_do(*d.p, s) != ParseResultCode::ok) {
-			unsuppress_results(s);
-			PARSE_RESULT(fail_expected_sub_match(s, "CloseTest"));
-		}
-		unsuppress_results(s);
-		if (!s.suppress_results) {
-			PARSE_RESULT(d.f(d.p, s, from));
-		}
-		PARSE_RESULT(ok(s));
-	}
 	}
 	}
 	TOGO_DEBUG_ASSERTE(false);
 	PARSE_RESULT(fail(s));
+
+l_finalize:
+	if (type == ParserType::Close) {
+		if (!s.suppress_results) {
+			auto const& d = p.s.Close;
+			_result_rc = d.f(d.p, s, from);
+		}
+	}
+	return _result_rc;
 }
 
 } // anonymous namespace
@@ -342,7 +363,7 @@ void parser::debug_print_tree(Parser const& p, unsigned tab IGEN_DEFAULT(0)) {
 	TOGO_LOGF("%*.d+ ", tab * 2, 0);
 	debug_print_shallow(p);
 	++tab;
-	switch (p.type) {
+	switch (type(p)) {
 	case ParserType::Undefined:
 	case ParserType::Nothing:
 	case ParserType::Empty:
@@ -360,13 +381,11 @@ void parser::debug_print_tree(Parser const& p, unsigned tab IGEN_DEFAULT(0)) {
 		}
 		break;
 
-	case ParserType::Maybe:
 	case ParserType::Repeat:
-		parser::debug_print_tree(*p.s.Maybe.p, tab);
+		parser::debug_print_tree(*p.s.Repeat.p, tab);
 		break;
 
 	case ParserType::Close:
-	case ParserType::CloseTest:
 		parser::debug_print_tree(*p.s.Close.p, tab);
 		break;
 	}
@@ -390,11 +409,9 @@ StringRef parser::type_name(ParserType type) {
 		"Any",
 		"All",
 
-		"Maybe",
 		"Repeat",
 
 		"Close",
-		"CloseTest",
 	};
 	static_assert(array_extent(s_type_name) == parser::c_num_types, "");
 	TOGO_DEBUG_ASSERTE(unsigned_cast(type) < parser::c_num_types);
@@ -403,12 +420,14 @@ StringRef parser::type_name(ParserType type) {
 
 /// Run parser.
 ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
+	auto type = parser::type(p);
+
 #if defined(TOGO_DEBUG)
 	if (s_debug_trace) {
 		PARSE_TRACE("+ ");
 		debug_print_shallow(p);
 		++s_debug_trace_depth;
-		if (p.type < ParserType::Any) {
+		if (type < ParserType::Any) {
 			char c = s.p < s.e ? *s.p : '\0';
 			PARSE_TRACEF("? %4lu %4lu  0x%02x '%c'\n", s.p - s.b, s.e - s.p, c, c);
 		}
@@ -417,10 +436,10 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 
 	auto const from = position(s);
 	ParseResultCode rc;
-	if (s.p == s.e && p.type > ParserType::End && p.type < ParserType::Any) {
+	if (s.p == s.e && type > ParserType::End && type < ParserType::Any) {
 		rc = fail(s, "no more input");
 	} else {
-		rc = parse_impl(s, p, from);
+		rc = parse_impl(p, s, from, type, parser::modifiers(p), true);
 	}
 
 #if defined(TOGO_DEBUG)
