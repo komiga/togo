@@ -84,6 +84,18 @@ static char const* const s_result_code_name[]{
 };
 static_assert(array_extent(s_result_code_name) == parse_state::c_num_result_codes, "");
 
+static char const* const s_value_type_name[]{
+	"null",
+	"bool",
+	"char",
+	"s64",
+	"u64",
+	"f64",
+	"pointer",
+	"slice",
+};
+static_assert(array_extent(s_value_type_name) == ParseResult::type_user_base, "");
+
 /*#define PARSE_TRACE_PRINT(f_) do { \
 	if (s_debug_trace) { TOGO_LOG(f_); } \
 } while (false)*/
@@ -407,9 +419,10 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 #if defined(TOGO_DEBUG)
 	if (s_debug_trace) {
 		PARSE_TRACEF(
-			"= %s (%lu)",
+			"= %s (%lu, %s)",
 			s_result_code_name[unsigned_cast(rc)],
-			array::size(s.results)
+			array::size(s.results),
+			array::any(s.results) ? s_value_type_name[back(s.results).type] : ""
 		);
 		if (!!rc) {
 			s_debug_branch_show_error = false;
@@ -468,9 +481,10 @@ bool parser::parse(Parser const& p, ParseState& s) {
 	if (s_debug_trace) {
 		s_debug_trace_depth = 0;
 		PARSE_TRACEF(
-			"= %s (%lu)",
+			"= %s (%lu, %s)",
 			s_result_code_name[unsigned_cast(rc)],
-			array::size(s.results)
+			array::size(s.results),
+			array::any(s.results) ? s_value_type_name[back(s.results).type] : ""
 		);
 		if (!rc && s.error) {
 			TOGO_LOGF("  =>  %u:%u %.*s",
