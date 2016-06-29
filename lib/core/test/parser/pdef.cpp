@@ -47,6 +47,7 @@ signed main() {
 	PARSE_S(PDef::null, "null");
 	TOGO_ASSERTE(!!error.result_code);
 	TOGO_ASSERTE(size(state.results) == 1);
+	TOGO_ASSERTE(state.p == state.e);
 	auto& v = state.results[0];
 	TOGO_ASSERTE(v.type == ParseResult::type_null);
 }
@@ -54,19 +55,21 @@ signed main() {
 {
 	PARSE_S(PDef::boolean, "true");
 	TOGO_ASSERTE(!!error.result_code);
+	TOGO_ASSERTE(state.p == state.e);
 	TOGO_ASSERTE(size(state.results) == 1);
-	auto& v = state.results[0];
-	TOGO_ASSERTE(v.type == ParseResult::type_bool);
-	TOGO_ASSERTE(v.v.b == true);
+	auto& r = state.results[0];
+	TOGO_ASSERTE(r.type == ParseResult::type_bool);
+	TOGO_ASSERTE(r.v.b == true);
 }
 
 {
 	PARSE_S(PDef::boolean, "false");
 	TOGO_ASSERTE(!!error.result_code);
+	TOGO_ASSERTE(state.p == state.e);
 	TOGO_ASSERTE(size(state.results) == 1);
-	auto& v = state.results[0];
-	TOGO_ASSERTE(v.type == ParseResult::type_bool);
-	TOGO_ASSERTE(v.v.b == false);
+	auto& r = state.results[0];
+	TOGO_ASSERTE(r.type == ParseResult::type_bool);
+	TOGO_ASSERTE(r.v.b == false);
 }
 
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_dec, "0"));
@@ -89,6 +92,69 @@ signed main() {
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_oct, "7"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_oct, "00"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_oct, "77"));
+
+{
+	PARSE_S(PDef::u64_dec, "0");
+	TOGO_ASSERTE(!!error.result_code);
+	TOGO_ASSERTE(size(state.results) == 1);
+	auto& r = state.results[0];
+	TOGO_ASSERTE(r.type == ParseResult::type_u64);
+	TOGO_ASSERTE(r.v.u == 0);
+}
+
+{
+	PARSE_S(PDef::u64_dec, "42");
+	TOGO_ASSERTE(!!error.result_code);
+	TOGO_ASSERTE(size(state.results) == 1);
+	auto& r = state.results[0];
+	TOGO_ASSERTE(r.type == ParseResult::type_u64);
+	TOGO_ASSERTE(r.v.u == 42);
+}
+
+{
+	PARSE_S(PDef::u64_hex, "0x00");
+	TOGO_ASSERTE(!!error.result_code);
+	TOGO_ASSERTE(size(state.results) == 1);
+	auto& r = state.results[0];
+	TOGO_ASSERTE(r.type == ParseResult::type_u64);
+	TOGO_ASSERTE(r.v.u == 0x00);
+}
+
+{
+	PARSE_S(PDef::u64_hex, "0x2a");
+	TOGO_ASSERTE(!!error.result_code);
+	TOGO_ASSERTE(size(state.results) == 1);
+	auto& r = state.results[0];
+	TOGO_ASSERTE(r.type == ParseResult::type_u64);
+	TOGO_ASSERTE(r.v.u == 0x2a);
+}
+
+{
+	PARSE_S(PDef::u64_hex, "0x2A");
+	TOGO_ASSERTE(!!error.result_code);
+	TOGO_ASSERTE(size(state.results) == 1);
+	auto& r = state.results[0];
+	TOGO_ASSERTE(r.type == ParseResult::type_u64);
+	TOGO_ASSERTE(r.v.u == 0x2A);
+}
+
+{
+	PARSE_S(PDef::u64_oct, "0");
+	TOGO_ASSERTE(!!error.result_code);
+	TOGO_ASSERTE(size(state.results) == 1);
+	auto& r = state.results[0];
+	TOGO_ASSERTE(r.type == ParseResult::type_u64);
+	TOGO_ASSERTE(r.v.u == 0);
+}
+
+{
+	PARSE_S(PDef::u64_oct, "052");
+	TOGO_ASSERTE(!!error.result_code);
+	TOGO_ASSERTE(size(state.results) == 1);
+	auto& r = state.results[0];
+	TOGO_ASSERTE(r.type == ParseResult::type_u64);
+	TOGO_ASSERTE(r.v.u == 052);
+}
 
 	memory::shutdown();
 	return 0;
