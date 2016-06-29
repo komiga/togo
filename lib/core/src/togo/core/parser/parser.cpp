@@ -79,14 +79,14 @@ TOGO_PDEF(digits_oct, PMod::repeat, Ref{PDef::digit_oct})
 
 TOGO_PDEF(u64_dec, PMod::flatten, Close{
 PDef::digits_dec,
-[](Parser const*, ParseState& s, ParsePosition const& pos) {
+[](Parser const*, ParseState& s, ParsePosition const& from) {
 	auto& r = back(s.results);
 	auto e = r.v.s.e;
 	u64 value = 0;
 	for (auto p = r.v.s.b; p < e; ++p) {
 		value = (value << 1) + (value << 3) /*mul 10*/ + (*p - '0');
 	}
-	return ok_replace(s, pos, {value});
+	return ok_replace(s, from, {value});
 }
 })
 
@@ -95,7 +95,7 @@ All{pdef_storage,
 	Any{pdef_storage, String{"0x"}, String{"0X"}},
 	PDef::digits_hex
 },
-[](Parser const*, ParseState& s, ParsePosition const& pos) {
+[](Parser const*, ParseState& s, ParsePosition const& from) {
 	auto const& r = back(s.results);
 	u64 value = 0;
 	auto p = r.v.s.b + 2;
@@ -112,7 +112,7 @@ All{pdef_storage,
 		}
 		value = (value << 4) /*mul 16*/ + d;
 	}
-	return ok_replace(s, pos, {value});
+	return ok_replace(s, from, {value});
 }
 })
 
@@ -121,7 +121,7 @@ All{pdef_storage,
 	Char{'0'},
 	Parser{PMod::maybe, Ref{PDef::digits_oct}}
 },
-[](Parser const*, ParseState& s, ParsePosition const& pos) {
+[](Parser const*, ParseState& s, ParsePosition const& from) {
 	auto const& r = back(s.results);
 	u64 value = 0;
 	auto p = r.v.s.b + 1;
@@ -130,7 +130,7 @@ All{pdef_storage,
 	for (; p < e; ++p) {
 		value = (value * 8) + (*p - '0');
 	}
-	return ok_replace(s, pos, {value});
+	return ok_replace(s, from, {value});
 }
 })
 
@@ -145,13 +145,13 @@ All{pdef_storage,
 	PDef::sign_maybe,
 	PDef::u64_dec
 },
-[](Parser const*, ParseState& s, ParsePosition const& pos) {
+[](Parser const*, ParseState& s, ParsePosition const& from) {
 	bool sign = false;
-	if ((array::size(s.results) - pos.i) == 2) {
-		sign = s.results[pos.i].v.c == '-';
+	if ((array::size(s.results) - from.i) == 2) {
+		sign = s.results[from.i].v.c == '-';
 	}
 	s64 value = static_cast<s64>(back(s.results).v.u);
-	return ok_replace(s, pos, {sign ? -value : value});
+	return ok_replace(s, from, {sign ? -value : value});
 }
 })
 
@@ -164,13 +164,13 @@ All{pdef_storage,
 		PDef::s64_dec
 	}
 },
-[](Parser const*, ParseState& s, ParsePosition const& pos) {
+[](Parser const*, ParseState& s, ParsePosition const& from) {
 	bool sign = false;
-	if ((array::size(s.results) - pos.i) == 2) {
-		sign = s.results[pos.i].v.c == '-';
+	if ((array::size(s.results) - from.i) == 2) {
+		sign = s.results[from.i].v.c == '-';
 	}
 	s64 value = static_cast<s64>(back(s.results).v.u);
-	return ok_replace(s, pos, {sign ? -value : value});
+	return ok_replace(s, from, {sign ? -value : value});
 }
 })
 
@@ -194,9 +194,9 @@ All{pdef_storage,
 	Char{'.'},
 	PDef::digits_dec
 },
-[](Parser const*, ParseState& s, ParsePosition const& pos) {
+[](Parser const*, ParseState& s, ParsePosition const& from) {
 	auto& r = back(s.results);
-	return ok_replace(s, pos, {parse_f64({r.v.s.b, r.v.s.e})});
+	return ok_replace(s, from, {parse_f64({r.v.s.b, r.v.s.e})});
 }
 })
 
@@ -209,9 +209,9 @@ All{pdef_storage,
 		PDef::digits_dec
 	}}
 },
-[](Parser const*, ParseState& s, ParsePosition const& pos) {
+[](Parser const*, ParseState& s, ParsePosition const& from) {
 	auto& r = back(s.results);
-	return ok_replace(s, pos, {parse_f64({r.v.s.b, r.v.s.e})});
+	return ok_replace(s, from, {parse_f64({r.v.s.b, r.v.s.e})});
 }
 })
 
