@@ -69,26 +69,26 @@ signed main() {
 	TOGO_ASSERTE(v.v.b == false);
 }
 
-	TOGO_ASSERTE(TEST(PDef::digit_dec, "0"));
-	TOGO_ASSERTE(TEST(PDef::digit_dec, "9"));
-	TOGO_ASSERTE(TEST(PDef::digits_dec, "00"));
-	TOGO_ASSERTE(TEST(PDef::digits_dec, "99"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_dec, "0"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_dec, "9"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_dec, "00"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_dec, "99"));
 
-	TOGO_ASSERTE(TEST(PDef::digit_hex, "0"));
-	TOGO_ASSERTE(TEST(PDef::digit_hex, "9"));
-	TOGO_ASSERTE(TEST(PDef::digit_hex, "a"));
-	TOGO_ASSERTE(TEST(PDef::digit_hex, "f"));
-	TOGO_ASSERTE(TEST(PDef::digit_hex, "A"));
-	TOGO_ASSERTE(TEST(PDef::digit_hex, "F"));
-	TOGO_ASSERTE(TEST(PDef::digits_hex, "00aa"));
-	TOGO_ASSERTE(TEST(PDef::digits_hex, "99ff"));
-	TOGO_ASSERTE(TEST(PDef::digits_hex, "00AA"));
-	TOGO_ASSERTE(TEST(PDef::digits_hex, "99FF"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_hex, "0"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_hex, "9"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_hex, "a"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_hex, "f"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_hex, "A"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_hex, "F"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_hex, "00aa"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_hex, "99ff"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_hex, "00AA"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_hex, "99FF"));
 
-	TOGO_ASSERTE(TEST(PDef::digit_oct, "0"));
-	TOGO_ASSERTE(TEST(PDef::digit_oct, "7"));
-	TOGO_ASSERTE(TEST(PDef::digits_oct, "00"));
-	TOGO_ASSERTE(TEST(PDef::digits_oct, "77"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_oct, "0"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_oct, "7"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_oct, "00"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_oct, "77"));
 
 	memory::shutdown();
 	return 0;
