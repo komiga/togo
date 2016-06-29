@@ -78,13 +78,15 @@ enum class ParserModifier : unsigned {
 	/// No modifiers.
 	none = 0,
 	/// Report no_match instead of failure.
-	maybe		= 1 << 0,
+	maybe			= 1 << 0,
 	/// Suppress results.
-	test		= 1 << 1,
+	test			= 1 << 1,
 	/// Suppress results and produce a slice for the parsed segment.
-	flatten		= 1 << 2,
+	flatten			= 1 << 2,
 	/// One or more.
-	repeat		= 1 << 3,
+	repeat			= 1 << 3,
+	/// Zero or more.
+	repeat_or_none	= 1 << 4,
 };
 
 using PMod = ParserModifier;
