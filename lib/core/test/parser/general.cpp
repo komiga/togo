@@ -60,6 +60,7 @@ signed main() {
 	case PMod::test: break;
 	case PMod::flatten: break;
 	case PMod::repeat: break;
+	case PMod::repeat_or_none: break;
 	}
 }
 
@@ -81,6 +82,11 @@ signed main() {
 {
 	Parser const p{PMod::repeat, Nothing{}};
 	TOGO_ASSERTE(modifiers(p) == PMod::repeat);
+}
+
+{
+	Parser const p{PMod::repeat_or_none, Nothing{}};
+	TOGO_ASSERTE(modifiers(p) == PMod::repeat_or_none);
 }
 
 {
@@ -337,6 +343,18 @@ signed main() {
 	TOGO_ASSERTE(TEST(p, "xxxz"));
 	TOGO_ASSERTE(!TEST(p, "z"));
 	TOGO_ASSERTE(!TEST(p, ""));
+}
+
+{
+	Parser const p{PMod::repeat_or_none, Char{'x'}};
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(TEST_WHOLE(p, ""));
+	TOGO_ASSERTE(TEST_WHOLE(p, "x"));
+	TOGO_ASSERTE(TEST_WHOLE(p, "xxx"));
+	TOGO_ASSERTE(TEST(p, "xxxz"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "xxxz"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "z"));
 }
 
 {
