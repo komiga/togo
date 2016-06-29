@@ -17,6 +17,8 @@
 #include <togo/core/parser/parser.hpp>
 #include <togo/core/parser/parse_state.hpp>
 
+#include <cstdlib>
+
 namespace togo {
 
 namespace parser {
@@ -27,7 +29,7 @@ bool s_debug_trace = false;
 
 namespace {
 
-static FixedParserAllocator<12, 11, 8> pdef_storage;
+static FixedParserAllocator<18, 16, 10> pdef_storage;
 
 } // anonymous namespace
 
@@ -169,6 +171,47 @@ All{pdef_storage,
 	}
 	s64 value = static_cast<s64>(back(s.results).v.u);
 	return ok_replace(s, pos, {sign ? -value : value});
+}
+});
+
+namespace {
+
+inline static f64 parse_f64(StringRef str) {
+	FixedArray<char, 64> cstr;
+	string::copy(cstr, str);
+	char* end = nullptr;
+	f64 value = std::strtod(begin(cstr), &end);
+	TOGO_DEBUG_ASSERTE(end == &back(cstr));
+	return value;
+}
+
+} // anonymous namespace
+
+TOGO_PDEF(f64_basic, PMod::flatten, Close{pdef_storage,
+All{pdef_storage,
+	PDef::sign_maybe,
+	PDef::digits_dec,
+	Char{'.'},
+	PDef::digits_dec
+},
+[](Parser const*, ParseState& s, ParsePosition const& pos) {
+	auto& r = back(s.results);
+	return ok_replace(s, pos, {parse_f64({r.v.s.b, r.v.s.e})});
+}
+});
+
+TOGO_PDEF(f64_exp, PMod::flatten, Close{pdef_storage,
+All{pdef_storage,
+	PDef::f64_basic,
+	Parser{PMod::maybe, All{pdef_storage,
+		Any{pdef_storage, Char{'e'}, Char{'E'}},
+		PDef::sign_maybe,
+		PDef::digits_dec
+	}}
+},
+[](Parser const*, ParseState& s, ParsePosition const& pos) {
+	auto& r = back(s.results);
+	return ok_replace(s, pos, {parse_f64({r.v.s.b, r.v.s.e})});
 }
 });
 

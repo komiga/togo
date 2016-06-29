@@ -324,6 +324,11 @@ struct PDef {
 	static Parser const s64_dec;
 	/// (<s64_dec>|<u64_hex>|<u64_oct>) => s64
 	static Parser const s64_any;
+
+	/// <sign_maybe><digits>\.<digits> => f64
+	static Parser const f64_basic;
+	/// <f64_basic>([eE]<sign_maybe><digits>)? => f64
+	static Parser const f64_exp;
 };
 
 } // namespace parser
