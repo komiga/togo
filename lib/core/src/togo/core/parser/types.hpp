@@ -83,7 +83,6 @@ enum class ParserModifier : unsigned {
 	/// One or more.
 	repeat		= 1 << 3,
 };
-static constexpr unsigned const c_last_option = unsigned_cast(ParserModifier::flatten);
 
 using PMod = ParserModifier;
 

@@ -315,17 +315,8 @@ static ParseResultCode parse_impl(
 		suppress_results(s);
 		auto rc = parser::parse_impl(p, s, from, type, mods & ~PMod::flatten);
 		unsuppress_results(s);
-		if (rc == ParseResultCode::ok && !s.suppress_results) {
-			TOGO_DEBUG_ASSERTE(from.i < size(s.results));
-			unsigned num = size(s.results) - from.i;
-			if (num) {
-				pop(s, num - 1);
-			} else {
-				push(s);
-			}
-			auto& r = back(s.results);
-			r.type = ParseResult::type_slice;
-			r.v.s = {from.p, s.p};
+		if (rc == ParseResultCode::ok) {
+			PARSE_RESULT(ok(s, {from.p, s.p}));
 		}
 		PARSE_RESULT(rc);
 	} else if (enum_bool(mods & PMod::repeat)) {
