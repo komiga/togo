@@ -49,6 +49,11 @@ signed main() {
 }
 
 {
+	Parser const p{PMod::repeat, Nothing{}};
+	TOGO_ASSERTE(modifiers(p) == PMod::repeat);
+}
+
+{
 	Parser const p{};
 	DEBUG_PRINT_PARSER(p);
 	TOGO_ASSERTE(type(p) == ParserType::Undefined);
@@ -153,24 +158,6 @@ signed main() {
 	Parser const* p3 = p2.s.All.p[1];
 	TOGO_ASSERTE(type(*p3) == ParserType::Char);
 	TOGO_ASSERTE(p3->s.Char.c == 'y');
-}
-
-{
-	Parser const p1{Char{'x'}};
-	Parser const p2{Repeat{p1}};
-	TOGO_ASSERTE(type(p2) == ParserType::Repeat);
-	TOGO_ASSERTE(p2.s.Repeat.p == &p1);
-}
-
-{
-	FixedParserAllocator<0, 0, 1> a;
-	Parser const p{Repeat{a, Char{'x'}}};
-	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
-	DEBUG_PRINT_PARSER(p);
-
-	TOGO_ASSERTE(type(p) == ParserType::Repeat);
-	TOGO_ASSERTE(type(*p.s.Repeat.p) == ParserType::Char);
-	TOGO_ASSERTE(p.s.Repeat.p->s.Char.c == 'x');
 }
 
 {
@@ -303,9 +290,7 @@ signed main() {
 }
 
 {
-	FixedParserAllocator<0, 0, 1> a;
-	Parser const p{Repeat{a, Char{'x'}}};
-	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	Parser const p{PMod::repeat, Char{'x'}};
 	DEBUG_PRINT_PARSER(p);
 
 	TOGO_ASSERTE(TEST(p, "x"));
@@ -316,9 +301,9 @@ signed main() {
 }
 
 {
-	FixedParserAllocator<0, 2, 1> a;
+	FixedParserAllocator<0, 2> a;
 	Parser const p{All{a,
-		Repeat{a, Char{'x'}},
+		Parser{PMod::repeat, Char{'x'}},
 		Char{'y'}
 	}};
 	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
