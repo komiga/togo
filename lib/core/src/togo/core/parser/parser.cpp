@@ -27,7 +27,7 @@ bool s_debug_trace = false;
 
 namespace {
 
-static FixedParserAllocator<10, 11, 8> pdef_storage;
+static FixedParserAllocator<10, 12, 8> pdef_storage;
 
 } // anonymous namespace
 
@@ -71,14 +71,14 @@ TOGO_PDEF(digits_oct, PMod::repeat, Ref{PDef::digit_oct});
 
 TOGO_PDEF(u64_dec, PMod::flatten, Close{
 PDef::digits_dec,
-[](Parser const*, ParseState& s, ParsePosition const&) {
-	auto const& r = back(s.results);
+[](Parser const*, ParseState& s, ParsePosition const& pos) {
+	auto& r = back(s.results);
 	auto e = r.v.s.e;
 	u64 value = 0;
 	for (auto p = r.v.s.b; p < e; ++p) {
 		value = (value << 1) + (value << 3) /*mul 10*/ + (*p - '0');
 	}
-	return ok(s, {value});
+	return ok_replace(s, pos, {value});
 }
 });
 
@@ -87,42 +87,42 @@ All{pdef_storage,
 	Any{pdef_storage, String{"0x"}, String{"0X"}},
 	PDef::digits_hex
 },
-[](Parser const*, ParseState& s, ParsePosition const&) {
+[](Parser const*, ParseState& s, ParsePosition const& pos) {
 	auto const& r = back(s.results);
 	u64 value = 0;
 	auto p = r.v.s.b + 2;
 	auto e = r.v.s.e;
 	for (; p < e && *p == '0'; ++p) {}
 	for (; p < e; ++p) {
-		char c = *p;
-		if (c <= '9') {
-			c -= '0';
-		} else if (c <= 'F') {
-			c -= 'A';
+		unsigned d = *p;
+		if (d <= '9') {
+			d -= '0';
+		} else if (d <= 'F') {
+			d = d - 'A' + 10;
 		} else {
-			c -= 'a';
+			d = d - 'a' + 10;
 		}
-		value = (value << 4) /*mul 16*/ + c;
+		value = (value << 4) /*mul 16*/ + d;
 	}
-	return ok(s, {value});
+	return ok_replace(s, pos, {value});
 }
 });
 
 TOGO_PDEF(u64_oct, PMod::flatten, Close{pdef_storage,
 All{pdef_storage,
 	Char{'0'},
-	PDef::digits_oct
+	Parser{PMod::maybe, Ref{PDef::digits_oct}}
 },
-[](Parser const*, ParseState& s, ParsePosition const&) {
+[](Parser const*, ParseState& s, ParsePosition const& pos) {
 	auto const& r = back(s.results);
 	u64 value = 0;
 	auto p = r.v.s.b + 1;
 	auto e = r.v.s.e;
 	for (; p < e && *p == '0'; ++p) {}
 	for (; p < e; ++p) {
-		value = (value * 7) + (*p - '0');
+		value = (value * 8) + (*p - '0');
 	}
-	return ok(s, {value});
+	return ok_replace(s, pos, {value});
 }
 });
 
@@ -140,13 +140,12 @@ All{pdef_storage,
 	PDef::u64_dec
 },
 [](Parser const*, ParseState& s, ParsePosition const& pos) {
-	auto const& r = back(s.results);
 	bool sign = false;
 	if ((array::size(s.results) - pos.i) == 2) {
 		sign = s.results[pos.i].v.c == '-';
 	}
-	s64 value = sign ? -r.v.u : r.v.u;
-	return ok(s, {value});
+	s64 value = static_cast<s64>(back(s.results).v.u);
+	return ok_replace(s, pos, {sign ? -value : value});
 }
 });
 
