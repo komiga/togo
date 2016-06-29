@@ -84,15 +84,15 @@ signed main() {
 }
 
 {
-	Parser const p{Begin{}};
+	Parser const p{Head{}};
 	DEBUG_PRINT_PARSER(p);
-	TOGO_ASSERTE(type(p) == ParserType::Begin);
+	TOGO_ASSERTE(type(p) == ParserType::Head);
 }
 
 {
-	Parser const p{End{}};
+	Parser const p{Tail{}};
 	DEBUG_PRINT_PARSER(p);
-	TOGO_ASSERTE(type(p) == ParserType::End);
+	TOGO_ASSERTE(type(p) == ParserType::Tail);
 }
 
 {

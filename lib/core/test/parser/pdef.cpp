@@ -33,27 +33,7 @@ signed main() {
 	ParseError error{};
 	ParseState state{state_storage, &error};
 
-	DEBUG_PRINT_PARSER(PDef::null);
-	DEBUG_PRINT_PARSER(PDef::boolean);
-
-	DEBUG_PRINT_PARSER(PDef::digit_dec);
-	DEBUG_PRINT_PARSER(PDef::digits_dec);
-	DEBUG_PRINT_PARSER(PDef::digit_hex);
-	DEBUG_PRINT_PARSER(PDef::digits_hex);
-	DEBUG_PRINT_PARSER(PDef::digit_oct);
-	DEBUG_PRINT_PARSER(PDef::digits_oct);
-
-	DEBUG_PRINT_PARSER(PDef::u64_dec);
-	DEBUG_PRINT_PARSER(PDef::u64_hex);
-	DEBUG_PRINT_PARSER(PDef::u64_oct);
-	DEBUG_PRINT_PARSER(PDef::u64_any);
-
-	DEBUG_PRINT_PARSER(PDef::s64_dec);
-	DEBUG_PRINT_PARSER(PDef::s64_any);
-
-	DEBUG_PRINT_PARSER(PDef::f64_basic);
-	DEBUG_PRINT_PARSER(PDef::f64_exp);
-
+DEBUG_PRINT_PARSER(PDef::null);
 {
 	PARSE_S(PDef::null, "null");
 	TOGO_ASSERTE(!!error.result_code);
@@ -63,6 +43,7 @@ signed main() {
 	TOGO_ASSERTE(v.type == ParseResult::type_null);
 }
 
+DEBUG_PRINT_PARSER(PDef::boolean);
 {
 	PARSE_S(PDef::boolean, "true");
 	TOGO_ASSERTE(!!error.result_code);
@@ -83,10 +64,16 @@ signed main() {
 	TOGO_ASSERTE(r.v.b == false);
 }
 
+DEBUG_PRINT_PARSER(PDef::digit_dec);
+DEBUG_PRINT_PARSER(PDef::digits_dec);
+
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_dec, "0"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_dec, "9"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_dec, "00"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_dec, "99"));
+
+DEBUG_PRINT_PARSER(PDef::digit_hex);
+DEBUG_PRINT_PARSER(PDef::digits_hex);
 
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_hex, "0"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_hex, "9"));
@@ -99,10 +86,16 @@ signed main() {
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_hex, "00AA"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_hex, "99FF"));
 
+DEBUG_PRINT_PARSER(PDef::digit_oct);
+DEBUG_PRINT_PARSER(PDef::digits_oct);
+
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_oct, "0"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_oct, "7"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_oct, "00"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_oct, "77"));
+
+DEBUG_PRINT_PARSER(PDef::u64_any);
+DEBUG_PRINT_PARSER(PDef::u64_dec);
 
 {
 	PARSE_S(PDef::u64_dec, "0");
@@ -130,6 +123,8 @@ signed main() {
 	TOGO_ASSERTE(r.type == ParseResult::type_u64);
 	TOGO_ASSERTE(r.v.u == 42);
 }
+
+DEBUG_PRINT_PARSER(PDef::u64_hex);
 
 {
 	PARSE_S(PDef::u64_hex, "0x00");
@@ -167,6 +162,8 @@ signed main() {
 	TOGO_ASSERTE(r.v.u == 0x2A);
 }
 
+DEBUG_PRINT_PARSER(PDef::u64_oct);
+
 {
 	PARSE_S(PDef::u64_oct, "0");
 	TOGO_ASSERTE(!!error.result_code);
@@ -194,6 +191,7 @@ signed main() {
 	TOGO_ASSERTE(r.v.u == 052);
 }
 
+DEBUG_PRINT_PARSER(PDef::s64_dec);
 {
 	PARSE_S(PDef::s64_dec, "-42");
 	TOGO_ASSERTE(!!error.result_code);
@@ -203,6 +201,7 @@ signed main() {
 	TOGO_ASSERTE(r.v.i == -42);
 }
 
+DEBUG_PRINT_PARSER(PDef::s64_any);
 {
 	PARSE_S(PDef::s64_any, "-42");
 	TOGO_ASSERTE(!!error.result_code);
@@ -230,6 +229,7 @@ signed main() {
 	TOGO_ASSERTE(r.v.i == -052);
 }
 
+DEBUG_PRINT_PARSER(PDef::f64_basic);
 {
 	PARSE_S(PDef::f64_basic, "0.0");
 	TOGO_ASSERTE(!!error.result_code);
@@ -257,6 +257,7 @@ signed main() {
 	TOGO_ASSERTE(float_equal_exact(r.v.f, -42.42));
 }
 
+DEBUG_PRINT_PARSER(PDef::f64_exp);
 {
 	PARSE_S(PDef::f64_exp, "42.42e6");
 	TOGO_ASSERTE(!!error.result_code);
