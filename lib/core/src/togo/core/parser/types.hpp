@@ -48,8 +48,8 @@ enum class ParserType : unsigned {
 	// intangible
 	Nothing,
 	Empty,
-	Begin,
-	End,
+	Head,
+	Tail,
 
 	// values
 	Char,
@@ -128,9 +128,9 @@ using Nothing = ParserData<ParserType::Nothing>;
 /// Match an empty input.
 using Empty = ParserData<ParserType::Empty>;
 /// Match the beginning of the input.
-using Begin = ParserData<ParserType::Begin>;
+using Head = ParserData<ParserType::Head>;
 /// Match the end of the input.
-using End = ParserData<ParserType::End>;
+using Tail = ParserData<ParserType::Tail>;
 
 /// Match a single character.
 using Char = ParserData<ParserType::Char>;
@@ -153,8 +153,8 @@ using Close = ParserData<ParserType::Close>;
 template<> struct ParserData<ParserType::Undefined> {};
 template<> struct ParserData<ParserType::Nothing> {};
 template<> struct ParserData<ParserType::Empty> {};
-template<> struct ParserData<ParserType::Begin> {};
-template<> struct ParserData<ParserType::End> {};
+template<> struct ParserData<ParserType::Head> {};
+template<> struct ParserData<ParserType::Tail> {};
 
 template<>
 struct ParserData<ParserType::Char> {
@@ -225,8 +225,8 @@ struct Parser {
 		Storage(parser::Undefined&&) {}
 		Storage(parser::Nothing&&) {}
 		Storage(parser::Empty&&) {}
-		Storage(parser::Begin&&) {}
-		Storage(parser::End&&) {}
+		Storage(parser::Head&&) {}
+		Storage(parser::Tail&&) {}
 
 		Storage(parser::Char&& d) : Char(rvalue_ref(d)) {}
 		Storage(parser::CharRange&& d) : CharRange(rvalue_ref(d)) {}
@@ -467,8 +467,8 @@ template<> struct enable_enum_bitwise_ops<parser::ParserModifier> : true_type {}
 using parser::Undefined;
 using parser::Nothing;
 using parser::Empty;
-using parser::Begin;
-using parser::End;
+using parser::Head;
+using parser::Tail;
 
 using parser::Char;
 using parser::CharRange;

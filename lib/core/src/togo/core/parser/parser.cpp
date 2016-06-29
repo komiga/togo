@@ -289,8 +289,8 @@ static void debug_print_shallow(Parser const& p) {
 	case ParserType::Undefined:
 	case ParserType::Nothing:
 	case ParserType::Empty:
-	case ParserType::Begin:
-	case ParserType::End:
+	case ParserType::Head:
+	case ParserType::Tail:
 		TOGO_LOG("\n");
 		break;
 
@@ -343,8 +343,8 @@ static void debug_print_shallow(Parser const& p) {
 	return _result_rc; \
 } while (false)
 
-static Parser const s_parser_begin{Begin{}};
-static Parser const s_parser_end{End{}};
+static Parser const s_parser_begin{Head{}};
+static Parser const s_parser_end{Tail{}};
 
 static ParseResultCode parse_impl(
 	Parser const& p,
@@ -408,13 +408,13 @@ static ParseResultCode parse_impl(
 		}
 		PARSE_RESULT(fail(s, "expected empty input"));
 
-	case ParserType::Begin:
+	case ParserType::Head:
 		if (s.b == s.p) {
 			PARSE_RESULT(ok(s));
 		}
 		PARSE_RESULT(fail(s, "expected beginning of input"));
 
-	case ParserType::End:
+	case ParserType::Tail:
 		if (s.p == s.e) {
 			PARSE_RESULT(ok(s));
 		}
@@ -516,8 +516,8 @@ void parser::debug_print_tree(Parser const& p, unsigned tab IGEN_DEFAULT(0)) {
 	case ParserType::Undefined:
 	case ParserType::Nothing:
 	case ParserType::Empty:
-	case ParserType::Begin:
-	case ParserType::End:
+	case ParserType::Head:
+	case ParserType::Tail:
 	case ParserType::Char:
 	case ParserType::CharRange:
 	case ParserType::String:
@@ -548,8 +548,8 @@ StringRef parser::type_name(ParserType type) {
 		"Undefined",
 		"Nothing",
 		"Empty",
-		"Begin",
-		"End",
+		"Head",
+		"Tail",
 
 		"Char",
 		"CharRange",
@@ -585,7 +585,7 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 
 	auto const from = position(s);
 	ParseResultCode rc;
-	if (s.p == s.e && type > ParserType::End && type < ParserType::Any) {
+	if (s.p == s.e && type > ParserType::Tail && type < ParserType::Any) {
 		rc = fail(s, "no more input");
 	} else {
 		rc = parse_impl(p, s, from, type, parser::modifiers(p), true);
