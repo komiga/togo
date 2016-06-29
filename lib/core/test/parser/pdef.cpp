@@ -33,6 +33,33 @@ signed main() {
 	ParseError error{};
 	ParseState state{state_storage, &error};
 
+DEBUG_PRINT_PARSER(PDef::whitespace);
+	TOGO_ASSERTE(TEST_WHOLE(PDef::whitespace, " "));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::whitespace, "  "));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::whitespace, "\t\n"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::whitespace, "\t\t"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::whitespace, "\t\n\r"));
+	TOGO_ASSERTE(TEST_WHOLE(PDef::whitespace, " \t\n\r"));
+	TOGO_ASSERTE(TEST(PDef::whitespace, "   x"));
+	TOGO_ASSERTE(!TEST_WHOLE(PDef::whitespace, "   x"));
+	TOGO_ASSERTE(!TEST(PDef::whitespace, ""));
+
+{
+	FixedParserAllocator<2, 1> a;
+	Parser const p{All{a,
+		PDef::whitespace_maybe,
+		Parser{PMod::repeat, CharRange{'a', 'z'}},
+		PDef::whitespace_maybe
+	}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+
+	TOGO_ASSERTE(TEST_WHOLE(p, "x"));
+	TOGO_ASSERTE(TEST_WHOLE(p, "x "));
+	TOGO_ASSERTE(TEST_WHOLE(p, " x"));
+	TOGO_ASSERTE(TEST_WHOLE(p, "\t\tx\r\n"));
+	TOGO_ASSERTE(!TEST(p, ""));
+}
+
 DEBUG_PRINT_PARSER(PDef::null);
 {
 	PARSE_S(PDef::null, "null");
@@ -66,7 +93,6 @@ DEBUG_PRINT_PARSER(PDef::boolean);
 
 DEBUG_PRINT_PARSER(PDef::digit_dec);
 DEBUG_PRINT_PARSER(PDef::digits_dec);
-
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_dec, "0"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_dec, "9"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_dec, "00"));
@@ -74,7 +100,6 @@ DEBUG_PRINT_PARSER(PDef::digits_dec);
 
 DEBUG_PRINT_PARSER(PDef::digit_hex);
 DEBUG_PRINT_PARSER(PDef::digits_hex);
-
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_hex, "0"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_hex, "9"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_hex, "a"));
@@ -88,7 +113,6 @@ DEBUG_PRINT_PARSER(PDef::digits_hex);
 
 DEBUG_PRINT_PARSER(PDef::digit_oct);
 DEBUG_PRINT_PARSER(PDef::digits_oct);
-
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_oct, "0"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digit_oct, "7"));
 	TOGO_ASSERTE(TEST_WHOLE(PDef::digits_oct, "00"));
@@ -96,7 +120,6 @@ DEBUG_PRINT_PARSER(PDef::digits_oct);
 
 DEBUG_PRINT_PARSER(PDef::u64_any);
 DEBUG_PRINT_PARSER(PDef::u64_dec);
-
 {
 	PARSE_S(PDef::u64_dec, "0");
 	TOGO_ASSERTE(!!error.result_code);
@@ -125,7 +148,6 @@ DEBUG_PRINT_PARSER(PDef::u64_dec);
 }
 
 DEBUG_PRINT_PARSER(PDef::u64_hex);
-
 {
 	PARSE_S(PDef::u64_hex, "0x00");
 	TOGO_ASSERTE(!!error.result_code);
@@ -163,7 +185,6 @@ DEBUG_PRINT_PARSER(PDef::u64_hex);
 }
 
 DEBUG_PRINT_PARSER(PDef::u64_oct);
-
 {
 	PARSE_S(PDef::u64_oct, "0");
 	TOGO_ASSERTE(!!error.result_code);
