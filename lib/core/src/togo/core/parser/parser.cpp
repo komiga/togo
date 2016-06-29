@@ -27,7 +27,7 @@ bool s_debug_trace = false;
 
 namespace {
 
-static FixedParserAllocator<10, 12, 8> pdef_storage;
+static FixedParserAllocator<10, 15, 8> pdef_storage;
 
 } // anonymous namespace
 
@@ -150,15 +150,23 @@ All{pdef_storage,
 });
 
 TOGO_PDEF(s64_any, Close{pdef_storage,
-Any{pdef_storage,
-	PDef::u64_hex,
-	PDef::u64_oct,
-	PDef::s64_dec
+All{pdef_storage,
+	Parser{PMod::maybe, Any{pdef_storage,
+		Char{'-'}, Char{'+'}
+	}},
+	Any{pdef_storage,
+		PDef::u64_hex,
+		PDef::u64_oct,
+		PDef::s64_dec
+	}
 },
-[](Parser const*, ParseState& s, ParsePosition const&) {
-	auto& r = back(s.results);
-	r.type = ParseResult::type_s64;
-	return ok(s);
+[](Parser const*, ParseState& s, ParsePosition const& pos) {
+	bool sign = false;
+	if ((array::size(s.results) - pos.i) == 2) {
+		sign = s.results[pos.i].v.c == '-';
+	}
+	s64 value = static_cast<s64>(back(s.results).v.u);
+	return ok_replace(s, pos, {sign ? -value : value});
 }
 });
 
