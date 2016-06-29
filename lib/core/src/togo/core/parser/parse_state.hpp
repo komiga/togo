@@ -115,10 +115,7 @@ inline void set_position(ParseState& s, ParsePosition const& pos) {
 }
 
 /// Set parse error.
-#if defined(TOGO_COMPILER_CLANG) || \
-	defined(TOGO_COMPILER_GCC)
-	__attribute__((__format__ (__printf__, 2, 3)))
-#endif
+TOGO_VALIDATE_FORMAT_PARAM(2, 3)
 inline void set_error(ParseState& s, char const* format, ...) {
 	if (s.suppress_errors || !s.error) {
 		return;
@@ -135,10 +132,7 @@ inline ParseResultCode fail(ParseState const&) {
 }
 
 /// Parse failure with error message.
-#if defined(TOGO_COMPILER_CLANG) || \
-	defined(TOGO_COMPILER_GCC)
-	__attribute__((__format__ (__printf__, 2, 3)))
-#endif
+TOGO_VALIDATE_FORMAT_PARAM(2, 3)
 inline ParseResultCode fail(ParseState& s, char const* format, ...) {
 	va_list va;
 	va_start(va, format);

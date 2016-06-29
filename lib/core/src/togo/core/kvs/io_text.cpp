@@ -129,10 +129,7 @@ static bool write_tabs(IWriter& stream, unsigned tabs) {
 	return true;
 }
 
-#if defined(TOGO_COMPILER_CLANG) || \
-	defined(TOGO_COMPILER_GCC)
-	__attribute__((__format__ (__printf__, 2, 3)))
-#endif
+TOGO_VALIDATE_FORMAT_PARAM(2, 3)
 static bool writef(IWriter& stream, char const* const format, ...) {
 	char buffer[256];
 	va_list va;

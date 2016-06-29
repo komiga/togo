@@ -19,6 +19,7 @@ namespace togo {
 */
 
 /// Abort the program with contextual information.
+TOGO_VALIDATE_FORMAT_PARAM(3, 4)
 [[noreturn]]
 void error_abort(unsigned line, char const* file, char const* msg, ...);
 

@@ -40,6 +40,9 @@ namespace togo {
 	/// This is enabled if it is defined.
 	#define TOGO_USE_CONSTRAINTS
 
+	/// Validate printf-style format when calling the following function.
+	#define TOGO_VALIDATE_FORMAT_PARAM(fmt_index, args_index)
+
 	/// Mark function as part of the generated interface when running igen.
 	#define IGEN_INTERFACE
 
@@ -56,6 +59,13 @@ namespace togo {
 #else
 	#if !defined(TOGO_DEBUG) && (defined(DEBUG) || !defined(NDEBUG))
 		#define TOGO_DEBUG
+	#endif
+
+	#if defined(TOGO_COMPILER_CLANG) || defined(TOGO_COMPILER_GCC)
+		#define TOGO_VALIDATE_FORMAT_PARAM(f_, a_) \
+			__attribute__((__format__ (__printf__, f_, a_)))
+	#else
+		#define TOGO_VALIDATE_FORMAT_PARAM(f_, a_)
 	#endif
 	#if defined(IGEN_RUNNING)
 		#define IGEN_INTERFACE __attribute__((annotate("igen_interface")))

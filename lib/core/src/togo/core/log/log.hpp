@@ -20,10 +20,7 @@ namespace log {
 	@{
 */
 
-#if defined(TOGO_COMPILER_CLANG) || \
-	defined(TOGO_COMPILER_GCC)
-	__attribute__((__format__ (__printf__, 1, 2)))
-#endif
+TOGO_VALIDATE_FORMAT_PARAM(1, 2)
 void printf(char const* const msg, ...);
 
 /// Log message.
