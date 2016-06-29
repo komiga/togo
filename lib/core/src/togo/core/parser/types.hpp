@@ -61,7 +61,7 @@ enum class ParserType : unsigned {
 	All,
 
 	// branch
-	Repeat,
+	Ref,
 
 	// conditional_call
 	Close,
@@ -80,6 +80,8 @@ enum class ParserModifier : unsigned {
 	test		= 1 << 1,
 	/// Suppress results and produce a slice for the parsed segment.
 	flatten		= 1 << 2,
+	/// One or more.
+	repeat		= 1 << 3,
 };
 static constexpr unsigned const c_last_option = unsigned_cast(ParserModifier::flatten);
 
@@ -111,7 +113,7 @@ PARSER_TRAIT_TYPE(is_series)
 ;};
 
 PARSER_TRAIT_TYPE(is_branch)
-	|| T == ParserType::Repeat
+	|| T == ParserType::Ref
 ;};
 
 PARSER_TRAIT_TYPE(is_conditional_call)
@@ -143,8 +145,8 @@ using Any = ParserData<ParserType::Any>;
 /// Match all in a series.
 using All = ParserData<ParserType::All>;
 
-/// Match one or more.
-using Repeat = ParserData<ParserType::Repeat>;
+/// Match another parser after modifiers.
+using Ref = ParserData<ParserType::Ref>;
 
 /// Match a parser and call a function if it succeeds.
 using Close = ParserData<ParserType::Close>;
@@ -215,7 +217,7 @@ struct Parser {
 		Any Any;
 		All All;
 
-		Repeat Repeat;
+		Ref Ref;
 
 		Close Close;
 
@@ -234,7 +236,7 @@ struct Parser {
 		Storage(parser::Any&& d) : Any(rvalue_ref(d)) {}
 		Storage(parser::All&& d) : All(rvalue_ref(d)) {}
 
-		Storage(parser::Repeat&& d) : Repeat(rvalue_ref(d)) {}
+		Storage(parser::Ref&& d) : Ref(rvalue_ref(d)) {}
 
 		Storage(parser::Close&& d) : Close(rvalue_ref(d)) {}
 	} s;
@@ -466,7 +468,7 @@ using parser::String;
 using parser::Any;
 using parser::All;
 
-using parser::Repeat;
+using parser::Ref;
 
 using parser::Close;
 

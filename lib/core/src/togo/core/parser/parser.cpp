@@ -57,17 +57,17 @@ Parser{PMod::test, Close{pdef_storage,
 })
 
 TOGO_PDEF(digit_dec, CharRange{'0', '9'});
-TOGO_PDEF(digits_dec, Repeat{PDef::digit_dec});
+TOGO_PDEF(digits_dec, PMod::repeat, Ref{PDef::digit_dec});
 
 TOGO_PDEF(digit_hex, Any{pdef_storage,
 PDef::digit_dec,
 CharRange{'a', 'f'},
 CharRange{'A', 'F'}
 });
-TOGO_PDEF(digits_hex, Repeat{PDef::digit_hex});
+TOGO_PDEF(digits_hex, PMod::repeat, Ref{PDef::digit_hex});
 
 TOGO_PDEF(digit_oct, CharRange{'0', '7'});
-TOGO_PDEF(digits_oct, Repeat{PDef::digit_oct});
+TOGO_PDEF(digits_oct, PMod::repeat, Ref{PDef::digit_oct});
 
 TOGO_PDEF(u64_dec, PMod::flatten, Close{
 PDef::digits_dec,
@@ -213,10 +213,11 @@ static_assert(array_extent(s_value_type_name) == ParseResult::type_user_base, ""
 	if (_n.any()) { TOGO_LOGF("%.*s = ", _n.size, _n.data); } \
 	TOGO_LOGF("%.*s", _t.size, _t.data); \
 	if (_o != PMod::none) { \
-		TOGO_LOGF("%s%s%s", \
+		TOGO_LOGF("%s%s%s%s", \
 			enum_bool(_o & PMod::maybe) ? ":m" : "", \
 			enum_bool(_o & PMod::test) ? ":t" : "", \
-			enum_bool(_o & PMod::flatten) ? ":f" : "" \
+			enum_bool(_o & PMod::flatten) ? ":f" : "", \
+			enum_bool(_o & PMod::repeat) ? ":r" : "" \
 		); \
 	} \
 } while (false)
@@ -247,8 +248,8 @@ static void debug_print_shallow(Parser const& p) {
 		TOGO_LOG("}\n");
 	}	break;
 
-	case ParserType::Repeat: {
-		auto& d = p.s.Repeat;
+	case ParserType::Ref: {
+		auto& d = p.s.Ref;
 		TOGO_LOG("{");
 		PARSE_DEBUG_PRINT_DECL(*d.p);
 		TOGO_LOG("}\n");
@@ -327,6 +328,18 @@ static ParseResultCode parse_impl(
 			r.v.s = {from.p, s.p};
 		}
 		PARSE_RESULT(rc);
+	} else if (enum_bool(mods & PMod::repeat)) {
+		auto const mods_repeat = mods & ~PMod::repeat;
+		auto rc = parser::parse_impl(p, s, from, type, mods_repeat);
+		if (rc == ParseResultCode::ok) {
+			suppress_errors(s);
+			do {
+				rc = parser::parse_impl(p, s, from, type, mods_repeat);
+			} while (rc == ParseResultCode::ok);
+			unsuppress_errors(s);
+			PARSE_RESULT(ok(s));
+		}
+		PARSE_RESULT(fail(s));
 	}
 
 	switch (type) {
@@ -411,19 +424,8 @@ static ParseResultCode parse_impl(
 		PARSE_RESULT(ok(s));
 	}
 
-	case ParserType::Repeat: {
-		auto const& d = p.s.Repeat;
-		auto const& sub = *d.p;
-		ParseResultCode rc = parser::parse_do(sub, s);
-		if (rc == ParseResultCode::ok) {
-			suppress_errors(s);
-			do { rc = parser::parse_do(sub, s); } while (rc == ParseResultCode::ok);
-			unsuppress_errors(s);
-		} else {
-			PARSE_RESULT(fail(s));
-		}
-		PARSE_RESULT(ok(s));
-	}
+	case ParserType::Ref:
+		PARSE_RESULT(parser::parse_do(*p.s.Ref.p, s));
 
 	case ParserType::Close: {
 		auto const& d = p.s.Close;
@@ -475,8 +477,8 @@ void parser::debug_print_tree(Parser const& p, unsigned tab IGEN_DEFAULT(0)) {
 		}
 		break;
 
-	case ParserType::Repeat:
-		parser::debug_print_tree(*p.s.Repeat.p, tab);
+	case ParserType::Ref:
+		parser::debug_print_tree(*p.s.Ref.p, tab);
 		break;
 
 	case ParserType::Close:
@@ -503,7 +505,7 @@ StringRef parser::type_name(ParserType type) {
 		"Any",
 		"All",
 
-		"Repeat",
+		"Ref",
 
 		"Close",
 	};
