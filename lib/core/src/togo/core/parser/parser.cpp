@@ -61,21 +61,21 @@ Parser{PMod::test, Close{pdef_storage,
 TOGO_PDEF(sign, Any{pdef_storage,
 	Char{'-'},
 	Char{'+'}
-});
-TOGO_PDEF(sign_maybe, PMod::maybe, Ref{PDef::sign});
+})
+TOGO_PDEF(sign_maybe, PMod::maybe, Ref{PDef::sign})
 
-TOGO_PDEF(digit_dec, CharRange{'0', '9'});
-TOGO_PDEF(digits_dec, PMod::repeat, Ref{PDef::digit_dec});
+TOGO_PDEF(digit_dec, CharRange{'0', '9'})
+TOGO_PDEF(digits_dec, PMod::repeat, Ref{PDef::digit_dec})
 
 TOGO_PDEF(digit_hex, Any{pdef_storage,
 PDef::digit_dec,
 CharRange{'a', 'f'},
 CharRange{'A', 'F'}
-});
-TOGO_PDEF(digits_hex, PMod::repeat, Ref{PDef::digit_hex});
+})
+TOGO_PDEF(digits_hex, PMod::repeat, Ref{PDef::digit_hex})
 
-TOGO_PDEF(digit_oct, CharRange{'0', '7'});
-TOGO_PDEF(digits_oct, PMod::repeat, Ref{PDef::digit_oct});
+TOGO_PDEF(digit_oct, CharRange{'0', '7'})
+TOGO_PDEF(digits_oct, PMod::repeat, Ref{PDef::digit_oct})
 
 TOGO_PDEF(u64_dec, PMod::flatten, Close{
 PDef::digits_dec,
@@ -88,7 +88,7 @@ PDef::digits_dec,
 	}
 	return ok_replace(s, pos, {value});
 }
-});
+})
 
 TOGO_PDEF(u64_hex, PMod::flatten, Close{pdef_storage,
 All{pdef_storage,
@@ -114,7 +114,7 @@ All{pdef_storage,
 	}
 	return ok_replace(s, pos, {value});
 }
-});
+})
 
 TOGO_PDEF(u64_oct, PMod::flatten, Close{pdef_storage,
 All{pdef_storage,
@@ -132,13 +132,13 @@ All{pdef_storage,
 	}
 	return ok_replace(s, pos, {value});
 }
-});
+})
 
 TOGO_PDEF(u64_any, Any{pdef_storage,
 PDef::u64_hex,
 PDef::u64_oct,
 PDef::u64_dec
-});
+})
 
 TOGO_PDEF(s64_dec, Close{pdef_storage,
 All{pdef_storage,
@@ -153,7 +153,7 @@ All{pdef_storage,
 	s64 value = static_cast<s64>(back(s.results).v.u);
 	return ok_replace(s, pos, {sign ? -value : value});
 }
-});
+})
 
 TOGO_PDEF(s64_any, Close{pdef_storage,
 All{pdef_storage,
@@ -172,7 +172,7 @@ All{pdef_storage,
 	s64 value = static_cast<s64>(back(s.results).v.u);
 	return ok_replace(s, pos, {sign ? -value : value});
 }
-});
+})
 
 namespace {
 
@@ -198,7 +198,7 @@ All{pdef_storage,
 	auto& r = back(s.results);
 	return ok_replace(s, pos, {parse_f64({r.v.s.b, r.v.s.e})});
 }
-});
+})
 
 TOGO_PDEF(f64_exp, PMod::flatten, Close{pdef_storage,
 All{pdef_storage,
@@ -213,7 +213,7 @@ All{pdef_storage,
 	auto& r = back(s.results);
 	return ok_replace(s, pos, {parse_f64({r.v.s.b, r.v.s.e})});
 }
-});
+})
 
 #undef TOGO_PDEF
 
