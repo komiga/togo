@@ -320,7 +320,7 @@ static void debug_print_shallow(Parser const& p) {
 
 	case ParserType::Close: {
 		auto& d = p.s.Close;
-		TOGO_LOGF("{0x%08lx, ", reinterpret_cast<std::uintptr_t>(d.p));
+		TOGO_LOGF("{0x%08lx, ", reinterpret_cast<std::uintptr_t>(d.f));
 		PARSE_DEBUG_PRINT_DECL(*d.p);
 		TOGO_LOG("}\n");
 	}	break;
