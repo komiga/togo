@@ -36,6 +36,29 @@ static FixedParserAllocator<18, 16, 10> pdef_storage;
 #define TOGO_PDEF(name_, ...) \
 Parser const PDef :: name_{"PDef." #name_, __VA_ARGS__};
 
+TOGO_PDEF(whitespace, PMod::test, Func{
+[](Parser const*, ParseState& s, ParsePosition const& from) {
+	while (s.p < s.e) {
+		signed c = *s.p;
+		if (!(false
+			|| c == ' '
+			|| c == '\t'
+			|| c == '\n'
+			|| c == '\r'
+		)) {
+			break;
+		}
+		++s.p;
+	}
+	if (from.p < s.p) {
+		return ok(s);
+	}
+	return fail(s);
+}
+})
+
+TOGO_PDEF(whitespace_maybe, PMod::maybe, Ref{PDef::whitespace})
+
 TOGO_PDEF(null, PMod::test, Close{pdef_storage,
 String{"null"},
 [](Parser const*, ParseState& s, ParsePosition const&) {

@@ -308,8 +308,10 @@ using FixedParserAllocator = FixedAllocator<0
 
 /// Predefined parsers.
 struct PDef {
-	/// [ \t\n\r]+
+	/// [ \t\n\r]+ :t => nothing
 	static Parser const whitespace;
+	/// <whitespace>? => nothing
+	static Parser const whitespace_maybe;
 
 	/// "null" => null
 	static Parser const null;
