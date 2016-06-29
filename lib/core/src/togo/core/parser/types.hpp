@@ -351,7 +351,7 @@ struct Slice {
 
 /// Parse result.
 struct ParseResult {
-	enum : unsigned {
+	enum Type : unsigned {
 		type_null,
 		type_bool,
 		type_char,
@@ -364,7 +364,7 @@ struct ParseResult {
 		type_user_base,
 	};
 
-	unsigned type;
+	Type type;
 	union Value {
 		bool b;
 		char c;
@@ -390,7 +390,7 @@ struct ParseResult {
 	~ParseResult() = default;
 
 	ParseResult(null_tag const) : type(type_null) {}
-	ParseResult(unsigned type, Value&& x) : type(type), v(rvalue_ref(x)) {}
+	ParseResult(Type type, Value&& x) : type(type), v(rvalue_ref(x)) {}
 	ParseResult(bool x) : type(type_bool), v(x) {}
 	ParseResult(char x) : type(type_char), v(x) {}
 	ParseResult(s64 x) : type(type_s64), v(x) {}

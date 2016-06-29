@@ -187,12 +187,10 @@ static char const* const s_value_type_name[]{
 	"f64",
 	"pointer",
 	"slice",
-};
-static_assert(array_extent(s_value_type_name) == ParseResult::type_user_base, "");
 
-/*#define PARSE_TRACE_PRINT(f_) do { \
-	if (s_debug_trace) { TOGO_LOG(f_); } \
-} while (false)*/
+	"user",
+};
+static_assert(array_extent(s_value_type_name) == (ParseResult::type_user_base + 1), "");
 
 #define PARSE_TRACE_PRINTF(f_, ...) do { \
 	if (s_debug_trace) { TOGO_LOGF(f_, __VA_ARGS__); } \
@@ -203,7 +201,18 @@ static_assert(array_extent(s_value_type_name) == ParseResult::type_user_base, ""
 #define PARSE_TRACEF(f_, ...) \
 	PARSE_TRACE_PRINTF("parse trace: %*.d" f_, s_debug_trace_depth * 2, 0, __VA_ARGS__)
 
-//p_.name.any() ? p_.name : "<no-name>";
+#define PARSE_TRACE_EXIT_STUFF() do { \
+	bool _any = array::any(s.results); \
+	auto _vt = _any ? array::back(s.results).type : ParseResult::type_null; \
+	_vt = (_vt >= ParseResult::type_user_base) ? ParseResult::type_user_base : _vt; \
+	PARSE_TRACEF( \
+		"= %s (%lu%s%s)", \
+		s_result_code_name[unsigned_cast(rc)], \
+		array::size(s.results), \
+		_any ? ", " : "", \
+		_any ? s_value_type_name[_vt] : "" \
+	); \
+} while (false)
 
 #define PARSE_DEBUG_PRINT_DECL(p_) do { \
 	auto& _p = p_; \
@@ -243,7 +252,9 @@ static void debug_print_shallow(Parser const& p) {
 		auto& d = p.s.Any;
 		for (unsigned i = 0; i < d.num;) {
 			PARSE_DEBUG_PRINT_DECL(*d.p[i]);
-			TOGO_LOG((++i < d.num) ? ", " : "");
+			if (++i < d.num) {
+				TOGO_LOG(", ");
+			}
 		}
 		TOGO_LOG("}\n");
 	}	break;
@@ -266,7 +277,6 @@ static void debug_print_shallow(Parser const& p) {
 
 #else
 
-// #define PARSE_TRACE_PRINT(f_) (void(0))
 #define PARSE_TRACE_PRINTF(f_, ...) (void(0))
 #define PARSE_TRACE(f_) (void(0))
 #define PARSE_TRACEF(f_, ...) (void(0))
@@ -531,12 +541,7 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 
 #if defined(TOGO_DEBUG)
 	if (s_debug_trace) {
-		PARSE_TRACEF(
-			"= %s (%lu, %s)",
-			s_result_code_name[unsigned_cast(rc)],
-			array::size(s.results),
-			array::any(s.results) ? s_value_type_name[back(s.results).type] : ""
-		);
+		PARSE_TRACE_EXIT_STUFF();
 		if (!!rc) {
 			s_debug_branch_show_error = false;
 		}
@@ -593,12 +598,7 @@ bool parser::parse(Parser const& p, ParseState& s) {
 #if defined(TOGO_DEBUG)
 	if (s_debug_trace) {
 		s_debug_trace_depth = 0;
-		PARSE_TRACEF(
-			"= %s (%lu, %s)",
-			s_result_code_name[unsigned_cast(rc)],
-			array::size(s.results),
-			array::any(s.results) ? s_value_type_name[back(s.results).type] : ""
-		);
+		PARSE_TRACE_EXIT_STUFF();
 		if (!rc && s.error) {
 			TOGO_LOGF("  =>  %u:%u %.*s",
 				s.error->line, s.error->column,
@@ -606,7 +606,63 @@ bool parser::parse(Parser const& p, ParseState& s) {
 				begin(s.error->message)
 			);
 		}
-		TOGO_LOG("\n\n");
+		TOGO_LOG("\n");
+		PARSE_TRACE("=> {");
+		for (unsigned i = 0; i < size(s.results);) {
+			auto const& r = s.results[i];
+			if (r.type >= ParseResult::type_user_base) {
+				TOGO_LOGF("user{%u}", r.type);
+			} else {
+				TOGO_LOGF("%s = ", s_value_type_name[back(s.results).type]);
+				switch (r.type) {
+				case ParseResult::type_null:
+					TOGO_LOG("null");
+					break;
+
+				case ParseResult::type_bool:
+					TOGO_LOGF("%s", r.v.b ? "true" : "false");
+					break;
+
+				case ParseResult::type_char:
+					TOGO_LOGF("0x%02x '%c'", r.v.c, r.v.c);
+					break;
+
+				case ParseResult::type_s64:
+					TOGO_LOGF("%ld", r.v.i);
+					break;
+
+				case ParseResult::type_u64:
+					TOGO_LOGF("%lu", r.v.u);
+					break;
+
+				case ParseResult::type_f64:
+					TOGO_LOGF("%.06lf", r.v.f);
+					break;
+
+				case ParseResult::type_pointer:
+					TOGO_LOGF("{0x%08lx, ", reinterpret_cast<std::uintptr_t>(r.v.p));
+					break;
+
+				case ParseResult::type_slice:
+					TOGO_LOGF(
+						"%4lu %4lu `%.*s`",
+						r.v.s.b - s.b,
+						r.v.s.e - s.b,
+						static_cast<unsigned>(r.v.s.e - r.v.s.b),
+						r.v.s.b
+					);
+					break;
+
+				case ParseResult::type_user_base:
+					TOGO_DEBUG_ASSERTE(false);
+					break;
+				}
+			}
+			if (++i < size(s.results)) {
+				TOGO_LOG(", ");
+			}
+		}
+		TOGO_LOG("}\n");
 	}
 #endif
 
