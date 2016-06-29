@@ -65,23 +65,21 @@ inline void unsuppress_results(ParseState& s) {
 	--s.suppress_results;
 }
 
-/// Get parse position.
-inline ParsePosition position(ParseState const& s) {
-	return {s.p, array::size(s.results)};
-}
-
-/// Set parse position.
-inline void set_position(ParseState& s, ParsePosition const& pos) {
-	TOGO_DEBUG_ASSERTE(pos.i <= array::size(s.results));
-	s.p = pos.p;
-	s.results._size = pos.i;
-	// array::resize(s.results, pos.i);
-}
-
 /// Pop results.
 inline void pop(ParseState& s, unsigned num = 1) {
 	TOGO_DEBUG_ASSERTE(num <= array::size(s.results));
 	s.results._size -= num;
+}
+
+/// Pop results back to a size.
+inline void set_num_results(ParseState& s, unsigned size) {
+	TOGO_DEBUG_ASSERTE(size <= array::size(s.results));
+	s.results._size = size;
+}
+
+/// Pop results back to a parse position.
+inline void set_num_results(ParseState& s, ParsePosition const& pos) {
+	parse_state::set_num_results(s, pos.i);
 }
 
 /// Push a null result.
@@ -103,6 +101,17 @@ inline void push(ParseState& s, ParseResult&& r) {
 	if (!s.suppress_results) {
 		array::push_back(s.results, rvalue_ref(r));
 	}
+}
+
+/// Get parse position.
+inline ParsePosition position(ParseState const& s) {
+	return {s.p, array::size(s.results)};
+}
+
+/// Set parse position.
+inline void set_position(ParseState& s, ParsePosition const& pos) {
+	s.p = pos.p;
+	parse_state::set_num_results(s, pos);
 }
 
 /// Set parse error.
@@ -163,6 +172,19 @@ inline ParseResultCode ok(ParseState const&) {
 
 /// Parse success with result.
 inline ParseResultCode ok(ParseState& s, ParseResult&& r) {
+	parse_state::push(s, rvalue_ref(r));
+	return ParseResultCode::ok;
+}
+
+/// Parse success with results removed.
+inline ParseResultCode ok_replace(ParseState& s, ParsePosition const& pos) {
+	parse_state::set_num_results(s, pos);
+	return ParseResultCode::ok;
+}
+
+/// Parse success with result replacing results.
+inline ParseResultCode ok_replace(ParseState& s, ParsePosition const& pos, ParseResult&& r) {
+	parse_state::set_num_results(s, pos);
 	parse_state::push(s, rvalue_ref(r));
 	return ParseResultCode::ok;
 }
