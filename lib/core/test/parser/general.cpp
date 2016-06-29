@@ -20,7 +20,7 @@ static_assert(parser::sizeof_series(1) == sizeof(Parser*), "");
 static_assert(parser::sizeof_series(2) == sizeof(Parser*) * 2, "");
 static_assert(parser::sizeof_series(2, 2) == sizeof(Parser*) * 4 + sizeof(Parser) * 2, "");
 
-ParseResultCode f_close_nop(Parser const*, ParseState& s, ParsePosition const&) {
+ParseResultCode f_func_nop(Parser const*, ParseState& s, ParsePosition const&) {
 	return parse_state::ok(s);
 }
 
@@ -31,7 +31,37 @@ signed main() {
 	parser::s_debug_trace = true;
 #endif
 
+	FixedAllocator<1024 * 4> state_storage;
 	ParseError error{};
+	ParseState state{state_storage, &error};
+
+{
+	// ADD THOSE TESTS!!
+	ParserType type = ParserType::Undefined;
+	switch (type) {
+	case ParserType::Undefined: break;
+	case ParserType::Nothing: break;
+	case ParserType::Empty: break;
+	case ParserType::Head: break;
+	case ParserType::Tail: break;
+	case ParserType::Char: break;
+	case ParserType::CharRange: break;
+	case ParserType::String: break;
+	case ParserType::Any: break;
+	case ParserType::All: break;
+	case ParserType::Ref: break;
+	case ParserType::Func: break;
+	case ParserType::Close: break;
+	}
+	ParserModifier mods = PMod::none;
+	switch (mods) {
+	case PMod::none: break;
+	case PMod::maybe: break;
+	case PMod::test: break;
+	case PMod::flatten: break;
+	case PMod::repeat: break;
+	}
+}
 
 {
 	Parser const p{PMod::maybe, Nothing{}};
@@ -161,13 +191,22 @@ signed main() {
 }
 
 {
+	Parser const p{Func{f_func_nop, &error}};
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(type(p) == ParserType::Func);
+	TOGO_ASSERTE(p.s.Func.f == f_func_nop);
+	TOGO_ASSERTE(p.s.Func.userdata == &error);
+}
+
+{
 	FixedParserAllocator<0, 0, 1> a;
-	Parser const p{Close{a, f_close_nop, Char{'x'}}};
+	Parser const p{Close{a, f_func_nop, Char{'x'}}};
 	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
 	DEBUG_PRINT_PARSER(p);
 
 	TOGO_ASSERTE(type(p) == ParserType::Close);
-	TOGO_ASSERTE(p.s.Close.f == f_close_nop);
+	TOGO_ASSERTE(p.s.Close.f == f_func_nop);
 	TOGO_ASSERTE(type(*p.s.Close.p) == ParserType::Char);
 	TOGO_ASSERTE(p.s.Close.p->s.Char.c == 'x');
 }
@@ -334,6 +373,23 @@ signed main() {
 	TOGO_ASSERTE(!TEST_WHOLE(p, "z"));
 	TOGO_ASSERTE(!TEST_WHOLE(p, ""));
 	TOGO_ASSERTE(!TEST_WHOLE(p, "xxz"));
+}
+
+{
+	parser::parse_func_type* f = [](Parser const*, ParseState& s, ParsePosition const& from) {
+		TOGO_ASSERTE(s.p == s.b && from.p == s.b && from.i == 0);
+		s.p = s.e;
+		return parse_state::ok(s, {from.p, s.p});
+	};
+	Parser const p{Func{f, &error}};
+	DEBUG_PRINT_PARSER(p);
+
+	PARSE_S(p, "xyz");
+	TOGO_ASSERTE(!!error.result_code);
+	TOGO_ASSERTE(size(state.results) == 1);
+	auto& r = state.results[0];
+	TOGO_ASSERTE(r.type == ParseResult::type_slice);
+	TOGO_ASSERTE(r.v.s.b == state.b && r.v.s.e == state.e);
 }
 
 {
