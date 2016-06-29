@@ -318,6 +318,14 @@ static void debug_print_shallow(Parser const& p) {
 		TOGO_LOG("}\n");
 	}	break;
 
+	case ParserType::Func: {
+		auto& d = p.s.Func;
+		TOGO_LOGF("{0x%08lx, 0x%08lx}\n",
+			reinterpret_cast<std::uintptr_t>(d.f),
+			reinterpret_cast<std::uintptr_t>(d.userdata)
+		);
+	}	break;
+
 	case ParserType::Close: {
 		auto& d = p.s.Close;
 		TOGO_LOGF("{0x%08lx, ", reinterpret_cast<std::uintptr_t>(d.f));
@@ -480,6 +488,12 @@ static ParseResultCode parse_impl(
 	case ParserType::Ref:
 		PARSE_RESULT(parser::parse_do(*p.s.Ref.p, s));
 
+	case ParserType::Func: {
+		auto const& d = p.s.Func;
+		TOGO_DEBUG_ASSERTE(d.f);
+		PARSE_RESULT(d.f(&p, s, from));
+	}
+
 	case ParserType::Close: {
 		auto const& d = p.s.Close;
 		TOGO_DEBUG_ASSERTE(d.f);
@@ -534,6 +548,9 @@ void parser::debug_print_tree(Parser const& p, unsigned tab IGEN_DEFAULT(0)) {
 		parser::debug_print_tree(*p.s.Ref.p, tab);
 		break;
 
+	case ParserType::Func:
+		break;
+
 	case ParserType::Close:
 		parser::debug_print_tree(*p.s.Close.p, tab);
 		break;
@@ -559,6 +576,8 @@ StringRef parser::type_name(ParserType type) {
 		"All",
 
 		"Ref",
+
+		"Func",
 
 		"Close",
 	};

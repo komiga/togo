@@ -63,6 +63,9 @@ enum class ParserType : unsigned {
 	// branch
 	Ref,
 
+	// call
+	Func,
+
 	// conditional_call
 	Close,
 };
@@ -147,6 +150,9 @@ using All = ParserData<ParserType::All>;
 /// Match another parser after modifiers.
 using Ref = ParserData<ParserType::Ref>;
 
+/// Call a parse function.
+using Func = ParserData<ParserType::Func>;
+
 /// Match a parser and call a function if it succeeds.
 using Close = ParserData<ParserType::Close>;
 
@@ -189,6 +195,16 @@ struct ParserData<T, enable_if<is_branch<T>::value>> {
 	ParserData(Allocator& a, Parser&& p);
 };
 
+template<>
+struct ParserData<ParserType::Func> {
+	parse_func_type* f;
+	void* userdata;
+
+	ParserData(parse_func_type* f);
+	ParserData(parse_func_type* f, void* userdata);
+	ParserData(void* userdata, parse_func_type* f);
+};
+
 template<ParserType T>
 struct ParserData<T, enable_if<is_conditional_call<T>::value>> {
 	parse_func_type* f;
@@ -218,6 +234,8 @@ struct Parser {
 
 		Ref Ref;
 
+		Func Func;
+
 		Close Close;
 
 		Storage(no_init_tag) {}
@@ -236,6 +254,8 @@ struct Parser {
 		Storage(parser::All&& d) : All(rvalue_ref(d)) {}
 
 		Storage(parser::Ref&& d) : Ref(rvalue_ref(d)) {}
+
+		Storage(parser::Func&& d) : Func(rvalue_ref(d)) {}
 
 		Storage(parser::Close&& d) : Close(rvalue_ref(d)) {}
 	} s;
@@ -286,6 +306,9 @@ using FixedParserAllocator = FixedAllocator<0
 
 /// Predefined parsers.
 struct PDef {
+	/// [ \t\n\r]+
+	static Parser const whitespace;
+
 	/// "null" => null
 	static Parser const null;
 	/// (true|false) => bool
@@ -478,6 +501,8 @@ using parser::Any;
 using parser::All;
 
 using parser::Ref;
+
+using parser::Func;
 
 using parser::Close;
 

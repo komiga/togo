@@ -70,6 +70,21 @@ inline ParserData<T, enable_if<is_branch<T>::value>>
 	: p(TOGO_CONSTRUCT(a, Parser, rvalue_ref(p)))
 {}
 
+inline Func::ParserData(parse_func_type* f)
+	: f(f)
+	, userdata(nullptr)
+{}
+
+inline Func::ParserData(parse_func_type* f, void* userdata)
+	: f(f)
+	, userdata(userdata)
+{}
+
+inline Func::ParserData(void* userdata, parse_func_type* f)
+	: f(f)
+	, userdata(userdata)
+{}
+
 template<ParserType T>
 inline ParserData<T, enable_if<is_conditional_call<T>::value>>
 ::ParserData(parse_func_type* f)
