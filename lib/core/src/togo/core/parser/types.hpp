@@ -291,6 +291,11 @@ struct PDef {
 	/// (true|false) => bool
 	static Parser const boolean;
 
+	/// [\-+] => char
+	static Parser const sign;
+	/// <sign>? => char
+	static Parser const sign_maybe;
+
 	/// [0-9] => char
 	static Parser const digit_dec;
 	/// <digit_dec>+ => slice
@@ -303,21 +308,21 @@ struct PDef {
 
 	/// [0-7] => char
 	static Parser const digit_oct;
-	/// [0-7]+ => slice
+	/// <digit_oct>+ => slice
 	static Parser const digits_oct;
 
-	/// <digits>+([eE][\-+]?<digits>+)? => u64
+	/// <digits> => u64
 	static Parser const u64_dec;
-	/// 0[xX]<hex_digits>+ => u64
+	/// 0[xX]<hex_digits> => u64
 	static Parser const u64_hex;
-	/// 0<oct_digits>+ => u64
+	/// 0<oct_digits> => u64
 	static Parser const u64_oct;
-	/// (u64_dec|u64_hex|u64_oct) => u64
+	/// (<u64_dec>|<u64_hex>|<u64_oct>) => u64
 	static Parser const u64_any;
 
-	/// <sign>?u64_dec => s64
+	/// <sign_maybe><u64_dec> => s64
 	static Parser const s64_dec;
-	/// (s64_dec|u64_hex|u64_oct) => s64
+	/// (<s64_dec>|<u64_hex>|<u64_oct>) => s64
 	static Parser const s64_any;
 };
 

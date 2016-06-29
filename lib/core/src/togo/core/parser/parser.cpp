@@ -27,7 +27,7 @@ bool s_debug_trace = false;
 
 namespace {
 
-static FixedParserAllocator<10, 15, 8> pdef_storage;
+static FixedParserAllocator<12, 11, 8> pdef_storage;
 
 } // anonymous namespace
 
@@ -55,6 +55,12 @@ Parser{PMod::test, Close{pdef_storage,
 	}
 }}
 })
+
+TOGO_PDEF(sign, Any{pdef_storage,
+	Char{'-'},
+	Char{'+'}
+});
+TOGO_PDEF(sign_maybe, PMod::maybe, Ref{PDef::sign});
 
 TOGO_PDEF(digit_dec, CharRange{'0', '9'});
 TOGO_PDEF(digits_dec, PMod::repeat, Ref{PDef::digit_dec});
@@ -134,9 +140,7 @@ PDef::u64_dec
 
 TOGO_PDEF(s64_dec, Close{pdef_storage,
 All{pdef_storage,
-	Parser{PMod::maybe, Any{pdef_storage,
-		Char{'-'}, Char{'+'}
-	}},
+	PDef::sign_maybe,
 	PDef::u64_dec
 },
 [](Parser const*, ParseState& s, ParsePosition const& pos) {
@@ -151,9 +155,7 @@ All{pdef_storage,
 
 TOGO_PDEF(s64_any, Close{pdef_storage,
 All{pdef_storage,
-	Parser{PMod::maybe, Any{pdef_storage,
-		Char{'-'}, Char{'+'}
-	}},
+	PDef::sign_maybe,
 	Any{pdef_storage,
 		PDef::u64_hex,
 		PDef::u64_oct,
