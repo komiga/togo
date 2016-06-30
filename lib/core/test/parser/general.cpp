@@ -47,6 +47,7 @@ signed main() {
 	case ParserType::Char: break;
 	case ParserType::CharRange: break;
 	case ParserType::String: break;
+	case ParserType::Bounded: break;
 	case ParserType::Any: break;
 	case ParserType::All: break;
 	case ParserType::Ref: break;
@@ -150,6 +151,18 @@ signed main() {
 	DEBUG_PRINT_PARSER(p);
 	TOGO_ASSERTE(type(p) == ParserType::String);
 	TOGO_ASSERTE(string::compare_equal(p.s.String.s, "abcdef"));
+}
+
+{
+	FixedParserAllocator<0, 0, 1> a;
+	Parser const p{Bounded{a, '{', '}', Nothing{}}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	DEBUG_PRINT_PARSER(p);
+	TOGO_ASSERTE(type(p) == ParserType::Bounded);
+	auto& d = p.s.Bounded;
+	TOGO_ASSERTE(d.opener == '{');
+	TOGO_ASSERTE(d.closer == '}');
+	TOGO_ASSERTE(type(*d.p) == ParserType::Nothing);
 }
 
 {
@@ -259,6 +272,21 @@ signed main() {
 	TOGO_ASSERTE(!TEST_WHOLE(p, "abcdefghijkl"));
 	TOGO_ASSERTE(!TEST_WHOLE(p, "ghijkl"));
 	TOGO_ASSERTE(!TEST_WHOLE(p, ""));
+}
+
+{
+	FixedParserAllocator<0, 0, 1> a;
+	Parser const p{Bounded{a, '(', ')', String{"xyz"}}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(TEST(p, "(xyz)"));
+	TOGO_ASSERTE(TEST_WHOLE(p, "(xyz)"));
+	TOGO_ASSERTE(!TEST(p, "(xyz1)"));
+	TOGO_ASSERTE(!TEST(p, "(xyz"));
+	TOGO_ASSERTE(!TEST(p, "xyz)"));
+	TOGO_ASSERTE(!TEST(p, "xyz"));
+	TOGO_ASSERTE(!TEST(p, ""));
 }
 
 {
