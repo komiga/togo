@@ -322,6 +322,13 @@ static void debug_print_shallow(Parser const& p) {
 	case ParserType::CharRange: TOGO_LOGF("{'%c' - '%c'}\n", p.s.CharRange.b, p.s.CharRange.e); break;
 	case ParserType::String: TOGO_LOGF("{`%.*s`}\n", p.s.String.s.size, p.s.String.s.data); break;
 
+	case ParserType::Bounded: {
+		auto& d = p.s.Bounded;
+		TOGO_LOGF("{'%c', '%c', ", d.opener, d.closer);
+		PARSE_DEBUG_PRINT_DECL(*d.p);
+		TOGO_LOG("}\n");
+	}	break;
+
 	case ParserType::Any: 
 	case ParserType::All: {
 		TOGO_LOG("{");
@@ -490,6 +497,23 @@ static ParseResultCode parse_impl(
 		PARSE_RESULT(fail(s, "expected '%.*s'", d.s.size, d.s.data));
 	}
 
+	case ParserType::Bounded: {
+		auto const& d = p.s.Bounded;
+		if (*s.p != d.opener) {
+			PARSE_RESULT(fail(s, "expected bound opener: '%c'", d.opener));
+		}
+		++s.p;
+		auto rc = parser::parse_do(*d.p, s);
+		if (rc != ParseResultCode::ok) {
+			PARSE_RESULT(rc);
+		}
+		if (*s.p != d.closer) {
+			PARSE_RESULT(fail(s, "expected bound closer: '%c'", d.closer));
+		}
+		++s.p;
+		PARSE_RESULT(ok(s));
+	}
+
 	case ParserType::Any: {
 		suppress_errors(s);
 		auto const& d = p.s.Any;
@@ -564,6 +588,7 @@ void parser::debug_print_tree(Parser const& p, unsigned tab IGEN_DEFAULT(0)) {
 	case ParserType::Char:
 	case ParserType::CharRange:
 	case ParserType::String:
+	case ParserType::Bounded:
 		break;
 
 	case ParserType::Any: 
@@ -600,6 +625,7 @@ StringRef parser::type_name(ParserType type) {
 		"Char",
 		"CharRange",
 		"String",
+		"Bounded",
 
 		"Any",
 		"All",

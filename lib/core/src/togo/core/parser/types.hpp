@@ -55,6 +55,7 @@ enum class ParserType : unsigned {
 	Char,
 	CharRange,
 	String,
+	Bounded,
 
 	// series
 	Any,
@@ -143,6 +144,8 @@ using Char = ParserData<ParserType::Char>;
 using CharRange = ParserData<ParserType::CharRange>;
 /// Match a string.
 using String = ParserData<ParserType::String>;
+/// Match a bounded parser.
+using Bounded = ParserData<ParserType::Bounded>;
 
 /// Match any in a series.
 using Any = ParserData<ParserType::Any>;
@@ -178,6 +181,16 @@ struct ParserData<ParserType::CharRange> {
 template<>
 struct ParserData<ParserType::String> {
 	StringRef s;
+};
+
+template<>
+struct ParserData<ParserType::Bounded> {
+	signed opener;
+	signed closer;
+	Parser const* p;
+
+	ParserData(char opener, char closer, Parser const& p);
+	ParserData(Allocator& a, char opener, char closer, Parser&& p);
 };
 
 template<ParserType T>
@@ -230,6 +243,7 @@ struct Parser {
 		Char Char;
 		CharRange CharRange;
 		String String;
+		Bounded Bounded;
 
 		Any Any;
 		All All;
@@ -251,6 +265,7 @@ struct Parser {
 		Storage(parser::Char&& d) : Char(rvalue_ref(d)) {}
 		Storage(parser::CharRange&& d) : CharRange(rvalue_ref(d)) {}
 		Storage(parser::String&& d) : String(rvalue_ref(d)) {}
+		Storage(parser::Bounded&& d) : Bounded(rvalue_ref(d)) {}
 
 		Storage(parser::Any&& d) : Any(rvalue_ref(d)) {}
 		Storage(parser::All&& d) : All(rvalue_ref(d)) {}
@@ -500,6 +515,7 @@ using parser::Tail;
 using parser::Char;
 using parser::CharRange;
 using parser::String;
+using parser::Bounded;
 
 using parser::Any;
 using parser::All;

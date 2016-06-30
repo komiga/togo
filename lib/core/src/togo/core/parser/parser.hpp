@@ -48,6 +48,18 @@ inline void series_add_parser(ParserData<T>& d, Allocator& a, unsigned i, Parser
 
 } // anonymous namespace
 
+inline Bounded::ParserData(char opener, char closer, Parser const& p)
+	: opener(opener)
+	, closer(closer)
+	, p(&p)
+{}
+
+inline Bounded::ParserData(Allocator& a, char opener, char closer, Parser&& p)
+	: opener(opener)
+	, closer(closer)
+	, p(TOGO_CONSTRUCT(a, Parser, rvalue_ref(p)))
+{}
+
 template<ParserType T>
 template<class... P>
 inline ParserData<T, enable_if<is_series<T>::value>>
