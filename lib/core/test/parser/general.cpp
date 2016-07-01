@@ -435,7 +435,7 @@ signed main() {
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_slice);
-	TOGO_ASSERTE(r.v.s.b == state.b && r.v.s.e == state.e);
+	TOGO_ASSERTE(r.s.b == state.b && r.s.e == state.e);
 }
 
 {
@@ -443,7 +443,7 @@ signed main() {
 		TOGO_ASSERTE(size(s.results) == 1);
 		TOGO_ASSERTE(s.p == s.e && from.p == s.b && from.i == 0);
 		auto& r = s.results[0];
-		TOGO_ASSERTE(r.type == ParseResult::type_char && r.v.c == 'x');
+		TOGO_ASSERTE(r.type == ParseResult::type_char && r.c == 'x');
 		return parse_state::ok(s);
 	};
 	FixedParserAllocator<0, 0, 1> a;
@@ -459,7 +459,7 @@ signed main() {
 		TOGO_ASSERTE(size(s.results) == 2);
 		TOGO_ASSERTE(s.p == (s.b + 2) && from.p == s.b && from.i == 0);
 		auto& r = s.results[0];
-		TOGO_ASSERTE(r.type == ParseResult::type_char && r.v.c == 'x');
+		TOGO_ASSERTE(r.type == ParseResult::type_char && r.c == 'x');
 		return parse_state::ok(s);
 	};
 	FixedParserAllocator<0, 2, 1> a;

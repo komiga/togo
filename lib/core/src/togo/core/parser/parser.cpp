@@ -104,9 +104,9 @@ TOGO_PDEF(u64_dec, PMod::flatten, Close{
 PDef::digits_dec,
 [](Parser const*, ParseState& s, ParsePosition const& from) {
 	auto& r = back(s.results);
-	auto e = r.v.s.e;
+	auto e = r.s.e;
 	u64 value = 0;
-	for (auto p = r.v.s.b; p < e; ++p) {
+	for (auto p = r.s.b; p < e; ++p) {
 		value = (value << 1) + (value << 3) /*mul 10*/ + (*p - '0');
 	}
 	return ok_replace(s, from, {value});
@@ -121,8 +121,8 @@ All{pdef_storage,
 [](Parser const*, ParseState& s, ParsePosition const& from) {
 	auto const& r = back(s.results);
 	u64 value = 0;
-	auto p = r.v.s.b + 2;
-	auto e = r.v.s.e;
+	auto p = r.s.b + 2;
+	auto e = r.s.e;
 	for (; p < e && *p == '0'; ++p) {}
 	for (; p < e; ++p) {
 		unsigned d = *p;
@@ -147,8 +147,8 @@ All{pdef_storage,
 [](Parser const*, ParseState& s, ParsePosition const& from) {
 	auto const& r = back(s.results);
 	u64 value = 0;
-	auto p = r.v.s.b + 1;
-	auto e = r.v.s.e;
+	auto p = r.s.b + 1;
+	auto e = r.s.e;
 	for (; p < e && *p == '0'; ++p) {}
 	for (; p < e; ++p) {
 		value = (value * 8) + (*p - '0');
@@ -171,9 +171,9 @@ All{pdef_storage,
 [](Parser const*, ParseState& s, ParsePosition const& from) {
 	bool sign = false;
 	if ((array::size(s.results) - from.i) == 2) {
-		sign = s.results[from.i].v.c == '-';
+		sign = s.results[from.i].c == '-';
 	}
-	s64 value = static_cast<s64>(back(s.results).v.u);
+	s64 value = static_cast<s64>(back(s.results).u);
 	return ok_replace(s, from, {sign ? -value : value});
 }
 })
@@ -190,9 +190,9 @@ All{pdef_storage,
 [](Parser const*, ParseState& s, ParsePosition const& from) {
 	bool sign = false;
 	if ((array::size(s.results) - from.i) == 2) {
-		sign = s.results[from.i].v.c == '-';
+		sign = s.results[from.i].c == '-';
 	}
-	s64 value = static_cast<s64>(back(s.results).v.u);
+	s64 value = static_cast<s64>(back(s.results).u);
 	return ok_replace(s, from, {sign ? -value : value});
 }
 })
@@ -219,7 +219,7 @@ All{pdef_storage,
 },
 [](Parser const*, ParseState& s, ParsePosition const& from) {
 	auto& r = back(s.results);
-	return ok_replace(s, from, {parse_f64({r.v.s.b, r.v.s.e})});
+	return ok_replace(s, from, {parse_f64({r.s.b, r.s.e})});
 }
 })
 
@@ -234,7 +234,7 @@ All{pdef_storage,
 },
 [](Parser const*, ParseState& s, ParsePosition const& from) {
 	auto& r = back(s.results);
-	return ok_replace(s, from, {parse_f64({r.v.s.b, r.v.s.e})});
+	return ok_replace(s, from, {parse_f64({r.s.b, r.s.e})});
 }
 })
 
@@ -755,36 +755,36 @@ bool parser::parse(Parser const& p, ParseState& s) {
 					break;
 
 				case ParseResult::type_bool:
-					TOGO_LOGF("%s", r.v.b ? "true" : "false");
+					TOGO_LOGF("%s", r.b ? "true" : "false");
 					break;
 
 				case ParseResult::type_char:
-					TOGO_LOGF("0x%02x '%c'", r.v.c, r.v.c);
+					TOGO_LOGF("0x%02x '%c'", r.c, r.c);
 					break;
 
 				case ParseResult::type_s64:
-					TOGO_LOGF("%ld", r.v.i);
+					TOGO_LOGF("%ld", r.i);
 					break;
 
 				case ParseResult::type_u64:
-					TOGO_LOGF("%lu", r.v.u);
+					TOGO_LOGF("%lu", r.u);
 					break;
 
 				case ParseResult::type_f64:
-					TOGO_LOGF("%.06lf", r.v.f);
+					TOGO_LOGF("%.06lf", r.f);
 					break;
 
 				case ParseResult::type_pointer:
-					TOGO_LOGF("{0x%08lx, ", reinterpret_cast<std::uintptr_t>(r.v.p));
+					TOGO_LOGF("{0x%08lx, ", reinterpret_cast<std::uintptr_t>(r.p));
 					break;
 
 				case ParseResult::type_slice:
 					TOGO_LOGF(
 						"%4lu %4lu `%.*s`",
-						r.v.s.b - s.b,
-						r.v.s.e - s.b,
-						static_cast<unsigned>(r.v.s.e - r.v.s.b),
-						r.v.s.b
+						r.s.b - s.b,
+						r.s.e - s.b,
+						static_cast<unsigned>(r.s.e - r.s.b),
+						r.s.b
 					);
 					break;
 

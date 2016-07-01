@@ -78,7 +78,7 @@ DEBUG_PRINT_PARSER(PDef::boolean);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_bool);
-	TOGO_ASSERTE(r.v.b == true);
+	TOGO_ASSERTE(r.b == true);
 }
 
 {
@@ -88,7 +88,7 @@ DEBUG_PRINT_PARSER(PDef::boolean);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_bool);
-	TOGO_ASSERTE(r.v.b == false);
+	TOGO_ASSERTE(r.b == false);
 }
 
 DEBUG_PRINT_PARSER(PDef::digit_dec);
@@ -126,7 +126,7 @@ DEBUG_PRINT_PARSER(PDef::u64_dec);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_u64);
-	TOGO_ASSERTE(r.v.u == 0);
+	TOGO_ASSERTE(r.u == 0);
 }
 
 {
@@ -135,7 +135,7 @@ DEBUG_PRINT_PARSER(PDef::u64_dec);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_u64);
-	TOGO_ASSERTE(r.v.u == 42);
+	TOGO_ASSERTE(r.u == 42);
 }
 
 {
@@ -144,7 +144,7 @@ DEBUG_PRINT_PARSER(PDef::u64_dec);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_u64);
-	TOGO_ASSERTE(r.v.u == 42);
+	TOGO_ASSERTE(r.u == 42);
 }
 
 DEBUG_PRINT_PARSER(PDef::u64_hex);
@@ -154,7 +154,7 @@ DEBUG_PRINT_PARSER(PDef::u64_hex);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_u64);
-	TOGO_ASSERTE(r.v.u == 0x00);
+	TOGO_ASSERTE(r.u == 0x00);
 }
 
 {
@@ -163,7 +163,7 @@ DEBUG_PRINT_PARSER(PDef::u64_hex);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_u64);
-	TOGO_ASSERTE(r.v.u == 0x2a);
+	TOGO_ASSERTE(r.u == 0x2a);
 }
 
 {
@@ -172,7 +172,7 @@ DEBUG_PRINT_PARSER(PDef::u64_hex);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_u64);
-	TOGO_ASSERTE(r.v.u == 0x2A);
+	TOGO_ASSERTE(r.u == 0x2A);
 }
 
 {
@@ -181,7 +181,7 @@ DEBUG_PRINT_PARSER(PDef::u64_hex);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_u64);
-	TOGO_ASSERTE(r.v.u == 0x2A);
+	TOGO_ASSERTE(r.u == 0x2A);
 }
 
 DEBUG_PRINT_PARSER(PDef::u64_oct);
@@ -191,7 +191,7 @@ DEBUG_PRINT_PARSER(PDef::u64_oct);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_u64);
-	TOGO_ASSERTE(r.v.u == 0);
+	TOGO_ASSERTE(r.u == 0);
 }
 
 {
@@ -200,7 +200,7 @@ DEBUG_PRINT_PARSER(PDef::u64_oct);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_u64);
-	TOGO_ASSERTE(r.v.u == 052);
+	TOGO_ASSERTE(r.u == 052);
 }
 
 {
@@ -209,7 +209,7 @@ DEBUG_PRINT_PARSER(PDef::u64_oct);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_u64);
-	TOGO_ASSERTE(r.v.u == 052);
+	TOGO_ASSERTE(r.u == 052);
 }
 
 DEBUG_PRINT_PARSER(PDef::s64_dec);
@@ -219,7 +219,7 @@ DEBUG_PRINT_PARSER(PDef::s64_dec);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_s64);
-	TOGO_ASSERTE(r.v.i == -42);
+	TOGO_ASSERTE(r.i == -42);
 }
 
 DEBUG_PRINT_PARSER(PDef::s64_any);
@@ -229,7 +229,7 @@ DEBUG_PRINT_PARSER(PDef::s64_any);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_s64);
-	TOGO_ASSERTE(r.v.i == -42);
+	TOGO_ASSERTE(r.i == -42);
 }
 
 {
@@ -238,7 +238,7 @@ DEBUG_PRINT_PARSER(PDef::s64_any);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_s64);
-	TOGO_ASSERTE(r.v.i == -0x2a);
+	TOGO_ASSERTE(r.i == -0x2a);
 }
 
 {
@@ -247,7 +247,7 @@ DEBUG_PRINT_PARSER(PDef::s64_any);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_s64);
-	TOGO_ASSERTE(r.v.i == -052);
+	TOGO_ASSERTE(r.i == -052);
 }
 
 DEBUG_PRINT_PARSER(PDef::f64_basic);
@@ -257,7 +257,7 @@ DEBUG_PRINT_PARSER(PDef::f64_basic);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_f64);
-	TOGO_ASSERTE(float_equal_exact(r.v.f, 0.0));
+	TOGO_ASSERTE(float_equal_exact(r.f, 0.0));
 }
 
 {
@@ -266,7 +266,7 @@ DEBUG_PRINT_PARSER(PDef::f64_basic);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_f64);
-	TOGO_ASSERTE(float_equal_exact(r.v.f, 1.0));
+	TOGO_ASSERTE(float_equal_exact(r.f, 1.0));
 }
 
 {
@@ -275,7 +275,7 @@ DEBUG_PRINT_PARSER(PDef::f64_basic);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_f64);
-	TOGO_ASSERTE(float_equal_exact(r.v.f, -42.42));
+	TOGO_ASSERTE(float_equal_exact(r.f, -42.42));
 }
 
 DEBUG_PRINT_PARSER(PDef::f64_exp);
@@ -285,7 +285,7 @@ DEBUG_PRINT_PARSER(PDef::f64_exp);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_f64);
-	TOGO_ASSERTE(float_equal_exact(r.v.f, 42.42e6));
+	TOGO_ASSERTE(float_equal_exact(r.f, 42.42e6));
 }
 
 {
@@ -294,7 +294,7 @@ DEBUG_PRINT_PARSER(PDef::f64_exp);
 	TOGO_ASSERTE(size(state.results) == 1);
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_f64);
-	TOGO_ASSERTE(float_equal_exact(r.v.f, 42.42e-6));
+	TOGO_ASSERTE(float_equal_exact(r.f, 42.42e-6));
 }
 
 	memory::shutdown();

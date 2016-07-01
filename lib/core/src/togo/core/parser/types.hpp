@@ -417,7 +417,7 @@ struct ParseResult {
 	};
 
 	Type type;
-	union Value {
+	union {
 		bool b;
 		char c;
 		s64 i;
@@ -425,31 +425,19 @@ struct ParseResult {
 		f64 f;
 		void const* p;
 		Slice s;
-
-		Value() = default;
-		~Value() = default;
-
-		Value(bool x) : b(x) {}
-		Value(char x) : c(x) {}
-		Value(s64 x) : i(x) {}
-		Value(u64 x) : u(x) {}
-		Value(f64 x) : f(x) {}
-		Value(void const* x) : p(x) {}
-		Value(char const* b, char const* e) : s{b, e} {}
-	} v;
+	};
 
 	ParseResult() = default;
 	~ParseResult() = default;
 
 	ParseResult(null_tag const) : type(type_null) {}
-	ParseResult(Type type, Value&& x) : type(type), v(rvalue_ref(x)) {}
-	ParseResult(bool x) : type(type_bool), v(x) {}
-	ParseResult(char x) : type(type_char), v(x) {}
-	ParseResult(s64 x) : type(type_s64), v(x) {}
-	ParseResult(u64 x) : type(type_u64), v(x) {}
-	ParseResult(f64 x) : type(type_f64), v(x) {}
-	ParseResult(void const* x) : type(type_pointer), v(x) {}
-	ParseResult(char const* b, char const* e) : type(type_slice), v{b, e} {}
+	ParseResult(bool b) : type(type_bool), b(b) {}
+	ParseResult(char c) : type(type_char), c(c) {}
+	ParseResult(s64 i) : type(type_s64), i(i) {}
+	ParseResult(u64 u) : type(type_u64), u(u) {}
+	ParseResult(f64 f) : type(type_f64), f(f) {}
+	ParseResult(void const* p) : type(type_pointer), p(p) {}
+	ParseResult(char const* b, char const* e) : type(type_slice), s{b, e} {}
 };
 
 /// Parse error.
