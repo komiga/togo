@@ -1,0 +1,62 @@
+
+// name
+name = 1
+"name" = 2
+```name``` = 3
+
+// constant
+null
+false
+true
+
+// number
+42
+3.141592
+2.0e4
+
+// string
+str
+"str"
+```str
+ing```
+
+// vector (1-dimensional to 4-dimensional)
+(42.0 3.141592)
+(0.0 1.0, 1.0e-3; -42e+1)
+
+// array
+[x y]
+
+// node
+{x = y, y = z}
+
+// basic composition
+
+SingleLineComment = "//" .*
+BlockComment = "/\*" .* "\*/"
+Comment = SingleLineComment | BlockComment
+
+Terminator = \s | \n | "," | ";" | Comment
+
+Identifier = [a-zA-Z_\.][a-zA-Z0-9_\-\.]*
+Integer = [\-+]? [0-9]+
+DecimalNumber = [\-+]? [0-9]* \.? [0-9]+
+DecimalNumberWithExponent = DecimalNumber ([eE][\-+]? [0-9]* \.? [0-9]+)?
+Null = "null"
+Boolean = "false" | "true"
+
+ValueConstant = Null | Boolean
+ValueNumber = Integer | DecimalNumberWithExponent
+ValueString = Identifier | "\"" .* "\"" | "```" [.\n]* "```"
+ValueVec1 = "(" ValueNumber ")"
+ValueVec2 = "(" ValueNumber ValueNumber ")"
+ValueVec3 = "(" ValueNumber ValueNumber ValueNumber ")"
+ValueVec4 = "(" ValueNumber ValueNumber ValueNumber ValueNumber ")"
+ValueVector = ValueVec1 | ValueVec2 | ValueVec3 | ValueVec4
+ValueArray = "[" NamelessObject* "]"
+ValueNode = "{" Object* "}"
+Value = ValueConstant | ValueNumber | ValueString | ValueVector | ValueArray | ValueNode
+
+Name = ValueString "="
+Object = Name Value
+NamelessObject = Value
