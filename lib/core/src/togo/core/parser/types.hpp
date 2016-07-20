@@ -328,6 +328,11 @@ struct PDef {
 	/// <whitespace>? => nothing
 	static Parser const whitespace_maybe;
 
+	/// [ \t]+ :t => nothing
+	static Parser const space;
+	/// <space>? => nothing
+	static Parser const space_maybe;
+
 	/// "null" => null
 	static Parser const null;
 	/// (true|false) => bool

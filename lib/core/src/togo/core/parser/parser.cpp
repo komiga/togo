@@ -59,6 +59,27 @@ TOGO_PDEF(whitespace, PMod::test, Func{
 
 TOGO_PDEF(whitespace_maybe, PMod::maybe, Ref{PDef::whitespace})
 
+TOGO_PDEF(space, PMod::test, Func{
+[](Parser const*, ParseState& s, ParsePosition const& from) {
+	while (s.p < s.e) {
+		signed c = *s.p;
+		if (!(false
+			|| c == ' '
+			|| c == '\t'
+		)) {
+			break;
+		}
+		++s.p;
+	}
+	if (from.p < s.p) {
+		return ok(s);
+	}
+	return fail(s);
+}
+})
+
+TOGO_PDEF(space_maybe, PMod::maybe, Ref{PDef::space})
+
 TOGO_PDEF(null, PMod::test, Close{pdef_storage,
 String{"null"},
 [](Parser const*, ParseState& s, ParsePosition const&) {
