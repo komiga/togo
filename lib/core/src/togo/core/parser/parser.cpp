@@ -713,8 +713,6 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 }
 
 /// Run parser.
-///
-/// This will clear the results of the state before parsing.
 bool parser::parse(Parser const& p, ParseState& s) {
 #if defined(TOGO_DEBUG)
 	if (s_debug_trace) {
@@ -724,7 +722,6 @@ bool parser::parse(Parser const& p, ParseState& s) {
 	}
 #endif
 
-	parse_state::clear_results(s);
 	auto const rc = parser::parse_do(p, s);
 	if (rc == ParseResultCode::ok) {
 		update_text_position(s);
