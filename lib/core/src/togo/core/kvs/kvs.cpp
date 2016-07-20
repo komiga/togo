@@ -131,8 +131,9 @@ void kvs::set_name(KVS& kvs, StringRef const& name) {
 		kvs::clear_name(kvs);
 	} else if (name.size > kvs._name_size) {
 		kvs::clear_name(kvs);
-		kvs._name = static_cast<char*>(
-			memory::default_allocator().allocate(name.size + 1, alignof(char))
+		kvs._name = TOGO_ALLOCATE_N(
+			memory::default_allocator(),
+			char, name.size + 1
 		);
 	}
 	if (name.any()) {
@@ -145,7 +146,7 @@ void kvs::set_name(KVS& kvs, StringRef const& name) {
 /// Clear name.
 void kvs::clear_name(KVS& kvs) {
 	if (kvs::is_named(kvs)) {
-		TOGO_DESTROY(memory::default_allocator(), kvs._name);
+		TOGO_DEALLOCATE(memory::default_allocator(), kvs._name);
 		kvs._name = nullptr;
 		kvs._name_size = 0;
 		kvs._name_hash = KVS_NAME_NULL;
@@ -180,7 +181,7 @@ void kvs::clear(KVS& kvs) {
 /// Free dynamic value.
 void kvs::free_dynamic(KVS& kvs) {
 	if (kvs::is_type(kvs, KVSType::string)) {
-		TOGO_DESTROY(memory::default_allocator(), kvs._value.string.data);
+		TOGO_DEALLOCATE(memory::default_allocator(), kvs._value.string.data);
 		kvs._value.string.data = nullptr;
 		kvs._value.string.size = 0;
 		kvs._value.string.capacity = 0;
@@ -247,11 +248,9 @@ void kvs::string(KVS& kvs, StringRef const& value) {
 	} else if (value.size >= kvs._value.string.capacity) {
 		kvs::free_dynamic(kvs);
 		kvs._value.string.capacity = value.size + 1;
-		kvs._value.string.data = static_cast<char*>(
-			memory::default_allocator().allocate(
-				kvs._value.string.capacity,
-				alignof(char)
-			)
+		kvs._value.string.data = TOGO_ALLOCATE_N(
+			memory::default_allocator(),
+			char, kvs._value.string.capacity
 		);
 	}
 	if (value.any()) {
@@ -277,11 +276,7 @@ void kvs::set_capacity(KVS& kvs, u32 const new_capacity) {
 
 	KVS* new_data = nullptr;
 	if (new_capacity != 0) {
-		new_data = static_cast<KVS*>(
-			memory::default_allocator().allocate(
-				new_capacity * sizeof(KVS), alignof(KVS)
-			)
-		);
+		new_data = TOGO_ALLOCATE_N(memory::default_allocator(), KVS, new_capacity);
 		if (kvs._value.collection.data) {
 			std::memcpy(
 				new_data,
@@ -290,7 +285,7 @@ void kvs::set_capacity(KVS& kvs, u32 const new_capacity) {
 			);
 		}
 	}
-	memory::default_allocator().deallocate(kvs._value.collection.data);
+	TOGO_DEALLOCATE(memory::default_allocator(), kvs._value.collection.data);
 	kvs._value.collection.data = new_data;
 	kvs._value.collection.capacity = new_capacity;
 	kvs::init_children(kvs, kvs._value.collection.size, new_capacity);
