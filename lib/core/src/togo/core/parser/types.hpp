@@ -67,7 +67,8 @@ enum class ParserType : unsigned {
 	// call
 	Func,
 
-	// conditional_call
+	// branch_call
+	Open,
 	Close,
 };
 static constexpr unsigned const c_num_types = unsigned_cast(ParserType::Close) + 1;
@@ -121,7 +122,8 @@ PARSER_TRAIT_TYPE(is_branch)
 	|| T == ParserType::Ref
 ;};
 
-PARSER_TRAIT_TYPE(is_conditional_call)
+PARSER_TRAIT_TYPE(is_branch_call)
+	|| T == ParserType::Open
 	|| T == ParserType::Close
 ;};
 
@@ -158,6 +160,8 @@ using Ref = ParserData<ParserType::Ref>;
 /// Call a parse function.
 using Func = ParserData<ParserType::Func>;
 
+/// Call a function before parsing.
+using Open = ParserData<ParserType::Open>;
 /// Match a parser and call a function if it succeeds.
 using Close = ParserData<ParserType::Close>;
 
@@ -221,7 +225,7 @@ struct ParserData<ParserType::Func> {
 };
 
 template<ParserType T>
-struct ParserData<T, enable_if<is_conditional_call<T>::value>> {
+struct ParserData<T, enable_if<is_branch_call<T>::value>> {
 	parse_func_type* f;
 	Parser const* p;
 
@@ -252,6 +256,7 @@ struct Parser {
 
 		Func Func;
 
+		Open Open;
 		Close Close;
 
 		Storage(no_init_tag) {}
@@ -274,6 +279,7 @@ struct Parser {
 
 		Storage(parser::Func&& d) : Func(rvalue_ref(d)) {}
 
+		Storage(parser::Open&& d) : Open(rvalue_ref(d)) {}
 		Storage(parser::Close&& d) : Close(rvalue_ref(d)) {}
 	} s;
 

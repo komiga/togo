@@ -378,6 +378,7 @@ static void debug_print_shallow(Parser const& p) {
 		);
 	}	break;
 
+	case ParserType::Open:
 	case ParserType::Close: {
 		auto& d = p.s.Close;
 		TOGO_LOGF("{0x%08lx, ", reinterpret_cast<std::uintptr_t>(d.f));
@@ -568,6 +569,21 @@ static ParseResultCode parse_impl(
 		PARSE_RESULT(d.f(&p, s, from));
 	}
 
+	case ParserType::Open: {
+		auto const& d = p.s.Open;
+		TOGO_DEBUG_ASSERTE(d.f);
+		if (!s.suppress_results) {
+			auto rc = d.f(d.p, s, from);
+			if (rc != ParseResultCode::ok) {
+				PARSE_RESULT(rc);
+			}
+		}
+		if (d.p && parser::parse_do(*d.p, s) != ParseResultCode::ok) {
+			PARSE_RESULT(fail_expected_sub_match(s, "Open"));
+		}
+		PARSE_RESULT(ok(s));
+	}
+
 	case ParserType::Close: {
 		auto const& d = p.s.Close;
 		TOGO_DEBUG_ASSERTE(d.f);
@@ -626,8 +642,9 @@ void parser::debug_print_tree(Parser const& p, unsigned tab IGEN_DEFAULT(0)) {
 	case ParserType::Func:
 		break;
 
+	case ParserType::Open:
 	case ParserType::Close:
-		parser::debug_print_tree(*p.s.Close.p, tab);
+		parser::debug_print_tree(*p.s.Open.p, tab);
 		break;
 	}
 }
@@ -655,6 +672,7 @@ StringRef parser::type_name(ParserType type) {
 
 		"Func",
 
+		"Open",
 		"Close",
 	};
 	static_assert(array_extent(s_type_name) == parser::c_num_types, "");

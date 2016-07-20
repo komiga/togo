@@ -98,35 +98,35 @@ inline Func::ParserData(void* userdata, parse_func_type* f)
 {}
 
 template<ParserType T>
-inline ParserData<T, enable_if<is_conditional_call<T>::value>>
+inline ParserData<T, enable_if<is_branch_call<T>::value>>
 ::ParserData(parse_func_type* f)
 	: f(f)
 	, p(nullptr)
 {}
 
 template<ParserType T>
-inline ParserData<T, enable_if<is_conditional_call<T>::value>>
+inline ParserData<T, enable_if<is_branch_call<T>::value>>
 ::ParserData(parse_func_type* f, Parser const& p)
 	: f(f)
 	, p(&p)
 {}
 
 template<ParserType T>
-inline ParserData<T, enable_if<is_conditional_call<T>::value>>
+inline ParserData<T, enable_if<is_branch_call<T>::value>>
 ::ParserData(Parser const& p, parse_func_type* f)
 	: f(f)
 	, p(&p)
 {}
 
 template<ParserType T>
-inline ParserData<T, enable_if<is_conditional_call<T>::value>>
+inline ParserData<T, enable_if<is_branch_call<T>::value>>
 ::ParserData(Allocator& a, Parser&& p, parse_func_type* f)
 	: f(f)
 	, p(TOGO_CONSTRUCT(a, Parser, rvalue_ref(p)))
 {}
 
 template<ParserType T>
-inline ParserData<T, enable_if<is_conditional_call<T>::value>>
+inline ParserData<T, enable_if<is_branch_call<T>::value>>
 ::ParserData(Allocator& a, parse_func_type* f, Parser&& p)
 	: f(f)
 	, p(TOGO_CONSTRUCT(a, Parser, rvalue_ref(p)))
