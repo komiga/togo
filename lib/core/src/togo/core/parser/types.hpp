@@ -359,12 +359,12 @@ struct PDef {
 	static Parser const u64_hex;
 	/// 0<oct_digits> => u64
 	static Parser const u64_oct;
-	/// (<u64_dec>|<u64_hex>|<u64_oct>) => u64
+	/// (<u64_hex>|<u64_oct>|<u64_dec>) => u64
 	static Parser const u64_any;
 
 	/// <sign_maybe><u64_dec> => s64
 	static Parser const s64_dec;
-	/// (<s64_dec>|<u64_hex>|<u64_oct>) => s64
+	/// (<u64_hex>|<u64_oct>|<s64_dec>) => s64
 	static Parser const s64_any;
 
 	/// <sign_maybe><digits>\.<digits> => f64
