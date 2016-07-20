@@ -17,6 +17,7 @@
 #include <togo/core/utility/types.hpp>
 #include <togo/core/utility/traits.hpp>
 #include <togo/core/utility/constraints.hpp>
+#include <togo/core/string/types.hpp>
 #include <togo/core/lua/types.hpp>
 
 #include <type_traits>
@@ -281,6 +282,11 @@ inline ArrayRef<T> array_ref(T (&data)[N]) {
 	return ArrayRef<T>{data, N};
 }
 
+/// Make reference to string.
+inline ArrayRef<char const> array_ref(StringRef const data) {
+	return ArrayRef<char const>{data.data, data.size};
+}
+
 /// Make reference to const array.
 template<class T>
 inline ArrayRef<T const> array_cref(T const* const data, unsigned const size) {
@@ -291,6 +297,11 @@ inline ArrayRef<T const> array_cref(T const* const data, unsigned const size) {
 template<class T, unsigned N>
 inline ArrayRef<T const> array_cref(T const (&data)[N]) {
 	return ArrayRef<T const>{data, N};
+}
+
+/// Make reference to string.
+inline ArrayRef<char const> array_cref(StringRef const data) {
+	return ArrayRef<char const>{data.data, data.size};
 }
 
 /** @cond INTERNAL */
