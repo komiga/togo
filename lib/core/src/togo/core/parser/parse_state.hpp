@@ -114,6 +114,21 @@ inline void set_position(ParseState& s, ParsePosition const& pos) {
 	parse_state::set_num_results(s, pos);
 }
 
+/// The number of results at a position.
+inline unsigned num_results(ParseState const& s, ParsePosition const& pos) {
+	return pos.i > array::size(s.results) ? 0 : (array::size(s.results) - pos.i);
+}
+
+/// Get result by index.
+inline ParseResult& result(ParseState& s, unsigned i) {
+	return s.results[i];
+}
+
+/// Get result from a position.
+inline ParseResult& result(ParseState& s, ParsePosition const& pos, unsigned i) {
+	return s.results[pos.i + i];
+}
+
 /// Set parse error.
 TOGO_VALIDATE_FORMAT_PARAM(2, 3)
 inline void set_error(ParseState& s, char const* format, ...) {
