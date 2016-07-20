@@ -430,11 +430,16 @@ struct ParseResult {
 	ParseResult() = default;
 	~ParseResult() = default;
 
+	ParseResult(Type type) : type(type) {}
+	ParseResult(Type type, void const* p) : type(type), p(p) {}
 	ParseResult(null_tag const) : type(type_null) {}
 	ParseResult(bool b) : type(type_bool), b(b) {}
 	ParseResult(char c) : type(type_char), c(c) {}
+	ParseResult(s32 i) : type(type_s64), i(i) {}
 	ParseResult(s64 i) : type(type_s64), i(i) {}
+	ParseResult(u32 u) : type(type_u64), u(u) {}
 	ParseResult(u64 u) : type(type_u64), u(u) {}
+	ParseResult(f32 f) : type(type_f64), f(f) {}
 	ParseResult(f64 f) : type(type_f64), f(f) {}
 	ParseResult(void const* p) : type(type_pointer), p(p) {}
 	ParseResult(char const* b, char const* e) : type(type_slice), s{b, e} {}
