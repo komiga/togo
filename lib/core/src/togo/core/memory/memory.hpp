@@ -33,6 +33,10 @@ namespace togo {
 #define TOGO_ALLOCATE_N(a, T, n) \
 	reinterpret_cast<T*>((a).allocate(sizeof(T) * n, alignof(T)))
 
+/// Deallocate memory without calling a destructor.
+#define TOGO_DEALLOCATE(a, p) \
+	(a).deallocate(p)
+
 /// Construct an object with an allocator.
 #define TOGO_CONSTRUCT(a, T, ...) \
 	(new ((a).allocate(sizeof(T), alignof(T))) T(__VA_ARGS__))
