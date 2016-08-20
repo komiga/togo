@@ -24,12 +24,22 @@ void parse_state::reset_position(ParseState& s) {
 /// Clear parser state results and error state.
 void parse_state::clear_results(ParseState& s) {
 	array::clear(s.results);
+	parse_state::clear_error(s);
+}
+
+/// Clear error state.
+void parse_state::clear_error(ParseState& s) {
 	if (s.error) {
-		s.error->line = 0;
-		s.error->column = 0;
-		s.error->result_code = ParseResultCode::ok;
-		fixed_array::clear(s.error->message);
+		parse_state::clear_error(*s.error);
 	}
+}
+
+/// Clear error state.
+void parse_state::clear_error(ParseError& error) {
+	error.line = 0;
+	error.column = 0;
+	error.result_code = ParseResultCode::ok;
+	fixed_array::clear(error.message);
 }
 
 /// Set parser state data.

@@ -762,6 +762,7 @@ bool parser::parse(Parser const& p, ParseState& s) {
 	}
 #endif
 
+	clear_error(s);
 	auto const rc = parser::parse_do(p, s);
 	if (rc == ParseResultCode::ok) {
 		update_text_position(s);
