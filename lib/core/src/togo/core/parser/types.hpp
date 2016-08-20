@@ -476,6 +476,7 @@ struct ParseState {
 	char const* e;
 	char const* t;
 	Array<ParseResult> results;
+	ParseResultCode result_code;
 	unsigned suppress_results;
 	unsigned suppress_errors;
 	unsigned line;
@@ -493,6 +494,7 @@ struct ParseState {
 		, e(nullptr)
 		, t(nullptr)
 		, results(allocator)
+		, result_code(ParseResultCode::ok)
 		, suppress_results(0)
 		, suppress_errors(0)
 		, line(0)

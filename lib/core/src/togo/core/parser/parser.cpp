@@ -736,6 +736,7 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 	}
 #endif
 
+	s.result_code = rc;
 	if (s.error) {
 		s.error->result_code = rc;
 	}

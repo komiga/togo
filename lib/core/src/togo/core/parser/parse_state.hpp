@@ -27,6 +27,7 @@ namespace parse_state {
 
 /// Initialize parser state.
 inline void init(ParseState& s) {
+	s.result_code = ParseResultCode::ok;
 	s.suppress_results = 0;
 	s.suppress_errors = 0;
 	parse_state::clear_results(s);
