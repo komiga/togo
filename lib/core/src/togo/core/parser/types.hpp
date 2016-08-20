@@ -70,8 +70,9 @@ enum class ParserType : unsigned {
 	// branch_call
 	Open,
 	Close,
+	CloseAndFlush,
 };
-static constexpr unsigned const c_num_types = unsigned_cast(ParserType::Close) + 1;
+static constexpr unsigned const c_num_types = unsigned_cast(ParserType::CloseAndFlush) + 1;
 
 /// Parser modifiers.
 ///
@@ -125,6 +126,7 @@ PARSER_TRAIT_TYPE(is_branch)
 PARSER_TRAIT_TYPE(is_branch_call)
 	|| T == ParserType::Open
 	|| T == ParserType::Close
+	|| T == ParserType::CloseAndFlush
 ;};
 
 #undef PARSER_TRAIT_TYPE
@@ -164,6 +166,8 @@ using Func = ParserData<ParserType::Func>;
 using Open = ParserData<ParserType::Open>;
 /// Match a parser and call a function if it succeeds.
 using Close = ParserData<ParserType::Close>;
+/// Match a parser and always call a function with the result.
+using CloseAndFlush = ParserData<ParserType::CloseAndFlush>;
 
 template<> struct ParserData<ParserType::Undefined> {};
 template<> struct ParserData<ParserType::Nothing> {};
@@ -258,6 +262,7 @@ struct Parser {
 
 		Open Open;
 		Close Close;
+		CloseAndFlush CloseAndFlush;
 
 		Storage(no_init_tag) {}
 
@@ -281,6 +286,7 @@ struct Parser {
 
 		Storage(parser::Open&& d) : Open(rvalue_ref(d)) {}
 		Storage(parser::Close&& d) : Close(rvalue_ref(d)) {}
+		Storage(parser::CloseAndFlush&& d) : CloseAndFlush(rvalue_ref(d)) {}
 	} s;
 
 	/// Construct named Undefined parser.
@@ -532,6 +538,7 @@ using parser::Func;
 
 using parser::Open;
 using parser::Close;
+using parser::CloseAndFlush;
 
 using parser::ParserType;
 using parser::ParserModifier;

@@ -379,7 +379,8 @@ static void debug_print_shallow(Parser const& p) {
 	}	break;
 
 	case ParserType::Open:
-	case ParserType::Close: {
+	case ParserType::Close:
+	case ParserType::CloseAndFlush: {
 		auto& d = p.s.Close;
 		TOGO_LOGF("{0x%08lx, ", reinterpret_cast<std::uintptr_t>(d.f));
 		PARSE_DEBUG_PRINT_DECL(*d.p);
@@ -398,7 +399,7 @@ static void debug_print_shallow(Parser const& p) {
 
 #define PARSE_RESULT(expr_) do { \
 	_result_rc = expr_; \
-	if (top_level && _result_rc == ParseResultCode::ok) { \
+	if (top_level && (_result_rc == ParseResultCode::ok || type == ParserType::CloseAndFlush)) { \
 		goto l_finalize; \
 	} \
 	return _result_rc; \
@@ -592,16 +593,31 @@ static ParseResultCode parse_impl(
 		}
 		PARSE_RESULT(ok(s));
 	}
+
+	case ParserType::CloseAndFlush: {
+		auto const& d = p.s.CloseAndFlush;
+		TOGO_DEBUG_ASSERTE(d.f);
+		if (d.p) {
+			PARSE_RESULT(parser::parse_do(*d.p, s));
+		}
+		PARSE_RESULT(ok(s));
+	}
 	}
 	TOGO_DEBUG_ASSERTE(false);
 	PARSE_RESULT(fail(s));
 
 l_finalize:
-	if (type == ParserType::Close) {
+	switch (type) {
+	case ParserType::Close:
+	case ParserType::CloseAndFlush: {
 		if (!s.suppress_results) {
 			auto const& d = p.s.Close;
 			_result_rc = d.f(d.p, s, from);
 		}
+	}
+
+	default:
+		break;
 	}
 	return _result_rc;
 }
@@ -644,6 +660,7 @@ void parser::debug_print_tree(Parser const& p, unsigned tab IGEN_DEFAULT(0)) {
 
 	case ParserType::Open:
 	case ParserType::Close:
+	case ParserType::CloseAndFlush:
 		parser::debug_print_tree(*p.s.Open.p, tab);
 		break;
 	}
@@ -674,6 +691,7 @@ StringRef parser::type_name(ParserType type) {
 
 		"Open",
 		"Close",
+		"CloseAndFlush",
 	};
 	static_assert(array_extent(s_type_name) == parser::c_num_types, "");
 	TOGO_DEBUG_ASSERTE(unsigned_cast(type) < parser::c_num_types);
