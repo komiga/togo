@@ -528,6 +528,7 @@ using parser::Ref;
 
 using parser::Func;
 
+using parser::Open;
 using parser::Close;
 
 using parser::ParserType;
