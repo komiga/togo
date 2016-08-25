@@ -218,19 +218,6 @@ All{pdef_storage,
 }
 })
 
-namespace {
-
-inline static f64 parse_f64(StringRef str) {
-	FixedArray<char, 64> cstr;
-	string::copy(cstr, str);
-	char* end = nullptr;
-	f64 value = std::strtod(begin(cstr), &end);
-	TOGO_DEBUG_ASSERTE(end == &back(cstr));
-	return value;
-}
-
-} // anonymous namespace
-
 TOGO_PDEF(f64_basic, PMod::flatten, Close{pdef_storage,
 All{pdef_storage,
 	PDef::sign_maybe,
@@ -240,7 +227,7 @@ All{pdef_storage,
 },
 [](Parser const*, ParseState& s, ParsePosition const& from) {
 	auto& r = back(s.results);
-	return ok_replace(s, from, {parse_f64({r.s.b, r.s.e})});
+	return ok_replace(s, from, {parser::parse_f64({r.s.b, r.s.e})});
 }
 })
 
@@ -255,7 +242,7 @@ All{pdef_storage,
 },
 [](Parser const*, ParseState& s, ParsePosition const& from) {
 	auto& r = back(s.results);
-	return ok_replace(s, from, {parse_f64({r.s.b, r.s.e})});
+	return ok_replace(s, from, {parser::parse_f64({r.s.b, r.s.e})});
 }
 })
 
@@ -624,6 +611,16 @@ l_finalize:
 
 } // anonymous namespace
 } // namespace parser
+
+/// Parse 64-bit floating-point.
+f64 parser::parse_f64(StringRef str) {
+	FixedArray<char, 64> cstr;
+	string::copy(cstr, str);
+	char* end = nullptr;
+	f64 value = std::strtod(begin(cstr), &end);
+	TOGO_DEBUG_ASSERTE(end == &back(cstr));
+	return value;
+}
 
 #if defined(TOGO_DEBUG)
 
