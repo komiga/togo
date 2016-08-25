@@ -53,6 +53,7 @@ signed main() {
 	case ParserType::Ref: break;
 	case ParserType::Func: break;
 	case ParserType::Close: break;
+	case ParserType::CloseAndFlush: break;
 	}
 	ParserModifier mods = PMod::none;
 	switch (mods) {
@@ -228,6 +229,18 @@ signed main() {
 	TOGO_ASSERTE(p.s.Close.f == f_func_nop);
 	TOGO_ASSERTE(type(*p.s.Close.p) == ParserType::Char);
 	TOGO_ASSERTE(p.s.Close.p->s.Char.c == 'x');
+}
+
+{
+	FixedParserAllocator<0, 0, 1> a;
+	Parser const p{CloseAndFlush{a, f_func_nop, Char{'x'}}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(type(p) == ParserType::CloseAndFlush);
+	TOGO_ASSERTE(p.s.CloseAndFlush.f == f_func_nop);
+	TOGO_ASSERTE(type(*p.s.CloseAndFlush.p) == ParserType::Char);
+	TOGO_ASSERTE(p.s.CloseAndFlush.p->s.Char.c == 'x');
 }
 
 {
@@ -494,6 +507,32 @@ signed main() {
 	TOGO_ASSERTE(PARSE(p, "xyz"));
 	TOGO_ASSERTE(!PARSE(p, "y"));
 	TOGO_ASSERTE(!PARSE(p, ""));
+}
+
+{
+	parser::parse_func_type* f = [](Parser const*, ParseState& s, ParsePosition const&) {
+		TOGO_ASSERTE(s.result_code == ParseResultCode::ok);
+		return s.result_code;
+	};
+	FixedParserAllocator<0, 0, 1> a;
+	Parser const p{CloseAndFlush{a, f, Char{'x'}}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(PARSE(p, "x"));
+}
+
+{
+	parser::parse_func_type* f = [](Parser const*, ParseState& s, ParsePosition const&) {
+		TOGO_ASSERTE(s.result_code == ParseResultCode::fail);
+		return s.result_code;
+	};
+	FixedParserAllocator<0, 0, 1> a;
+	Parser const p{CloseAndFlush{a, f, Char{'x'}}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(!PARSE(p, "y"));
 }
 
 	memory::shutdown();
