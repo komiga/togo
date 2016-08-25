@@ -449,7 +449,7 @@ static ParseResultCode parse_impl(
 			unsuppress_errors(s);
 			PARSE_RESULT(ok(s));
 		}
-		PARSE_RESULT(fail(s));
+		PARSE_RESULT(rc);
 	}
 
 	switch (type) {
@@ -517,7 +517,7 @@ static ParseResultCode parse_impl(
 		}
 		++s.p;
 		auto rc = parser::parse_do(*d.p, s);
-		if (rc != ParseResultCode::ok) {
+		if (!rc) {
 			PARSE_RESULT(rc);
 		}
 		if (*s.p != d.closer) {
@@ -531,11 +531,10 @@ static ParseResultCode parse_impl(
 		suppress_errors(s);
 		auto const& d = p.s.Any;
 		for (unsigned i = 0; i < d.num; ++i) {
-			if (!!parser::parse_do(*d.p[i], s)) {
+			if (parser::parse_do(*d.p[i], s) == ParseResultCode::ok) {
 				unsuppress_errors(s);
 				PARSE_RESULT(ok(s));
 			}
-			set_position(s, from);
 		}
 		unsuppress_errors(s);
 		PARSE_RESULT(fail(s, "no match in Any"));
@@ -565,11 +564,11 @@ static ParseResultCode parse_impl(
 		TOGO_DEBUG_ASSERTE(d.f);
 		if (!s.suppress_results) {
 			auto rc = d.f(d.p, s, from);
-			if (rc != ParseResultCode::ok) {
+			if (!rc) {
 				PARSE_RESULT(rc);
 			}
 		}
-		if (d.p && parser::parse_do(*d.p, s) != ParseResultCode::ok) {
+		if (d.p && !parser::parse_do(*d.p, s)) {
 			PARSE_RESULT(fail_expected_sub_match(s, "Open"));
 		}
 		PARSE_RESULT(ok(s));
@@ -578,7 +577,7 @@ static ParseResultCode parse_impl(
 	case ParserType::Close: {
 		auto const& d = p.s.Close;
 		TOGO_DEBUG_ASSERTE(d.f);
-		if (d.p && parser::parse_do(*d.p, s) != ParseResultCode::ok) {
+		if (d.p && !parser::parse_do(*d.p, s)) {
 			PARSE_RESULT(fail_expected_sub_match(s, "Close"));
 		}
 		PARSE_RESULT(ok(s));
