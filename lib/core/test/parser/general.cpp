@@ -52,6 +52,7 @@ signed main() {
 	case ParserType::All: break;
 	case ParserType::Ref: break;
 	case ParserType::Func: break;
+	case ParserType::Open: break;
 	case ParserType::Close: break;
 	case ParserType::CloseAndFlush: break;
 	}
@@ -217,6 +218,18 @@ signed main() {
 	TOGO_ASSERTE(type(p) == ParserType::Func);
 	TOGO_ASSERTE(p.s.Func.f == f_func_nop);
 	TOGO_ASSERTE(p.s.Func.userdata == &error);
+}
+
+{
+	FixedParserAllocator<0, 0, 1> a;
+	Parser const p{Open{a, f_func_nop, Char{'x'}}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(type(p) == ParserType::Open);
+	TOGO_ASSERTE(p.s.Open.f == f_func_nop);
+	TOGO_ASSERTE(type(*p.s.Open.p) == ParserType::Char);
+	TOGO_ASSERTE(p.s.Open.p->s.Char.c == 'x');
 }
 
 {
@@ -449,6 +462,19 @@ signed main() {
 	auto& r = state.results[0];
 	TOGO_ASSERTE(r.type == ParseResult::type_slice);
 	TOGO_ASSERTE(r.s.b == state.b && r.s.e == state.e);
+}
+
+{
+	parser::parse_func_type* f = [](Parser const*, ParseState& s, ParsePosition const&) {
+		return parse_state::fail(s, "it always fails");
+	};
+	FixedParserAllocator<0, 0, 1> a;
+	Parser const p{Open{a, f, Char{'x'}}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(!PARSE(p, "x"));
+	TOGO_ASSERTE(!PARSE(p, "y"));
 }
 
 {
