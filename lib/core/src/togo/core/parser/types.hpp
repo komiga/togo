@@ -396,8 +396,11 @@ namespace parse_state {
 
 /// Parse result code.
 enum class ParseResultCode : unsigned {
+	/// Parser didn't match.
 	fail,
+	/// Parser matched.
 	ok,
+	/// Parser didn't match, but that's OK (PMod::maybe and PMod::repeat_or_none).
 	no_match,
 };
 static constexpr unsigned const c_num_result_codes = unsigned_cast(ParseResultCode::no_match) + 1;

@@ -30,7 +30,7 @@ namespace {
 template<ParserType T>
 inline void series_add_parser(ParserData<T>&, Allocator&, unsigned) {}
 
-/// uuuuuuuughHHHHHHHHHHHHHHHHHH
+// uuuuuuuughHHHHHHHHHHHHHHHHHH
 template<ParserType T, class... P>
 inline void series_add_parser(ParserData<T>& d, Allocator& a, unsigned i, Parser const& p, P&&... rest);
 
