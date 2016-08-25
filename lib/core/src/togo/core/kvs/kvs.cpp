@@ -130,7 +130,7 @@ void kvs::set_name(KVS& kvs, StringRef const& name) {
 	if (name.empty()) {
 		kvs::clear_name(kvs);
 	} else if (name.size > kvs._name_size) {
-		kvs::clear_name(kvs);
+		TOGO_DEALLOCATE(memory::default_allocator(), kvs._name);
 		kvs._name = TOGO_ALLOCATE_N(
 			memory::default_allocator(),
 			char, name.size + 1
