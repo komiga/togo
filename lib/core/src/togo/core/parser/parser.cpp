@@ -545,12 +545,16 @@ static ParseResultCode parse_impl(
 
 	case ParserType::All: {
 		auto const& d = p.s.All;
+		ParseResultCode rc;
+		bool met_ok = false;
 		for (unsigned i = 0; i < d.num; ++i) {
-			if (!parser::parse_do(*d.p[i], s)) {
-				PARSE_RESULT(fail(s));
+			rc = parser::parse_do(*d.p[i], s);
+			if (!rc) {
+				PARSE_RESULT(rc);
 			}
+			met_ok |= (rc == ParseResultCode::ok);
 		}
-		PARSE_RESULT(ok(s));
+		PARSE_RESULT(met_ok ? ParseResultCode::ok : rc);
 	}
 
 	case ParserType::Ref:
