@@ -868,7 +868,7 @@ bool parser::parse(Parser const& p, ParseState& s) {
 	}
 #endif
 
-	return rc == ParseResultCode::ok;
+	return !!rc;
 }
 
 /// Run parser.
