@@ -288,12 +288,15 @@ static_assert(array_extent(s_value_type_name) == (ParseResult::type_user_base + 
 	bool _any = array::any(s.results); \
 	auto _vt = _any ? array::back(s.results).type : ParseResult::type_null; \
 	_vt = (_vt >= ParseResult::type_user_base) ? ParseResult::type_user_base : _vt; \
+	char _c[4]{"'X'"}; if (s.p < s.e) { _c[1] = *s.p; } else { string::copy(_c, 4, "eof"); } \
 	PARSE_TRACEF( \
-		"= %s (%lu%s%s)", \
+		"= %s (%lu%s%s) @ %2lu %2lu 0x%02x %.*s", \
 		s_result_code_name[unsigned_cast(rc)], \
 		array::size(s.results), \
 		_any ? ", " : "", \
-		_any ? s_value_type_name[_vt] : "" \
+		_any ? s_value_type_name[_vt] : "", \
+		s.p - s.b, s.e - s.p, \
+		(s.p < s.e ? _c[1] : 0) & 0xFF, 3, _c \
 	); \
 } while (false)
 
@@ -412,7 +415,7 @@ static ParseResultCode parse_impl(
 		auto rc = parser::parse_impl(p, s, from, type, mods & ~PMod::maybe);
 		unsuppress_errors(s);
 		if (!!rc) {
-			TOGO_DEBUG_ASSERTE(rc != ParseResultCode::no_match || (from.p == s.p && from.i == s.results._size));
+			TOGO_DEBUG_ASSERTE(rc != ParseResultCode::no_match || (from.p == s.p && from.i == array::size(s.results)));
 			PARSE_RESULT(rc);
 		}
 		set_position(s, from);
@@ -706,8 +709,19 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 		debug_print_shallow(p);
 		++s_debug_trace_depth;
 		if (type < ParserType::Any) {
-			char c = s.p < s.e ? *s.p : '\0';
-			PARSE_TRACEF("? %4lu %4lu  0x%02x '%c'\n", s.p - s.b, s.e - s.p, c, c);
+			char c[4]{"'X'"};
+			if (s.p < s.e) {
+				c[1] = *s.p;
+			} else {
+				string::copy(c, 4, "eof");
+			}
+			PARSE_TRACEF(
+				"? %2lu %2lu 0x%02x %.*s\n",
+				s.p - s.b,
+				s.e - s.p,
+				s.p < s.e ? (c[1] & 0x0F) : 0,
+				3, c
+			);
 		}
 	}
 #endif
@@ -725,7 +739,7 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 	) {
 		rc = fail(s, "no more input");
 	} else {
-		rc = parse_impl(p, s, from, type, parser::modifiers(p), true);
+		rc = parse_impl(p, s, from, type, mods, true);
 	}
 
 #if defined(TOGO_DEBUG)
