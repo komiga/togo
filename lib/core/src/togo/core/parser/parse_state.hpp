@@ -80,7 +80,7 @@ inline void set_num_results(ParseState& s, unsigned size) {
 
 /// Pop results back to a parse position.
 inline void set_num_results(ParseState& s, ParsePosition const& pos) {
-	parse_state::set_num_results(s, pos.i);
+	parse_state::set_num_results(s, min(array::size(s.results), pos.i));
 }
 
 /// Push a null result.
