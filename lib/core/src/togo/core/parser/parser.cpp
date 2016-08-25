@@ -435,9 +435,12 @@ static ParseResultCode parse_impl(
 		PARSE_RESULT(rc);
 	} else if (enum_bool(mods & PMod::repeat_or_none)) {
 		suppress_errors(s);
-		parser::parse_impl(p, s, from, type, (mods & ~PMod::repeat_or_none) | PMod::repeat);
+		auto rc = parser::parse_impl(p, s, from, type, (mods & ~PMod::repeat_or_none) | PMod::repeat);
 		unsuppress_errors(s);
-		PARSE_RESULT(ok(s));
+		if (!rc) {
+			PARSE_RESULT(no_match(s));
+		}
+		PARSE_RESULT(rc);
 	} else if (enum_bool(mods & PMod::repeat)) {
 		auto const mods_repeat = mods & ~PMod::repeat;
 		auto rc = parser::parse_impl(p, s, from, type, mods_repeat);
