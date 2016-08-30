@@ -9,6 +9,7 @@
 #include <togo/core/collection/array.hpp>
 #include <togo/core/string/string.hpp>
 #include <togo/core/io/memory_stream.hpp>
+#include <togo/core/system/system.hpp>
 #include <togo/core/parser/types.hpp>
 #include <togo/core/parser/parser.hpp>
 #include <togo/core/kvs/kvs.hpp>
@@ -16,6 +17,7 @@
 #include <togo/support/test.hpp>
 
 #include <cmath>
+#include <cstdint>
 
 using namespace togo;
 
@@ -545,16 +547,67 @@ void do_test_new(Test const& test) {
 	TOGO_LOG("\n");
 }
 
-signed main() {
+using MeasureFunc = void();
+
+f64 measure(StringRef group, u64 num, MeasureFunc f) {
+	f64 start = system::time_monotonic();
+	for (unsigned i = num; i; i--) {
+		f();
+	}
+	f64 end = system::time_monotonic();
+	f64 duration = end - start;
+	f64 average = duration / static_cast<f64>(num);
+	TOGO_LOGF(
+		"group %.*s: num = %lu time = %12.06lf  average = %-6.08f\n",
+		group.size, group.data,
+		num, duration, average
+	);
+	return duration;
+}
+
+signed main(signed argc, char* argv[]) {
 	memory_init();
 
 	#if defined(TOGO_DEBUG)
 		parser::s_debug_trace = false;
 	#endif
 
-	for (auto& test : s_tests) {
-		do_test_old(test);
-		do_test_new(test);
+	if (argc > 1) {
+		f64 num_float = std::strtod(argv[1], nullptr);
+		u64 num;
+		if (num_float == 0.0f || num_float == HUGE_VALF) {
+			num = 1e4;
+		} else {
+			num = static_cast<u64>(num_float);
+		}
+		f64 duration_old = measure("old", num, [](){
+			KVS root;
+			KVSParserInfo pinfo;
+			MemoryReader in_stream{""};
+			for (auto& test : s_tests) {
+				new (&in_stream) MemoryReader(test.input);
+				kvs::read_text(root, in_stream, pinfo);
+			}
+		});
+		f64 duration_new = measure("new", num, [](){
+			KVS root;
+			ParseError error{};
+			for (auto& test : s_tests) {
+				kvs::read_text_new(root, array_cref(test.input), &error);
+			}
+		});
+
+		f64 ratio = duration_new / duration_old;
+		f64 ratio_log2 = std::log2(ratio);
+		TOGO_LOGF(
+			"ratio (new : old) = %-6.03lf  log2(ratio) = %-6.03f\n",
+			ratio, ratio_log2
+		);
+	} else {
+		for (auto& test : s_tests) {
+			do_test_old(test);
+			do_test_new(test);
+		}
 	}
 
 	return 0;
