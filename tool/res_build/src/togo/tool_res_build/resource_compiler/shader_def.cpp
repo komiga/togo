@@ -334,7 +334,7 @@ static bool compile(
 	KVS const* k_type;
 
 	{// Read source
-	ParserInfo pinfo;
+	KVSParserInfo pinfo;
 	bool const read_success = kvs::read_text(k_root, in_stream, pinfo);
 	if (!read_success) {
 		TOGO_LOG_ERRORF(
