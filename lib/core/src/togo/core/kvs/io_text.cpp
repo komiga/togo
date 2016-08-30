@@ -26,7 +26,7 @@ namespace togo {
 /// position and error message of the parser.
 bool kvs::read_text(KVS& root, IReader& stream, ParserInfo& pinfo) {
 	TempAllocator<4096> allocator{};
-	Parser p{
+	KVSParser p{
 		root, stream, pinfo,
 		{allocator},
 		{allocator},

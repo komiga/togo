@@ -49,7 +49,7 @@ enum ParserValueType : unsigned {
 	PV_VECTOR,
 };
 
-struct Parser {
+struct KVSParser {
 	KVS& root;
 	IReader& stream;
 	ParserInfo& info;
@@ -117,7 +117,7 @@ inline static f64 parse_f64(char const* const cstr) {
 }
 
 static bool parser_error(
-	Parser& p,
+	KVSParser& p,
 	char const* const format,
 	...
 ) {
@@ -143,7 +143,7 @@ static bool parser_error(
 #define PARSER_ERROR_UNEXPECTED(p, what) \
 	PARSER_ERRORF(p, "unexpected %s: '%c'", what, p.c)
 
-inline static bool parser_is_identifier_lead(Parser const& p) {
+inline static bool parser_is_identifier_lead(KVSParser const& p) {
 	return
 		(p.c >= 'a' && p.c <= 'z') ||
 		(p.c >= 'A' && p.c <= 'Z') ||
@@ -151,7 +151,7 @@ inline static bool parser_is_identifier_lead(Parser const& p) {
 	;
 }
 
-/*inline static bool parser_is_value_completer(Parser const& p) {
+/*inline static bool parser_is_value_completer(KVSParser const& p) {
 	return
 		p.c == '\t' ||
 		p.c == '\n' ||
@@ -161,7 +161,7 @@ inline static bool parser_is_identifier_lead(Parser const& p) {
 	;
 }*/
 
-inline static bool parser_is_completer(Parser const& p) {
+inline static bool parser_is_completer(KVSParser const& p) {
 	return
 		p.c == '\n' ||
 		p.c == ',' ||
@@ -178,11 +178,11 @@ inline static bool is_number_lead(signed c) {
 	;
 }
 
-inline static bool parser_is_number_lead(Parser const& p) {
+inline static bool parser_is_number_lead(KVSParser const& p) {
 	return is_number_lead(p.c);
 }
 
-static void parser_buffer_add(Parser& p) {
+static void parser_buffer_add(KVSParser& p) {
 	TOGO_DEBUG_ASSERTE(p.c != PC_EOF);
 	if (p.flags & PF_ESCAPED) {
 		p.flags &= ~PF_ESCAPED;
@@ -192,22 +192,22 @@ static void parser_buffer_add(Parser& p) {
 	}
 }
 
-inline static void parser_buffer_clear(Parser& p) {
+inline static void parser_buffer_clear(KVSParser& p) {
 	array::clear(p.buffer);
 }
 
-static StringRef parser_buffer_ref(Parser const& p) {
+static StringRef parser_buffer_ref(KVSParser const& p) {
 	return StringRef{
 		array::begin(p.buffer),
 		static_cast<unsigned>(array::size(p.buffer))
 	};
 }
 
-inline static KVS& parser_top(Parser& p) {
+inline static KVS& parser_top(KVSParser& p) {
 	return *array::back(p.stack);
 }
 
-inline static void parser_pop(Parser& p) {
+inline static void parser_pop(KVSParser& p) {
 	array::pop_back(p.stack);
 	if (kvs::is_array(parser_top(p))) {
 		p.stage = PS_VALUE;
@@ -218,11 +218,11 @@ inline static void parser_pop(Parser& p) {
 	}
 }
 
-inline static void parser_push(Parser& p, KVS& kvs) {
+inline static void parser_push(KVSParser& p, KVS& kvs) {
 	array::push_back(p.stack, &kvs);
 }
 
-inline static void parser_push_new(Parser& p, bool const named) {
+inline static void parser_push_new(KVSParser& p, bool const named) {
 	KVS& top = parser_top(p);
 	if (!kvs::space(top)) {
 		kvs::grow(top);
@@ -235,7 +235,7 @@ inline static void parser_push_new(Parser& p, bool const named) {
 	parser_push(p, kvs::back(top));
 }
 
-inline static bool parser_set_value(Parser& p) {
+inline static bool parser_set_value(KVSParser& p) {
 	TOGO_DEBUG_ASSERTE(p.value_type != PV_NONE);
 	KVS& top = parser_top(p);
 	switch (p.value_type) {
@@ -280,7 +280,7 @@ inline static bool parser_set_value(Parser& p) {
 	return true;
 }
 
-static bool parser_next(Parser& p) {
+static bool parser_next(KVSParser& p) {
 	if (p.flags & PF_CARRY) {
 		p.flags &= ~PF_CARRY;
 		return true;
@@ -303,7 +303,7 @@ static bool parser_next(Parser& p) {
 	return true;
 }
 
-static bool parser_skip_whitespace(Parser& p, bool const newline) {
+static bool parser_skip_whitespace(KVSParser& p, bool const newline) {
 	while (p.c == ' ' || p.c == '\t' || (newline && p.c == '\n')) {
 		if (!parser_next(p)) {
 			return false;
@@ -312,7 +312,7 @@ static bool parser_skip_whitespace(Parser& p, bool const newline) {
 	return true;
 }
 
-static bool parser_skip_comment(Parser& p) {
+static bool parser_skip_comment(KVSParser& p) {
 	if (!parser_next(p)) {
 		return false;
 	}
@@ -351,7 +351,7 @@ static bool parser_skip_comment(Parser& p) {
 	}
 }
 
-static bool parser_read_number(Parser& p) {
+static bool parser_read_number(KVSParser& p) {
 	enum : unsigned {
 		PART_SIGN				= 1 << 0,
 		PART_NUMERAL			= 1 << 1,
@@ -441,7 +441,7 @@ l_assign_value:
 	return true;
 }
 
-static bool parser_read_string(Parser& p) {
+static bool parser_read_string(KVSParser& p) {
 	do {
 		switch (p.c) {
 		// Completers
@@ -483,7 +483,7 @@ l_assign_value:
 	return true;
 }
 
-static bool parser_read_string_quote(Parser& p) {
+static bool parser_read_string_quote(KVSParser& p) {
 	while (parser_next(p)) {
 		switch (p.c) {
 		case PC_EOF:
@@ -511,7 +511,7 @@ static bool parser_read_string_quote(Parser& p) {
 	return false;
 }
 
-static bool parser_read_string_block(Parser& p) {
+static bool parser_read_string_block(KVSParser& p) {
 	unsigned count = 1;
 	while (count < 3 && parser_next(p)) {
 		if (p.c != '`') {
@@ -540,7 +540,7 @@ static bool parser_read_string_block(Parser& p) {
 	return false;
 }
 
-static bool parser_read_vector_whole(Parser& p) {
+static bool parser_read_vector_whole(KVSParser& p) {
 	while (parser_next(p)) {
 		switch (p.c) {
 		case PC_EOF:
@@ -587,7 +587,7 @@ static bool parser_read_vector_whole(Parser& p) {
 	return false;
 }
 
-static void parser_stage_name(Parser& p) {
+static void parser_stage_name(KVSParser& p) {
 	switch (p.c) {
 	case PC_EOF:
 		break;
@@ -648,7 +648,7 @@ l_push_new:
 	p.flags |= PF_NAME;
 }
 
-static void parser_stage_assign(Parser& p) {
+static void parser_stage_assign(KVSParser& p) {
 	TOGO_DEBUG_ASSERTE(~p.flags & PF_VALUE_NAMELESS);
 	if (p.c == PC_EOF) {
 		PARSER_ERROR(p, "expected equality sign, got EOF");
@@ -660,7 +660,7 @@ static void parser_stage_assign(Parser& p) {
 	}
 }
 
-static void parser_stage_value(Parser& p) {
+static void parser_stage_value(KVSParser& p) {
 	switch (p.c) {
 	case PC_EOF:
 		PARSER_ERROR(p, "expected value, got EOF");
