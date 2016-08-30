@@ -52,7 +52,7 @@ enum ParserValueType : unsigned {
 struct KVSParser {
 	KVS& root;
 	IReader& stream;
-	ParserInfo& info;
+	KVSParserInfo& info;
 	Array<KVS*> stack;
 	Array<char> buffer;
 	unsigned line;
@@ -123,7 +123,7 @@ static bool parser_error(
 ) {
 	va_list va;
 	va_start(va, format);
-	std::vsnprintf(p.info.message, array_extent(&ParserInfo::message), format, va);
+	std::vsnprintf(p.info.message, array_extent(&KVSParserInfo::message), format, va);
 	va_end(va);
 	p.info.line = p.line;
 	p.info.column = p.column;

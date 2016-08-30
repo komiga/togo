@@ -24,7 +24,7 @@ namespace togo {
 ///
 /// Returns false if a parser error occurred. pinfo will have the
 /// position and error message of the parser.
-bool kvs::read_text(KVS& root, IReader& stream, ParserInfo& pinfo) {
+bool kvs::read_text(KVS& root, IReader& stream, KVSParserInfo& pinfo) {
 	TempAllocator<4096> allocator{};
 	KVSParser p{
 		root, stream, pinfo,
@@ -73,7 +73,7 @@ bool kvs::read_text(KVS& root, IReader& stream, ParserInfo& pinfo) {
 
 /// Read text-format KVS from stream (sans parser info).
 bool kvs::read_text(KVS& root, IReader& stream) {
-	ParserInfo pinfo;
+	KVSParserInfo pinfo;
 	if (!kvs::read_text(root, stream, pinfo)) {
 		TOGO_LOG_ERRORF(
 			"failed to read KVS: [%2u,%2u]: %s\n",
@@ -95,7 +95,7 @@ bool kvs::read_text_file(KVS& root, StringRef const& path) {
 		return false;
 	}
 
-	ParserInfo pinfo;
+	KVSParserInfo pinfo;
 	bool const success = kvs::read_text(root, stream, pinfo);
 	if (!success) {
 		TOGO_LOG_ERRORF(

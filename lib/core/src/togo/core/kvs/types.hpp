@@ -165,7 +165,7 @@ struct KVS {
 };
 
 /// KVS parser information.
-struct ParserInfo {
+struct KVSParserInfo {
 	/// Line in stream.
 	unsigned line{0};
 	/// Column on line.
