@@ -250,7 +250,7 @@ static bool kvs_write(
 		break;
 
 	case KVSType::decimal:
-		RETURN_ERROR(writef(stream, "%lf", kvs._value.decimal));
+		RETURN_ERROR(writef(stream, "%1.7lf", kvs._value.decimal));
 		break;
 
 	case KVSType::boolean:
@@ -267,14 +267,14 @@ static bool kvs_write(
 
 	case KVSType::vec1:
 		RETURN_ERROR(writef(
-			stream, "(%f)",
+			stream, "(%1.7g)",
 			kvs._value.vec1.x
 		));
 		break;
 
 	case KVSType::vec2:
 		RETURN_ERROR(writef(
-			stream, "(%f %f)",
+			stream, "(%1.7g %1.7g)",
 			kvs._value.vec2.x,
 			kvs._value.vec2.y
 		));
@@ -282,7 +282,7 @@ static bool kvs_write(
 
 	case KVSType::vec3:
 		RETURN_ERROR(writef(
-			stream, "(%f %f %f)",
+			stream, "(%1.7g %1.7g %1.7g)",
 			kvs._value.vec3.x,
 			kvs._value.vec3.y,
 			kvs._value.vec3.z
@@ -291,7 +291,7 @@ static bool kvs_write(
 
 	case KVSType::vec4:
 		RETURN_ERROR(writef(
-			stream, "(%f %f %f %f)",
+			stream, "(%1.7g %1.7g %1.7g %1.7g)",
 			kvs._value.vec4.x,
 			kvs._value.vec4.y,
 			kvs._value.vec4.z,
