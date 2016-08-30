@@ -10,6 +10,7 @@
 #pragma once
 
 // igen-source: kvs/io_text.cpp
+// igen-source: kvs/io_text_new.cpp
 // igen-source: kvs/io_binary.cpp
 
 #include <togo/core/config.hpp>
@@ -20,6 +21,7 @@
 #include <togo/core/string/string.hpp>
 #include <togo/core/hash/hash.hpp>
 #include <togo/core/io/types.hpp>
+#include <togo/core/parser/types.hpp>
 #include <togo/core/kvs/types.hpp>
 #include <togo/core/kvs/kvs.gen_interface>
 
