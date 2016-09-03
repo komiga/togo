@@ -289,9 +289,11 @@ function M.join_paths(...)
 	local path = ""
 	for i, p in ipairs(parts) do
 		M.type_assert(p, "string")
-		path = path .. p
-		if i ~= #parts then
-			path = path .. "/"
+		if p ~= "" then
+			path = path .. p
+			if i ~= #parts then
+				path = path .. "/"
+			end
 		end
 	end
 	return path
