@@ -96,7 +96,7 @@ FuncSingle{
 })
 TSS("```x\n``` = null",
 FuncSingle{
-	CHECK_VALUE(k, "x", null);
+	CHECK_VALUE(k, "x\n", null);
 })
 
 // values
@@ -236,8 +236,8 @@ FuncSingle{
 	}
 })
 
-TSE("x = [42]",
-R"K(x = [
+TSE("c = [42]",
+R"K(c = [
 	42
 ])K",
 FuncSingle{
@@ -258,9 +258,9 @@ R"K(c = [
 	4
 ])K",
 FuncSingle{
-	CHECK_COLLECTION(k, "c", array, 4);
+	CHECK_COLLECTION(k, "c", array, 5);
 	unsigned i = 0;
-	for (KVS& x : kvs::back(k)) {
+	for (KVS& x : k) {
 		CHECK_TYPE(x, integer);
 		TOGO_ASSERTE(kvs::integer(x) == i);
 		++i;
@@ -278,7 +278,7 @@ R"K(c = [
 ])K",
 FuncSingle{
 	CHECK_COLLECTION(k, "c", array, 6);
-	for (KVS& x : kvs::back(k)) {
+	for (KVS& x : k) {
 		CHECK_TYPE(x, node);
 		TOGO_ASSERTE(kvs::size(x) == 0);
 	}
@@ -295,7 +295,7 @@ R"K(c = [
 ])K",
 FuncSingle{
 	CHECK_COLLECTION(k, "c", array, 6);
-	for (KVS& x : kvs::back(k)) {
+	for (KVS& x : k) {
 		CHECK_TYPE(x, array);
 		TOGO_ASSERTE(kvs::size(x) == 0);
 	}
@@ -309,7 +309,7 @@ R"K(c = [
 FuncSingle{
 	CHECK_COLLECTION(k, "c", array, 2);
 	unsigned i = 0;
-	for (KVS& x : kvs::back(k)) {
+	for (KVS& x : k) {
 		CHECK_TYPE(x, integer);
 		TOGO_ASSERTE(kvs::integer(x) == i);
 		++i;
@@ -324,7 +324,7 @@ R"K(c = [
 FuncSingle{
 	CHECK_COLLECTION(k, "c", array, 2);
 	unsigned i = 0;
-	for (KVS& x : kvs::back(k)) {
+	for (KVS& x : k) {
 		CHECK_TYPE(x, integer);
 		TOGO_ASSERTE(kvs::integer(x) == i);
 		++i;
@@ -339,7 +339,7 @@ R"K(c = [
 FuncSingle{
 	CHECK_COLLECTION(k, "c", array, 2);
 	unsigned i = 0;
-	for (KVS& x : kvs::back(k)) {
+	for (KVS& x : k) {
 		CHECK_TYPE(x, integer);
 		TOGO_ASSERTE(kvs::integer(x) == i);
 		++i;
@@ -355,7 +355,7 @@ R"K(c = [
 	1
 ])K",
 FuncSingle{
-	CHECK_COLLECTION(k, "c", array, 2);
+	CHECK_COLLECTION(k, "c", array, 3);
 	{
 		KVS& x = k[0];
 		CHECK_TYPE(x, integer);
@@ -389,8 +389,8 @@ R"K(c = [
 	1.0000000
 ])K",
 FuncSingle{
-	CHECK_COLLECTION(k, "c", array, 2);
-	for (KVS& x : kvs::back(k)) {
+	CHECK_COLLECTION(k, "c", array, 12);
+	for (KVS& x : k) {
 		CHECK_TYPE(x, decimal);
 	}
 })
@@ -411,8 +411,8 @@ R"K(c = [
 	"	"
 ])K",
 FuncSingle{
-	CHECK_COLLECTION(k, "c", array, 2);
-	for (KVS& x : kvs::back(k)) {
+	CHECK_COLLECTION(k, "c", array, 12);
+	for (KVS& x : k) {
 		CHECK_TYPE(x, string);
 	}
 })
@@ -427,9 +427,9 @@ R"K(c = [
 	(-0.01 1)
 ])K",
 FuncSingle{
-	CHECK_COLLECTION(k, "c", array, 2);
-	for (KVS& x : kvs::back(k)) {
-		CHECK_TYPE(x, decimal);
+	CHECK_COLLECTION(k, "c", array, 6);
+	for (KVS& x : k) {
+		CHECK_TYPE(x, vector);
 	}
 })
 
