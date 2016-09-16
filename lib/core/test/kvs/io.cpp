@@ -504,6 +504,10 @@ void do_test_old(Test const& test) {
 		);
 		TOGO_ASSERT(!test.expected_success, "read failed when it should have succeeded");
 	}
+	if (test.func) {
+		KVS& first = kvs::any(root) ? root[0] : root;
+		test.func(root, first);
+	}
 	TOGO_LOG("\n");
 }
 
@@ -543,6 +547,10 @@ void do_test_new(Test const& test) {
 			string::size(error.message), begin(error.message)
 		);
 		TOGO_ASSERT(!test.expected_success, "read failed when it should have succeeded");
+	}
+	if (test.func) {
+		KVS& first = kvs::any(root) ? root[0] : root;
+		test.func(root, first);
 	}
 	TOGO_LOG("\n");
 }
