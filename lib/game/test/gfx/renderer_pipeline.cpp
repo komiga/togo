@@ -80,7 +80,9 @@ void gen_test_proxy_destroy(
 	gfx::GeneratorDef const& def,
 	gfx::Renderer* renderer
 ) {
+	auto& app = app::instance();
 	auto* data = static_cast<GenTestProxyData*>(def.data);
+	resource::unref_shader(app.resource_manager, "test/gfx/generic"_resource_name);
 	gfx::renderer::destroy_buffer_binding(renderer, data->binding);
 	gfx::renderer::destroy_buffer(renderer, data->buffer);
 	TOGO_DESTROY(memory::default_allocator(), data);
@@ -144,6 +146,7 @@ void TestAppModel::init(TestApp& app) {
 		"test/gfx/pipeline"_resource_name
 	);
 	gfx::renderer::configure(app.renderer, *render_config);
+	resource::unref_render_config(app.resource_manager, "test/gfx/pipeline"_resource_name);
 
 	app.data.world = world_manager::create(app.world_manager);
 	app.data.camera = entity_manager::create(app.entity_manager);
