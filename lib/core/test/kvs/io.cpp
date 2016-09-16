@@ -40,7 +40,7 @@ void test_no_op(KVS&, KVS&) {}
 } while (false)
 
 #define CHECK_TYPE(k_, type_) do { \
-	TOGO_ASSERTE(kvs::is_type(k_, KVSType:: type_)); \
+	TOGO_ASSERTE(kvs::is_##type_ (k_)); \
 } while (false)
 
 #define CHECK_VALUE(k_, name_, type_) do { \
