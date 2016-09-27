@@ -186,9 +186,13 @@ function M.print(msg, ...)
 	print(string.format(msg, ...))
 end
 
-function M.log(msg, ...)
+function M.logl(level, msg, ...)
 	M.type_assert(msg, "string")
-	print(M.get_trace(1) .. ": " .. string.format(msg, ...))
+	print(M.get_trace(level + 1) .. ": " .. string.format(msg, ...))
+end
+
+function M.log(...)
+	M.logl(1, ...)
 end
 
 function M.log_debug_closure(m)
