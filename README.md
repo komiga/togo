@@ -72,7 +72,7 @@ See `dep/README.md` for dependency setup. Components can then be built using
 my [standard project protocol](http://komiga.com/pp-cpp).
 
 The only difference from the project protocol is `scripts/premake` in place of
-premake, which enforces recipe order to allow the use of GNU make's `--jobs`.
+Premake, which enforces recipe order to allow the use of GNU Make's `--jobs`.
 
 Build configuration:
 
