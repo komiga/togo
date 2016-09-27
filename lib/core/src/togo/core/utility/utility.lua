@@ -195,6 +195,26 @@ function M.log(...)
 	M.logl(1, ...)
 end
 
+function M.args_list(...)
+	local t = {...}
+	if type(t[1]) == "table" then
+		t = t[1]
+	end
+	return t
+end
+
+function M.args(...)
+	return unpack(M.args_list(...))
+end
+
+function M.errorl(level, msg, ...)
+	error(U.get_trace(level + 1) .. ": error: " .. string.format(msg, ...), 0)
+end
+
+function M.error(...)
+	M.errorl(1, ...)
+end
+
 function M.log_debug_closure(m)
 	return function(msg, ...)
 		M.type_assert(msg, "string")
