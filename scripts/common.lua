@@ -75,6 +75,7 @@ end
 
 function togo_tools()
 	return {
+		"script_host",
 		"res_build",
 	}
 end

@@ -8,6 +8,9 @@ if [[ -f Makefile ]]; then
 		-e 's/lib_image:/& | lib_core/' \
 		-e 's/lib_window:/& | lib_image/' \
 		-e 's/lib_game:/& | lib_window/' \
+		-e 's/tool_script_host_lib:/& | lib_core/' \
+		-e 's/tool_script_host:/& | tool_script_host_lib/' \
+		-e 's|\-f tool_script_host\.make$|& -W src/togo/tool_script_host/main.cpp|' \
 		-e 's/tool_res_build_lib:/& | lib_game/' \
 		-e 's/tool_res_build:/& | tool_res_build_lib/' \
 		-e 's|\-f tool_res_build\.make$|& -W src/togo/tool_res_build/main.cpp|' \

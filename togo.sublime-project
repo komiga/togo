@@ -138,6 +138,23 @@
 			"file_exclude_patterns": [
 				"*.gen_interface"
 			]
+		},
+		{
+			"name": "Tool: script_host",
+			"path": "./tool/script_host/",
+			"folder_exclude_patterns": [
+				"src"
+			],
+			"file_exclude_patterns": [
+				"*.make"
+			]
+		},
+		{
+			"name": "— tool/script_host",
+			"path": "./tool/script_host/src/togo/tool_script_host/",
+			"file_exclude_patterns": [
+				"*.gen_interface"
+			]
 		}
 	],
 	"settings":
