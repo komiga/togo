@@ -37,9 +37,10 @@ function iterate_dir(dir, select_only, max_depth)
 	require("lfs")
 	assert(dir and dir ~= "", "directory parameter is missing or empty")
 	dir = trim_trailing_slash(dir)
+	max_depth = max_depth or math.huge
 
 	local function yield_tree(base, path, depth)
-		if max_depth ~= nil and depth > max_depth then
+		if depth > max_depth then
 			return
 		end
 		for entry in lfs.dir(base .. path) do
