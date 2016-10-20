@@ -162,7 +162,7 @@ end
 function M.table_copy(dst, src, instances)
 	for k, v in pairs(src) do
 		if type(v) == "table" then
-			if U.is_instance(v) then
+			if M.is_instance(v) then
 				if instances then
 					v = v:copy()
 				end
@@ -177,7 +177,7 @@ end
 
 function M.table_copy_shallow(dst, src, instances)
 	for k, v in pairs(src) do
-		if U.is_instance(v) then
+		if M.is_instance(v) then
 			if instances then
 				v = v:copy()
 			end
@@ -188,11 +188,11 @@ function M.table_copy_shallow(dst, src, instances)
 end
 
 function M.pad_left(str, length)
-	return string.rep(' ', U.max(0, length - #str)) .. str
+	return string.rep(' ', M.max(0, length - #str)) .. str
 end
 
 function M.pad_right(str, length)
-	return str .. string.rep(' ', U.max(0, length - #str))
+	return str .. string.rep(' ', M.max(0, length - #str))
 end
 
 function M.trace()
