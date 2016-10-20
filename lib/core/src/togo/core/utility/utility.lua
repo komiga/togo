@@ -160,21 +160,11 @@ function M.table_keys(t)
 end
 
 function M.pad_left(str, length)
-	if #str < length then
-		while #str < length do
-			str = str .. ' '
-		end
-	end
-	return str
+	return string.rep(' ', U.max(0, length - #str)) .. str
 end
 
 function M.pad_right(str, length)
-	if #str < length then
-		while #str < length do
-			str = ' ' .. str
-		end
-	end
-	return str
+	return str .. string.rep(' ', U.max(0, length - #str))
 end
 
 function M.trace()
