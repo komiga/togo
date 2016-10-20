@@ -159,6 +159,34 @@ function M.table_keys(t)
 	return kt
 end
 
+function M.table_copy(dst, src, instances)
+	for k, v in pairs(src) do
+		if type(v) == "table" then
+			if U.is_instance(v) then
+				if instances then
+					v = v:copy()
+				end
+			else
+				v = M.table_copy({}, v, instances)
+			end
+		end
+		rawset(dst, k, v)
+	end
+	return dst
+end
+
+function M.table_copy_shallow(dst, src, instances)
+	for k, v in pairs(src) do
+		if U.is_instance(v) then
+			if instances then
+				v = v:copy()
+			end
+		end
+		rawset(dst, k, v)
+	end
+	return dst
+end
+
 function M.pad_left(str, length)
 	return string.rep(' ', U.max(0, length - #str)) .. str
 end
