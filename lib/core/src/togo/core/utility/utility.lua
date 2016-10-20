@@ -226,7 +226,7 @@ function M.args(...)
 end
 
 function M.errorl(level, msg, ...)
-	error(M.get_trace(level + 1) .. ": " .. string.format(msg, ...), 0)
+	error(M.get_trace(level + 1) .. "error: " .. string.format(msg, ...), 0)
 end
 
 function M.error(...)
