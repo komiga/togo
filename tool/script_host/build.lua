@@ -6,7 +6,6 @@ precore.make_config("togo.tool.script_host.dep", {
 }, {
 "togo.base",
 "togo.lib.core.dep",
-"togo.lib.game.dep",
 {project = function(_)
 	togo.tool_config("script_host")
 end}})
