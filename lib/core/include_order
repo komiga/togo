@@ -112,6 +112,7 @@ return {
 			N("binary"),
 		}),
 	}),
+	M("tool", {}),
 	M("lua", {}),
 	M("serialization", {
 		N("serializer"),
