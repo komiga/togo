@@ -363,6 +363,7 @@ function M.module(name)
 	return m
 end
 
+assert(M == M.module("togo.utility"))
 return M
 
 )"__RAW_STRING__"
