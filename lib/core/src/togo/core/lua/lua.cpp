@@ -5,6 +5,7 @@
 
 #include <togo/core/config.hpp>
 #include <togo/core/error/assert.hpp>
+#include <togo/core/log/log.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/memory/memory.hpp>
 #include <togo/core/string/string.hpp>
@@ -51,6 +52,26 @@ signed lua::pcall_error_message_handler(lua_State* L) {
 		luaL_traceback(L, L, lua_tostring(L, 1), 1);
 	}
 	return 1;
+}
+
+/// Print debug information.
+void lua::print_debug_info(lua_State* L, bool trace) {
+	TOGO_LOG_DEBUG("Lua debug information:\n");
+	signed stack_size = lua_gettop(L);
+	TOGO_LOG_DEBUGF("stack (%d):\n", stack_size);
+	for (signed i = 1; i <= stack_size; ++i) {
+		TOGO_LOG_DEBUGF("  %d: ", i, lua_typename(L, lua_type(L, i)));
+		lua_getfield(L, LUA_GLOBALSINDEX, "print");
+		lua_pushvalue(L, i);
+		lua_call(L, 1, 0);
+	}
+
+	if (trace) {
+		luaL_traceback(L, L, nullptr, 0);
+		StringRef traceback = lua::get_string(L, -1);
+		TOGO_LOG_DEBUGF("%.*s\n", traceback.size, traceback.data);
+		lua_remove(L, -1);
+	}
 }
 
 namespace {
