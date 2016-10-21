@@ -337,7 +337,7 @@ local function nilify_params(params)
 	end
 end
 
-function M.run(tool, args)
+function M.run_tool(tool, args)
 	local _, opts, cmd_opts, cmd_params = U.parse_args(args)
 	local params = {}
 	opts.name = nil

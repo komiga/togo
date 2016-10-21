@@ -14,7 +14,7 @@ namespace togo {
 
 /// Run tool.
 ///
-/// Uses Tool.run() with the top of the stack (tool_supplied) or Tool.base_tool.
+/// Uses Tool.run_tool() with the top of the stack (tool_supplied) or Tool.base_tool.
 ///
 /// args should include argv[0] (i.e., use the whole array).
 bool tool::run(
@@ -24,14 +24,14 @@ bool tool::run(
 ) {
 	lua::push_value(L, lua::pcall_error_message_handler);
 	lua::load_module(L, "togo.Tool", true);
-	lua::table_get_raw(L, "run");
+	lua::table_get_raw(L, "run_tool");
 
 	if (tool_supplied) {
 		// move supplied tool
 		lua_pushvalue(L, -4);
 		lua_remove(L, -5);
 	} else {
-		lua::table_get_raw(L, -2, "base_tool");
+		lua::table_get_raw(L, -3, "base_tool");
 	}
 	lua_remove(L, -3); // togo.Tool
 
