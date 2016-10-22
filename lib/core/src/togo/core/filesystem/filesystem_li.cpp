@@ -36,6 +36,12 @@ TOGO_LI_FUNC_DEF(set_working_dir) {
 	return 1;
 }
 
+TOGO_LI_FUNC_DEF(exists) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, filesystem::exists(path));
+	return 1;
+}
+
 TOGO_LI_FUNC_DEF(is_file) {
 	auto path = lua::get_string(L, 1);
 	lua::push_value(L, filesystem::is_file(path));
@@ -164,6 +170,7 @@ static LuaModuleFunctionArray const li_funcs{
 
 	TOGO_LI_FUNC_REF(filesystem, working_dir)
 	TOGO_LI_FUNC_REF(filesystem, set_working_dir)
+	TOGO_LI_FUNC_REF(filesystem, exists)
 	TOGO_LI_FUNC_REF(filesystem, is_file)
 	TOGO_LI_FUNC_REF(filesystem, is_directory)
 	TOGO_LI_FUNC_REF(filesystem, is_empty_directory)
