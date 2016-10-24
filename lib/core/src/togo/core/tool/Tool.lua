@@ -270,8 +270,8 @@ end),
 }
 
 M.help_command = M("help", {}, {}, [=[
-help [command_name | option_name [...]]
-  prints help for commands
+help [(command_name | option_name) [...]]
+  prints help for commands and options
 ]=],
 function(self, parent, options, params)
 	if #options == 0 and #params == 0 then
@@ -279,29 +279,40 @@ function(self, parent, options, params)
 		return true
 	end
 
-	local function do_bucket(kind, list, bucket, get_name)
-		local hitlist = {}
+	local hitlist = {}
+	function do_bucket(list)
 		for _, p in ipairs(list) do
-			local name = get_name(p)
-			local thing = bucket[name]
+			local name, thing, kind
+			if p.name then
+				name = p.name
+				thing = parent.options[name]
+				kind = "option"
+			else
+				name = p.value
+				thing = parent.commands[name]
+				kind = "command"
+			end
 			if not thing then
-				return M.log_error(
+				M.log_error(
 					"%s %s: %s not recognized: %s",
 					parent.name, self.name,
 					kind, name
 				)
-			end
-			if not hitlist[thing] then
-				thing:print_help(0)
+			elseif not hitlist[thing] then
+				table.insert(hitlist, thing)
 				hitlist[thing] = true
 			end
 		end
-		return true
 	end
-	return (
-		do_bucket("option", options, parent.options, function(p) return p.name end) and
-		do_bucket("command", params, parent.commands, function(p) return p.value end)
-	)
+	do_bucket(options)
+	do_bucket(params)
+
+	for i, thing in ipairs(hitlist) do
+		thing:print_help(0)
+		if i < #hitlist then
+			print()
+		end
+	end
 end)
 M.help_command.auto_read_options = false
 
