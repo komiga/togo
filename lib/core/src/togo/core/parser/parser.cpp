@@ -311,6 +311,7 @@ static_assert(array_extent(s_value_type_name) == (ParseResult::type_user_base + 
 		TOGO_LOGF("%s%s%s%s%s", \
 			enum_bool(_o & PMod::maybe) ? ":m" : "", \
 			enum_bool(_o & PMod::test) ? ":t" : "", \
+			enum_bool(_o & PMod::require_input) ? ":i" : "", \
 			enum_bool(_o & PMod::flatten) ? ":f" : "", \
 			enum_bool(_o & (PMod::repeat | PMod::repeat_or_none)) ? ":r" : "", \
 			enum_bool(_o & PMod::repeat_or_none) ? "n" : "" \
@@ -425,6 +426,11 @@ static ParseResultCode parse_impl(
 		auto rc = parser::parse_impl(p, s, from, type, mods & ~PMod::test);
 		unsuppress_results(s);
 		PARSE_RESULT(rc);
+	} else if (enum_bool(mods & PMod::require_input)) {
+		if (s.p == s.e) {
+			PARSE_RESULT(fail(s, "no more input"));
+		}
+		PARSE_RESULT(parser::parse_impl(p, s, from, type, mods & ~PMod::require_input));
 	} else if (enum_bool(mods & PMod::flatten)) {
 		suppress_results(s);
 		auto rc = parser::parse_impl(p, s, from, type, mods & ~PMod::flatten);
@@ -708,6 +714,7 @@ StringRef parser::type_name(ParserType type) {
 ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 	auto type = parser::type(p);
 	auto mods = parser::modifiers(p);
+	auto const from = position(s);
 
 #if defined(TOGO_DEBUG)
 	if (s_debug_trace) {
@@ -732,21 +739,17 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 	}
 #endif
 
-	auto const from = position(s);
-	ParseResultCode rc;
-	if (
-		s.p == s.e &&
-		type > ParserType::Tail && type < ParserType::Any &&
+	if (!enum_bool(PMod::require_input) &&
+		(type > ParserType::Tail && type < ParserType::Any &&
 		!enum_bool(mods & (PMod::none
 			| PMod::maybe
 			| PMod::repeat
 			| PMod::repeat_or_none
-		))
+		)))
 	) {
-		rc = fail(s, "no more input");
-	} else {
-		rc = parse_impl(p, s, from, type, mods, true);
+		mods |= PMod::require_input;
 	}
+	ParseResultCode rc = parse_impl(p, s, from, type, mods, true);
 
 #if defined(TOGO_DEBUG)
 	if (s_debug_trace) {

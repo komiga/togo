@@ -84,12 +84,14 @@ enum class ParserModifier : unsigned {
 	maybe			= 1 << 0,
 	/// Suppress results.
 	test			= 1 << 1,
+	/// Require at least one character.
+	require_input	= 1 << 2,
 	/// Suppress results and produce a slice for the parsed segment.
-	flatten			= 1 << 2,
+	flatten			= 1 << 3,
 	/// One or more.
-	repeat			= 1 << 3,
+	repeat			= 1 << 4,
 	/// Zero or more.
-	repeat_or_none	= 1 << 4,
+	repeat_or_none	= 1 << 5,
 };
 
 using PMod = ParserModifier;
