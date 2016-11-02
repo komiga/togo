@@ -236,6 +236,16 @@ inline StringRef::StringRef(Array<char> const& array)
 	: StringRef(array::begin(array), array::size(array))
 {}
 
+/// Construct to character array.
+inline StringRef::StringRef(ArrayRef<char> const& array)
+	: StringRef(begin(array), end(array))
+{}
+
+/// Construct to character array.
+inline StringRef::StringRef(ArrayRef<char const> const& array)
+	: StringRef(begin(array), end(array))
+{}
+
 /// Whether the reference has non-null data.
 inline bool StringRef::valid() const {
 	return data != nullptr;

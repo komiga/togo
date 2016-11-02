@@ -52,6 +52,8 @@ struct StringRef {
 	template<unsigned N>
 	StringRef(fixed_array::FixedArray<char, N> const& array);
 	StringRef(array::Array<char> const& array);
+	StringRef(ArrayRef<char> const& array);
+	StringRef(ArrayRef<char const> const& array);
 
 	bool valid() const;
 	bool any() const;
