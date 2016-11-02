@@ -12,12 +12,13 @@ using namespace togo;
 #define PATH_TEST(f, path, expected) \
 	path_test(#f, string:: f, path, expected)
 
-#define PATH_TEST(f, path, expected) \
-	path_test(#f, string:: f, path, expected)
-
-#define PATH_TEST_PARTS(path, dir, file) do { \
+#define PATH_TEST_PARTS(path, dir, file, name, extension) do { \
+	TOGO_LOGF("%-14s    %-8s\n", "path", nothing_or(path).data); \
 	PATH_TEST(path_dir, path, dir); \
 	PATH_TEST(path_file, path, file); \
+	PATH_TEST(path_name, path, name); \
+	PATH_TEST(path_extension, path, extension); \
+	TOGO_LOG("\n"); \
 	} while(false)
 
 static StringRef nothing_or(StringRef str) {
@@ -33,9 +34,8 @@ static void path_test(
 	StringRef result = f(path);
 	StringRef print_result = nothing_or(result);
 	TOGO_LOGF(
-		"%-10s: %-8s => %.*s\n",
+		"%-14s => %.*s\n",
 		name.data,
-		nothing_or(path).data,
 		print_result.size, print_result.data
 	);
 	TOGO_ASSERTF(
@@ -151,17 +151,17 @@ signed main() {
 	}
 
 	// Paths
-	PATH_TEST_PARTS(""       , ""    , ""   );
-	PATH_TEST_PARTS("."      , "."   , ""   );
-	PATH_TEST_PARTS(".."     , ".."  , ""   );
-	PATH_TEST_PARTS("/."     , "/."  , ""   );
-	PATH_TEST_PARTS("/.."    , "/.." , ""   );
-	PATH_TEST_PARTS("c"      , ""    , "c"  );
-	PATH_TEST_PARTS("a/"     , "a"   , ""   );
-	PATH_TEST_PARTS("/"      , "/"   , ""   );
-	PATH_TEST_PARTS("/a"     , "/"   , "a"  );
-	PATH_TEST_PARTS("a/b/c"  , "a/b" , "c"  );
-	PATH_TEST_PARTS("a/b/c.d", "a/b" , "c.d");
+	PATH_TEST_PARTS(""       , ""    , ""   , ""  , "");
+	PATH_TEST_PARTS("."      , "."   , ""   , ""  , "");
+	PATH_TEST_PARTS(".."     , ".."  , ""   , ""  , "");
+	PATH_TEST_PARTS("/."     , "/."  , ""   , ""  , "");
+	PATH_TEST_PARTS("/.."    , "/.." , ""   , ""  , "");
+	PATH_TEST_PARTS("c"      , ""    , "c"  , "c" , "");
+	PATH_TEST_PARTS("a/"     , "a"   , ""   , ""  , "");
+	PATH_TEST_PARTS("/"      , "/"   , ""   , ""  , "");
+	PATH_TEST_PARTS("/a"     , "/"   , "a"  , "a" , "");
+	PATH_TEST_PARTS("a/b/c"  , "a/b" , "c"  , "c" , "");
+	PATH_TEST_PARTS("a/b/c.d", "a/b" , "c.d", "c" , "d");
 
 	return 0;
 }
