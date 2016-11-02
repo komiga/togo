@@ -75,6 +75,27 @@ TOGO_LI_FUNC_DEF(path_file) {
 	return 1;
 }
 
+TOGO_LI_FUNC_DEF(path_parts) {
+	auto path = lua::get_string(L, 1);
+	unsigned name, extension;
+	string::path_parts(path, name, extension);
+	lua::push_value(L, name);
+	lua::push_value(L, extension);
+	return 2;
+}
+
+TOGO_LI_FUNC_DEF(path_name) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, string::path_name(path));
+	return 1;
+}
+
+TOGO_LI_FUNC_DEF(path_extension) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, string::path_extension(path));
+	return 1;
+}
+
 } // namespace string
 
 namespace {
@@ -84,6 +105,9 @@ static LuaModuleFunctionArray const li_funcs{
 
 	TOGO_LI_FUNC_REF(string, path_dir)
 	TOGO_LI_FUNC_REF(string, path_file)
+	TOGO_LI_FUNC_REF(string, path_parts)
+	TOGO_LI_FUNC_REF(string, path_name)
+	TOGO_LI_FUNC_REF(string, path_extension)
 };
 
 static LuaModuleRef const li_module{
