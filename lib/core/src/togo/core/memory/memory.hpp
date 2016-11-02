@@ -13,6 +13,7 @@
 #include <togo/core/types.hpp>
 #include <togo/core/utility/traits.hpp>
 #include <togo/core/memory/types.hpp>
+
 #include <togo/core/memory/memory.gen_interface>
 
 #include <new>
