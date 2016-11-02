@@ -126,4 +126,41 @@ StringRef string::path_file(StringRef const& path) {
 	return path;
 }
 
+/// Get the name and extension offsets within a path.
+void string::path_parts(StringRef const& path, unsigned& name, unsigned& extension) {
+	name = path.size;
+	extension = path.size;
+	if (path.empty()) {
+		return;
+	}
+	auto t = find_tail(path);
+	auto p = t ? (t + 1) : path.data;
+	if (!is_dots(p, static_cast<unsigned>(end(path) - p))) {
+		name = p - path.data;
+		auto e = end(path) - 1;
+		for (; e >= p; --e) {
+			if (*e == '.') {
+				break;
+			}
+		}
+		if (e > p) {
+			extension = e - path.data;
+		}
+	}
+}
+
+/// Get the name part of a path, if any.
+StringRef string::path_name(StringRef const& path) {
+	unsigned name, extension;
+	string::path_parts(path, name, extension);
+	return {path.data + name, path.data + extension};
+}
+
+/// Get the file extension part of a path, if any.
+StringRef string::path_extension(StringRef const& path) {
+	unsigned name, extension;
+	string::path_parts(path, name, extension);
+	return {path.data + min(path.size, extension + 1), path.data + path.size};
+}
+
 } // namespace togo
