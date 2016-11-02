@@ -61,6 +61,7 @@ signed main() {
 	case PMod::none: break;
 	case PMod::maybe: break;
 	case PMod::test: break;
+	case PMod::require_input: break;
 	case PMod::flatten: break;
 	case PMod::repeat: break;
 	case PMod::repeat_or_none: break;
@@ -75,6 +76,11 @@ signed main() {
 {
 	Parser const p{PMod::test, Nothing{}};
 	TOGO_ASSERTE(modifiers(p) == PMod::test);
+}
+
+{
+	Parser const p{PMod::require_input, Nothing{}};
+	TOGO_ASSERTE(modifiers(p) == PMod::require_input);
 }
 
 {
@@ -385,6 +391,57 @@ signed main() {
 	TOGO_ASSERTE(!TEST_WHOLE(p, "zxy"));
 	TOGO_ASSERTE(!TEST_WHOLE(p, "x"));
 	TOGO_ASSERTE(!TEST_WHOLE(p, "z"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, ""));
+}
+
+{
+	FixedParserAllocator<0, 2> a;
+	Parser const p{PMod::flatten, All{a,
+		Char{'x'},
+		Char{'y'}
+	}};
+	TOGO_ASSERTE(a._put == a._buffer + a.BUFFER_SIZE);
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(!TEST(p, "y"));
+
+	PARSE_S(p, "xy");
+	TOGO_ASSERTE(!!error.result_code);
+	TOGO_ASSERTE(size(state.results) == 1);
+	auto& r = state.results[0];
+	TOGO_ASSERTE(r.type == ParseResult::type_slice);
+	TOGO_ASSERTE(r.s.b == state.b && r.s.e == state.e);
+
+	TOGO_ASSERTE(!TEST(p, "yz"));
+	TOGO_ASSERTE(TEST(p, "xyz"));
+	TOGO_ASSERTE(!TEST(p, "xz"));
+	TOGO_ASSERTE(!TEST(p, "zxy"));
+	TOGO_ASSERTE(!TEST(p, "x"));
+	TOGO_ASSERTE(!TEST(p, "z"));
+	TOGO_ASSERTE(!TEST(p, ""));
+
+	TOGO_ASSERTE(!TEST_WHOLE(p, "y"));
+	TOGO_ASSERTE(TEST_WHOLE(p, "xy"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "yz"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "xyz"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "xz"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "zxy"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "x"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "z"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, ""));
+}
+
+{
+	Parser const p{PMod::require_input, Char{'x'}};
+	DEBUG_PRINT_PARSER(p);
+
+	TOGO_ASSERTE(TEST(p, "x"));
+	TOGO_ASSERTE(TEST(p, "xz"));
+	TOGO_ASSERTE(!TEST(p, "y"));
+	TOGO_ASSERTE(!TEST(p, ""));
+	TOGO_ASSERTE(TEST_WHOLE(p, "x"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "z"));
+	TOGO_ASSERTE(!TEST_WHOLE(p, "xz"));
 	TOGO_ASSERTE(!TEST_WHOLE(p, ""));
 }
 
