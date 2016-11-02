@@ -21,6 +21,7 @@
 #include <togo/core/collection/types.hpp>
 
 #include <cstring>
+#include <initializer_list>
 
 namespace togo {
 namespace fixed_array {
@@ -36,6 +37,16 @@ inline FixedArray<T, N>::FixedArray()
 	: _size(0)
 	, _data()
 {}
+
+/// Construct to array.
+template<class T, unsigned N>
+inline FixedArray<T, N>::FixedArray(std::initializer_list<T> const ilist)
+	: _size(end(ilist) - begin(ilist))
+	, _data()
+{
+	TOGO_ASSERTE(_size <= N);
+	std::memcpy(_data, begin(ilist), _size * sizeof(T));
+}
 
 /// Get value by index.
 template<class T, unsigned N>

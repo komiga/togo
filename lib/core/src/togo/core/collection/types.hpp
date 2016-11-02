@@ -15,6 +15,8 @@
 #include <togo/core/utility/constraints.hpp>
 #include <togo/core/memory/types.hpp>
 
+#include <initializer_list>
+
 namespace togo {
 
 // Forward declarations
@@ -95,6 +97,7 @@ struct FixedArray {
 	FixedArray& operator=(FixedArray<T, N> const&) = default;
 
 	FixedArray();
+	FixedArray(std::initializer_list<T> const ilist);
 
 	T& operator[](unsigned const i);
 	T const& operator[](unsigned const i) const;
