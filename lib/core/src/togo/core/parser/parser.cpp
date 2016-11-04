@@ -759,13 +759,13 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 		}
 		if (s_debug_branch_show_error) {
 			TOGO_LOG("  ...\n");
-		} else if (s.error && !rc) {
+		} else if (!rc) {
 			s_debug_branch_show_error = true;
 			TOGO_LOGF(
 				"  =>  %u:%u %.*s\n",
-				s.error->line, s.error->column,
-				static_cast<unsigned>(fixed_array::size(s.error->message)),
-				begin(s.error->message)
+				s.error.line, s.error.column,
+				static_cast<unsigned>(size(s.error.message)),
+				begin(s.error.message)
 			);
 		} else {
 			TOGO_LOG("\n");
@@ -775,9 +775,7 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 #endif
 
 	s.result_code = rc;
-	if (s.error) {
-		s.error->result_code = rc;
-	}
+	s.error.result_code = rc;
 	switch (rc) {
 	case ParseResultCode::ok:
 		break;
@@ -791,7 +789,11 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 }
 
 /// Run parser.
-bool parser::parse(Parser const& p, ParseState& s) {
+bool parser::parse(
+	Parser const& p,
+	ParseState& s,
+	ParseError* error
+) {
 #if defined(TOGO_DEBUG)
 	if (s_debug_trace) {
 		PARSE_TRACEF("parse(`%.*s`)\n", static_cast<signed>(s.e - s.b), s.b);
@@ -800,21 +802,24 @@ bool parser::parse(Parser const& p, ParseState& s) {
 	}
 #endif
 
-	clear_error(s);
+	parse_state::clear_error(s);
 	auto const rc = parser::parse_do(p, s);
 	if (rc == ParseResultCode::ok) {
 		update_text_position(s);
+	}
+	if (error) {
+		parse_state::copy_or_move_error(*error, s.error);
 	}
 
 #if defined(TOGO_DEBUG)
 	if (s_debug_trace) {
 		s_debug_trace_depth = 0;
 		PARSE_TRACE_EXIT_STUFF();
-		if (!rc && s.error) {
+		if (!rc) {
 			TOGO_LOGF("  =>  %u:%u %.*s",
-				s.error->line, s.error->column,
-				static_cast<unsigned>(fixed_array::size(s.error->message)),
-				begin(s.error->message)
+				s.error.line, s.error.column,
+				static_cast<unsigned>(size(s.error.message)),
+				begin(s.error.message)
 			);
 		}
 		TOGO_LOG("\n");
@@ -888,24 +893,32 @@ bool parser::parse(
 	void* userdata IGEN_DEFAULT(nullptr)
 ) {
 	TempAllocator<1024 * 2> a;
-	ParseState s{a, error, userdata};
+	ParseState s{a, userdata};
 	parse_state::set_data_array(s, data);
-	return parser::parse(p, s);
+	return parser::parse(p, s, error);
 }
 
 /// Try to match a parser.
-bool parser::test(Parser const& p, ParseState& s) {
+bool parser::test(
+	Parser const& p,
+	ParseState& s,
+	ParseError* error IGEN_DEFAULT(nullptr)
+) {
 	suppress_results(s);
-	bool success = parser::parse(p, s);
+	bool success = parser::parse(p, s, error);
 	unsuppress_results(s);
 	return success;
 }
 
 /// Try to match a parser against the entire input.
-bool parser::test_whole(Parser const& p, ParseState& s) {
+bool parser::test_whole(
+	Parser const& p,
+	ParseState& s,
+	ParseError* error IGEN_DEFAULT(nullptr)
+) {
 	FixedParserAllocator<3> storage;
 	Parser whole{All{storage, s_parser_begin, const_cast<Parser&>(p), s_parser_end}};
-	return parser::test(whole, s);
+	return parser::test(whole, s, error);
 }
 
 /// Try to match a parser.
@@ -916,9 +929,9 @@ bool parser::test(
 	void* userdata IGEN_DEFAULT(nullptr)
 ) {
 	AssertAllocator a;
-	ParseState s{a, error, userdata};
+	ParseState s{a, userdata};
 	parse_state::set_data_array(s, data);
-	return parser::test(p, s);
+	return parser::test(p, s, error);
 }
 
 /// Try to match a parser against the entire input.
@@ -929,9 +942,9 @@ bool parser::test_whole(
 	void* userdata IGEN_DEFAULT(nullptr)
 ) {
 	AssertAllocator a;
-	ParseState s{a, error, userdata};
+	ParseState s{a, userdata};
 	parse_state::set_data_array(s, data);
-	return parser::test_whole(p, s);
+	return parser::test_whole(p, s, error);
 }
 
 } // namespace togo

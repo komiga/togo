@@ -16,6 +16,7 @@
 #include <togo/core/utility/traits.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/memory/types.hpp>
+#include <togo/core/memory/memory.hpp>
 #include <togo/core/collection/types.hpp>
 #include <togo/core/string/types.hpp>
 
@@ -470,6 +471,8 @@ struct ParseResult {
 
 /// Parse error.
 struct ParseError {
+	/// Offset to where the error occurred.
+	unsigned pos;
 	/// Line where the error occurred.
 	unsigned line;
 	/// Column where the error occurred.
@@ -478,7 +481,17 @@ struct ParseError {
 	/// Result code.
 	ParseResultCode result_code;
 	/// Error message.
-	FixedArray<char, 512> message;
+	Array<char> message;
+
+	ParseError(
+		Allocator& allocator = memory::default_allocator()
+	)
+		: pos(0)
+		, line(0)
+		, column(0)
+		, result_code(ParseResultCode::fail)
+		, message(allocator)
+	{}
 };
 
 /// Parse state.
@@ -487,32 +500,31 @@ struct ParseState {
 	char const* b;
 	char const* e;
 	char const* t;
-	Array<ParseResult> results;
 	ParseResultCode result_code;
 	unsigned suppress_results;
 	unsigned suppress_errors;
 	unsigned line;
 	unsigned column;
-	ParseError* error;
 	void* userdata;
+	Array<ParseResult> results;
+	ParseError error;
 
 	ParseState(
 		Allocator& allocator,
-		ParseError* error = nullptr,
 		void* userdata = nullptr
 	)
 		: p(nullptr)
 		, b(nullptr)
 		, e(nullptr)
 		, t(nullptr)
-		, results(allocator)
 		, result_code(ParseResultCode::ok)
 		, suppress_results(0)
 		, suppress_errors(0)
 		, line(0)
 		, column(0)
-		, error(error)
 		, userdata(userdata)
+		, results(allocator)
+		, error()
 	{}
 };
 

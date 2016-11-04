@@ -25,13 +25,12 @@ namespace togo {
 
 /// Read text-format KVS from stream.
 ///
-/// Returns false if a parser error occurred.
+/// Returns false if a parse error occurred.
 bool kvs::read_text_new(KVS& root, ArrayRef<char const> data, ParseError* error IGEN_DEFAULT(nullptr)) {
 	TempAllocator<4096> allocator{};
 	KVSParseState ud{0};
 	ParseState state{
 		allocator,
-		error,
 		&ud
 	};
 	array::reserve(state.results, (4096 / sizeof(ParseResult)) - sizeof(void*));
@@ -39,7 +38,7 @@ bool kvs::read_text_new(KVS& root, ArrayRef<char const> data, ParseError* error 
 	kvs::clear(root);
 	set_data_array(state, data);
 	push(state, {rtype_kvs, &root});
-	bool success = parser::parse(p_root, state);
+	bool success = parser::parse(p_root, state, error);
 	return success;
 }
 

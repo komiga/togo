@@ -29,17 +29,31 @@ void parse_state::clear_results(ParseState& s) {
 
 /// Clear error state.
 void parse_state::clear_error(ParseState& s) {
-	if (s.error) {
-		parse_state::clear_error(*s.error);
-	}
+	parse_state::clear_error(s.error);
 }
 
 /// Clear error state.
 void parse_state::clear_error(ParseError& error) {
+	error.pos = 0;
 	error.line = 0;
 	error.column = 0;
 	error.result_code = ParseResultCode::ok;
-	fixed_array::clear(error.message);
+	array::clear(error.message);
+}
+
+/// Copy or move error state.
+///
+/// If both errors have the same allocator, src will be moved into dst.
+void parse_state::copy_or_move_error(ParseError& dst, ParseError& src) {
+	if (dst.message._allocator == src.message._allocator) {
+		dst = rvalue_ref(src);
+		return;
+	}
+	dst.pos = src.pos;
+	dst.line = src.line;
+	dst.column = src.column;
+	dst.result_code = src.result_code;
+	array::copy(dst.message, src.message);
 }
 
 /// Set parser state data.
@@ -68,25 +82,29 @@ void parse_state::update_text_position(ParseState& s) {
 
 /// Set parse error (va_list).
 void parse_state::set_error_va(ParseState& s, char const* format, va_list va) {
-	if (s.suppress_errors || !s.error) {
+	if (s.suppress_errors) {
 		return;
 	}
-	auto& error = *s.error;
-	auto size = std::vsnprintf(error.message._data, error.message.CAPACITY, format, va);
-	TOGO_ASSERTE(size > 0);
-	fixed_array::resize(error.message, unsigned_cast(size));
-	error.line = s.line;
-	error.column = s.column;
+	va_list prospect_va;
+	va_copy(prospect_va, va);
+	auto size = std::vsnprintf(nullptr, 0, format, prospect_va) + 1;
+	va_end(prospect_va);
+
+	array::resize(s.error.message, size);
+	std::vsnprintf(begin(s.error.message), size, format, va);
+	s.error.pos = s.p - s.b;
+	s.error.line = s.line;
+	s.error.column = s.column;
 	auto t = s.t;
 	auto p = s.t;
 	for (; p < s.p; ++p) {
 		if (*p == '\n') {
-			++error.line;
-			error.column = 0;
+			++s.error.line;
+			s.error.column = 0;
 			t = p;
 		}
 	}
-	error.column += p - t;
+	s.error.column += p - t;
 }
 
 } // namespace togo

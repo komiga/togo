@@ -133,7 +133,7 @@ inline ParseResult& result(ParseState& s, ParsePosition const& pos, unsigned i) 
 /// Set parse error.
 TOGO_VALIDATE_FORMAT_PARAM(2, 3)
 inline void set_error(ParseState& s, char const* format, ...) {
-	if (s.suppress_errors || !s.error) {
+	if (s.suppress_errors) {
 		return;
 	}
 	va_list va;
@@ -161,7 +161,7 @@ inline ParseResultCode fail(ParseState& s, char const* format, ...) {
 ///
 /// Sets error if it hasn't been set before.
 inline ParseResultCode fail_expected_sub_match(ParseState& s, StringRef parser_name) {
-	if (!s.suppress_errors && s.error && fixed_array::empty(s.error->message)) {
+	if (!s.suppress_errors && array::empty(s.error.message)) {
 		parse_state::set_error(s,
 			"in %.*s: expected match, got none from sub-parser",
 			parser_name.size, parser_name.data
