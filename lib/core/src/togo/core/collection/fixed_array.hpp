@@ -41,10 +41,10 @@ inline FixedArray<T, N>::FixedArray()
 /// Construct to array.
 template<class T, unsigned N>
 inline FixedArray<T, N>::FixedArray(std::initializer_list<T> const ilist)
-	: _size(end(ilist) - begin(ilist))
+	: _size()
 	, _data()
 {
-	TOGO_ASSERTE(_size <= N);
+	resize(*this, ilist.size());
 	std::memcpy(_data, begin(ilist), _size * sizeof(T));
 }
 
