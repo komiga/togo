@@ -17,7 +17,7 @@
 #define PARSE_S(p_, s_) do { \
 	parse_state::init(state); \
 	parse_state::set_data(state, s_); \
-	parser::parse(p_, state); \
+	parser::parse(p_, state, &error); \
 } while (false)
 
 #define TEST(p_, s_) parser::test(p_, s_, &error, nullptr)

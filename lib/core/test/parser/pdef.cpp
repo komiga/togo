@@ -10,6 +10,8 @@
 #include <togo/core/parser/parser.hpp>
 #include <togo/core/parser/parse_state.hpp>
 
+#include <togo/support/test.hpp>
+
 #include "./common.hpp"
 
 using namespace togo;
@@ -23,7 +25,7 @@ inline static bool float_equal_exact(f64 a, f64 b) {
 }
 
 signed main() {
-	memory::init();
+	memory_init();
 
 #if defined(TOGO_DEBUG)
 	parser::s_debug_trace = true;
@@ -31,7 +33,7 @@ signed main() {
 
 	FixedAllocator<1024 * 4> state_storage;
 	ParseError error{};
-	ParseState state{state_storage, &error};
+	ParseState state{state_storage};
 
 DEBUG_PRINT_PARSER(PDef::whitespace);
 	TOGO_ASSERTE(TEST_WHOLE(PDef::whitespace, " "));
@@ -296,7 +298,5 @@ DEBUG_PRINT_PARSER(PDef::f64_exp);
 	TOGO_ASSERTE(r.type == ParseResult::type_f64);
 	TOGO_ASSERTE(float_equal_exact(r.f, 42.42e-6));
 }
-
-	memory::shutdown();
 	return 0;
 }

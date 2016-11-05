@@ -10,6 +10,8 @@
 #include <togo/core/parser/parser.hpp>
 #include <togo/core/parser/parse_state.hpp>
 
+#include <togo/support/test.hpp>
+
 #include "./common.hpp"
 
 using namespace togo;
@@ -25,7 +27,7 @@ ParseResultCode f_func_nop(Parser const*, ParseState& s, ParsePosition const&) {
 }
 
 signed main() {
-	memory::init();
+	memory_init();
 
 #if defined(TOGO_DEBUG)
 	parser::s_debug_trace = true;
@@ -33,7 +35,7 @@ signed main() {
 
 	FixedAllocator<1024 * 4> state_storage;
 	ParseError error{};
-	ParseState state{state_storage, &error};
+	ParseState state{state_storage};
 
 {
 	// ADD THOSE TESTS!!
@@ -218,12 +220,14 @@ signed main() {
 }
 
 {
-	Parser const p{Func{f_func_nop, &error}};
+	void* userdata = nullptr;
+	userdata = &userdata;
+	Parser const p{Func{f_func_nop, &userdata}};
 	DEBUG_PRINT_PARSER(p);
 
 	TOGO_ASSERTE(type(p) == ParserType::Func);
 	TOGO_ASSERTE(p.s.Func.f == f_func_nop);
-	TOGO_ASSERTE(p.s.Func.userdata == &error);
+	TOGO_ASSERTE(p.s.Func.userdata == &userdata);
 }
 
 {
@@ -510,7 +514,7 @@ signed main() {
 		s.p = s.e;
 		return parse_state::ok(s, {from.p, s.p});
 	};
-	Parser const p{Func{f, &error}};
+	Parser const p{Func{f}};
 	DEBUG_PRINT_PARSER(p);
 
 	PARSE_S(p, "xyz");
@@ -618,6 +622,5 @@ signed main() {
 	TOGO_ASSERTE(!PARSE(p, "y"));
 }
 
-	memory::shutdown();
 	return 0;
 }
