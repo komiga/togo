@@ -739,7 +739,7 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 	}
 #endif
 
-	if (!enum_bool(PMod::require_input) &&
+	if (!enum_bool(mods & PMod::require_input) &&
 		(type > ParserType::Tail && type < ParserType::Any &&
 		!enum_bool(mods & (PMod::none
 			| PMod::maybe
