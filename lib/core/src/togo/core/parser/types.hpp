@@ -500,9 +500,11 @@ struct ParseState {
 	char const* b;
 	char const* e;
 	char const* t;
+	char const* t_error;
 	ParseResultCode result_code;
 	unsigned suppress_results;
 	unsigned suppress_errors;
+	bool only_furthest_error;
 	unsigned line;
 	unsigned column;
 	void* userdata;
@@ -517,9 +519,11 @@ struct ParseState {
 		, b(nullptr)
 		, e(nullptr)
 		, t(nullptr)
+		, t_error(nullptr)
 		, result_code(ParseResultCode::ok)
 		, suppress_results(0)
 		, suppress_errors(0)
+		, only_furthest_error(false)
 		, line(1)
 		, column(1)
 		, userdata(userdata)

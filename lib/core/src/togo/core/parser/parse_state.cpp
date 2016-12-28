@@ -7,6 +7,7 @@
 #include <togo/core/types.hpp>
 #include <togo/core/utility/utility.hpp>
 #include <togo/core/parser/types.hpp>
+#include <togo/core/parser/debug.hpp>
 #include <togo/core/parser/parse_state.hpp>
 
 #include <cstdarg>
@@ -16,7 +17,7 @@ namespace togo {
 
 /// Reset parser state position.
 void parse_state::reset_position(ParseState& s) {
-	s.p = s.t = s.b;
+	s.p = s.t = s.t_error = s.b;
 	s.line = 1;
 	s.column = 1;
 }
@@ -58,7 +59,7 @@ void parse_state::copy_or_move_error(ParseError& dst, ParseError& src) {
 
 /// Set parser state data.
 void parse_state::set_data(ParseState& s, char const* b, char const* e) {
-	s.b = s.p = s.t = b;
+	s.b = s.p = s.t = s.t_error = b;
 	s.e = e;
 	if (s.b < s.e && *(s.e - 1) == '\0') {
 		--s.e;
@@ -80,11 +81,41 @@ void parse_state::update_text_position(ParseState& s) {
 	s.t = s.p;
 }
 
-/// Set parse error (va_list).
-void parse_state::set_error_va(ParseState& s, char const* format, va_list va) {
-	if (s.suppress_errors) {
+/// Update error's line and column.
+void parse_state::update_error_text_position(ParseState& s) {
+	if (s.error.pos == (s.t - s.b)) {
+		s.error.line = s.line;
+		s.error.column = s.column;
+		s.t_error = s.t;
 		return;
 	}
+	auto t = s.t_error;
+	auto p = s.t_error;
+	auto e = s.b + s.error.pos;
+	TOGO_DEBUG_ASSERTE(t <= e);
+	for (; p < e; ++p) {
+		if (*p == '\n') {
+			++s.error.line;
+			s.error.column = 0;
+			t = p;
+		}
+	}
+	s.error.column += p - t;
+	s.t_error = p;
+}
+
+/// Set parse error (va_list).
+void parse_state::set_error_va(ParseState& s, char const* format, va_list va) {
+	if (
+		s.suppress_errors ||
+		(s.only_furthest_error && (s.error.pos > (s.p - s.b)))
+	) {
+		return;
+	}
+
+#if defined(TOGO_DEBUG)
+	++parser::s_debug_error_gen;
+#endif
 	va_list prospect_va;
 	va_copy(prospect_va, va);
 	auto size = std::vsnprintf(nullptr, 0, format, prospect_va) + 1;
@@ -95,16 +126,7 @@ void parse_state::set_error_va(ParseState& s, char const* format, va_list va) {
 	s.error.pos = s.p - s.b;
 	s.error.line = s.line;
 	s.error.column = s.column;
-	auto t = s.t;
-	auto p = s.t;
-	for (; p < s.p; ++p) {
-		if (*p == '\n') {
-			++s.error.line;
-			s.error.column = 0;
-			t = p;
-		}
-	}
-	s.error.column += p - t;
+	s.t_error = s.t;
 }
 
 } // namespace togo

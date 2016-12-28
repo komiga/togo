@@ -25,6 +25,11 @@ namespace parser {
 
 #if defined(TOGO_DEBUG)
 bool s_debug_trace = false;
+
+thread_local unsigned s_debug_trace_depth = 0;
+thread_local unsigned s_debug_error_gen = 0;
+thread_local unsigned s_debug_error_last = 0;
+thread_local bool s_debug_error_show = false;
 #endif
 
 namespace {
@@ -251,8 +256,6 @@ All{pdef_storage,
 namespace {
 
 #if defined(TOGO_DEBUG)
-static thread_local unsigned s_debug_trace_depth = 0;
-static thread_local bool s_debug_branch_show_error = false;
 
 static char const* const s_result_code_name[]{
 	"fail",
@@ -440,9 +443,7 @@ static ParseResultCode parse_impl(
 		}
 		PARSE_RESULT(rc);
 	} else if (enum_bool(mods & PMod::repeat_or_none)) {
-		suppress_errors(s);
 		auto rc = parser::parse_impl(p, s, from, type, (mods & ~PMod::repeat_or_none) | PMod::repeat);
-		unsuppress_errors(s);
 		if (!rc) {
 			PARSE_RESULT(no_match(s));
 		}
@@ -451,11 +452,9 @@ static ParseResultCode parse_impl(
 		auto const mods_repeat = mods & ~PMod::repeat;
 		auto rc = parser::parse_impl(p, s, from, type, mods_repeat);
 		if (rc == ParseResultCode::ok) {
-			suppress_errors(s);
 			do {
 				rc = parser::parse_impl(p, s, from, type, mods_repeat);
 			} while (rc == ParseResultCode::ok);
-			unsuppress_errors(s);
 			PARSE_RESULT(ok(s));
 		}
 		PARSE_RESULT(rc);
@@ -537,16 +536,16 @@ static ParseResultCode parse_impl(
 	}
 
 	case ParserType::Any: {
-		suppress_errors(s);
 		auto const& d = p.s.Any;
 		for (unsigned i = 0; i < d.num; ++i) {
 			if (parser::parse_do(*d.p[i], s) == ParseResultCode::ok) {
-				unsuppress_errors(s);
 				PARSE_RESULT(ok(s));
 			}
 		}
-		unsuppress_errors(s);
-		PARSE_RESULT(fail(s, "no match in Any"));
+		if (s.error.pos >= (s.p - s.b)) {
+			PARSE_RESULT(fail(s));
+		}
+		PARSE_RESULT(fail_expected_sub_match(s, "Any"));
 	}
 
 	case ParserType::All: {
@@ -712,6 +711,7 @@ StringRef parser::type_name(ParserType type) {
 
 /// Run parser.
 ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
+	bool only_furthest_error_set = false;
 	auto type = parser::type(p);
 	auto mods = parser::modifiers(p);
 	auto const from = position(s);
@@ -748,6 +748,15 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 		)))
 	) {
 		mods |= PMod::require_input;
+	} else if (
+		!s.only_furthest_error &&
+		((type >= ParserType::Any && type <= ParserType::All) ||
+		enum_bool(mods & (PMod::none
+			| PMod::repeat
+			| PMod::repeat_or_none
+		)))
+	) {
+		s.only_furthest_error = only_furthest_error_set = true;
 	}
 	ParseResultCode rc = parse_impl(p, s, from, type, mods, true);
 
@@ -755,18 +764,22 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 	if (s_debug_trace) {
 		PARSE_TRACE_EXIT_STUFF();
 		if (!!rc) {
-			s_debug_branch_show_error = false;
+			s_debug_error_show = false;
 		}
-		if (s_debug_branch_show_error) {
+		if (s_debug_error_show && s_debug_error_last == s_debug_error_gen) {
 			TOGO_LOG("  ...\n");
-		} else if (!rc) {
-			s_debug_branch_show_error = true;
-			TOGO_LOGF(
-				"  =>  %u:%u %.*s\n",
-				s.error.line, s.error.column,
-				static_cast<unsigned>(size(s.error.message)),
-				begin(s.error.message)
-			);
+		} else if (!rc && s_debug_error_last != s_debug_error_gen) {
+			s_debug_error_last = s_debug_error_gen;
+			s_debug_error_show = true;
+			if (any(s.error.message)) {
+				TOGO_LOGF(
+					"  =>  %.*s\n",
+					static_cast<unsigned>(size(s.error.message)),
+					begin(s.error.message)
+				);
+			} else {
+				TOGO_LOG("  =>  <no message>\n");
+			}
 		} else {
 			TOGO_LOG("\n");
 		}
@@ -774,8 +787,11 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 	}
 #endif
 
+	if (only_furthest_error_set) {
+		s.only_furthest_error = false;
+	}
+
 	s.result_code = rc;
-	s.error.result_code = rc;
 	switch (rc) {
 	case ParseResultCode::ok:
 		break;
@@ -798,7 +814,9 @@ bool parser::parse(
 	if (s_debug_trace) {
 		PARSE_TRACEF("parse(`%.*s`)\n", static_cast<signed>(s.e - s.b), s.b);
 		s_debug_trace_depth = 1;
-		s_debug_branch_show_error = false;
+		s_debug_error_gen = 0;
+		s_debug_error_last = 0;
+		s_debug_error_show = false;
 	}
 #endif
 
@@ -807,20 +825,32 @@ bool parser::parse(
 	if (rc == ParseResultCode::ok) {
 		update_text_position(s);
 	}
+
+	s.error.result_code = rc;
 	if (error) {
+		parse_state::update_error_text_position(s);
 		parse_state::copy_or_move_error(*error, s.error);
 	}
 
 #if defined(TOGO_DEBUG)
 	if (s_debug_trace) {
 		s_debug_trace_depth = 0;
+		if (!error) {
+			error = &s.error;
+		}
 		PARSE_TRACE_EXIT_STUFF();
 		if (!rc) {
-			TOGO_LOGF("  =>  %u:%u %.*s",
-				s.error.line, s.error.column,
-				static_cast<unsigned>(size(s.error.message)),
-				begin(s.error.message)
-			);
+			if (any(error->message)) {
+				TOGO_LOGF("  =>  %u:%u %.*s",
+					error->line, error->column,
+					static_cast<unsigned>(size(error->message)),
+					begin(error->message)
+				);
+			} else {
+				TOGO_LOGF("  =>  %u:%u <no message>",
+					error->line, error->column
+				);
+			}
 		}
 		TOGO_LOG("\n");
 		PARSE_TRACE("=> {");
@@ -878,7 +908,7 @@ bool parser::parse(
 				TOGO_LOG(", ");
 			}
 		}
-		TOGO_LOG("}\n");
+		TOGO_LOG("}\n\n");
 	}
 #endif
 
