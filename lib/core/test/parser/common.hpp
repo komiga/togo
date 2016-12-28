@@ -4,7 +4,7 @@
 #if defined(TOGO_DEBUG)
 
 #define DEBUG_PRINT_PARSER(p_) do { \
-	TOGO_LOG("\n"); \
+	TOGO_LOGF("\n%s @ %4d:\n", __FILE__, __LINE__); \
 	parser::debug_print_tree(p_); \
 	TOGO_LOG("\n"); \
 } while (false)
