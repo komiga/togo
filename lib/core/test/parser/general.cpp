@@ -592,6 +592,7 @@ signed main() {
 
 	TOGO_ASSERTE(PARSE(p, "xy"));
 	TOGO_ASSERTE(PARSE(p, "xyz"));
+	TOGO_ASSERTE(!PARSE(p, "xz"));
 	TOGO_ASSERTE(!PARSE(p, "y"));
 	TOGO_ASSERTE(!PARSE(p, ""));
 }
