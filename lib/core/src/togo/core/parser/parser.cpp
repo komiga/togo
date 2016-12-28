@@ -732,7 +732,7 @@ ParseResultCode parser::parse_do(Parser const& p, ParseState& s) {
 				"? %2lu %2lu 0x%02x %.*s\n",
 				s.p - s.b,
 				s.e - s.p,
-				s.p < s.e ? (c[1] & 0x0F) : 0,
+				s.p < s.e ? (c[1] & 0xFF) : 0,
 				3, c
 			);
 		}
