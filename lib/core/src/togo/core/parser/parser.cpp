@@ -308,7 +308,7 @@ static_assert(array_extent(s_value_type_name) == (ParseResult::type_user_base + 
 	if (_n.any()) { TOGO_LOGF("%.*s = ", _n.size, _n.data); } \
 	TOGO_LOGF("%.*s", _t.size, _t.data); \
 	if (_o != PMod::none) { \
-		TOGO_LOGF("%s%s%s%s%s", \
+		TOGO_LOGF("%s%s%s%s%s%s", \
 			enum_bool(_o & PMod::maybe) ? ":m" : "", \
 			enum_bool(_o & PMod::test) ? ":t" : "", \
 			enum_bool(_o & PMod::require_input) ? ":i" : "", \
