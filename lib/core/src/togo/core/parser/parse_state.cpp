@@ -17,8 +17,8 @@ namespace togo {
 /// Reset parser state position.
 void parse_state::reset_position(ParseState& s) {
 	s.p = s.t = s.b;
-	s.line = 0;
-	s.column = 0;
+	s.line = 1;
+	s.column = 1;
 }
 
 /// Clear parser state results and error state.
