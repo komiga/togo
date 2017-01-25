@@ -20,7 +20,7 @@ Windowing library.
 
 Dependencies:
 
-1. [GLEW](http://glew.sourceforge.net/index.html) >= **1.13.0**
+1. [glad](https://github.com/Dav1dde/glad)
 2. Backend (one of):
   1. [SDL](http://libsdl.org/download-2.0.php) >= **2.0.3** (*OpenGL, raster*)
   2. [GLFW](http://www.glfw.org/download.html) >= **3.0.4** (*OpenGL*)
