@@ -203,7 +203,19 @@ inline T* pointer_align(T* p, unsigned const align) noexcept {
 
 /// @}
 
-/** @name Enum utilities */ /// @{
+/** @name Enum & bitwise utilities */ /// @{
+
+/// Fill n bits and shift left by lshift.
+///
+/// A would-be shift overflow (lshift >= 64) yields 0.
+/// n is clamped to [0, 64].
+inline constexpr u64 fill_n_bits(unsigned n, unsigned lshift = 0) noexcept {
+	return
+		(n > 0 && lshift < 64)
+		? (~u64{0} >> (64 - min(n, 64u))) << lshift
+		: 0
+	;
+}
 
 /// Whether an enum value is non-zero.
 template<class T>
