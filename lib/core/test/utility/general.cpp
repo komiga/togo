@@ -39,6 +39,14 @@ signed main() {
 	e &= E1::B;
 	TOGO_ASSERTE(e == E1::B);
 
+	TOGO_ASSERTE(fill_n_bits(0) == 0);
+	{u64 value = 0;
+	for (unsigned i = 1; i <= 64; ++i) {
+		value <<= 1;
+		value |= 1;
+		TOGO_ASSERTE(fill_n_bits(i) == value);
+	}}
+
 	TOGO_ASSERTE(less(1, 2));
 	TOGO_ASSERTE(!less(2, 1));
 	TOGO_ASSERTE(!less(1, 1));
