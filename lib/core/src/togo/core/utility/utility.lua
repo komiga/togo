@@ -6,10 +6,8 @@ local M = togo.utility
 
 M.debug = false
 
-function M.ternary(cond, x, y)
-	return (cond)
-		and x
-		or  y
+function M.ternary(cond, a, b)
+	return cond and a or b
 end
 
 function M.optional(value, default)
