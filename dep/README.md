@@ -6,7 +6,7 @@ proper directories).
 
 ### lib/core
 
-1. [LuaJIT](http://luajit.org/download.html) >= 2.0.4 into `luajit/`
+1. [Lua](https://www.lua.org/download.html) == **5.2.4** into `lua/`
 
 ### lib/window
 

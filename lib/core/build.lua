@@ -1,19 +1,19 @@
 
 local S, G, R = precore.helpers()
 
-precore.make_config("togo.lib.core.luajit2.dep", nil, {
+precore.make_config("togo.lib.core.lua.dep", nil, {
 {project = function(p)
 	configuration {}
 		includedirs {
-			G"${DEP_PATH}/luajit/include/",
+			G"${DEP_PATH}/lua/include/",
 		}
 
 	if not precore.env_project()["NO_LINK"] then
 		libdirs {
-			G"${DEP_PATH}/luajit/lib/",
+			G"${DEP_PATH}/lua/lib/",
 		}
 		links {
-			":libluajit-5.1.a",
+			":liblua.a",
 		}
 	end
 end}})
@@ -22,7 +22,7 @@ precore.make_config("togo.lib.core.dep", {
 	reverse = true,
 }, {
 "togo.base",
-"togo.lib.core.luajit2.dep",
+"togo.lib.core.lua.dep",
 {project = function(p)
 	togo.library_config("core")
 

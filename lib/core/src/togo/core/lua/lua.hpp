@@ -19,9 +19,9 @@
 #include <togo/core/lua/types.hpp>
 
 extern "C" {
-	#include <luajit-2.0/lua.h>
-	#include <luajit-2.0/lauxlib.h>
-	#include <luajit-2.0/lualib.h>
+	#include <lua.h>
+	#include <lauxlib.h>
+	#include <lualib.h>
 }
 
 #include <togo/core/lua/lua.gen_interface>

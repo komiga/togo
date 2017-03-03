@@ -16,7 +16,7 @@
 #include <togo/core/string/types.hpp>
 
 extern "C" {
-	#include <luajit-2.0/luaconf.h>
+	#include <luaconf.h>
 
 	// Forward declarations
 	struct lua_State;
