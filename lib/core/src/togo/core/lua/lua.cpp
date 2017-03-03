@@ -61,7 +61,7 @@ void lua::print_debug_info(lua_State* L, bool trace) {
 	TOGO_LOG_DEBUGF("stack (%d):\n", stack_size);
 	for (signed i = 1; i <= stack_size; ++i) {
 		TOGO_LOG_DEBUGF("  %d: ", i, lua_typename(L, lua_type(L, i)));
-		lua_getfield(L, LUA_GLOBALSINDEX, "print");
+		lua_getglobal(L, "print");
 		lua_pushvalue(L, i);
 		lua_call(L, 1, 0);
 	}
