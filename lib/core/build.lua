@@ -12,8 +12,8 @@ precore.make_config("togo.lib.core.lua.dep", nil, {
 		libdirs {
 			G"${DEP_PATH}/lua/lib/",
 		}
-		links {
-			":liblua.a",
+		linkoptions {
+			"-Wl,-E -l:liblua.a",
 		}
 	end
 end}})
