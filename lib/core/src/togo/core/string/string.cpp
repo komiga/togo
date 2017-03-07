@@ -95,6 +95,24 @@ inline static bool is_dots(char const* p, unsigned size) {
 
 } // anonymous namespace
 
+/// Check if a path is to a root filesystem (e.g., "/", "A:\", "b:/").
+bool string::path_is_root(StringRef const& path) {
+	if (path.size == 1 && path[0] == '/') {
+		return true;
+	} else if (
+		path.size == 3 &&
+		(
+			(path[0] >= 'A' && path[0] <= 'Z') ||
+			(path[0] >= 'a' && path[0] <= 'z')
+		) &&
+		path[1] == ':' &&
+		(path[2] == '\\' || path[2] == '/')
+	) {
+		return true;
+	}
+	return false;
+}
+
 /// Get the directory part of a path.
 StringRef string::path_dir(StringRef const& path) {
 	if (path.empty()) {
