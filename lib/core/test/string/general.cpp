@@ -12,12 +12,14 @@ using namespace togo;
 #define PATH_TEST(f, path, expected) \
 	path_test(#f, string:: f, path, expected)
 
-#define PATH_TEST_PARTS(path, dir, file, name, extension) do { \
+#define PATH_TEST_PARTS(path, dir, file, name, extension, is_root) do { \
 	TOGO_LOGF("%-14s    %-8s\n", "path", nothing_or(path).data); \
 	PATH_TEST(path_dir, path, dir); \
 	PATH_TEST(path_file, path, file); \
 	PATH_TEST(path_name, path, name); \
 	PATH_TEST(path_extension, path, extension); \
+	TOGO_LOGF("%-14s => %s\n", "path_is_root", string::path_is_root(path) ? "true" : "false"); \
+	TOGO_ASSERTF(string::path_is_root(path) == is_root, "  wanted %s", is_root ? "true" : "false"); \
 	TOGO_LOG("\n"); \
 	} while(false)
 
@@ -151,17 +153,20 @@ signed main() {
 	}
 
 	// Paths
-	PATH_TEST_PARTS(""       , ""    , ""   , ""  , "");
-	PATH_TEST_PARTS("."      , "."   , ""   , ""  , "");
-	PATH_TEST_PARTS(".."     , ".."  , ""   , ""  , "");
-	PATH_TEST_PARTS("/."     , "/."  , ""   , ""  , "");
-	PATH_TEST_PARTS("/.."    , "/.." , ""   , ""  , "");
-	PATH_TEST_PARTS("c"      , ""    , "c"  , "c" , "");
-	PATH_TEST_PARTS("a/"     , "a"   , ""   , ""  , "");
-	PATH_TEST_PARTS("/"      , "/"   , ""   , ""  , "");
-	PATH_TEST_PARTS("/a"     , "/"   , "a"  , "a" , "");
-	PATH_TEST_PARTS("a/b/c"  , "a/b" , "c"  , "c" , "");
-	PATH_TEST_PARTS("a/b/c.d", "a/b" , "c.d", "c" , "d");
+	PATH_TEST_PARTS(""       , ""    , ""   , ""  , "" , false);
+	PATH_TEST_PARTS("."      , "."   , ""   , ""  , "" , false);
+	PATH_TEST_PARTS(".."     , ".."  , ""   , ""  , "" , false);
+	PATH_TEST_PARTS("/"      , "/"   , ""   , ""  , "" , true );
+	PATH_TEST_PARTS("C:/"    , "C:"  , ""   , ""  , "" , true );
+	PATH_TEST_PARTS("z:/"    , "z:"  , ""   , ""  , "" , true );
+	PATH_TEST_PARTS("/."     , "/."  , ""   , ""  , "" , false);
+	PATH_TEST_PARTS("/.."    , "/.." , ""   , ""  , "" , false);
+	PATH_TEST_PARTS("c"      , ""    , "c"  , "c" , "" , false);
+	PATH_TEST_PARTS("a/"     , "a"   , ""   , ""  , "" , false);
+	PATH_TEST_PARTS("/a"     , "/"   , "a"  , "a" , "" , false);
+	PATH_TEST_PARTS("/a/b/"  , "/a/b", ""   , ""  , "" , false);
+	PATH_TEST_PARTS("a/b/c"  , "a/b" , "c"  , "c" , "" , false);
+	PATH_TEST_PARTS("a/b/c.d", "a/b" , "c.d", "c" , "d", false);
 
 	return 0;
 }
