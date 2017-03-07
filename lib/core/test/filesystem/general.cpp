@@ -44,6 +44,7 @@ signed main() {
 	TOGO_ASSERTE( filesystem::is_directory(".."));
 
 	#define TEST_DIR "test_dir"
+	#define TEST_DIR_WHOLE "test_dir_whole"
 	#define TEST_FILE TEST_DIR "/test_file"
 	#define TEST_FILE_MOVED TEST_DIR "/test_file_moved"
 	#define TEST_FILE_COPIED TEST_DIR "/test_file_copied"
@@ -111,6 +112,42 @@ signed main() {
 	TOGO_ASSERTE(!filesystem::is_directory(TEST_DIR));
 	TOGO_ASSERTE(!filesystem::remove_directory(TEST_DIR));
 	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR, true));
+
+	// Path creation
+	TOGO_ASSERTE(!filesystem::create_directory_whole(""));
+	TOGO_ASSERTE(filesystem::create_directory_whole("/"));
+#ifdef TOGO_PLATFORM_LINUX
+	// (not as root user!)
+	TOGO_ASSERTE(!filesystem::create_directory_whole("/__togo-fs-test__"));
+#endif
+	TOGO_ASSERTE(filesystem::create_directory_whole(TEST_DIR_WHOLE));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR_WHOLE));
+
+	TOGO_ASSERTE(filesystem::create_directory_whole(TEST_DIR_WHOLE));
+	TOGO_ASSERTE(filesystem::create_directory_whole(TEST_DIR_WHOLE));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR_WHOLE));
+
+	TOGO_ASSERTE(filesystem::create_directory_whole("./" TEST_DIR_WHOLE));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR_WHOLE));
+
+	TOGO_ASSERTE(filesystem::create_directory_whole("./" TEST_DIR_WHOLE "/a/b/c/"));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR_WHOLE "/a/b/c"));
+
+	TOGO_ASSERTE(filesystem::create_directory_whole("./" TEST_DIR_WHOLE "/a/b/c"));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR_WHOLE "/a/b/c"));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR_WHOLE "/a/b"));
+
+	TOGO_ASSERTE(filesystem::create_directory_whole(TEST_DIR_WHOLE "/a/b/c/"));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR_WHOLE "/a/b/c"));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR_WHOLE "/a/b"));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR_WHOLE "/a"));
+
+	TOGO_ASSERTE(filesystem::create_directory_whole(TEST_DIR_WHOLE "/a/b/c"));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR_WHOLE "/a/b/c"));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR_WHOLE "/a/b"));
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR_WHOLE "/a"));
+
+	TOGO_ASSERTE(filesystem::remove_directory(TEST_DIR_WHOLE));
 
 	return 0;
 }
