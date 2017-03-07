@@ -82,7 +82,7 @@ namespace {
 
 inline static char const* find_tail(StringRef const& path) {
 	for (auto p = end(path) - 1; p >= path.data; --p) {
-		if (*p == '/') {
+		if (*p == '/' || *p == '\\') {
 			return p;
 		}
 	}
