@@ -331,7 +331,8 @@ function M.join_paths(...)
 		M.type_assert(p, "string")
 		if p ~= "" then
 			path = path .. p
-			if i ~= #parts then
+			local tail = string.byte(p, #p)
+			if i ~= #parts and not (tail == BYTE_FSLASH or tail == BYTE_BSLASH) then
 				path = path .. "/"
 			end
 		end
