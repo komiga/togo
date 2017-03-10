@@ -109,6 +109,12 @@ TOGO_LI_FUNC_DEF(create_directory) {
 	return 1;
 }
 
+TOGO_LI_FUNC_DEF(create_directory_whole) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, filesystem::create_directory_whole(path));
+	return 1;
+}
+
 TOGO_LI_FUNC_DEF(remove_directory) {
 	auto path = lua::get_string(L, 1);
 	bool accept_nonexistent = luaL_opt(L, lua::get_boolean, 2, false);
@@ -181,6 +187,7 @@ static LuaModuleFunctionArray const li_funcs{
 	TOGO_LI_FUNC_REF(filesystem, move_file)
 	TOGO_LI_FUNC_REF(filesystem, copy_file)
 	TOGO_LI_FUNC_REF(filesystem, create_directory)
+	TOGO_LI_FUNC_REF(filesystem, create_directory_whole)
 	TOGO_LI_FUNC_REF(filesystem, remove_directory)
 
 	TOGO_LI_FUNC_REF(filesystem, iterate_dir)
