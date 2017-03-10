@@ -63,6 +63,12 @@ TOGO_LI_FUNC_DEF(parse_args) {
 
 namespace string {
 
+TOGO_LI_FUNC_DEF(path_is_root) {
+	auto path = lua::get_string(L, 1);
+	lua::push_value(L, string::path_is_root(path));
+	return 1;
+}
+
 TOGO_LI_FUNC_DEF(path_dir) {
 	auto path = lua::get_string(L, 1);
 	lua::push_value(L, string::path_dir(path));
@@ -103,6 +109,7 @@ namespace {
 static LuaModuleFunctionArray const li_funcs{
 	TOGO_LI_FUNC_REF(utility, parse_args)
 
+	TOGO_LI_FUNC_REF(string, path_is_root)
 	TOGO_LI_FUNC_REF(string, path_dir)
 	TOGO_LI_FUNC_REF(string, path_file)
 	TOGO_LI_FUNC_REF(string, path_parts)
