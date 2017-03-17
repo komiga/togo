@@ -35,8 +35,12 @@ function M.type_class(x)
 	return t
 end
 
-function M.is_type(x, tc, basic)
-	return basic and type(x) == tc or M.type_class(x) == tc
+function M.is_type(x, t, basic)
+	local xt = basic and type(x) or M.type_class(x)
+	if type(t) == "function" then
+		return t(x, xt)
+	end
+	return t == xt
 end
 
 function M.is_type_any(x, types, opt)
@@ -47,9 +51,30 @@ function M.is_type_any(x, types, opt)
 	end
 	local xt = M.type_class(x)
 	for _, t in pairs(types) do
-		if xt == t then
+		if type(t) == "function" then
+			if t(x, xt) then
+				return true
+			end
+		elseif t == xt then
 			return true
 		end
+	end
+	return false
+end
+
+function M.T_instance(c)
+	return function(x, t)
+		return c == t
+	end
+end
+
+function M.is_class(x)
+	if type(x) == "table" then
+		local mt = getmetatable(x)
+		return (
+			x == rawget(x, "__index") and
+			mt == rawget(x, "__class_static")
+		)
 	end
 	return false
 end
@@ -84,13 +109,13 @@ function M.assert(e, msg, ...)
 	M.assertl(1, e, msg, ...)
 end
 
-function M.type_assert(x, tc, opt, level)
+function M.type_assert(x, t, opt, level)
 	level = M.optional(level, 0)
 	M.assertl(
 		level + 1,
-		(opt and x == nil) or M.is_type(x, tc),
+		(opt and x == nil) or M.is_type(x, t, false),
 		"utility.type_assert: '%s' (a %s) is not of type %s",
-		tostring(x), tostring(type(x)), tostring(tc)
+		tostring(x), tostring(type(x)), tostring(t)
 	)
 	return x
 end
@@ -102,11 +127,8 @@ function M.type_assert_any(x, types, opt, level)
 	if opt and x == nil then
 		return x
 	end
-	local xt = M.type_class(x)
-	for _, t in pairs(types) do
-		if xt == t then
-			return x
-		end
+	if M.is_type_any(x, types) then
+		return x
 	end
 	M.assertl(
 		level + 1, false,
@@ -308,20 +330,6 @@ function M.strip_extension(s)
 		end
 	end
 	return s
-end
-
-function M.file_extension(s)
-	M.type_assert(s, "string")
-	local b
-	for i = #s, 1, -1 do
-		b = string.byte(s, i)
-		if b == BYTE_FSLASH then
-			break
-		elseif b == BYTE_DOT then
-			return string.sub(s, i + 1, #s)
-		end
-	end
-	return nil
 end
 
 function M.join_paths(...)
