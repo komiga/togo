@@ -384,6 +384,7 @@ gfx::BufferBindingID renderer::create_buffer_binding(
 	}}
 	bind_buffer(renderer, {ID_VALUE_NULL}, GL_ARRAY_BUFFER);
 	bind_buffer(renderer, {ID_VALUE_NULL}, GL_ELEMENT_ARRAY_BUFFER);
+	glBindVertexArray(VERTEX_ARRAY_HANDLE_NULL);
 
 	return resource_array::assign(renderer->_buffer_bindings, bb).id;
 }
