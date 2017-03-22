@@ -1,7 +1,10 @@
 
 #include <togo/core/types.hpp>
+#include <togo/core/log/log.hpp>
 #include <togo/core/error/assert.hpp>
 #include <togo/core/utility/utility.hpp>
+
+#include <cmath>
 
 using namespace togo;
 
@@ -39,12 +42,29 @@ signed main() {
 	e &= E1::B;
 	TOGO_ASSERTE(e == E1::B);
 
+	TOGO_ASSERTE(log2_ci(0) == 0);
+	TOGO_ASSERTE(bits_to_store(0) == 1);
 	TOGO_ASSERTE(fill_n_bits(0) == 0);
+	TOGO_ASSERTE(fill_value_bits(0) == 1);
+	// TOGO_LOGF("%2u %2u %2u %16lx %16lx %16lx\n", 0, log2_ci(0), static_cast<u64>(floor(log2(0))), 0, fill_n_bits(0), fill_value_bits(0));
 	{u64 value = 0;
 	for (unsigned i = 1; i <= 64; ++i) {
 		value <<= 1;
 		value |= 1;
+		/*TOGO_LOGF(
+			"%2u %2u %2u %16lx %16lx %16lx\n",
+			i,
+			log2_ci(value),
+			static_cast<u64>(floor(log2(value))),
+			value,
+			fill_n_bits(i),
+			fill_value_bits(value)
+		);*/
+		TOGO_ASSERTE(log2_ci(value) == (i - 1));
+		TOGO_ASSERTE(bits_to_store(value) == i);
 		TOGO_ASSERTE(fill_n_bits(i) == value);
+		TOGO_ASSERTE(fill_value_bits(value) == value);
+		TOGO_ASSERTE(fill_value_bits(u64{1} << (i - 1)) == value);
 	}}
 
 	TOGO_ASSERTE(less(1, 2));
