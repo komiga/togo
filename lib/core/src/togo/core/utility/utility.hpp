@@ -175,6 +175,15 @@ inline constexpr T clamp(T const x, T const minimum, T const maximum) noexcept {
 	;
 }
 
+/// Integral log2 (truncates towards zero).
+inline constexpr u64 log2_ci(u64 x) noexcept {
+	return
+		  (x > 1)
+		? 1 + log2_ci(x / 2)
+		: 0
+	;
+}
+
 /// @}
 
 /** @name Memory utilities */ /// @{
@@ -205,6 +214,11 @@ inline T* pointer_align(T* p, unsigned const align) noexcept {
 
 /** @name Enum & bitwise utilities */ /// @{
 
+/// Number of bits required to store a value.
+inline constexpr u64 bits_to_store(u64 x) noexcept {
+	return log2_ci(x) + 1;
+}
+
 /// Fill n bits and shift left by lshift.
 ///
 /// A would-be shift overflow (lshift >= 64) yields 0.
@@ -215,6 +229,14 @@ inline constexpr u64 fill_n_bits(unsigned n, unsigned lshift = 0) noexcept {
 		? (~u64{0} >> (64 - min(n, 64u))) << lshift
 		: 0
 	;
+}
+
+/// Fill the number of bits required to store a value and shift left by lshift.
+///
+/// A would-be shift overflow (lshift >= 64) yields 0.
+/// This effectively fills all bits past the MSB, yielding 1 in the case x = 0.
+inline constexpr u64 fill_value_bits(u64 x, unsigned lshift = 0) noexcept {
+	return fill_n_bits(bits_to_store(x), lshift);
 }
 
 /// Whether an enum value is non-zero.
