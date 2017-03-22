@@ -121,9 +121,8 @@ struct BufferBinding {
 		F_INDEXED = fill_n_bits(1),
 
 		S_POLYGONIZATION_METHOD = 1,
-		M_POLYGONIZATION_METHOD = fill_value_bits(
-			unsigned_cast(gfx::PolygonizationMethod::NUM) - 1
-		),
+		B_POLYGONIZATION_METHOD = bits_to_store(unsigned_cast(gfx::PolygonizationMethod::NUM) - 1),
+		M_POLYGONIZATION_METHOD = fill_n_bits(B_POLYGONIZATION_METHOD),
 
 		// 3 bits (IndexDataType currently takes 2 at most)
 		F_SHIFT_INDEX_TYPE = 29,

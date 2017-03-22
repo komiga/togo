@@ -172,6 +172,8 @@ gfx::Renderer* renderer::create(
 	query_parameters(renderer);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_ALWAYS);
+	glFrontFace(GL_CW);
+	glCullFace(GL_BACK);
 
 	GLint vp[4];
 	glGetIntegerv(GL_VIEWPORT, vp);
