@@ -380,8 +380,12 @@ gfx::BufferBindingID renderer::create_buffer_binding(
 			glEnableVertexAttribArray(attrib_index);
 			// TODO: Proper attribute index stride for matrices (and arrays?)
 			++attrib_index;
+			TOGO_DEBUG_ASSERTE(attrib_index <= TOGO_GFX_VERTEXFORMAT_NUM_ATTRIBS);
 		}
-	}}
+	}
+	TOGO_DEBUG_ASSERTE(0 < attrib_index);
+	}
+
 	bind_buffer(renderer, {ID_VALUE_NULL}, GL_ARRAY_BUFFER);
 	bind_buffer(renderer, {ID_VALUE_NULL}, GL_ELEMENT_ARRAY_BUFFER);
 	glBindVertexArray(VERTEX_ARRAY_HANDLE_NULL);
