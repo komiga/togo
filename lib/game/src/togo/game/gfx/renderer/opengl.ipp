@@ -314,7 +314,8 @@ gfx::BufferBindingID renderer::create_buffer_binding(
 	unsigned const base_vertex,
 	gfx::IndexBinding const& index_binding,
 	unsigned const num_bindings,
-	gfx::VertexBinding const* const bindings
+	gfx::VertexBinding const* const bindings,
+	gfx::PolygonizationMethod polygonization_method
 ) {
 	TOGO_ASSERTE(
 		base_vertex < num_vertices &&
@@ -328,6 +329,10 @@ gfx::BufferBindingID renderer::create_buffer_binding(
 		num_vertices,
 		gfx::BufferBinding::F_NONE
 	};
+	bb.flags
+		|= (unsigned_cast(polygonization_method) & gfx::BufferBinding::M_POLYGONIZATION_METHOD)
+		<< gfx::BufferBinding::S_POLYGONIZATION_METHOD
+	;
 
 	// Create vertex array
 	glGenVertexArrays(1, &bb.va_handle);
@@ -855,15 +860,19 @@ void renderer::render_buffers(
 	}}
 
 	{// Render!
+	GLenum polygonization_method;
 	unsigned index_data_type;
 	for (auto const id : array_ref(buffers, num_buffers)) {
 		auto const& bb = resource_array::get(renderer->_buffer_bindings, id);
 		TOGO_ASSERT(bb.id == id, "invalid buffer binding ID");
+		polygonization_method = gfx::g_gl_polygonization_method[
+			unsigned_cast(bb.polygonization_method())
+		];
 		glBindVertexArray(bb.va_handle);
 		if (bb.flags & gfx::BufferBinding::F_INDEXED) {
 			index_data_type = bb.flags >> gfx::BufferBinding::F_SHIFT_INDEX_TYPE;
 			glDrawElements(
-				GL_TRIANGLES,
+				polygonization_method,
 				bb.num_vertices,
 				gfx::g_gl_primitive_type[index_data_type],
 				reinterpret_cast<void const*>(
@@ -871,7 +880,7 @@ void renderer::render_buffers(
 				)
 			);
 		} else {
-			glDrawArrays(GL_TRIANGLES, bb.base_vertex, bb.num_vertices);
+			glDrawArrays(polygonization_method, bb.base_vertex, bb.num_vertices);
 		}
 	}}
 }

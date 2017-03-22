@@ -72,6 +72,36 @@ enum class BufferDataBinding : unsigned {
 	NUM
 };
 
+/// Polygonization method.
+enum class PolygonizationMethod : unsigned {
+	// Triangles.
+	triangles,
+	// Triangles with adjacency.
+	triangles_adjacency,
+	// Triangle fan.
+	triangle_fan,
+	// Triangle strip.
+	triangle_strip,
+	// Triangle strip with adjacency.
+	triangle_strip_adjacency,
+
+	// Lines.
+	lines,
+	// Lines with adjacency.
+	lines_adjacency,
+	// Line loop.
+	line_loop,
+	// Line strip.
+	line_strip,
+	// Line strip with adjacency.
+	line_strip_adjacency,
+
+	// Points.
+	points,
+
+	NUM
+};
+
 /// Render target formats.
 enum class RenderTargetFormat : u32 {
 	/// RGB with 8-bit components (24 bits).

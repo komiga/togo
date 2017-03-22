@@ -125,7 +125,8 @@ gfx::BufferBindingID create_buffer_binding(
 	unsigned base_vertex,
 	gfx::IndexBinding const& index_binding,
 	unsigned num_bindings,
-	gfx::VertexBinding const* bindings
+	gfx::VertexBinding const* bindings,
+	gfx::PolygonizationMethod polygonization_method = gfx::PolygonizationMethod::triangles
 );
 
 /// Create buffer binding by initializer list.
@@ -134,12 +135,14 @@ inline gfx::BufferBindingID create_buffer_binding(
 	unsigned num_vertices,
 	unsigned base_vertex,
 	gfx::IndexBinding const& index_binding,
-	std::initializer_list<gfx::VertexBinding> const bindings
+	std::initializer_list<gfx::VertexBinding> const bindings,
+	gfx::PolygonizationMethod polygonization_method = gfx::PolygonizationMethod::triangles
 ) {
 	return gfx::renderer::create_buffer_binding(
 		renderer,
 		num_vertices, base_vertex, index_binding,
-		bindings.size(), bindings.begin()
+		bindings.size(), bindings.begin(),
+		polygonization_method
 	);
 }
 

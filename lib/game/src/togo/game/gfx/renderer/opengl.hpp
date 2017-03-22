@@ -53,6 +53,27 @@ static_assert(
 	""
 );
 
+static constexpr GLenum const g_gl_polygonization_method[]{
+	GL_TRIANGLES,
+	GL_TRIANGLES_ADJACENCY,
+	GL_TRIANGLE_FAN,
+	GL_TRIANGLE_STRIP,
+	GL_TRIANGLE_STRIP_ADJACENCY,
+
+	GL_LINES,
+	GL_LINES_ADJACENCY,
+	GL_LINE_LOOP,
+	GL_LINE_STRIP,
+	GL_LINE_STRIP_ADJACENCY,
+
+	GL_POINTS,
+};
+static_assert(
+	array_extent(g_gl_polygonization_method)
+	== unsigned_cast(gfx::PolygonizationMethod::NUM),
+	""
+);
+
 static constexpr GLenum const g_gl_primitive_type[]{
 	GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT, GL_UNSIGNED_INT,
 	GL_FLOAT, GL_DOUBLE,
@@ -97,7 +118,12 @@ struct Buffer {
 struct BufferBinding {
 	enum : u32 {
 		F_NONE = 0,
-		F_INDEXED = 1 << 0,
+		F_INDEXED = fill_n_bits(1),
+
+		S_POLYGONIZATION_METHOD = 1,
+		M_POLYGONIZATION_METHOD = fill_value_bits(
+			unsigned_cast(gfx::PolygonizationMethod::NUM) - 1
+		),
 
 		// 3 bits (IndexDataType currently takes 2 at most)
 		F_SHIFT_INDEX_TYPE = 29,
@@ -108,6 +134,12 @@ struct BufferBinding {
 	u32 base_vertex;
 	u32 num_vertices;
 	u32 flags;
+
+	gfx::PolygonizationMethod polygonization_method() const {
+		return static_cast<gfx::PolygonizationMethod>(
+			(flags >> S_POLYGONIZATION_METHOD) & M_POLYGONIZATION_METHOD
+		);
+	}
 };
 
 struct Texture {
