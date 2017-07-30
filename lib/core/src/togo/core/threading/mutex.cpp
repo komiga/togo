@@ -10,5 +10,5 @@
 #if defined(TOGO_PLATFORM_IS_POSIX)
 	#include <togo/core/threading/mutex/posix.ipp>
 #else
-	#error "missing mutex implementation for target platform"
+	#error "missing Mutex implementation for target platform"
 #endif

@@ -10,5 +10,5 @@
 #if defined(TOGO_PLATFORM_IS_POSIX)
 	#include <togo/core/threading/condvar/posix.ipp>
 #else
-	#error "missing condvar implementation for target platform"
+	#error "missing CondVar implementation for target platform"
 #endif
