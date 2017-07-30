@@ -14,6 +14,14 @@ Core library. All other libraries depend on it.
 
 Imaging library.
 
+### Library: platform
+
+Platform library.
+
+Dependencies:
+
+1. `libnotify` (system)
+
 ### Library: window
 
 Windowing library.

@@ -155,6 +155,7 @@ FULL_PATH_NAMES        = YES
 STRIP_FROM_PATH        = ../lib/core/src/ \
                          ../lib/image/src/ \
                          ../lib/window/src/ \
+                         ../lib/platform/src/ \
                          ../lib/game/src/ \
                          ../tool/res_build/src/
 
@@ -767,6 +768,7 @@ INPUT                  = ./pages/ \
                          ../lib/core/src/ \
                          ../lib/image/src/ \
                          ../lib/window/src/ \
+                         ../lib/platform/src/ \
                          ../lib/game/src/ \
                          ../tool/res_build/src/ \
                          ./gen_interface/

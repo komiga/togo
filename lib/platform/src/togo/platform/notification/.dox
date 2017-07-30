@@ -1,0 +1,40 @@
+
+/**
+
+@defgroup lib_platform_notification Notification
+@ingroup lib_platform
+@details
+
+A Notification object can be modified without affecting what the user sees, as
+its state is only used when notification::post() is called.
+
+notification::init() must be called before creating any notifications or using
+any other part of the notification interface.
+
+notification::poll() must be called for callbacks to be processed and
+notification::is_active() to be valid.
+
+Some backends don't support all of the features of the interface. They are as
+follows:
+
+@par libnotify (Linux)
+
+libnotify is particularly poorly implemented by notification servers, but it is
+the only widespread system for Linux.
+
+- The @c NotificationClosed signal may be under- or un-implemented, which makes
+notification::is_active() nearly useless for determining status. e.g.,
+
+	- AwesomeWM (@<4.x)
+	- NotifyOSD (only on notification::dismiss())
+
+- When @c lifetime is @c 0, notification may not be treated as a notification.
+e.g.,
+
+	- NotifyOSD (opens a prompt)
+
+- Lifetime is otherwise ignored. e.g.,
+
+	- NotifyOSD (uses its own lifetime)
+
+*/

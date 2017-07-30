@@ -1,4 +1,21 @@
 
+function togo_libraries()
+	return {
+		"core",
+		"image",
+		"platform",
+		"window",
+		"game",
+	}
+end
+
+function togo_tools()
+	return {
+		"script_host",
+		"res_build",
+	}
+end
+
 function table_last(t)
 	return t[#t]
 end
@@ -62,20 +79,4 @@ function iterate_dir(dir, select_only, max_depth)
 			yield_tree(dir, "", 1)
 		end
 	)
-end
-
-function togo_libraries()
-	return {
-		"core",
-		"image",
-		"window",
-		"game",
-	}
-end
-
-function togo_tools()
-	return {
-		"script_host",
-		"res_build",
-	}
 end

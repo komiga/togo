@@ -7,6 +7,7 @@ if [[ -f Makefile ]]; then
 		-e 's/lib_core:/& | igen/' \
 		-e 's/lib_image:/& | lib_core/' \
 		-e 's/lib_window:/& | lib_image/' \
+		-e 's/lib_platform:/& | lib_core/' \
 		-e 's/lib_game:/& | lib_window/' \
 		-e 's/tool_script_host_lib:/& | lib_core/' \
 		-e 's/tool_script_host:/& | tool_script_host_lib/' \

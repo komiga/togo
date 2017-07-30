@@ -8,6 +8,14 @@ proper directories).
 
 1. [Lua](https://www.lua.org/download.html) == **5.2.4** into `lua/`
 
+### lib/image
+
+`lib/image` has no manual dependencies.
+
+### lib/platform
+
+`lib/platform` has no manual dependencies.
+
 ### lib/window
 
 1. [glad](https://github.com/Dav1dde/glad) (HEAD):
@@ -23,4 +31,4 @@ proper directories).
 
 ### lib/game
 
-`lib/game` has no external dependencies.
+`lib/game` has no manual dependencies.
