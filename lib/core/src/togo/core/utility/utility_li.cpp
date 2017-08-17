@@ -71,13 +71,13 @@ TOGO_LI_FUNC_DEF(path_is_root) {
 
 TOGO_LI_FUNC_DEF(path_dir) {
 	auto path = lua::get_string(L, 1);
-	lua::push_value(L, string::path_dir(path));
+	lua::push_string_or_nil(L, string::path_dir(path));
 	return 1;
 }
 
 TOGO_LI_FUNC_DEF(path_file) {
 	auto path = lua::get_string(L, 1);
-	lua::push_value(L, string::path_file(path));
+	lua::push_string_or_nil(L, string::path_file(path));
 	return 1;
 }
 
@@ -92,13 +92,13 @@ TOGO_LI_FUNC_DEF(path_parts) {
 
 TOGO_LI_FUNC_DEF(path_name) {
 	auto path = lua::get_string(L, 1);
-	lua::push_value(L, string::path_name(path));
+	lua::push_string_or_nil(L, string::path_name(path));
 	return 1;
 }
 
 TOGO_LI_FUNC_DEF(path_extension) {
 	auto path = lua::get_string(L, 1);
-	lua::push_value(L, string::path_extension(path));
+	lua::push_string_or_nil(L, string::path_extension(path));
 	return 1;
 }
 
