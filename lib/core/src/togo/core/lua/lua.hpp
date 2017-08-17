@@ -79,6 +79,15 @@ inline void push_value(lua_State* L, StringRef str) {
 	lua_pushlstring(L, str.data ? str.data : "", unsigned_cast(str.size));
 }
 
+/// Push a string to the stack or nil if it's empty.
+inline void push_string_or_nil(lua_State* L, StringRef str) {
+	if (str.any()) {
+		lua_pushlstring(L, str.data, unsigned_cast(str.size));
+	} else {
+		lua::push_value(L, null_tag{});
+	}
+}
+
 /// Get a string from the stack as a string reference.
 inline StringRef get_string(lua_State* L, signed narg) {
 	size_t size = 0;
