@@ -36,6 +36,7 @@ template<class T>
 inline Array<T>::~Array() {
 	collection_npod_destruct(_data, _data + _size);
 	_allocator->deallocate(_data);
+	_size = _capacity = 0;
 }
 
 /// Construct with allocator for storage.
