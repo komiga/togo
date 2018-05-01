@@ -37,6 +37,15 @@ group_data["image"] = {
 	},
 }
 
+group_data["platform"] = {
+	excluded = {
+	},
+	should_fail = {
+	},
+	args = {
+	},
+}
+
 group_data["window"] = {
 	excluded = {
 		-- ["window/window"] = true,
