@@ -18,11 +18,14 @@
 #include <togo/core/string/string.hpp>
 #include <togo/core/lua/types.hpp>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wold-style-cast"
 extern "C" {
 	#include <lua.h>
 	#include <lauxlib.h>
 	#include <lualib.h>
 }
+#pragma GCC diagnostic pop
 
 #include <togo/core/lua/lua.gen_interface>
 
