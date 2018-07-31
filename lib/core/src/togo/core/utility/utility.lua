@@ -348,6 +348,29 @@ function M.join_paths(...)
 	return path
 end
 
+local function env_upvalue_index(f)
+	local index = 1
+	repeat
+		local name, value = debug.getupvalue(f, index)
+		if name == "_ENV" then
+			return index, value
+		end
+		index = index + 1
+	until name == nil
+	return nil
+end
+
+function M.get_env(f)
+	return select(2, env_upvalue_index(f))
+end
+
+function M.set_env(f, env)
+	local index, _ = env_upvalue_index(f)
+	if index ~= nil then
+		debug.setupvalue(f, index, env)
+	end
+end
+
 function M.set_functable(t, func)
 	if not t.__class_static then
 		t.__class_static = {}
