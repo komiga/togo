@@ -6,7 +6,7 @@ proper directories).
 
 ### lib/core
 
-1. [Lua](https://www.lua.org/download.html) == **5.2.4** into `lua/`
+1. [Lua](https://www.lua.org/download.html) == **5.3.5** into `lua/`
 
 ### lib/image
 

@@ -10,6 +10,10 @@ heart.
 
 Core library. All other libraries depend on it.
 
+Dependencies:
+
+1. `Lua` == **5.3.5**
+
 ### Library: image
 
 Imaging library.
