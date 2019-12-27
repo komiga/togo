@@ -1,4 +1,5 @@
 
 project/package/*.package
 project/package/*/.compiled/
-project/package/*/.package/
+project/package/*/.package/compiler_metadata
+project/package/*/.package/manifest
