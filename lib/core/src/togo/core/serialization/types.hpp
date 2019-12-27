@@ -136,12 +136,12 @@ struct BinaryInputSerializer
 	Endian _endian;
 
 	BinaryInputSerializer() = delete;
+	BinaryInputSerializer& operator=(BinaryInputSerializer const&) = delete;
+	BinaryInputSerializer& operator=(BinaryInputSerializer&&) = delete;
 
 	~BinaryInputSerializer() = default;
 	BinaryInputSerializer(BinaryInputSerializer const&) = default;
 	BinaryInputSerializer(BinaryInputSerializer&&) = default;
-	BinaryInputSerializer& operator=(BinaryInputSerializer const&) = default;
-	BinaryInputSerializer& operator=(BinaryInputSerializer&&) = default;
 
 	BinaryInputSerializer(IReader& stream, Endian endian = Endian::little);
 };
@@ -154,12 +154,12 @@ struct BinaryOutputSerializer
 	Endian _endian;
 
 	BinaryOutputSerializer() = delete;
+	BinaryOutputSerializer& operator=(BinaryOutputSerializer const&) = delete;
+	BinaryOutputSerializer& operator=(BinaryOutputSerializer&&) = delete;
 
 	~BinaryOutputSerializer() = default;
 	BinaryOutputSerializer(BinaryOutputSerializer const&) = default;
 	BinaryOutputSerializer(BinaryOutputSerializer&&) = default;
-	BinaryOutputSerializer& operator=(BinaryOutputSerializer const&) = default;
-	BinaryOutputSerializer& operator=(BinaryOutputSerializer&&) = default;
 
 	BinaryOutputSerializer(IWriter& stream, Endian endian = Endian::little);
 };
