@@ -58,10 +58,10 @@ struct Mutex {
 
 	Mutex(Mutex const&) = delete;
 	Mutex& operator=(Mutex const&) = delete;
+	Mutex& operator=(Mutex&&) = delete;
 
 	~Mutex() = default;
 	Mutex(Mutex&&) = default;
-	Mutex& operator=(Mutex&&) = default;
 
 	Mutex(MutexType const type = MutexType::normal);
 };
