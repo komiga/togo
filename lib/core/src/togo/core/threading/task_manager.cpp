@@ -244,7 +244,7 @@ TaskManager::TaskManager(unsigned num_workers, Allocator& allocator)
 		array::reserve(_workers, num_workers);
 		char name[32];
 		while (num_workers--) {
-			std::snprintf(name, sizeof(name), "tm-%8p-worker-%u", this, num_workers);
+			std::snprintf(name, sizeof(name), "tm-%8p-worker-%u", static_cast<void*>(this), num_workers);
 			array::push_back(_workers, thread::create(name, this, worker_func, allocator));
 		}
 	}
