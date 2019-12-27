@@ -1,7 +1,9 @@
 
 #include <togo/core/external/dlmalloc_import.hpp>
 
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wnull-pointer-arithmetic"
 
 /*
   This is a version (aka dlmalloc) of malloc/free/realloc written by
@@ -6283,3 +6285,5 @@ History:
          structure of old version,  but most details differ.)
 
 */
+
+#pragma GCC diagnostic pop
