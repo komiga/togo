@@ -252,21 +252,21 @@ struct Parser {
 	StringRef name;
 
 	union Storage {
-		Char Char;
-		CharRange CharRange;
-		String String;
-		Bounded Bounded;
+		parser::Char Char;
+		parser::CharRange CharRange;
+		parser::String String;
+		parser::Bounded Bounded;
 
-		Any Any;
-		All All;
+		parser::Any Any;
+		parser::All All;
 
-		Ref Ref;
+		parser::Ref Ref;
 
-		Func Func;
+		parser::Func Func;
 
-		Open Open;
-		Close Close;
-		CloseAndFlush CloseAndFlush;
+		parser::Open Open;
+		parser::Close Close;
+		parser::CloseAndFlush CloseAndFlush;
 
 		Storage(no_init_tag) {}
 
